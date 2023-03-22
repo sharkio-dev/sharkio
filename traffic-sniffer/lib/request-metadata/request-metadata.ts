@@ -8,12 +8,12 @@ export class RequestMetadata {
   }
 
   extractMetadata(request: Request) {
-    const { method, path } = request;
-    const pathMetadata = this.getAndRegisterPath(path, method);
+    const { method, path, body,params } = request;
+    const pathMetadata = this.getAndRegisterPath(path, method, body);
     pathMetadata.extractMetadata(request);
   }
 
-  getAndRegisterPath(path: string, method: string) {
+  getAndRegisterPath(path: string, method: string, body: any) {
     let pathMetadata = this.paths.get(path);
 
     if (pathMetadata === undefined) {
@@ -26,5 +26,13 @@ export class RequestMetadata {
 
   printStatistics() {
     console.log(JSON.stringify(Array.from(this.paths.entries()), null, 2));
+  }
+
+  getData() {
+    return Object.fromEntries(this.paths);
+  }
+
+  clearData() {
+    this.paths = new Map();
   }
 }
