@@ -1,6 +1,7 @@
 .requestsContainer {
   border-radius: 0px;
   height: 100%;
+  overflow: scroll;
   padding: 20px;
   width: 100%;
 }
@@ -23,4 +24,9 @@
   display: flex;
   flex-direction: column;
   column-gap: 120px;
+}
+
+.invocationsTable {
+  width: 100%;
+  overflow: scroll;
 }

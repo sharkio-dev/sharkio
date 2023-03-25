@@ -35,10 +35,18 @@ export class Sniffer {
     this.app.get(
       "/tartigraid",
       (req: Request, res: Response, next: NextFunction) => {
-        res.json(this.data.getData());
+        const data = this.data.getData();
+        res.json(data);
       }
     );
-
+    this.app.post(
+      "/tartigraid/execute",
+      (req: Request, res: Response, next: NextFunction) => {
+        const { url, method, invocation } = req.body;
+        const data = this.data.execute(url, method, invocation);
+        res.json(data);
+      }
+    );
     this.app.delete(
       "/tartigraid",
       (req: Request, res: Response, next: NextFunction) => {

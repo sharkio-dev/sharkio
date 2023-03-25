@@ -1,6 +1,14 @@
 import { Request } from "express";
+import { v4 } from "uuid";
+import axios from "axios";
+type PathData = {
+  method: string;
+  hitCount: number;
+  invocations: Invocation[];
+};
 
-type Invocation = {
+export type Invocation = {
+  id: string;
   timestamp: Date;
   body?: any;
   headers?: any;
@@ -17,13 +25,19 @@ type PathMetadataConfig = {
 };
 
 export class PathMetadata {
-  private hitCount: number;
-  private invocations: Invocation[];
+  private id: string;
+  private url: string;
+  private data: PathData;
   private config: PathMetadataConfig;
 
-  constructor(private readonly method: string, private readonly path: string) {
-    this.hitCount = 0;
-    this.invocations = [];
+  constructor(method: string, url: string) {
+    this.id = v4();
+    this.url = url;
+    this.data = {
+      method,
+      hitCount: 0,
+      invocations: [],
+    };
     this.config = {
       body_history_limit: 10,
       record_bodies: true,
@@ -36,11 +50,12 @@ export class PathMetadata {
   extractMetadata(request: Request) {
     this.incHitCount();
 
-    if (this.invocations.length >= this.config.body_history_limit) {
-      this.invocations.shift();
+    if (this.data.invocations.length >= this.config.body_history_limit) {
+      this.data.invocations.shift();
     }
 
-    this.invocations.push({
+    this.data.invocations.push({
+      id: v4(),
       timestamp: new Date(),
       body: this.config.record_bodies === true ? request.body : undefined,
       headers: this.config.record_bodies === true ? request.headers : undefined,
@@ -49,14 +64,34 @@ export class PathMetadata {
     });
   }
 
+  async execute(invocation: Invocation) {
+    return await axios({
+      url: this.url,
+      method: this.data.method,
+      params: invocation.params,
+      headers: invocation.headers,
+      data: invocation.body,
+    });
+  }
+
   private incHitCount() {
-    this.hitCount = this.hitCount + 1;
+    this.data.hitCount = this.data.hitCount + 1;
+  }
+
+  getData() {
+    const { id, url } = this;
+    const { method, hitCount, invocations } = this.data;
+    return {
+      id,
+      url,
+      method,
+      hitCount,
+      invocations,
+    };
   }
 
   printMetadata() {
-    const { method, path, hitCount, invocations } = this;
-    console.log(
-      JSON.stringify({ method, path, hitCount, invocations }, null, 2)
-    );
+    const { method, hitCount, invocations } = this.data;
+    console.log(JSON.stringify({ method, hitCount, invocations }, null, 2));
   }
 }
