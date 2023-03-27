@@ -1,9 +1,9 @@
-import { RequestMetadata } from "../request-metadata";
-import express, { Express, NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cookieparser from "cookie-parser";
-import proxy from "express-http-proxy";
+import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import { RequestMetadata } from "../request-metadata";
 
 export type SnifferConfig = {
   port: number;
@@ -39,14 +39,29 @@ export class Sniffer {
         res.json(data);
       }
     );
+
     this.app.post(
       "/tartigraid/execute",
-      (req: Request, res: Response, next: NextFunction) => {
+      async (req: Request, res: Response, next: NextFunction) => {
         const { url, method, invocation } = req.body;
-        const data = this.data.execute(url, method, invocation);
-        res.json(data);
+        try {
+          console.log("executing");
+          console.log({ url, method, invocation });
+          const data = await this.data.execute(
+            this.config.proxyUrl + url,
+            method,
+            invocation
+          );
+          console.log("successfully executed");
+          console.log({ data });
+          res.json(data.data).status(data.status);
+        } catch (e) {
+          console.error({ error: e });
+          res.sendStatus(500);
+        }
       }
     );
+
     this.app.delete(
       "/tartigraid",
       (req: Request, res: Response, next: NextFunction) => {
@@ -56,7 +71,7 @@ export class Sniffer {
 
     this.app.use(this.snifferMiddleWare.bind(this));
 
-    this.app.use("*", proxy(this.config.proxyUrl));
+    this.app.use("*", createProxyMiddleware({ target: this.config.proxyUrl }));
 
     console.log(
       `start sniffing requests for ${this.config.proxyUrl} on port ${this.config.port}`
