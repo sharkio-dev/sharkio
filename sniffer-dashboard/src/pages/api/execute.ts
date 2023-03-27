@@ -7,7 +7,10 @@ export default async function handler(
 ) {
   await fetch("http://localhost:5012/tartigraid/execute", {
     method: "post",
-    body: req.body,
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(req.body),
   })
     .then((res) => res.json())
     .then((data) => res.json(data));

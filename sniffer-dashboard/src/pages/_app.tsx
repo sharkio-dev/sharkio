@@ -21,6 +21,7 @@ import createEmotionCache from "../config/createEmotionCache";
 import theme from "../config/theme";
 import styles from "./document.module.scss";
 import "../styles/globals.css";
+import { SideBar } from "@/components/sidebar";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -61,22 +62,7 @@ export default function MyApp(props: MyAppProps) {
             </Toolbar>
           </AppBar>
           <div className={styles.sideBarContainer}>
-            {drawerOpen && (
-              <Paper className={styles.sideBarPaper}>
-                <List>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <Link href="/requests">
-                        <ListItemText
-                          primary={"Requests"}
-                          sx={{ textAlign: "center" }}
-                        />
-                      </Link>
-                    </ListItemButton>
-                  </ListItem>
-                </List>
-              </Paper>
-            )}
+            {drawerOpen && <SideBar />}
             <div className={styles.contentContainer}>
               <Component {...pageProps} />
             </div>

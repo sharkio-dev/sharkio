@@ -115,11 +115,14 @@ export default function Home() {
                   async function execute() {
                     await fetch("/api/execute", {
                       method: "post",
-                      body: {
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
                         invocation,
                         url,
                         method,
-                      },
+                      }),
                     });
                   }
                   return (
