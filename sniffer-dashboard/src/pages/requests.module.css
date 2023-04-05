@@ -1,7 +1,7 @@
 .requestsContainer {
   border-radius: 0px;
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
   padding: 20px;
   width: 100%;
 }
@@ -11,9 +11,8 @@
   align-items: center;
   column-gap: 10px;
 }
-.accordionContentContainer *:nth-child(2) {
-  // margin-left: 10px;
-}
+
+.accordionContentContainer *:nth-child(2) {}
 
 .rawDataContainer {
   max-width: 100%;
@@ -28,5 +27,5 @@
 
 .invocationsTable {
   width: 100%;
-  overflow: scroll;
+  overflow: auto;
 }

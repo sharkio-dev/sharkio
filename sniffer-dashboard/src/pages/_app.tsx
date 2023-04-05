@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useState } from "react";
 import createEmotionCache from "../config/createEmotionCache";
 import theme from "../config/theme";
-import styles from "./document.module.scss";
+import styles from "./document.module.css";
 import "../styles/globals.css";
 import { SideBar } from "@/components/sidebar";
 

@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Chip,
+  IconButton,
   List,
   ListItemButton,
   ListItemText,
@@ -17,7 +18,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import styles from "./requests.module.scss";
+import styles from "./requests.module.css";
+import { Edit, PlayCircle, PlayCircleFilled } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 type PathData = {
   method: string;
@@ -36,6 +39,7 @@ export type Invocation = {
 
 export default function Home() {
   const [data, setData] = useState<PathData[]>([]);
+  const router = useRouter();
 
   const refreshData = () => {
     fetch("/api/hello")
@@ -125,8 +129,16 @@ export default function Home() {
                       }),
                     });
                   }
+
+                  async function edit() {
+                    router.push(`/request/${invocation?.id}`)
+                  }
                   return (
                     <TableRow key={index}>
+                      <TableCell>
+                        <IconButton onClick={execute}><PlayCircle></PlayCircle></IconButton>
+                        <IconButton onClick={edit}><Edit></Edit></IconButton>
+                      </TableCell>
                       {Object.keys(invocation).map((key: string) => {
                         return (
                           <TableCell key={key}>
@@ -134,10 +146,6 @@ export default function Home() {
                           </TableCell>
                         );
                       })}
-                      <TableCell>
-                        <Button onClick={execute}>Execute</Button>
-                        <Button>Swagger</Button>
-                      </TableCell>
                     </TableRow>
                   );
                 })}

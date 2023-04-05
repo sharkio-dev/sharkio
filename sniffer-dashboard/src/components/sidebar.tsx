@@ -6,7 +6,7 @@ import {
   ListItemText,
   Paper,
 } from "@mui/material";
-import styles from "./sidebar.module.scss";
+import styles from "./sidebar.module.css";
 
 export const SideBar = () => {
   return (
