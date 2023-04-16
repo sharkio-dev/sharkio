@@ -17,6 +17,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "./requests.module.css";
 import { Edit, PlayCircle, PlayCircleFilled } from "@mui/icons-material";
@@ -116,6 +117,8 @@ export default function Home() {
               </TableHead>
               <TableBody>
                 {invocations.map((invocation: any, index: number) => {
+                  const router = useRouter();
+
                   async function execute() {
                     await fetch("/api/execute", {
                       method: "post",
@@ -130,9 +133,18 @@ export default function Home() {
                     });
                   }
 
-                  async function edit() {
-                    router.push(`/request/${invocation?.id}`)
+                  async function saveRequest(invocation: Invocation) {
+                    router.push(
+                      {
+                        pathname: `/request`,
+                        query: {
+                          data: JSON.stringify({ invocation, url, method }),
+                        },
+                      },
+                      "/request"
+                    );
                   }
+
                   return (
                     <TableRow key={index}>
                       <TableCell>
@@ -146,6 +158,16 @@ export default function Home() {
                           </TableCell>
                         );
                       })}
+                      <TableCell>
+                        <Button onClick={execute}>Execute</Button>
+                        <Button
+                          onClick={() => {
+                            saveRequest(invocation, url, method);
+                          }}
+                        >
+                          Save
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
