@@ -12,6 +12,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
+    "@mui/lab": "^5.0.0-alpha.127",
     "@mui/material": "^5.11.14",
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
@@ -22,11 +23,7 @@
     "quicktype-core": "^23.0.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
     "typescript": "5.0.2"
-  },
-  "devDependencies": {
-    "node-sass": "^8.0.0",
-    "sass": "^1.60.0",
-    "sass-loader": "^13.2.2"
   }
 }

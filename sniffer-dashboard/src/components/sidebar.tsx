@@ -19,6 +19,13 @@ export const SideBar = () => {
             </Link>
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <Link href="/requests/new">
+              <ListItemText primary={"New Request"} sx={{ textAlign: "center" }} />
+            </Link>
+          </ListItemButton>
+        </ListItem>
       </List>
     </Paper>
   );

@@ -1,3 +1,4 @@
+import { Edit, PlayCircle } from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -20,23 +21,8 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "./requests.module.css";
-import { Edit, PlayCircle, PlayCircleFilled } from "@mui/icons-material";
-import { useRouter } from "next/router";
-
-type PathData = {
-  method: string;
-  hitCount: number;
-  invocations: Invocation[];
-};
-
-export type Invocation = {
-  id: string;
-  timestamp: Date;
-  body?: any;
-  headers?: any;
-  cookies?: any;
-  params?: any;
-};
+import { execute } from "@/api/requests";
+import { PathData } from "@/types/types";
 
 export default function Home() {
   const [data, setData] = useState<PathData[]>([]);
@@ -99,6 +85,7 @@ export default function Home() {
     propertyName: string;
     invocations: any;
   }> = ({ url, method, propertyName, invocations }) => {
+    const router = useRouter();
     return (
       <Accordion key={propertyName}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -117,39 +104,23 @@ export default function Home() {
               </TableHead>
               <TableBody>
                 {invocations.map((invocation: any, index: number) => {
-                  const router = useRouter();
-
-                  async function execute() {
-                    await fetch("/api/execute", {
-                      method: "post",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        invocation,
-                        url,
-                        method,
-                      }),
-                    });
-                  }
-
-                  async function saveRequest(invocation: Invocation) {
-                    router.push(
-                      {
-                        pathname: `/request`,
-                        query: {
-                          data: JSON.stringify({ invocation, url, method }),
-                        },
-                      },
-                      "/request"
-                    );
-                  }
-
                   return (
                     <TableRow key={index}>
                       <TableCell>
-                        <IconButton onClick={execute}><PlayCircle></PlayCircle></IconButton>
-                        <IconButton onClick={edit}><Edit></Edit></IconButton>
+                        <IconButton
+                          onClick={() => {
+                            execute(invocation, url, method);
+                          }}
+                        >
+                          <PlayCircle></PlayCircle>
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            router.push("/request/" + invocation.id);
+                          }}
+                        >
+                          <Edit></Edit>
+                        </IconButton>
                       </TableCell>
                       {Object.keys(invocation).map((key: string) => {
                         return (
@@ -158,16 +129,6 @@ export default function Home() {
                           </TableCell>
                         );
                       })}
-                      <TableCell>
-                        <Button onClick={execute}>Execute</Button>
-                        <Button
-                          onClick={() => {
-                            saveRequest(invocation, url, method);
-                          }}
-                        >
-                          Save
-                        </Button>
-                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -183,7 +144,7 @@ export default function Home() {
     url: string;
     hitCount: number;
     method: string;
-  }> = (request) => {
+  }> = (request: any) => {
     const { url, hitCount, method } = request;
     return (
       <Accordion key={url}>
@@ -219,9 +180,37 @@ export default function Home() {
     );
   };
 
+  const executeSampleRequest = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append(
+      "Cookie",
+      "pc_sess=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJydW5EZWJ0SWQiOiI4YmYyYTFjZC02ODhiLTQ3NDEtOTI4MS02NDZlNDI4NzAwZTYiLCJpYXQiOjE2NzkzMTEyMTMsImV4cCI6MTY3OTMxMzAxM30.D6dqo4a7DRPa8JClLGtwxBH7-3ecYR6kt34OcQFWrbs"
+    );
+
+    var raw = JSON.stringify({
+      login: "my_login",
+      password: "my_password",
+    });
+
+    var requestOptions: any = {
+      invocation: {
+        headers: myHeaders,
+        body: raw,
+      },
+      method: "POST",
+      url: "/sample",
+    };
+
+    execute(requestOptions)
+      .then((result) => console.log("success"))
+      .catch((error) => console.log("error", error));
+  };
+
   return (
     <Card className={styles.requestsContainer}>
       <Button onClick={() => refreshData()}>Refresh</Button>
+      <Button onClick={() => executeSampleRequest()}>Sample</Button>
       <div className={styles.requestCards}>
         {Object.keys(data)
           .flatMap((path: string) => {
@@ -229,8 +218,8 @@ export default function Home() {
               return { ...data[path][method], url: path };
             });
           })
-          .map((request) => (
-            <RequestCard key={request} {...request} />
+          .map((request, index) => (
+            <RequestCard key={`${request}${index}`} {...request} />
           ))}
       </div>
     </Card>
