@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CircularProgress,
+  Input,
   List,
   ListItem,
   ListItemButton,
@@ -16,6 +17,7 @@ import styles from "./requests-card.module.scss";
 
 export const RequestsCard = () => {
   const [requests, setRequests] = useState<any>();
+  const [filter, setFilter] = useState<string>();
   const { show, hide, component: snackBar } = useSnackbar();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -43,14 +45,27 @@ export const RequestsCard = () => {
     loadData();
   }, []);
 
+  const handleFilterChanged: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const filteredRequests = !filter
+    ? requests
+    : requests?.filter((req: any) => req.url.includes(filter));
+
   return (
     <>
       <Box
         sx={{
           padding: "20px 0px",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <Typography>Requests</Typography>
+        <Input onChange={handleFilterChanged} placeholder="Search..."></Input>
       </Box>
       <div className={styles.container}>
         <Card>
@@ -66,8 +81,8 @@ export const RequestsCard = () => {
             </Box>
           ) : (
             <List>
-              {requests &&
-                requests.map((req: any) => (
+              {filteredRequests &&
+                filteredRequests.map((req: any) => (
                   <ListItemButton>
                     <HttpMethod method={req.method}></HttpMethod> {req.url}
                   </ListItemButton>
