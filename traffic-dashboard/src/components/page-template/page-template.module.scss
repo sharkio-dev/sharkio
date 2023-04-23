@@ -3,6 +3,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .navbar {
@@ -23,7 +25,9 @@
 }
 
 .content {
+  box-sizing: border-box;
   padding: 20px;
   width: 100%;
   height: 100%;
+  overflow: scroll;
 }

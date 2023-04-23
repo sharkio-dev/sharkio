@@ -61,17 +61,15 @@ export class RequestMetadata {
   }
 
   getData() {
-    const data: any = {};
+    const data: any = [];
 
     for (const [path, methodMap] of this.paths) {
-      data[path] = {};
-
       for (const [method, methodMetadata] of methodMap) {
-        data[path][method] = methodMetadata.getData();
+        data.push(methodMetadata.getData());
       }
     }
 
-    return data;
+    return Object.keys(data).map((key) => data[key]);
   }
 
   clearData() {

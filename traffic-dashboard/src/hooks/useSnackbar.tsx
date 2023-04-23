@@ -1,7 +1,11 @@
 import { Snackbar, Alert, AlertColor } from "@mui/material";
 import { useState } from "react";
 
-type useSnackbarType = () => any;
+type useSnackbarType = () => {
+  component: any;
+  show: (content: string, severity: AlertColor) => void;
+  hide: () => void;
+};
 
 export const useSnackbar: useSnackbarType = () => {
   const [open, setOpen] = useState<boolean>();
@@ -22,7 +26,7 @@ export const useSnackbar: useSnackbarType = () => {
   );
 
   return {
-    Snackbar,
+    component,
     show: (content: string, severity: AlertColor) => {
       setOpen(true);
       setContent(content);
