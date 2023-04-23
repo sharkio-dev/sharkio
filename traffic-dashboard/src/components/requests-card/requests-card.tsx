@@ -1,13 +1,17 @@
+import { Edit } from "@mui/icons-material";
 import {
+  Autocomplete,
   Box,
   Button,
   Card,
+  Chip,
   CircularProgress,
+  IconButton,
   Input,
   List,
-  ListItem,
   ListItemButton,
-  Typography,
+  TextField,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getRequests } from "../../api/api";
@@ -20,6 +24,7 @@ export const RequestsCard = () => {
   const [filter, setFilter] = useState<string>();
   const { show, hide, component: snackBar } = useSnackbar();
   const [loading, setLoading] = useState<boolean>(false);
+  const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
 
   const loadData = () => {
     if (loading) {
@@ -51,12 +56,17 @@ export const RequestsCard = () => {
     setFilter(e.target.value);
   };
 
-  const filteredRequests = !filter
-    ? requests
-    : requests?.filter((req: any) => req.url.includes(filter));
+  const filteredRequests = requests?.filter(
+    (req: any) =>
+      (filter ? req.url.includes(filter) : true) &&
+      (methodsFilter.length > 0
+        ? methodsFilter.find((method) => method === req.method) !== undefined
+        : true)
+  );
 
   return (
     <>
+      <Typography>Requests</Typography>
       <Box
         sx={{
           padding: "20px 0px",
@@ -64,8 +74,30 @@ export const RequestsCard = () => {
           justifyContent: "space-between",
         }}
       >
-        <Typography>Requests</Typography>
         <Input onChange={handleFilterChanged} placeholder="Search..."></Input>
+        <Autocomplete
+          freeSolo
+          disablePortal
+          multiple
+          renderTags={(value: string[], getTagProps) =>
+            value.map((option: string, index: number) => (
+              <Chip
+                variant="outlined"
+                label={option}
+                {...getTagProps({ index })}
+              />
+            ))
+          }
+          id="combo-box-demo"
+          options={["GET", "POST", "PATCH", "PUT", "DELETE"]}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField variant="filled" {...params} label="Method" />
+          )}
+          onChange={(e, value) => {
+            setMethodsFilter(value);
+          }}
+        />
       </Box>
       <div className={styles.container}>
         <Card>
@@ -80,18 +112,45 @@ export const RequestsCard = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <List>
-              {filteredRequests &&
-                filteredRequests.map((req: any) => (
-                  <ListItemButton>
-                    <HttpMethod method={req.method}></HttpMethod> {req.url}
-                  </ListItemButton>
-                ))}
-            </List>
+            <>
+              <List>
+                {filteredRequests &&
+                  filteredRequests.map((req: any) => (
+                    <ListItemButton>
+                      <Box
+                        sx={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          <HttpMethod method={req.method}></HttpMethod>
+                          {req.url}
+                        </div>
+                        <div>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Chip label={req.hitCount}></Chip>
+                            <IconButton size="small">
+                              <Edit />
+                            </IconButton>
+                          </Box>
+                        </div>
+                      </Box>
+                    </ListItemButton>
+                  ))}
+              </List>
+            </>
           )}
           {snackBar}
         </Card>
       </div>
+      items:{filteredRequests?.length}
       <Box
         sx={{
           display: "flex",

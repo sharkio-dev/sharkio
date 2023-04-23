@@ -10,15 +10,17 @@ function App() {
     },
   });
   return (
-    <ThemeProvider theme={theme}>
-      <PageTemplate>
-        <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <PageTemplate>
           <Routes>
-            <Route path="*" element={<RequestsCard />}></Route>
+            <Route path="/home" element={<RequestsCard />}></Route>
+            <Route path="/new-request" element={<></>}></Route>
+            <Route path="*"></Route>
           </Routes>
-        </BrowserRouter>
-      </PageTemplate>
-    </ThemeProvider>
+        </PageTemplate>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
