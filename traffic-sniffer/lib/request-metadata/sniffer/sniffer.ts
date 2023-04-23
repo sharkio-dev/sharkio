@@ -7,7 +7,7 @@ import { RequestMetadata } from "../request-metadata";
 
 export type SnifferConfig = {
   port: number;
-  proxyUrl: string;
+  downstreamUrl: string;
 };
 
 export class Sniffer {
@@ -24,6 +24,8 @@ export class Sniffer {
   }
 
   snifferMiddleWare(req: Request, res: Response, next: NextFunction) {
+    console.log("request");
+    console.log({ req });
     this.data.extractMetadata(req);
     next();
   }
@@ -44,20 +46,24 @@ export class Sniffer {
       "/tartigraid/execute",
       async (req: Request, res: Response, next: NextFunction) => {
         const { url, method, invocation } = req.body;
+
         try {
           console.log("executing");
-          console.log({ url, method, invocation });
-          const data = await this.data.execute(
-            this.config.proxyUrl + url,
+          console.log({
+            url: url,
             method,
-            invocation
-          );
-          console.log("successfully executed");
+            invocation,
+          });
+
+          const data = await this.data.execute(url, method, invocation);
+
+          console.log("response");
           console.log({ data });
-          res.json(data.data).status(data.status);
+
+          res.sendStatus(200);
         } catch (e) {
-          console.error({ error: e });
-          res.sendStatus(500);
+          console.error("failed to execute");
+          res.send(JSON.stringify(e)).status(500);
         }
       }
     );
@@ -71,10 +77,13 @@ export class Sniffer {
 
     this.app.use(this.snifferMiddleWare.bind(this));
 
-    this.app.use("*", createProxyMiddleware({ target: this.config.proxyUrl }));
+    this.app.use(
+      "*",
+      createProxyMiddleware({ target: this.config.downstreamUrl })
+    );
 
     console.log(
-      `start sniffing requests for ${this.config.proxyUrl} on port ${this.config.port}`
+      `start sniffing requests for ${this.config.downstreamUrl} on port ${this.config.port}`
     );
   }
 

@@ -46,13 +46,13 @@ export class RequestMetadata {
     return methodMetadata;
   }
 
-  async execute(url: string, method: string, invocation: Invocation) {
-    return await axios({
+  execute(url: string, method: string, invocation: Invocation) {
+    return axios({
       url: url,
-      method: method,
-      params: invocation?.params,
-      headers: invocation?.headers,
-      data: invocation?.body,
+      // method: method,
+      // headers: invocation?.headers,
+      // params: invocation?.params,
+      // data: invocation?.body,
     });
   }
 
