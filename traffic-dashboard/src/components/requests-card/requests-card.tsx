@@ -11,7 +11,7 @@ import {
   List,
   ListItemButton,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getRequests } from "../../api/api";
@@ -36,8 +36,6 @@ export const RequestsCard = () => {
       .then((res) => res.data)
       .then((res) => {
         setRequests(JSON.parse(res));
-        show("Got requests!", "success");
-        console.log(JSON.parse(res));
       })
       .catch(() => {
         setRequests([]);
@@ -116,7 +114,7 @@ export const RequestsCard = () => {
               <List>
                 {filteredRequests &&
                   filteredRequests.map((req: any) => (
-                    <ListItemButton>
+                    <ListItemButton key={req.id}>
                       <Box
                         sx={{
                           width: "100%",

@@ -2,6 +2,7 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
 import { RequestsCard } from "./components/requests-card/requests-card";
+import { ConfigCard } from "./components/config-card/config-card";
 
 function App() {
   const theme = createTheme({
@@ -14,7 +15,15 @@ function App() {
       <ThemeProvider theme={theme}>
         <PageTemplate>
           <Routes>
-            <Route path="/home" element={<RequestsCard />}></Route>
+            <Route
+              path="/home"
+              element={
+                <>
+                  <ConfigCard />
+                  <RequestsCard />
+                </>
+              }
+            ></Route>
             <Route path="/new-request" element={<></>}></Route>
             <Route path="*"></Route>
           </Routes>

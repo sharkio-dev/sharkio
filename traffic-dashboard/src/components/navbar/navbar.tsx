@@ -19,7 +19,6 @@ export const Navbar: React.FC<INavbarProps> = ({ onBurgerClicked }) => {
         >
           <MenuIcon></MenuIcon>
         </IconButton>
-        <Button color="inherit">Login</Button>
       </Toolbar>
     </AppBar>
   );

@@ -34,6 +34,14 @@ export class Sniffer {
     this.app.use(cookieparser());
 
     this.app.get(
+      "/tartigraid/config",
+      (req: Request, res: Response, next: NextFunction) => {
+        const data = this.config;
+        res.json(data);
+      }
+    );
+
+    this.app.get(
       "/tartigraid",
       (req: Request, res: Response, next: NextFunction) => {
         const data = this.data.getData();
