@@ -1,17 +1,24 @@
-import { useState } from "react";
-import "./App.css";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
-import { PageTemplate } from "./components/page-template";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { PageTemplate } from "./components/page-template/page-template";
+import { RequestsCard } from "./components/requests-card/requests-card";
 
 function App() {
+  const theme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="*" element={<PageTemplate />}></Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ThemeProvider theme={theme}>
+      <PageTemplate>
+        <BrowserRouter>
+          <Routes>
+            <Route path="*" element={<RequestsCard />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </PageTemplate>
+    </ThemeProvider>
   );
 }
 
