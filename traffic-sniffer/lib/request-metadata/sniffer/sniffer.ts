@@ -24,8 +24,7 @@ export class Sniffer {
   }
 
   snifferMiddleWare(req: Request, res: Response, next: NextFunction) {
-    console.log("request");
-    console.log({ req });
+    console.log("[" + new Date().toISOString() + "]:" + " request logged");
     this.data.extractMetadata(req);
     next();
   }
