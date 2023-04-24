@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SnifferConfig, getConfig } from "../../api/api";
+import { SnifferConfig, changeConfig, getConfig } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { Button, Card, TextField } from "@mui/material";
 import styles from "./config-card.module.scss";
@@ -24,20 +24,52 @@ export const ConfigCard: React.FC = () => {
     loadData();
   }, []);
 
+  const handleConfigChange = () => {
+    if (!config) {
+      return;
+    }
+
+    changeConfig(config)
+      .then((res) => {
+        show("changed config", "success");
+      })
+      .catch((e) => show("failed to change config", "error"));
+  };
+
   return (
     <>
       Config
       <Card className={styles.container}>
         <div className={styles.inputs}>
-          <TextField placeholder={"Port"} value={config?.port}></TextField>
           <TextField
-            placeholder={"Proxy url"}
+            label={"Port"}
+            defaultValue={config?.port}
+            value={config?.port}
+            onChange={(e) => {
+              setConfig((prev) => ({
+                downstreamUrl: prev?.downstreamUrl ?? "",
+                port: +e.target.value,
+              }));
+            }}
+          />
+          <TextField
+            label={"Proxy url"}
+            defaultValue={config?.downstreamUrl}
             value={config?.downstreamUrl}
-          ></TextField>
+            onChange={(e) => {
+              setConfig((prev) => ({
+                downstreamUrl: e.target.value,
+                port: prev?.port ?? 0,
+              }));
+            }}
+          />
+          <Button color="warning" onClick={handleConfigChange}>
+            change
+          </Button>
         </div>
         <div>
           <Button color="success">start</Button>
-          <Button color="warning">pause</Button>
+
           <Button color="error">stop</Button>
         </div>
       </Card>

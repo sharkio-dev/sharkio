@@ -50,6 +50,29 @@ export class Sniffer {
     );
 
     this.app.post(
+      "/tartigraid/config",
+      async (req: Request, res: Response, next: NextFunction) => {
+        console.log("changing config");
+        console.log({ body: req.body });
+        this.changeConfig(req.body);
+      }
+    );
+
+    this.app.post(
+      "/tartigraid/stop",
+      async (req: Request, res: Response, next: NextFunction) => {
+        this.stop();
+      }
+    );
+
+    this.app.post(
+      "/tartigraid/start",
+      async (req: Request, res: Response, next: NextFunction) => {
+        this.start();
+      }
+    );
+
+    this.app.post(
       "/tartigraid/execute",
       async (req: Request, res: Response, next: NextFunction) => {
         const { url, method, invocation } = req.body;
@@ -86,7 +109,11 @@ export class Sniffer {
 
     this.app.use(
       "*",
-      createProxyMiddleware({ target: this.config.downstreamUrl })
+      createProxyMiddleware({
+        target: this.config.downstreamUrl,
+        secure: false,
+        logLevel: "debug",
+      })
     );
 
     console.log(
@@ -102,5 +129,14 @@ export class Sniffer {
 
   stop() {
     this.server?.close();
+  }
+
+  changeConfig(newConfig: SnifferConfig) {
+    console.log("stopping server");
+    this.stop();
+    console.log("changing config");
+    this.config = newConfig;
+    console.log("starting server with new config");
+    this.start();
   }
 }
