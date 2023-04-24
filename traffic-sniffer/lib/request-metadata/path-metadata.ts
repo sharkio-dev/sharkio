@@ -1,9 +1,11 @@
 import { Request } from "express";
 import { v4 } from "uuid";
 import axios from "axios";
+
 type PathData = {
   method: string;
   hitCount: number;
+  lastInvocationDate?: Date;
   invocations: Invocation[];
 };
 
@@ -36,6 +38,7 @@ export class PathMetadata {
     this.data = {
       method,
       hitCount: 0,
+      lastInvocationDate: undefined,
       invocations: [],
     };
     this.config = {
@@ -49,6 +52,7 @@ export class PathMetadata {
 
   extractMetadata(request: Request) {
     this.incHitCount();
+    this.data.lastInvocationDate = new Date();
 
     if (this.data.invocations.length >= this.config.body_history_limit) {
       this.data.invocations.shift();
@@ -80,12 +84,14 @@ export class PathMetadata {
 
   getData() {
     const { id, url } = this;
-    const { method, hitCount, invocations } = this.data;
+    const { method, hitCount, lastInvocationDate, invocations } = this.data;
+
     return {
       id,
       url,
       method,
       hitCount,
+      lastInvocationDate,
       invocations,
     };
   }
