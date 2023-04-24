@@ -1,0 +1,12 @@
+{
+  "name": "tartigraid",
+  "version": "1.0.0",
+  "description": "Micro service network monitoring and development tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently 'cd ./traffic-sniffer && npm run dev' 'cd ./traffic-dashboard && npm run dev'"
+  },
+  "author": "Ido David",
+  "license": "ISC"
+}

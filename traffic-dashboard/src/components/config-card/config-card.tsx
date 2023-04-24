@@ -13,7 +13,7 @@ export const ConfigCard: React.FC = () => {
     if (loading) return;
     setLoading(true);
     getConfig()
-      .then((data) => setConfig(data))
+      .then((data: any) => setConfig(JSON.parse(data)))
       .catch((err) => {
         show("Failed to get config", "error");
       })
@@ -23,13 +23,17 @@ export const ConfigCard: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
   return (
     <>
       Config
       <Card className={styles.container}>
         <div className={styles.inputs}>
-          <TextField label={"port"} value={config?.port}></TextField>
-          <TextField label={"url"} value={config?.downstreamUrl}></TextField>
+          <TextField placeholder={"Port"} value={config?.port}></TextField>
+          <TextField
+            placeholder={"Proxy url"}
+            value={config?.downstreamUrl}
+          ></TextField>
         </div>
         <div>
           <Button color="success">start</Button>

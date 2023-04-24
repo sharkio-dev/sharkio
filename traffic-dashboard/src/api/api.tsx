@@ -1,7 +1,7 @@
 import { Axios } from "axios";
 
 const server = new Axios({
-  baseURL: "http://localhost:5012",
+  baseURL: "http://localhost:5173",
 });
 
 export const getRequests = () => {
