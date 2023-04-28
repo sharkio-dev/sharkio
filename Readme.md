@@ -18,3 +18,14 @@ Please adhere to this project's `code of conduct`.
 
 - [The Tartigrade](https://en.wikipedia.org/wiki/Tardigrade)
 - [Readme generator - readme.so](https://readme.so)
+
+## Getting started
+For the backend 
+- cd into traffic-sniffer.
+- npm install
+- npm run dev
+
+For the frontend 
+- cd into traffic-dashboard.
+- npm install
+- npm run dev

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SnifferConfig, getConfig } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { Button, Card, TextField } from "@mui/material";
+import { Button, Card, TextField, Typography } from "@mui/material";
 import styles from "./config-card.module.scss";
 
 export const ConfigCard: React.FC = () => {
@@ -26,8 +26,10 @@ export const ConfigCard: React.FC = () => {
 
   return (
     <>
-      Config
       <Card className={styles.container}>
+        <Typography variant="h6" gutterBottom>
+          Response
+        </Typography>
         <div className={styles.inputs}>
           <TextField placeholder={"Port"} value={config?.port}></TextField>
           <TextField

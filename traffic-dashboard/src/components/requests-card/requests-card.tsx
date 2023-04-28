@@ -64,7 +64,6 @@ export const RequestsCard = () => {
 
   return (
     <>
-      <Typography>Requests</Typography>
       <Box
         sx={{
           padding: "20px 0px",
@@ -98,7 +97,11 @@ export const RequestsCard = () => {
         />
       </Box>
       <div className={styles.container}>
-        <Card>
+        <Card className={styles.card}>
+          <div className={styles.titleContainer}>
+            <Typography variant="h6">Requests</Typography>
+                        <Button onClick={() => loadData()}>refresh</Button>
+          </div>
           {loading ? (
             <Box
               sx={{
@@ -146,18 +149,19 @@ export const RequestsCard = () => {
             </>
           )}
           {snackBar}
+          <div className={styles.requestCardFooter}>
+            <div>items:{filteredRequests?.length}</div>
+          </div>
         </Card>
       </div>
-      items:{filteredRequests?.length}
+
       <Box
         sx={{
           display: "flex",
           padding: "20px",
           justifyContent: "center",
         }}
-      >
-        <Button onClick={() => loadData()}>refresh</Button>
-      </Box>
+      ></Box>
     </>
   );
 };
