@@ -8,7 +8,7 @@ console.log("args[1]" + args[1]);
 
 const snifferPort = +(args[0] ?? process.env.SNIFFER_PORT ?? 5012);
 const downstreamUrl =
-  args[1] ?? process.env.DOWNSTREAM_URL ?? "http://localhost:3000";
+  args[1] ?? process.env.DOWNSTREAM_URL ?? "http://localhost:5173";
 
 const sniffer = new Sniffer({
   port: snifferPort,

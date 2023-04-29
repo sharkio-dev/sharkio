@@ -1,3 +1,6 @@
 node_modules
 .vscode
 traffic-sniffer/.env
+traffic-sniffer/node_modules/*
+traffic-dashboard/node_modules/*
+traffic-sniffer/node_modules/.bin/mime
