@@ -110,17 +110,34 @@ export const RequestsCard = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div>
-                          <HttpMethod method={req.method}></HttpMethod>
-                          {req.url}
+                        <div className={styles.requestLeftSection}>
+                          <div className={styles.methodContainer}>
+                            <HttpMethod method={req.method}></HttpMethod>
+                          </div>
+                          <span className={styles.url}>{req.url}</span>
                         </div>
+
                         <div>
                           <Box
                             sx={{
                               display: "flex",
                               justifyContent: "space-between",
+                              columnGap: "15px",
                             }}
                           >
+                            <Box
+                              sx={{
+                                display: {
+                                  xs: "none",
+                                  sm: "none",
+                                  md: "none",
+                                  lg: "block",
+                                  xl: "block",
+                                },
+                              }}
+                            >
+                              <div>{req.lastInvocationDate}</div>
+                            </Box>
                             <Chip label={req.hitCount}></Chip>
                             <IconButton size="small">
                               <Edit />
