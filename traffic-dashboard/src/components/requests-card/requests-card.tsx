@@ -13,39 +13,24 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getRequests } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { HttpMethod } from "../http-method/http-method";
 import styles from "./requests-card.module.scss";
+import { RequestsMetadataContext } from "../../context/requests-context";
 
 export const RequestsCard = () => {
-  const [requests, setRequests] = useState<any>();
   const [filter, setFilter] = useState<string>();
-  const { show, hide, component: snackBar } = useSnackbar();
-  const [loading, setLoading] = useState<boolean>(false);
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
-
-  const loadData = () => {
-    if (loading) {
-      return;
-    }
-
-    setLoading(true);
-    getRequests()
-      .then((res) => res.data)
-      .then((res) => {
-        setRequests(JSON.parse(res));
-      })
-      .catch(() => {
-        setRequests([]);
-        show("Failed to fetch requests!", "error");
-      })
-      .finally(() => setLoading(false));
-  };
+  const {
+    data: requests,
+    loadData,
+    loading,
+  } = useContext(RequestsMetadataContext);
 
   useEffect(() => {
-    loadData();
+    loadData?.();
   }, []);
 
   const handleFilterChanged: React.ChangeEventHandler<
@@ -100,7 +85,7 @@ export const RequestsCard = () => {
         <Card className={styles.card}>
           <div className={styles.titleContainer}>
             <Typography variant="h6">Requests</Typography>
-                        <Button onClick={() => loadData()}>refresh</Button>
+            <Button onClick={() => loadData?.()}>refresh</Button>
           </div>
           {loading ? (
             <Box
@@ -148,7 +133,6 @@ export const RequestsCard = () => {
               </List>
             </>
           )}
-          {snackBar}
           <div className={styles.requestCardFooter}>
             <div>items:{filteredRequests?.length}</div>
           </div>
