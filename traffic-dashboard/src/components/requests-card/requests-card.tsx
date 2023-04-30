@@ -14,11 +14,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { getRequests } from "../../api/api";
-import { useSnackbar } from "../../hooks/useSnackbar";
+import { RequestsMetadataContext } from "../../context/requests-context";
 import { HttpMethod } from "../http-method/http-method";
 import styles from "./requests-card.module.scss";
-import { RequestsMetadataContext } from "../../context/requests-context";
 
 export const RequestsCard = () => {
   const [filter, setFilter] = useState<string>();

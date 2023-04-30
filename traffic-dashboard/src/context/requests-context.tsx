@@ -17,6 +17,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
   const [requestsMetadata, setRequestsMetadata] =
     useState<RequestsMetadataContextType>({ data: [] });
   const [loading, setLoading] = useState<boolean>(false);
+
   const loadData = () => {
     if (loading) {
       return;
@@ -26,7 +27,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
     getRequests()
       .then((res) => res.data)
       .then((res) => {
-        setRequestsMetadata(JSON.parse(res));
+        setRequestsMetadata((prev) => ({ ...prev, data: JSON.parse(res) }));
       })
       .catch(() => {
         setRequestsMetadata((prev) => ({ ...prev, data: [] }));
