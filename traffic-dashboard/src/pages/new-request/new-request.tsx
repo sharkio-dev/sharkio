@@ -1,6 +1,5 @@
 import { Button, Card, Input, Typography } from "@mui/material";
 import styles from "./new-request.module.scss";
-import { Title } from "@mui/icons-material";
 
 export const NewRequest = () => {
   return (
