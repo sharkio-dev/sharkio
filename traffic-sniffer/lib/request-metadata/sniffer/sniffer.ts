@@ -2,7 +2,7 @@ import bodyParser from "body-parser";
 import cookieparser from "cookie-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import httpProxy from "http-proxy";
 import { RequestMetadata } from "../request-metadata";
 
 export type SnifferConfig = {
@@ -15,10 +15,15 @@ export class Sniffer {
   private data: RequestMetadata;
   private config: SnifferConfig;
   private server: http.Server | undefined;
+  private proxy: httpProxy<
+    http.IncomingMessage,
+    http.ServerResponse<http.IncomingMessage>
+  >;
 
   constructor(_config: SnifferConfig) {
     this.data = new RequestMetadata();
     this.config = _config;
+    this.proxy = httpProxy.createProxyServer({});
     this.app = express();
     this.setup();
   }
@@ -107,17 +112,22 @@ export class Sniffer {
 
     this.app.use(this.snifferMiddleWare.bind(this));
 
-    this.app.use(
-      "*",
-      createProxyMiddleware({
-        target: this.config.downstreamUrl,
-        secure: false,
-        logLevel: "debug",
-      })
-    );
+    this.app.use("*", (req: Request, res: Response, next: NextFunction) => {
+      this.proxy.web(
+        req,
+        res,
+        {
+          target: this.config.downstreamUrl,
+        },
+        (err) => {
+          console.log("error occured on: " + this.config.downstreamUrl);
+          res.sendStatus(500);
+        }
+      );
+    });
 
     console.log(
-      `start sniffing requests for ${this.config.downstreamUrl} on port ${this.config.port}`
+      `Started sniffing requests for ${this.config.downstreamUrl} on port ${this.config.port}`
     );
   }
 
