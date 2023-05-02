@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
-      "/tartigraid": "http://localhost:5012",
+      "/tartigraid": "http://localhost:5002",
     },
   },
 });

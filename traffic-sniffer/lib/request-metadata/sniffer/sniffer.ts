@@ -4,6 +4,7 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
 import httpProxy from "http-proxy";
 import { RequestMetadata } from "../request-metadata";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 export type SnifferConfig = {
   port: number;
@@ -32,6 +33,10 @@ export class Sniffer {
     console.log("[" + new Date().toISOString() + "]:" + " request logged");
     this.data.extractMetadata(req);
     next();
+  }
+
+  getPort() {
+    return this.config.port;
   }
 
   setup() {
@@ -112,19 +117,28 @@ export class Sniffer {
 
     this.app.use(this.snifferMiddleWare.bind(this));
 
-    this.app.use("*", (req: Request, res: Response, next: NextFunction) => {
-      this.proxy.web(
-        req,
-        res,
-        {
-          target: this.config.downstreamUrl,
-        },
-        (err) => {
-          console.log("error occured on: " + this.config.downstreamUrl);
-          res.sendStatus(500);
-        }
-      );
-    });
+    this.app.use(
+      "*",
+      createProxyMiddleware({
+        target: this.config.downstreamUrl,
+        secure: false,
+        logLevel: "debug",
+      })
+    );
+
+    // this.app.use("*", (req: Request, res: Response, next: NextFunction) => {
+    //   this.proxy.web(
+    //     req,
+    //     res,
+    //     {
+    //       target: this.config.downstreamUrl,
+    //     },
+    //     (err) => {
+    //       console.log("error occured on: " + this.config.downstreamUrl);
+    //       res.sendStatus(500);
+    //     }
+    //   );
+    // });
 
     console.log(
       `Started sniffing requests for ${this.config.downstreamUrl} on port ${this.config.port}`
