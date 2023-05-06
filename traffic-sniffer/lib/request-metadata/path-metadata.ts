@@ -50,7 +50,7 @@ export class PathMetadata {
     };
   }
 
-  extractMetadata(request: Request) {
+  interceptRequest(request: Request) {
     this.incHitCount();
     this.data.lastInvocationDate = new Date();
 

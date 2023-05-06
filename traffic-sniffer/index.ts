@@ -1,4 +1,4 @@
-import { Sniffer } from "./lib/request-metadata/sniffer/sniffer";
+import { SnifferManager } from "./lib/request-metadata/sniffer-manager/sniffer-manager";
 
 require("dotenv/config");
 var args = process.argv.slice(2);
@@ -10,7 +10,8 @@ const snifferPort = +(args[0] ?? process.env.SNIFFER_PORT ?? 5012);
 const downstreamUrl =
   args[1] ?? process.env.DOWNSTREAM_URL ?? "http://localhost:5173";
 
-const sniffer = new Sniffer({
+const snifferManager = new SnifferManager();
+const sniffer = snifferManager.createSniffer({
   port: snifferPort,
   downstreamUrl,
 });

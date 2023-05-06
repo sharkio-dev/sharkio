@@ -9,7 +9,7 @@ export class RequestMetadata {
     this.paths = new Map();
   }
 
-  extractMetadata(request: Request) {
+  interceptRequest(request: Request) {
     const { method, path } = request;
     const pathMetadata = this.getAndRegisterPath(path);
     const methodMetadata = this.getAndRegisterMethod(
@@ -17,7 +17,7 @@ export class RequestMetadata {
       method,
       path
     );
-    methodMetadata.extractMetadata(request);
+    methodMetadata.interceptRequest(request);
   }
 
   private getAndRegisterPath(path: string) {
