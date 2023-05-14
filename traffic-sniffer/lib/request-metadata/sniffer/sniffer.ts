@@ -6,10 +6,10 @@ import express, {
   Response,
 } from "express";
 import * as http from "http";
-import httpProxy from "http-proxy";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation } from "../path-metadata";
 import { RequestMetadata } from "../request-metadata";
+import { json } from "body-parser";
 
 export type SnifferConfig = {
   port: number;
@@ -21,23 +21,19 @@ export class Sniffer {
   private data: RequestMetadata;
   private config: SnifferConfig;
   private server: http.Server | undefined;
-  private proxy: httpProxy<
-    http.IncomingMessage,
-    http.ServerResponse<http.IncomingMessage>
-  >;
-
   private proxyMiddleware: RequestHandler;
 
   constructor(_config: SnifferConfig) {
     this.data = new RequestMetadata();
     this.config = _config;
     this.app = express();
-    this.proxy = httpProxy.createProxyServer({});
+
     this.proxyMiddleware = createProxyMiddleware({
       target: _config.downstreamUrl,
       secure: false,
       logLevel: "debug",
     });
+
     this.setup();
   }
 
@@ -60,16 +56,8 @@ export class Sniffer {
   }
 
   setup() {
+    this.app.use(json());
     this.app.use(this.proxyMiddleware);
-
-    this.app.use(
-      "*",
-      createProxyMiddleware({
-        target: this.config.downstreamUrl,
-        secure: false,
-        logLevel: "debug",
-      })
-    );
   }
 
   clearData() {
@@ -90,13 +78,32 @@ export class Sniffer {
   }
 
   start() {
-    this.server = this.app.listen(this.config.port, () => {
-      console.log("server started listening");
+    console.log("starting sniffer \n" + JSON.stringify(this.config, null, 2));
+    return new Promise((resolve, reject) => {
+      this.server = this.app
+        .listen(this.config.port, () => {
+          console.log(
+            "started sniffing" + JSON.stringify(this.config, null, 2)
+          );
+          resolve(undefined);
+        })
+        .on("error", () => {
+          console.error(
+            "Failed to start for proxy: \n" +
+              JSON.stringify(this.config, null, 2)
+          );
+          reject();
+        })
+        .on("clientError", () => {
+          console.error("clientError has occurred");
+          reject();
+        });
     });
   }
 
   stop() {
     this.server?.close();
+    console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
   }
 
   getConfig() {
