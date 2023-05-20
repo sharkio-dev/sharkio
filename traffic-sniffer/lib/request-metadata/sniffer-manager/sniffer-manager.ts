@@ -1,3 +1,4 @@
+import { PathResponseData } from "../../../types/types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 
 export class SnifferManager {
@@ -27,14 +28,28 @@ export class SnifferManager {
     return res;
   }
 
+  getAllData() {
+    let data: PathResponseData[] = [];
+
+    this.sniffers.forEach((sniffer: Sniffer) => {
+      data = data.concat(sniffer.getData());
+    });
+
+    return data;
+  }
+
   getAllSniffers() {
     return this.sniffers;
   }
 
-  removeSniffer(port: string) {
+  removeSniffer(port: number) {
     const index = this.sniffers.findIndex((sniffer: Sniffer) => {
-      sniffer.getPort();
+      return sniffer.getPort() === port;
     });
+
+    if (this.sniffers[index].getIsStarted() === true) {
+      throw new Error("Cannot remove an active sniffer");
+    }
 
     this.sniffers.splice(index, 1);
   }

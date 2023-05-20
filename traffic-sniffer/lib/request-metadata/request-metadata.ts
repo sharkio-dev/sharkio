@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Request } from "express";
-import { Invocation, PathMetadata } from "./path-metadata";
+import { PathMetadata } from "./path-metadata";
+import { Invocation, PathResponseData } from "../../types/types";
 
 export class RequestMetadata {
   private paths: Map<string, Map<string, PathMetadata>>;
@@ -49,10 +50,10 @@ export class RequestMetadata {
   execute(url: string, method: string, invocation: Invocation) {
     return axios({
       url: url,
-      // method: method,
-      // headers: invocation?.headers,
-      // params: invocation?.params,
-      // data: invocation?.body,
+      method: method,
+      headers: invocation?.headers,
+      params: invocation?.params,
+      data: invocation?.body,
     });
   }
 
@@ -60,8 +61,8 @@ export class RequestMetadata {
     console.log(JSON.stringify(Array.from(this.paths.entries()), null, 2));
   }
 
-  getData() {
-    const data: any = [];
+  getData(): PathResponseData[] {
+    const data: PathResponseData[] = [];
 
     for (const [path, methodMap] of this.paths) {
       for (const [method, methodMetadata] of methodMap) {
@@ -69,7 +70,7 @@ export class RequestMetadata {
       }
     }
 
-    return Object.keys(data).map((key) => data[key]);
+    return Object.keys(data).map((key: any) => data[key]);
   }
 
   clearData() {

@@ -1,7 +1,8 @@
-import express, { Express, NextFunction, Request, Response } from "express";
+import { json } from "body-parser";
+import express, { Express, Request, Response } from "express";
 import * as http from "http";
 import { SnifferManager } from "./sniffer-manager";
-import { json } from "body-parser";
+import { Sniffer } from "../sniffer/sniffer";
 
 export class SnifferManagerController {
   private server: http.Server | undefined;
@@ -17,11 +18,29 @@ export class SnifferManagerController {
   setup() {
     this.app.use(json());
 
-    this.app.get("/sniffer", (req: Request, res: Response) => {
-      res.send(this.snifferManager.getAllSniffers()).status(200);
+    this.app.get(
+      "/tartigraid/sniffer/invocation",
+      (req: Request, res: Response) => {
+        try {
+          res.send(this.snifferManager.getAllData()).status(200);
+        } catch (e) {
+          res.sendStatus(500);
+        }
+      }
+    );
+
+    this.app.get("/tartigraid/sniffer", (req: Request, res: Response) => {
+      res
+        .send(
+          this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => ({
+            config: sniffer.getConfig(),
+            isStarted: sniffer.getIsStarted(),
+          }))
+        )
+        .status(200);
     });
 
-    this.app.get("/sniffer/:port", (req: Request, res: Response) => {
+    this.app.get("/tartigraid/sniffer/:port", (req: Request, res: Response) => {
       const { port } = req.params;
       const sniffer = this.snifferManager.getSniffer(+port);
 
@@ -32,12 +51,11 @@ export class SnifferManagerController {
       }
     });
 
-    this.app.post("/sniffer", async (req: Request, res: Response) => {
+    this.app.post("/tartigraid/sniffer", (req: Request, res: Response) => {
       const config = req.body;
 
       try {
-        const newSniffer = this.snifferManager.createSniffer(config);
-        await newSniffer.start();
+        this.snifferManager.createSniffer(config);
 
         res.sendStatus(200);
       } catch (e: any) {
@@ -46,12 +64,12 @@ export class SnifferManagerController {
     });
 
     this.app.post(
-      "/sniffer/:port/actions/stop",
-      async (req: Request, res: Response) => {
-        const { port } = req.params;
-        const config = req.body;
-
+      "/tartigraid/sniffer/:port/actions/stop",
+      (req: Request, res: Response) => {
         try {
+          const { port } = req.params;
+          const config = req.body;
+
           const sniffer = this.snifferManager.getSniffer(+port);
 
           if (sniffer !== undefined) {
@@ -67,7 +85,7 @@ export class SnifferManagerController {
     );
 
     this.app.post(
-      "/sniffer/:port/actions/start",
+      "/tartigraid/sniffer/:port/actions/start",
       async (req: Request, res: Response) => {
         const { port } = req.params;
         const config = req.body;
@@ -76,7 +94,7 @@ export class SnifferManagerController {
           const sniffer = this.snifferManager.getSniffer(+port);
 
           if (sniffer !== undefined) {
-            sniffer.start();
+            await sniffer.start();
             res.sendStatus(200);
           } else {
             res.sendStatus(404);

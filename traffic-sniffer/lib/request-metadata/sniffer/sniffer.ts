@@ -7,13 +7,14 @@ import express, {
 } from "express";
 import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Invocation } from "../path-metadata";
 import { RequestMetadata } from "../request-metadata";
 import { json } from "body-parser";
+import { Invocation, PathResponseData } from "../../../types/types";
 
 export type SnifferConfig = {
   port: number;
   downstreamUrl: string;
+  id: string;
 };
 
 export class Sniffer {
@@ -22,11 +23,15 @@ export class Sniffer {
   private config: SnifferConfig;
   private server: http.Server | undefined;
   private proxyMiddleware: RequestHandler;
+  private id: string;
+  private isStarted: boolean;
 
   constructor(_config: SnifferConfig) {
     this.data = new RequestMetadata();
     this.config = _config;
     this.app = express();
+    this.id = _config.id;
+    this.isStarted = false;
 
     this.proxyMiddleware = createProxyMiddleware({
       target: _config.downstreamUrl,
@@ -38,7 +43,12 @@ export class Sniffer {
   }
 
   requestInterceptor(req: Request, res: Response, next: NextFunction) {
-    console.log("[" + new Date().toISOString() + "]:" + " request logged");
+    console.log(
+      "[" +
+        new Date().toISOString() +
+        "]:" +
+        `${req.method} ${req.url} request logged`
+    );
     this.data.interceptRequest(req);
     next();
   }
@@ -51,12 +61,13 @@ export class Sniffer {
     return this.config.port;
   }
 
-  getData() {
+  getData(): PathResponseData[] {
     return this.data.getData();
   }
 
   setup() {
     this.app.use(json());
+    this.app.use(this.requestInterceptor.bind(this));
     this.app.use(this.proxyMiddleware);
   }
 
@@ -85,12 +96,15 @@ export class Sniffer {
           console.log(
             "started sniffing" + JSON.stringify(this.config, null, 2)
           );
+          this.isStarted = true;
           resolve(undefined);
         })
-        .on("error", () => {
+        .on("error", (e) => {
           console.error(
             "Failed to start for proxy: \n" +
-              JSON.stringify(this.config, null, 2)
+              JSON.stringify(this.config, null, 2) +
+              "\n with error: \n" +
+              e.message
           );
           reject();
         })
@@ -103,11 +117,16 @@ export class Sniffer {
 
   stop() {
     this.server?.close();
+    this.isStarted = false;
     console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
   }
 
   getConfig() {
     return this.config;
+  }
+
+  getIsStarted() {
+    return this.isStarted;
   }
 
   getMiddleware() {

@@ -1,21 +1,61 @@
+import { Add, Delete, PlayArrow, Save, Stop } from "@mui/icons-material";
+import {
+  Button,
+  Card,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import { SnifferConfig, changeConfig, getConfig } from "../../api/api";
+import {
+  createSniffer,
+  getSniffers,
+  startSniffer,
+  stopSniffer,
+} from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { Button, Card, TextField, Typography } from "@mui/material";
+import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
 
-export const ConfigCard: React.FC = () => {
-  const [config, setConfig] = useState<SnifferConfig>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const { show, hide, component: snackBar } = useSnackbar();
+type SnifferConfigRow = {
+  isNew: boolean;
+  config: Partial<SnifferConfig>;
+  isStarted: boolean;
+};
 
-  const loadData = () => {
+export const ConfigCard: React.FC = () => {
+  const [stopLoading, setStopLoading] = useState<boolean>(false);
+  const [startLoading, setStartLoading] = useState<boolean>(false);
+  const [saveLoading, setSaveLoading] = useState<boolean>(false);
+
+  const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
+    {
+      config: {
+        port: undefined,
+        downstreamUrl: undefined,
+      },
+      isStarted: false,
+      isNew: true,
+    },
+  ]);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const { show: showSnackbar, hide, component: snackBar } = useSnackbar();
+
+  const loadData = async () => {
     if (loading) return;
     setLoading(true);
-    getConfig()
-      .then((data: any) => setConfig(JSON.parse(data)))
+    await getSniffers()
+      .then((res: any) => {
+        const configs = res.data.map((config: any) => ({
+          ...config,
+          isNew: false,
+        }));
+
+        setSniffers(configs);
+      })
       .catch((err) => {
-        show("Failed to get config", "error");
+        showSnackbar("Failed to get config", "error");
       })
       .finally(() => setLoading(false));
   };
@@ -24,55 +64,190 @@ export const ConfigCard: React.FC = () => {
     loadData();
   }, []);
 
-  const handleConfigChange = () => {
-    if (!config) {
+  const handleNewSnifferClicked = () => {
+    setSniffers((prev) => {
+      return prev.concat([
+        {
+          config: { port: undefined, downstreamUrl: undefined },
+          isNew: true,
+          isStarted: false,
+        },
+      ]);
+    });
+  };
+
+  const handleStopClicked = async (port: number) => {
+    setStopLoading(true);
+    await stopSniffer(port)
+      .then(() => loadData())
+      .catch(() => {
+        showSnackbar("Failed to stop sniffer", "error");
+      })
+      .finally(() => setStopLoading(false));
+  };
+
+  const handleStartClicked = async (port: number) => {
+    setStartLoading(true);
+    await startSniffer(port)
+      .then((res) => {
+        showSnackbar("then", "error");
+
+        loadData();
+      })
+      .catch(() => {
+        showSnackbar("Failed to start sniffer", "error");
+      })
+      .finally(() => {
+        setStartLoading(false);
+      });
+  };
+
+  const handleDeleteClicked = (index: number) => {
+    setSniffers((config) => {
+      const configs = [...config];
+      configs.splice(index, 1);
+      return configs;
+    });
+  };
+
+  const handleSaveClicked = async (config: Partial<SnifferConfig>) => {
+    if (config.port === undefined || config.downstreamUrl === undefined) {
       return;
     }
+    const saveConfig: SnifferCreateConfig = {
+      port: config.port,
+      downstreamUrl: config.downstreamUrl,
+    };
 
-    changeConfig(config)
-      .then((res) => {
-        show("changed config", "success");
+    setSaveLoading(true);
+    await createSniffer(saveConfig)
+      .then(() => {
+        loadData();
+        showSnackbar("Created sniffer", "info");
       })
-      .catch((e) => show("failed to change config", "error"));
+      .catch((e) => {
+        showSnackbar("Failed to create proxy", "error");
+      })
+      .finally(() => {
+        setSaveLoading(false);
+      });
   };
 
   return (
     <>
       <Card className={styles.container}>
         <Typography variant="h6" gutterBottom>
-          Response
+          Config
         </Typography>
-        <div className={styles.inputs}>
-          <TextField
-            label={"Port"}
-            defaultValue={config?.port}
-            value={config?.port}
-            onChange={(e) => {
-              setConfig((prev) => ({
-                downstreamUrl: prev?.downstreamUrl ?? "",
-                port: +e.target.value,
-              }));
-            }}
-          />
-          <TextField
-            label={"Proxy url"}
-            defaultValue={config?.downstreamUrl}
-            value={config?.downstreamUrl}
-            onChange={(e) => {
-              setConfig((prev) => ({
-                downstreamUrl: e.target.value,
-                port: prev?.port ?? 0,
-              }));
-            }}
-          />
-          <Button color="warning" onClick={handleConfigChange}>
-            change
-          </Button>
-        </div>
-        <div>
-          <Button color="success">start</Button>
+        {sniffers?.map((sniffer, index) => {
+          return (
+            <div key={`config-row-${index}`} className={styles.inputs}>
+              <TextField
+                label={"Port"}
+                defaultValue={sniffer.config.port}
+                contentEditable={sniffer.isNew === true}
+                disabled={sniffer.isNew === false}
+                value={sniffer.config.port}
+                onChange={(
+                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+                ) => {
+                  setSniffers((prev) => {
+                    const sniffers = [...prev];
+                    sniffers[index].config.port = +e.target.value;
 
-          <Button color="error">stop</Button>
+                    return sniffers;
+                  });
+                }}
+              />
+              <TextField
+                label={"Proxy url"}
+                defaultValue={sniffer.config.downstreamUrl}
+                value={sniffer.config.downstreamUrl}
+                contentEditable={sniffer.isNew === true}
+                disabled={sniffer.isNew === false}
+                onChange={(
+                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+                ) => {
+                  setSniffers((prev) => {
+                    const sniffers = [...prev];
+                    sniffers[index].config.downstreamUrl = e.target.value;
+
+                    return sniffers;
+                  });
+                }}
+              />
+              {sniffer.isNew === false && (
+                <>
+                  <Button
+                    color="success"
+                    onClick={() =>
+                      sniffer.config.port !== undefined &&
+                      handleStartClicked(sniffer.config.port)
+                    }
+                    disabled={sniffer.isStarted === true}
+                  >
+                    {startLoading === true ? (
+                      <CircularProgress />
+                    ) : (
+                      <PlayArrow></PlayArrow>
+                    )}
+                  </Button>
+                  <Button
+                    color="warning"
+                    disabled={sniffer.isStarted === false}
+                    onClick={() =>
+                      sniffer.config.port !== undefined &&
+                      handleStopClicked(sniffer.config.port)
+                    }
+                  >
+                    {stopLoading === true ? (
+                      <CircularProgress />
+                    ) : (
+                      <Stop></Stop>
+                    )}
+                  </Button>
+                </>
+              )}
+              {sniffer.isNew === true && (
+                <>
+                  <Button
+                    color="info"
+                    disabled={
+                      sniffer.config.port === undefined ||
+                      sniffer.config.downstreamUrl === undefined
+                    }
+                    onClick={() => {
+                      handleSaveClicked(sniffer.config);
+                    }}
+                  >
+                    {saveLoading === true ? (
+                      <CircularProgress />
+                    ) : (
+                      <Save></Save>
+                    )}
+                  </Button>
+
+                  <Button
+                    color="error"
+                    onClick={() => {
+                      handleDeleteClicked(index);
+                    }}
+                  >
+                    <Delete></Delete>
+                  </Button>
+                </>
+              )}
+            </div>
+          );
+        })}
+        <div className={styles.addSnifferBtn}>
+          <Button
+            onClick={handleNewSnifferClicked}
+            className={styles.addSnifferBtn}
+          >
+            <Add></Add>
+            <Typography>New sniffer</Typography>
+          </Button>
         </div>
       </Card>
       {snackBar}
