@@ -1,30 +1,12 @@
+import axios from "axios";
 import { Request } from "express";
 import { v4 } from "uuid";
-import axios from "axios";
-
-type PathData = {
-  method: string;
-  hitCount: number;
-  lastInvocationDate?: Date;
-  invocations: Invocation[];
-};
-
-export type Invocation = {
-  id: string;
-  timestamp: Date;
-  body?: any;
-  headers?: any;
-  cookies?: any;
-  params?: any;
-};
-
-type PathMetadataConfig = {
-  body_history_limit: number;
-  record_bodies: boolean;
-  record_headers: boolean;
-  record_cookies: boolean;
-  record_params: boolean;
-};
+import {
+  Invocation,
+  PathData,
+  PathMetadataConfig,
+  PathResponseData,
+} from "../../types/types";
 
 export class PathMetadata {
   private id: string;
@@ -50,7 +32,7 @@ export class PathMetadata {
     };
   }
 
-  extractMetadata(request: Request) {
+  interceptRequest(request: Request) {
     this.incHitCount();
     this.data.lastInvocationDate = new Date();
 
@@ -82,11 +64,11 @@ export class PathMetadata {
     this.data.hitCount = this.data.hitCount + 1;
   }
 
-  getData() {
+  getData(): PathResponseData {
     const { id, url } = this;
     const { method, hitCount, lastInvocationDate, invocations } = this.data;
 
-    return {
+    const res: PathResponseData = {
       id,
       url,
       method,
@@ -94,6 +76,8 @@ export class PathMetadata {
       lastInvocationDate,
       invocations,
     };
+
+    return res;
   }
 
   printMetadata() {

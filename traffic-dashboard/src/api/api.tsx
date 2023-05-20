@@ -1,27 +1,29 @@
-import { Axios } from "axios";
+import axios from "axios";
+import { SnifferCreateConfig } from "../types/types";
 
-const server = new Axios({
-});
-
-export const getRequests = () => {
-  return server.get("/tartigraid");
-};
-
-export type SnifferConfig = {
-  port: number;
-  downstreamUrl: string;
-};
-
-export const getConfig: () => Promise<SnifferConfig> = () => {
-  return server.get("/tartigraid/config").then((res) => res.data);
-};
-
-export const changeConfig: (config: SnifferConfig) => Promise<void> = (
-  config: SnifferConfig
-) => {
-  return server.post("/tartigraid/config", JSON.stringify(config), {
+export const createSniffer = (config: SnifferCreateConfig) => {
+  return axios.post("/tartigraid/sniffer", JSON.stringify(config), {
     headers: {
       "Content-Type": "application/json",
     },
   });
+};
+
+export const getSniffers = () => {
+  return axios.get("/tartigraid/sniffer");
+};
+
+export const stopSniffer = (port: number) => {
+  return axios.post(`/tartigraid/sniffer/${port}/actions/stop`);
+};
+
+export const startSniffer = async (port: number) => {
+  return await axios.post(`/tartigraid/sniffer/${port}/actions/start`);
+};
+export const deleteSniffer = async (port: number) => {
+  return await axios.delete(`/tartigraid/sniffer/${port}`);
+};
+
+export const getRequests = () => {
+  return axios.get("/tartigraid/sniffer/invocation");
 };

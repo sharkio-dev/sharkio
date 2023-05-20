@@ -25,9 +25,8 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
 
     setLoading(true);
     getRequests()
-      .then((res) => res.data)
       .then((res) => {
-        setRequestsMetadata((prev) => ({ ...prev, data: JSON.parse(res) }));
+        setRequestsMetadata((prev) => ({ ...prev, data: res.data }));
       })
       .catch(() => {
         setRequestsMetadata((prev) => ({ ...prev, data: [] }));

@@ -1,13 +1,20 @@
-import bodyParser from "body-parser";
-import cookieparser from "cookie-parser";
-import express, { Express, NextFunction, Request, Response } from "express";
+import express, {
+  Express,
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+} from "express";
 import * as http from "http";
-import httpProxy from "http-proxy";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import { RequestMetadata } from "../request-metadata";
+import { json } from "body-parser";
+import { Invocation, PathResponseData } from "../../../types/types";
 
 export type SnifferConfig = {
   port: number;
   downstreamUrl: string;
+  id: string;
 };
 
 export class Sniffer {
@@ -15,130 +22,61 @@ export class Sniffer {
   private data: RequestMetadata;
   private config: SnifferConfig;
   private server: http.Server | undefined;
-  private proxy: httpProxy<
-    http.IncomingMessage,
-    http.ServerResponse<http.IncomingMessage>
-  >;
+  private proxyMiddleware: RequestHandler;
+  private id: string;
+  private isStarted: boolean;
 
   constructor(_config: SnifferConfig) {
     this.data = new RequestMetadata();
     this.config = _config;
-    this.proxy = httpProxy.createProxyServer({});
     this.app = express();
+    this.id = _config.id;
+    this.isStarted = false;
+
+    this.proxyMiddleware = createProxyMiddleware({
+      target: _config.downstreamUrl,
+      secure: false,
+      logLevel: "debug",
+    });
+
     this.setup();
   }
 
-  snifferMiddleWare(req: Request, res: Response, next: NextFunction) {
-    console.log("[" + new Date().toISOString() + "]:" + " request logged");
-    this.data.extractMetadata(req);
+  requestInterceptor(req: Request, res: Response, next: NextFunction) {
+    console.log(
+      "[" +
+        new Date().toISOString() +
+        "]:" +
+        `${req.method} ${req.url} request logged`
+    );
+    this.data.interceptRequest(req);
     next();
   }
 
+  getApp() {
+    return this.app;
+  }
+
+  getPort() {
+    return this.config.port;
+  }
+
+  getData(): PathResponseData[] {
+    return this.data.getData();
+  }
+
   setup() {
-    this.app.use(bodyParser.json());
-    this.app.use(cookieparser());
-
-    this.app.get(
-      "/tartigraid/config",
-      (req: Request, res: Response, next: NextFunction) => {
-        const data = this.config;
-        res.json(data);
-      }
-    );
-
-    this.app.get(
-      "/tartigraid",
-      (req: Request, res: Response, next: NextFunction) => {
-        const data = this.data.getData();
-        res.json(data);
-      }
-    );
-
-    this.app.post(
-      "/tartigraid/config",
-      async (req: Request, res: Response, next: NextFunction) => {
-        console.log("changing config");
-        console.log({ body: req.body });
-        this.changeConfig(req.body);
-      }
-    );
-
-    this.app.post(
-      "/tartigraid/stop",
-      async (req: Request, res: Response, next: NextFunction) => {
-        this.stop();
-      }
-    );
-
-    this.app.post(
-      "/tartigraid/start",
-      async (req: Request, res: Response, next: NextFunction) => {
-        this.start();
-      }
-    );
-
-    this.app.post(
-      "/tartigraid/execute",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const { url, method, invocation } = req.body;
-
-        try {
-          console.log("executing");
-          console.log({
-            url: url,
-            method,
-            invocation,
-          });
-
-          const data = await this.data.execute(url, method, invocation);
-
-          console.log("response");
-          console.log({ data });
-
-          res.sendStatus(200);
-        } catch (e) {
-          console.error("failed to execute");
-          res.send(JSON.stringify(e)).status(500);
-        }
-      }
-    );
-
-    this.app.delete(
-      "/tartigraid",
-      (req: Request, res: Response, next: NextFunction) => {
-        res.json(this.data.clearData());
-      }
-    );
-
-    this.app.use(this.snifferMiddleWare.bind(this));
-
-    this.app.use("*", (req: Request, res: Response, next: NextFunction) => {
-      this.proxy.web(
-        req,
-        res,
-        {
-          target: this.config.downstreamUrl,
-        },
-        (err) => {
-          console.log("error occured on: " + this.config.downstreamUrl);
-          res.sendStatus(500);
-        }
-      );
-    });
-
-    console.log(
-      `Started sniffing requests for ${this.config.downstreamUrl} on port ${this.config.port}`
-    );
+    this.app.use(json());
+    this.app.use(this.requestInterceptor.bind(this));
+    this.app.use(this.proxyMiddleware);
   }
 
-  start() {
-    this.server = this.app.listen(this.config.port, () => {
-      console.log("server started listening");
-    });
+  clearData() {
+    this.data.clearData();
   }
 
-  stop() {
-    this.server?.close();
+  execute(url: string, method: string, invocation: Invocation) {
+    return this.data.execute(url, method, invocation);
   }
 
   changeConfig(newConfig: SnifferConfig) {
@@ -148,5 +86,50 @@ export class Sniffer {
     this.config = newConfig;
     console.log("starting server with new config");
     this.start();
+  }
+
+  start() {
+    console.log("starting sniffer \n" + JSON.stringify(this.config, null, 2));
+    return new Promise((resolve, reject) => {
+      this.server = this.app
+        .listen(this.config.port, () => {
+          console.log(
+            "started sniffing" + JSON.stringify(this.config, null, 2)
+          );
+          this.isStarted = true;
+          resolve(undefined);
+        })
+        .on("error", (e) => {
+          console.error(
+            "Failed to start for proxy: \n" +
+              JSON.stringify(this.config, null, 2) +
+              "\n with error: \n" +
+              e.message
+          );
+          reject();
+        })
+        .on("clientError", () => {
+          console.error("clientError has occurred");
+          reject();
+        });
+    });
+  }
+
+  stop() {
+    this.server?.close();
+    this.isStarted = false;
+    console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
+  }
+
+  getConfig() {
+    return this.config;
+  }
+
+  getIsStarted() {
+    return this.isStarted;
+  }
+
+  getMiddleware() {
+    return this.proxyMiddleware;
   }
 }

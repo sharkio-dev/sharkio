@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\""
+    "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\""
   },
   "author": "Ido David",
   "license": "ISC"
