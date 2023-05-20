@@ -20,6 +20,9 @@ export const stopSniffer = (port: number) => {
 export const startSniffer = async (port: number) => {
   return await axios.post(`/tartigraid/sniffer/${port}/actions/start`);
 };
+export const deleteSniffer = async (port: number) => {
+  return await axios.delete(`/tartigraid/sniffer/${port}`);
+};
 
 export const getRequests = () => {
   return axios.get("/tartigraid/sniffer/invocation");

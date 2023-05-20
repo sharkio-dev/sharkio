@@ -104,11 +104,31 @@ export class SnifferManagerController {
         }
       }
     );
+
+    this.app.delete(
+      "/tartigraid/sniffer/:port",
+      async (req: Request, res: Response) => {
+        const { port } = req.params;
+
+        try {
+          const sniffer = this.snifferManager.getSniffer(+port);
+
+          if (sniffer !== undefined) {
+            this.snifferManager.removeSniffer(+port);
+            res.sendStatus(200);
+          } else {
+            res.sendStatus(404);
+          }
+        } catch (e: any) {
+          res.sendStatus(500);
+        }
+      }
+    );
   }
 
   start() {
     this.server = this.app.listen(5012, () => {
-      console.log("server started listening");
+      console.log("server started listening on port 5012");
     });
   }
 

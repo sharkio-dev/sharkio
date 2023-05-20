@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import {
   createSniffer,
+  deleteSniffer,
   getSniffers,
   startSniffer,
   stopSniffer,
@@ -103,11 +104,26 @@ export const ConfigCard: React.FC = () => {
   };
 
   const handleDeleteClicked = (index: number) => {
-    setSniffers((config) => {
-      const configs = [...config];
-      configs.splice(index, 1);
-      return configs;
-    });
+    if (sniffers[index].isNew === true) {
+      setSniffers((config) => {
+        const configs = [...config];
+        configs.splice(index, 1);
+        return configs;
+      });
+    } else {
+      const x = sniffers[index].config.port;
+
+      if (x !== undefined) {
+        deleteSniffer(x).then(() => {
+          setSniffers((config) => {
+            const configs = [...config];
+            configs.splice(index, 1);
+            return configs;
+          });
+          showSnackbar("Removed sniffer successfully", "info");
+        });
+      }
+    }
   };
 
   const handleSaveClicked = async (config: Partial<SnifferConfig>) => {
@@ -226,17 +242,17 @@ export const ConfigCard: React.FC = () => {
                       <Save></Save>
                     )}
                   </Button>
-
-                  <Button
-                    color="error"
-                    onClick={() => {
-                      handleDeleteClicked(index);
-                    }}
-                  >
-                    <Delete></Delete>
-                  </Button>
                 </>
               )}
+              <Button
+                color="error"
+                onClick={() => {
+                  handleDeleteClicked(index);
+                }}
+                disabled={sniffer.isStarted === true}
+              >
+                <Delete></Delete>
+              </Button>
             </div>
           );
         })}
