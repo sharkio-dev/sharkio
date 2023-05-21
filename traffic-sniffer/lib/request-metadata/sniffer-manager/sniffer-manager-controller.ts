@@ -105,6 +105,28 @@ export class SnifferManagerController {
       }
     );
 
+    this.app.post(
+      "/tartigraid/sniffer/:port/actions/execute",
+      async (req: Request, res: Response) => {
+        const { port } = req.params;
+        const { url, method, invocation } = req.body;
+        try {
+          const sniffer = this.snifferManager.getSniffer(+port);
+
+          if (sniffer !== undefined) {
+            await sniffer
+              .execute(url, method, invocation)
+              .catch((e) => console.error("erro while executing"));
+            res.sendStatus(200);
+          } else {
+            res.sendStatus(404);
+          }
+        } catch (e: any) {
+          res.sendStatus(500);
+        }
+      }
+    );
+
     this.app.delete(
       "/tartigraid/sniffer/:port",
       async (req: Request, res: Response) => {

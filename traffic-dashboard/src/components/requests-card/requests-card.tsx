@@ -17,6 +17,8 @@ import { useContext, useEffect, useState } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { HttpMethod } from "../http-method/http-method";
 import styles from "./requests-card.module.scss";
+import { generatePath, useNavigate } from "react-router-dom";
+import { routes } from "../../constants/routes";
 
 export const RequestsCard = () => {
   const [filter, setFilter] = useState<string>();
@@ -26,6 +28,7 @@ export const RequestsCard = () => {
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadData?.();
@@ -110,7 +113,7 @@ export const RequestsCard = () => {
                       >
                         <div className={styles.requestLeftSection}>
                           <div className={styles.methodContainer}>
-                            <HttpMethod method={req.method}></HttpMethod>
+                            <HttpMethod method={req.method} />
                           </div>
                           <span className={styles.url}>{req.url}</span>
                         </div>
@@ -120,6 +123,7 @@ export const RequestsCard = () => {
                             sx={{
                               display: "flex",
                               justifyContent: "space-between",
+                              alignItems: "center",
                               columnGap: "15px",
                             }}
                           >
@@ -137,7 +141,14 @@ export const RequestsCard = () => {
                               <div>{req.lastInvocationDate}</div>
                             </Box>
                             <Chip label={req.hitCount}></Chip>
-                            <IconButton size="small">
+                            <IconButton
+                              size="small"
+                              onClick={() => {
+                                navigate(
+                                  generatePath(routes.REQUEST, { id: req.id })
+                                );
+                              }}
+                            >
                               <Edit />
                             </IconButton>
                           </Box>

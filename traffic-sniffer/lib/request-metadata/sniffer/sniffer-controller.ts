@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
 import cookieparser from "cookie-parser";
-import express, { Express, NextFunction, Request, Response } from "express";
+import { Express, NextFunction, Request, Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Sniffer, SnifferConfig } from "./sniffer";
 
