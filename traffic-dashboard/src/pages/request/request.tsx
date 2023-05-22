@@ -2,18 +2,20 @@ import { PlayArrow } from "@mui/icons-material";
 import {
   Button,
   Card,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
 import { RequestsMetadataContext } from "../../context/requests-context";
+import styles from "./requestCard.module.scss";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
@@ -39,11 +41,13 @@ export const RequestPage: React.FC = () => {
   };
 
   return (
-    <>
+    <div className={styles.requestPageContainer}>
       {request && (
         <>
-          <Card>
-            <Typography variant="h6">Request</Typography>
+          <Card className={styles.requestCardContainer}>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Request</Typography>
+            </div>
             <HttpMethod method={request.method} />
             {request.url}
             <Typography>hit count: {request.hitCount}</Typography>
@@ -51,8 +55,11 @@ export const RequestPage: React.FC = () => {
               last invocation: {request.lastInvocationDate}
             </Typography>
           </Card>
+          {/* <Tab></Tab> */}
           <Card>
-            <Typography variant="h6">Invocations</Typography>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Invocations</Typography>
+            </div>
             <Table>
               <TableHead>
                 <TableRow>
@@ -95,14 +102,23 @@ export const RequestPage: React.FC = () => {
             </Table>
           </Card>
           <Card>
-            <Typography variant="h6">OpenAPI</Typography>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">OpenAPI</Typography>
+            </div>
           </Card>
           <Card>
-            <Typography variant="h6">Raw JSON</Typography>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Json Schema</Typography>
+            </div>
+          </Card>
+          <Card>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Raw JSON</Typography>
+            </div>
             <pre>{JSON.stringify(request, null, 2)}</pre>
           </Card>
         </>
       )}
-    </>
+    </div>
   );
 };

@@ -161,9 +161,8 @@ export const ConfigCard: React.FC = () => {
               <TextField
                 label={"Port"}
                 defaultValue={sniffer.config.port}
-                contentEditable={sniffer.isNew === true}
                 disabled={sniffer.isNew === false}
-                value={sniffer.config.port}
+                value={sniffer.config.port || ""}
                 onChange={(
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => {
@@ -178,8 +177,7 @@ export const ConfigCard: React.FC = () => {
               <TextField
                 label={"Proxy url"}
                 defaultValue={sniffer.config.downstreamUrl}
-                value={sniffer.config.downstreamUrl}
-                contentEditable={sniffer.isNew === true}
+                value={sniffer.config.downstreamUrl || ""}
                 disabled={sniffer.isNew === false}
                 onChange={(
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>

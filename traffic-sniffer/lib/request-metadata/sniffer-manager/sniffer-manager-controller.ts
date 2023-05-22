@@ -157,4 +157,8 @@ export class SnifferManagerController {
   stop() {
     this.server?.close();
   }
+
+  getManager() {
+    return this.snifferManager;
+  }
 }
