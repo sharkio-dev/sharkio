@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useEffect, useState } from "react";
+import { PropsWithChildren, createContext, useState } from "react";
 import { getRequests } from "../api/api";
 import { useSnackbar } from "../hooks/useSnackbar";
 
@@ -35,7 +35,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
       .finally(() => setLoading(false));
   };
 
-  const { show, hide, component: snackBar } = useSnackbar();
+  const { show, component: snackBar } = useSnackbar();
 
   return (
     <RequestsMetadataContext.Provider

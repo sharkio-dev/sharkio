@@ -77,7 +77,7 @@ export const RequestsCard = () => {
           renderInput={(params) => (
             <TextField variant="filled" {...params} label="Method" />
           )}
-          onChange={(e, value) => {
+          onChange={(_, value) => {
             setMethodsFilter(value);
           }}
         />

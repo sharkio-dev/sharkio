@@ -1,6 +1,8 @@
 import axios from "axios";
 import { SnifferCreateConfig } from "../types/types";
 
+// const snifferAdminAxios = new axios.Axios({ baseURL: "http://localhost:5012" });
+
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post("/tartigraid/sniffer", JSON.stringify(config), {
     headers: {

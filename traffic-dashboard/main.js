@@ -1,0 +1,3 @@
+import { startDashboard } from ".";
+
+startDashboard();

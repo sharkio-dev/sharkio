@@ -3,6 +3,7 @@ import express, { Express, Request, Response } from "express";
 import * as http from "http";
 import { SnifferManager } from "./sniffer-manager";
 import { Sniffer } from "../sniffer/sniffer";
+import cors from "cors";
 
 export class SnifferManagerController {
   private server: http.Server | undefined;
@@ -16,6 +17,7 @@ export class SnifferManagerController {
   }
 
   setup() {
+    this.app.use(cors());
     this.app.use(json());
 
     this.app.get(
@@ -148,8 +150,8 @@ export class SnifferManagerController {
     );
   }
 
-  start() {
-    this.server = this.app.listen(5012, () => {
+  start(port: number = 5012) {
+    this.server = this.app.listen(port, () => {
       console.log("server started listening on port 5012");
     });
   }
