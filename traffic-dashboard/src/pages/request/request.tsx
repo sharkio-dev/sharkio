@@ -2,13 +2,12 @@ import { PlayArrow } from "@mui/icons-material";
 import {
   Button,
   Card,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography,
+  Typography
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -20,6 +19,7 @@ import styles from "./requestCard.module.scss";
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
   const [request, setRequest] = useState<any>(undefined);
+  const [schema, setSchema] = useState<any>(undefined);
   const requests = useContext(RequestsMetadataContext);
 
   useEffect(() => {
@@ -27,8 +27,6 @@ export const RequestPage: React.FC = () => {
       const request = requests.data.find((request: any) => {
         return request.id === id;
       });
-
-      setRequest(request);
     }
   }, [id]);
 
@@ -64,8 +62,8 @@ export const RequestPage: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>execute</TableCell>
-                  <TableCell>timestamp</TableCell>
                   <TableCell>id</TableCell>
+                  <TableCell>timestamp</TableCell>
                   <TableCell>body</TableCell>
                   <TableCell>params</TableCell>
                   <TableCell>headers</TableCell>
