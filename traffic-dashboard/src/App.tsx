@@ -6,6 +6,8 @@ import { ConfigCard } from "./components/config-card/config-card";
 import { Home } from "./pages/home/Home";
 import { NewRequest } from "./pages/new-request/new-request";
 import { RequestMetadataProvider } from "./context/requests-context";
+import { RequestPage } from "./pages/request/request";
+import { routes } from "./constants/routes";
 
 function App() {
   const theme = createTheme({
@@ -19,9 +21,10 @@ function App() {
         <RequestMetadataProvider>
           <PageTemplate>
             <Routes>
-              <Route path="/home" element={<Home />}></Route>
+              <Route path={routes.HOME} element={<Home />} />
               <Route path="/new-request" element={<NewRequest />}></Route>
-              <Route path="*"></Route>
+              <Route path={routes.REQUEST} element={<RequestPage />}></Route>
+              <Route path={routes.HOME} element={<Home />} />
             </Routes>
           </PageTemplate>
         </RequestMetadataProvider>

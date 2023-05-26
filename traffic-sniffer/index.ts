@@ -8,9 +8,17 @@ console.log("args");
 console.log("args[0]" + args[0]);
 console.log("args[1]" + args[1]);
 
-const snifferPort = +(args[0] ?? process.env.SNIFFER_PORT ?? 5012);
+const demoSnifferPort = +(args[0] ?? process.env.SNIFFER_PORT ?? 5100);
 const downstreamUrl =
   args[1] ?? process.env.DOWNSTREAM_URL ?? "http://localhost:5173";
 
 const snifferController = new SnifferManagerController();
 snifferController.start();
+
+snifferController.getManager().createSniffer({
+  downstreamUrl,
+  port: demoSnifferPort,
+  id: "1",
+});
+
+snifferController.getManager().getSniffer(demoSnifferPort)?.start();

@@ -1,3 +1,4 @@
+import { json } from "body-parser";
 import express, {
   Express,
   NextFunction,
@@ -7,9 +8,8 @@ import express, {
 } from "express";
 import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { RequestMetadata } from "../request-metadata";
-import { json } from "body-parser";
 import { Invocation, PathResponseData } from "../../../types/types";
+import { RequestMetadata } from "../request-metadata";
 
 export type SnifferConfig = {
   port: number;
@@ -76,7 +76,8 @@ export class Sniffer {
   }
 
   execute(url: string, method: string, invocation: Invocation) {
-    return this.data.execute(url, method, invocation);
+    const executionUrl = `http://localhost:${this.config.port}${url}`;
+    return this.data.execute(executionUrl, method, invocation);
   }
 
   changeConfig(newConfig: SnifferConfig) {

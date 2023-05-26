@@ -27,3 +27,19 @@ export const deleteSniffer = async (port: number) => {
 export const getRequests = () => {
   return axios.get("/tartigraid/sniffer/invocation");
 };
+
+export const executeRequest = (
+  url: string,
+  method: string,
+  invocation: any
+) => {
+  return axios.post(
+    "/tartigraid/sniffer/5100/actions/execute",
+    { url, method, invocation },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
