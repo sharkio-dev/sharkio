@@ -60,38 +60,65 @@ async function killDashboard(port = 3000) {
         .then(console.log)
         .catch(console.log)
 }
+async function createSniffer() {
+
+}
 
 yargs(hideBin(process.argv))
     .demandCommand()
-    .scriptName("tartigraid")
+    .scriptName("")
     .command('dashboard [command]', 'Dashboard server', (yargs) => {
         return yargs
-            .command("start", 'Start the dashboard server', (yargs) => {
+            .command("start", 'Starting dashboard server', (yargs) => {
                 return yargs
             }, () => {
-                console.log("starting to serve")
+                console.log("Starting dashboard server");
                 startDashboard();
             })
-            .command("show", 'Start the dashboard server', (yargs) => {
-                return yargs
-            }, () => {
-                console.log("starting to serve")
-                openDashboard();
-            })
-            .command('kill', 'Start the dashboard server', (yargs) => {
+            .command('kill', 'Kill the dashboard server', (yargs) => {
                 return yargs
             }, (argv) => {
-                console.log("killing the server")
+                console.log("Killing the dashboard server")
                 killDashboard();
             }).demandCommand()
     })
-    .command('manager', 'Sniffer manager', (yargs) => {
+    .command('admin [command]', 'Dashboard server', (yargs) => {
         return yargs
-            .command("start", (yargs) => yargs, (argv) => {
+            .command('sniffers [command]', 'Dashboard server', (yargs) => {
+                return yargs
+                    .command("create [port] [downstreamUrl]", 'Create a new sniffer', (yargs) => {
+                        return yargs
+                            .option("port")
+                            .option("downstreamUrl")
+                            .demandOption("port")
+                            .demandOption("downstreamUrl")
+                    }, (argv) => {
+                        console.log("Creating a new sniffer")
+                        //TODO create a sniffer
+                    })
+                    .command("list", 'List sniffers', (yargs) => {
+                        return yargs
+                    }, (argv) => {
+                        console.log("Creating a new sniffer")
+                        //TODO list sniffers
+                    })
+            },
+                (argv) => {
+                    console.log("Creating a new sniffera")
+                }
+            )
+            .command("start", 'Start admin server', (yargs) => {
+                return yargs
+            }, () => {
+                console.log("Starting admin servers");
                 startAdmin();
             })
-            .command("kill", (yargs) => yargs, (argv) => {
+            .command('kill', 'Kill the admin server', (yargs) => {
+                return yargs
+            }, (argv) => {
+                console.log("Killing the admin server");
                 killAdmin();
-            })
+            }).demandCommand()
+            .demandCommand()
     })
     .parse()

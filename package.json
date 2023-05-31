@@ -8,6 +8,7 @@
     "tartigraid": "index.mjs"
   },
   "scripts": {
+    "cli": "node ./index.mjs",
     "dashboard": "cd ./traffic-dashboard && npm run dev",
     "sniffer": "cd ./traffic-sniffer && npm run dev",
     "build:dashboard": "cd ./traffic-sniffer && npm run build",

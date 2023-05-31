@@ -1,4 +1,5 @@
 # Tartigraid
+Tartigraid the best free and open source alternative to fiddler.
 
 Tardigrades are amongst the most resilient animals known to science.
 Individual species able to survive extreme conditions such as exposure to extreme temperatures, extreme pressures (both high and low), air deprivation, radiation, dehydration, and starvation.
