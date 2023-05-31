@@ -5,7 +5,7 @@
   "main": "index.js",
   "bundledDependencies": true,
   "bin": {
-    "tartigraid": "index.js"
+    "tartigraid": "index.mjs"
   },
   "scripts": {
     "dashboard": "cd ./traffic-dashboard && npm run dev",
@@ -21,6 +21,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "kill-port": "^2.0.1",
+    "open": "^9.1.0",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
     "yargs": "^17.7.2"
@@ -35,6 +36,8 @@
   "bundleDependencies": [
     "axios",
     "kill-port",
+    "traffic-dashboard",
+    "traffic-sniffer",
     "yargs"
   ]
 }
