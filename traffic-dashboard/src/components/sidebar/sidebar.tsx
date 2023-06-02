@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemButton, Paper } from "@mui/material";
+import { List, ListItemButton, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface ISideBarProps {

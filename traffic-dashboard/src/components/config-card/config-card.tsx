@@ -41,7 +41,7 @@ export const ConfigCard: React.FC = () => {
   ]);
 
   const [loading, setLoading] = useState<boolean>(false);
-  const { show: showSnackbar, hide, component: snackBar } = useSnackbar();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const loadData = async () => {
     if (loading) return;
@@ -55,7 +55,7 @@ export const ConfigCard: React.FC = () => {
 
         setSniffers(configs);
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Failed to get config", "error");
       })
       .finally(() => setLoading(false));
@@ -90,7 +90,7 @@ export const ConfigCard: React.FC = () => {
   const handleStartClicked = async (port: number) => {
     setStartLoading(true);
     await startSniffer(port)
-      .then((res) => {
+      .then(() => {
         showSnackbar("then", "error");
 
         loadData();
@@ -141,7 +141,7 @@ export const ConfigCard: React.FC = () => {
         loadData();
         showSnackbar("Created sniffer", "info");
       })
-      .catch((e) => {
+      .catch((_) => {
         showSnackbar("Failed to create proxy", "error");
       })
       .finally(() => {

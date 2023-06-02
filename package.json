@@ -1,12 +1,44 @@
 {
-  "name": "tartigraid",
-  "version": "1.0.0",
+  "name": "Sharki",
+  "version": "0.0.1",
   "description": "Micro service network monitoring and development tool",
   "main": "index.js",
+  "bundledDependencies": true,
+  "bin": {
+    "sharki": "index.mjs"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\""
+    "cli": "node ./index.mjs",
+    "dashboard": "cd ./traffic-dashboard && npm run dev",
+    "sniffer": "cd ./traffic-sniffer && npm run dev",
+    "build:dashboard": "cd ./traffic-sniffer && npm run build",
+    "build:sniffer": "cd ./traffic-sniffer && npm run build",
+    "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run build\"",
+    "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ido David",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "kill-port": "^2.0.1",
+    "open": "^9.1.0",
+    "traffic-dashboard": "file:traffic-dashboard",
+    "traffic-sniffer": "file:traffic-sniffer",
+    "yargs": "^17.7.2"
+  },
+  "files": [
+    "index.js",
+    "package.json",
+    "node_modules",
+    "traffic-sniffer",
+    "traffic-dashboard"
+  ],
+  "bundleDependencies": [
+    "axios",
+    "kill-port",
+    "traffic-dashboard",
+    "traffic-sniffer",
+    "yargs"
+  ]
 }
