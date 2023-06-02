@@ -7,3 +7,4 @@ traffic-sniffer/node_modules/.bin/mime
 dist
 tartigraid-0.1.0.tgz
 .idea
+*.tgz
