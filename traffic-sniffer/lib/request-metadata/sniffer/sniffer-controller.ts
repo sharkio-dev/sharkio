@@ -26,7 +26,7 @@ export class SnifferController {
     this.app.use(cookieparser());
 
     this.app.get(
-      "/tartigraid/config",
+      "/sharkio/config",
       (req: Request, res: Response, next: NextFunction) => {
         const config = this.sniffer.getConfig();
         res.json(config);
@@ -34,7 +34,7 @@ export class SnifferController {
     );
 
     this.app.get(
-      "/tartigraid",
+      "/sharkio",
       (req: Request, res: Response, next: NextFunction) => {
         const data = this.sniffer.getData();
         res.json(data);
@@ -42,7 +42,7 @@ export class SnifferController {
     );
 
     this.app.post(
-      "/tartigraid/config",
+      "/sharkio/config",
       async (req: Request, res: Response, next: NextFunction) => {
         console.log("changing config");
         console.log({ body: req.body });
@@ -51,21 +51,21 @@ export class SnifferController {
     );
 
     this.app.post(
-      "/tartigraid/stop",
+      "/sharkio/stop",
       async (req: Request, res: Response, next: NextFunction) => {
         this.sniffer.stop();
       }
     );
 
     this.app.post(
-      "/tartigraid/start",
+      "/sharkio/start",
       async (req: Request, res: Response, next: NextFunction) => {
         this.sniffer.start();
       }
     );
 
     this.app.post(
-      "/tartigraid/execute",
+      "/sharkio/execute",
       async (req: Request, res: Response, next: NextFunction) => {
         const { url, method, invocation } = req.body;
 
@@ -91,7 +91,7 @@ export class SnifferController {
     );
 
     this.app.delete(
-      "/tartigraid",
+      "/sharkio",
       (req: Request, res: Response, next: NextFunction) => {
         res.json(this.sniffer.clearData());
       }

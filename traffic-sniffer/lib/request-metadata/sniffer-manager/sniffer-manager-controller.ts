@@ -21,7 +21,7 @@ export class SnifferManagerController {
     this.app.use(json());
 
     this.app.get(
-      "/tartigraid/sniffer/invocation",
+      "/sharkio/sniffer/invocation",
       (req: Request, res: Response) => {
         try {
           res.send(this.snifferManager.getAllData()).status(200);
@@ -31,7 +31,7 @@ export class SnifferManagerController {
       }
     );
 
-    this.app.get("/tartigraid/sniffer", (req: Request, res: Response) => {
+    this.app.get("/sharkio/sniffer", (req: Request, res: Response) => {
       res
         .send(
           this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => ({
@@ -42,7 +42,7 @@ export class SnifferManagerController {
         .status(200);
     });
 
-    this.app.get("/tartigraid/sniffer/:port", (req: Request, res: Response) => {
+    this.app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
       const { port } = req.params;
       const sniffer = this.snifferManager.getSniffer(+port);
 
@@ -53,7 +53,7 @@ export class SnifferManagerController {
       }
     });
 
-    this.app.post("/tartigraid/sniffer", (req: Request, res: Response) => {
+    this.app.post("/sharkio/sniffer", (req: Request, res: Response) => {
       const config = req.body;
 
       try {
@@ -66,7 +66,7 @@ export class SnifferManagerController {
     });
 
     this.app.post(
-      "/tartigraid/sniffer/:port/actions/stop",
+      "/sharkio/sniffer/:port/actions/stop",
       (req: Request, res: Response) => {
         try {
           const { port } = req.params;
@@ -87,7 +87,7 @@ export class SnifferManagerController {
     );
 
     this.app.post(
-      "/tartigraid/sniffer/:port/actions/start",
+      "/sharkio/sniffer/:port/actions/start",
       async (req: Request, res: Response) => {
         const { port } = req.params;
         const config = req.body;
@@ -108,7 +108,7 @@ export class SnifferManagerController {
     );
 
     this.app.post(
-      "/tartigraid/sniffer/:port/actions/execute",
+      "/sharkio/sniffer/:port/actions/execute",
       async (req: Request, res: Response) => {
         const { port } = req.params;
         const { url, method, invocation } = req.body;
@@ -130,7 +130,7 @@ export class SnifferManagerController {
     );
 
     this.app.delete(
-      "/tartigraid/sniffer/:port",
+      "/sharkio/sniffer/:port",
       async (req: Request, res: Response) => {
         const { port } = req.params;
 

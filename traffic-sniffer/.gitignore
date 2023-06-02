@@ -5,6 +5,6 @@ traffic-sniffer/node_modules/*
 traffic-dashboard/node_modules/*
 traffic-sniffer/node_modules/.bin/mime
 dist
-tartigraid-0.1.0.tgz
+sharkio-0.1.0.tgz
 *.tgz
 .idea
