@@ -1,11 +1,11 @@
 {
-  "name": "tartigraid",
-  "version": "0.1.0",
+  "name": "Sharki",
+  "version": "0.0.1",
   "description": "Micro service network monitoring and development tool",
   "main": "index.js",
   "bundledDependencies": true,
   "bin": {
-    "tartigraid": "index.mjs"
+    "sharki": "index.mjs"
   },
   "scripts": {
     "cli": "node ./index.mjs",
