@@ -6,6 +6,7 @@ import { RequestMetadataProvider } from "./context/requests-context";
 import { Home } from "./pages/home/Home";
 import { NewRequest } from "./pages/new-request/new-request";
 import { RequestPage } from "./pages/request/request";
+import { Config } from "./pages/config/Config";
 
 function App() {
   const theme = createTheme({
@@ -22,7 +23,7 @@ function App() {
               <Route path={routes.HOME} element={<Home />} />
               <Route path="/new-request" element={<NewRequest />}></Route>
               <Route path={routes.REQUEST} element={<RequestPage />}></Route>
-              <Route path={routes.HOME} element={<Home />} />
+              <Route path={routes.CONFIG} element={<Config />}></Route>
             </Routes>
           </PageTemplate>
         </RequestMetadataProvider>

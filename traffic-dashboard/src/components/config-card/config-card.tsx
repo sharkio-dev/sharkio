@@ -1,3 +1,4 @@
+import c from "classnames";
 import { Add, Delete, PlayArrow, Save, Stop } from "@mui/icons-material";
 import {
   Button,
@@ -24,7 +25,11 @@ type SnifferConfigRow = {
   isStarted: boolean;
 };
 
-export const ConfigCard: React.FC = () => {
+export type IConfigCardProps = {
+  className?: string;
+};
+
+export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const [stopLoading, setStopLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
@@ -151,7 +156,7 @@ export const ConfigCard: React.FC = () => {
 
   return (
     <>
-      <Card className={styles.container}>
+      <Card className={c(className, styles.container)}>
         <Typography variant="h6" gutterBottom>
           Config
         </Typography>
