@@ -18,7 +18,13 @@ export const SideBar: React.FC<ISideBarProps> = ({ className }) => {
         >
           Home
         </ListItemButton>
-
+        <ListItemButton
+          onClick={() => {
+            navigate("/config");
+          }}
+        >
+          Config
+        </ListItemButton>
         <ListItemButton
           onClick={() => {
             navigate("/new-request");
