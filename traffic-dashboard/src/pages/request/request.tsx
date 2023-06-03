@@ -37,9 +37,9 @@ export const RequestPage: React.FC = () => {
       return request.id === id;
     });
     if (request) {
-      const schema = generateJsonSchema(request.body);
+      const schema = generateJsonSchema(request.invocations[0].body);
       setSchema(schema);
-      setTypescript(jsonSchemaToTypescriptInterface(schema));
+      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
       setRequest(request);
     }
   }, [id, data]);
@@ -127,7 +127,9 @@ export const RequestPage: React.FC = () => {
           <Card>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Body typescript type</Typography>
-              <pre>{JSON.stringify(typescript ?? {}, null, 2)}</pre>
+              <pre>
+                <pre>{typescript}</pre>
+              </pre>
             </div>
           </Card>
           <Card>
