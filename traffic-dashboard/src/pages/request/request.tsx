@@ -15,9 +15,15 @@ import { HttpMethod } from "../../components/http-method/http-method";
 import { useParams } from "react-router-dom";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import styles from "./requestCard.module.scss";
+import {
+  generateJsonSchema,
+  jsonSchemaToTypescriptInterface,
+} from "../../lib/jsonSchema";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
+  const [typescript, setTypescript] = useState<any>(undefined);
+  const [schema, setSchema] = useState<any>(undefined);
   const [request, setRequest] = useState<any>(undefined);
   const { loadData, data } = useContext(RequestsMetadataContext);
 
@@ -27,10 +33,15 @@ export const RequestPage: React.FC = () => {
 
   useEffect(() => {
     console.log(data);
-    const request = data.find((request) => {
+    const request = data.find((request: any) => {
       return request.id === id;
     });
-    setRequest(request);
+    if (request) {
+      const schema = generateJsonSchema(request.body);
+      setSchema(schema);
+      setTypescript(jsonSchemaToTypescriptInterface(schema));
+      setRequest(request);
+    }
   }, [id, data]);
 
   const handleExecuteClicked = (
@@ -109,7 +120,14 @@ export const RequestPage: React.FC = () => {
           </Card>
           <Card>
             <div className={styles.cardTitle}>
-              <Typography variant="h6">Json Schema</Typography>
+              <Typography variant="h6">Body json schema</Typography>
+              <pre>{JSON.stringify(schema, null, 2)}</pre>
+            </div>
+          </Card>
+          <Card>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Body typescript type</Typography>
+              <pre>{JSON.stringify(typescript ?? {}, null, 2)}</pre>
             </div>
           </Card>
           <Card>

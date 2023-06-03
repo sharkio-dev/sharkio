@@ -32,6 +32,10 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
     properties: {},
     required: [],
   };
+
+  if (jsonObject === undefined) {
+    return schema;
+  }
   const stack: [JsonSchema, JsonValue][] = [[schema, jsonObject]];
 
   while (stack.length) {
@@ -72,7 +76,7 @@ export function jsonSchemaToTypescriptInterface(
   interfaceName = "",
   isNested = false
 ): string {
-  let output = isNested ? "" : `type ${interfaceName} = {`;
+  let output = isNested ? "" : `type${" " + interfaceName}= {`;
 
   if (schema.type === "object" && schema.properties) {
     for (const [key, value] of Object.entries(schema.properties)) {
