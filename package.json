@@ -1,11 +1,11 @@
 {
-  "name": "Sharki",
+  "name": "@idodav/sharkio",
   "version": "0.0.1",
   "description": "Micro service network monitoring and development tool",
   "main": "index.js",
   "bundledDependencies": true,
   "bin": {
-    "sharki": "index.mjs"
+    "sharkio": "index.mjs"
   },
   "scripts": {
     "cli": "node ./index.mjs",
