@@ -1,1 +1,1 @@
-npm uninstall -g tartigraid
+npm uninstall -g sharkio

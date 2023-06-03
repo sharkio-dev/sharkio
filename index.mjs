@@ -60,6 +60,7 @@ async function killDashboard(port = 3000) {
         .then(console.log)
         .catch(console.log)
 }
+
 async function createSniffer() {
 
 }

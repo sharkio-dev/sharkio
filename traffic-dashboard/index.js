@@ -18,9 +18,9 @@ export async function startDashboard() {
             };
 
             // Proxy middleware
-            const proxy = createProxyMiddleware('/tartigraid', proxyOptions);
+            const proxy = createProxyMiddleware('/sharkio', proxyOptions);
 
-            // Apply the proxy middleware to all requests starting with /tartigraid
+            // Apply the proxy middleware to all requests starting with /sharkio
             app.use(proxy);
 
 

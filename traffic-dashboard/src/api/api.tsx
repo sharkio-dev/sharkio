@@ -4,7 +4,7 @@ import { SnifferCreateConfig } from "../types/types";
 // const snifferAdminAxios = new axios.Axios({ baseURL: "http://localhost:5012" });
 
 export const createSniffer = (config: SnifferCreateConfig) => {
-  return axios.post("/tartigraid/sniffer", JSON.stringify(config), {
+  return axios.post("/sharkio/sniffer", JSON.stringify(config), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -12,22 +12,22 @@ export const createSniffer = (config: SnifferCreateConfig) => {
 };
 
 export const getSniffers = () => {
-  return axios.get("/tartigraid/sniffer");
+  return axios.get("/sharkio/sniffer");
 };
 
 export const stopSniffer = (port: number) => {
-  return axios.post(`/tartigraid/sniffer/${port}/actions/stop`);
+  return axios.post(`/sharkio/sniffer/${port}/actions/stop`);
 };
 
 export const startSniffer = async (port: number) => {
-  return await axios.post(`/tartigraid/sniffer/${port}/actions/start`);
+  return await axios.post(`/sharkio/sniffer/${port}/actions/start`);
 };
 export const deleteSniffer = async (port: number) => {
-  return await axios.delete(`/tartigraid/sniffer/${port}`);
+  return await axios.delete(`/sharkio/sniffer/${port}`);
 };
 
 export const getRequests = () => {
-  return axios.get("/tartigraid/sniffer/invocation");
+  return axios.get("/sharkio/sniffer/invocation");
 };
 
 export const executeRequest = (
@@ -36,7 +36,7 @@ export const executeRequest = (
   invocation: any
 ) => {
   return axios.post(
-    "/tartigraid/sniffer/5100/actions/execute",
+    "/sharkio/sniffer/5100/actions/execute",
     { url, method, invocation },
     {
       headers: {
