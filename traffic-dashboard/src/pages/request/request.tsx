@@ -9,13 +9,29 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
+import { useParams } from "react-router-dom";
+import { RequestsMetadataContext } from "../../context/requests-context";
 import styles from "./requestCard.module.scss";
 
 export const RequestPage: React.FC = () => {
-  const [request, _] = useState<any>(undefined);
+  const { id } = useParams();
+  const [request, setRequest] = useState<any>(undefined);
+  const { loadData, data } = useContext(RequestsMetadataContext);
+
+  useEffect(() => {
+    loadData?.();
+  }, []);
+
+  useEffect(() => {
+    console.log(data);
+    const request = data.find((request) => {
+      return request.id === id;
+    });
+    setRequest(request);
+  }, [id, data]);
 
   const handleExecuteClicked = (
     url: string,
@@ -27,6 +43,7 @@ export const RequestPage: React.FC = () => {
 
   return (
     <div className={styles.requestPageContainer}>
+      {request === undefined && "No request found"}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
