@@ -3,10 +3,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
 import { RequestMetadataProvider } from "./context/requests-context";
-import { Home } from "./pages/home/Home";
+import { Home } from "./pages/home/home";
 import { NewRequest } from "./pages/new-request/new-request";
 import { RequestPage } from "./pages/request/request";
-import { Config } from "./pages/config/Config";
+import { Config } from "./pages/config/config";
 
 function App() {
   const theme = createTheme({

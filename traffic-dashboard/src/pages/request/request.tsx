@@ -40,7 +40,6 @@ export const RequestPage: React.FC = () => {
               last invocation: {request.lastInvocationDate}
             </Typography>
           </Card>
-          {/* <Tab></Tab> */}
           <Card>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Invocations</Typography>
