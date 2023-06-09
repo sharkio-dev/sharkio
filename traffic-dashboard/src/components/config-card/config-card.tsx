@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createSniffer,
   deleteSniffer,
@@ -43,6 +43,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const [stopLoading, setStopLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
+  const fileUploadInputRef = useRef<HTMLInputElement>(null);
 
   const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
     {
@@ -165,13 +166,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   };
 
   const handleImportClicked = () => {
-    window.alert(
-      JSON.stringify(
-        sniffers.map((sniffer) => sniffer.config),
-        null,
-        2
-      )
-    );
+    fileUploadInputRef.current?.click();
   };
 
   const handleExportClicked = () => {
@@ -188,6 +183,29 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     saveAs(file, "config.json");
   };
 
+  const handlePortChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.port = +e.target.value;
+
+      return sniffers;
+    });
+  };
+  const handleUrlChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.downstreamUrl = e.target.value;
+
+      return sniffers;
+    });
+  };
+
   return (
     <>
       <Card className={c(className, styles.container)}>
@@ -202,9 +220,39 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
               </Button>
             </Tooltip>
             <Tooltip title={"import"}>
-              <Button>
+              <Button onClick={handleImportClicked}>
                 <FileUpload />
-                <input type="file" hidden/>
+                <input
+                  ref={fileUploadInputRef}
+                  type="file"
+                  accept="application/JSON"
+                  hidden
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    e.target.files &&
+                      e.target.files[0]
+                        .text()
+                        .then((res) => {
+                          const config = JSON.parse(res);
+                          setSniffers(
+                            config.map((sniffer: any) => {
+                              const configRow: SnifferConfigRow = {
+                                config: sniffer,
+                                isNew: true,
+                                isStarted: true,
+                              };
+                              return configRow;
+                            })
+                          );
+                          showSnackbar(
+                            "Successfully set the config file",
+                            "info"
+                          );
+                        })
+                        .catch(() => {
+                          showSnackbar("Failed to import config", "error");
+                        });
+                  }}
+                />
               </Button>
             </Tooltip>
           </div>
@@ -220,12 +268,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                 onChange={(
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => {
-                  setSniffers((prev) => {
-                    const sniffers = [...prev];
-                    sniffers[index].config.port = +e.target.value;
-
-                    return sniffers;
-                  });
+                  handlePortChanged(e, index);
                 }}
               />
               <TextField
@@ -236,12 +279,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                 onChange={(
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => {
-                  setSniffers((prev) => {
-                    const sniffers = [...prev];
-                    sniffers[index].config.downstreamUrl = e.target.value;
-
-                    return sniffers;
-                  });
+                  handleUrlChanged(e, index);
                 }}
               />
               {sniffer.isNew === false && (
