@@ -1,9 +1,34 @@
 # Sharkio
 
-Sharkio the best free and open source alternative to fiddler.
+## What is Sharkio
+Sharkio is a development tool for api developers.
+It is a proxy that records all the requests that are sent to your servers.
+And provides you with a dashboard to analyze all the traffic.
+Sharkio also provides the ability to repeat requests.
+Generate types for youre favorite language based on real data.
 
-Sharkio is a tool/platform by the developers for the developers.
-It aims to boost the productivity of web/api developers.
+## Roadmap
+In the roadmap sharkio will support team functions.
+Also Sharkio will integrate with ChatGPT in order to allow easy use of api.
+Request automation.
+Api inconsistency alerting.
+Integration to Postman.
+Automatic CLI generation for your api with real data.
+
+## Features
+|                       | available |
+|-----------------------|-----------|
+| Inspect traffic       |     V     |
+| Search                |     V     |
+| Filter                |     V     |
+| Repeat request        |     V     |
+| Typescript generator  |     V     |
+| JSON schema generator |     V     |
+| Microservice support  |     V     |
+| Open api generator    |           |
+| Save requests         |           |
+| Collections           |           |
+| Share requests        |           |
 
 ## Contributing
 
