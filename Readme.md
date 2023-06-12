@@ -14,6 +14,7 @@ Request automation.
 Api inconsistency alerting.
 Integration to Postman.
 Automatic CLI generation for your api with real data.
+Request mocking.
 
 ## Features
 |                       | available |
@@ -26,6 +27,8 @@ Automatic CLI generation for your api with real data.
 | JSON schema generator |     V     |
 | Microservice support  |     V     |
 | Open api generator    |           |
+| Request mocks         |           |
+| ChatGPT integration   |           |
 | Save requests         |           |
 | Collections           |           |
 | Share requests        |           |
