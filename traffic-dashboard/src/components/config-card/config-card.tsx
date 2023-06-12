@@ -205,6 +205,28 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       return sniffers;
     });
   };
+  const handleConfigUploaded = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.files &&
+      e.target.files[0]
+        .text()
+        .then((res) => {
+          const config = JSON.parse(res);
+          setSniffers(
+            config.map((sniffer: any) => {
+              const configRow: SnifferConfigRow = {
+                config: sniffer,
+                isNew: true,
+                isStarted: true,
+              };
+              return configRow;
+            })
+          );
+          showSnackbar("Successfully set the config file", "info");
+        })
+        .catch(() => {
+          showSnackbar("Failed to import config", "error");
+        });
+  };
 
   return (
     <>
@@ -227,31 +249,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                   type="file"
                   accept="application/JSON"
                   hidden
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    e.target.files &&
-                      e.target.files[0]
-                        .text()
-                        .then((res) => {
-                          const config = JSON.parse(res);
-                          setSniffers(
-                            config.map((sniffer: any) => {
-                              const configRow: SnifferConfigRow = {
-                                config: sniffer,
-                                isNew: true,
-                                isStarted: true,
-                              };
-                              return configRow;
-                            })
-                          );
-                          showSnackbar(
-                            "Successfully set the config file",
-                            "info"
-                          );
-                        })
-                        .catch(() => {
-                          showSnackbar("Failed to import config", "error");
-                        });
-                  }}
+                  onChange={handleConfigUploaded}
                 />
               </Button>
             </Tooltip>
