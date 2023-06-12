@@ -1,13 +1,22 @@
 import c from "classnames";
-import { Add, Delete, PlayArrow, Save, Stop } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  FileDownload,
+  FileUpload,
+  PlayArrow,
+  Save,
+  Stop,
+} from "@mui/icons-material";
 import {
   Button,
   Card,
   CircularProgress,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createSniffer,
   deleteSniffer,
@@ -18,6 +27,7 @@ import {
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
+import { saveAs } from "file-saver";
 
 type SnifferConfigRow = {
   isNew: boolean;
@@ -33,6 +43,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const [stopLoading, setStopLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
+  const fileUploadInputRef = useRef<HTMLInputElement>(null);
 
   const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
     {
@@ -154,12 +165,96 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
   };
 
+  const handleImportClicked = () => {
+    fileUploadInputRef.current?.click();
+  };
+
+  const handleExportClicked = () => {
+    const file = new Blob(
+      [
+        JSON.stringify(
+          sniffers.map((sniffer) => sniffer.config),
+          null,
+          2
+        ),
+      ],
+      { type: "text/plain;charset=utf-8" }
+    );
+    saveAs(file, "config.json");
+  };
+
+  const handlePortChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.port = +e.target.value;
+
+      return sniffers;
+    });
+  };
+  const handleUrlChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.downstreamUrl = e.target.value;
+
+      return sniffers;
+    });
+  };
+  const handleConfigUploaded = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.files &&
+      e.target.files[0]
+        .text()
+        .then((res) => {
+          const config = JSON.parse(res);
+          setSniffers(
+            config.map((sniffer: any) => {
+              const configRow: SnifferConfigRow = {
+                config: sniffer,
+                isNew: true,
+                isStarted: true,
+              };
+              return configRow;
+            })
+          );
+          showSnackbar("Successfully set the config file", "info");
+        })
+        .catch(() => {
+          showSnackbar("Failed to import config", "error");
+        });
+  };
+
   return (
     <>
       <Card className={c(className, styles.container)}>
-        <Typography variant="h6" gutterBottom>
-          Config
-        </Typography>
+        <div className={styles.titleBar}>
+          <Typography variant="h6" gutterBottom>
+            Config
+          </Typography>
+          <div>
+            <Tooltip title={"export"}>
+              <Button onClick={handleExportClicked}>
+                <FileDownload />
+              </Button>
+            </Tooltip>
+            <Tooltip title={"import"}>
+              <Button onClick={handleImportClicked}>
+                <FileUpload />
+                <input
+                  ref={fileUploadInputRef}
+                  type="file"
+                  accept="application/JSON"
+                  hidden
+                  onChange={handleConfigUploaded}
+                />
+              </Button>
+            </Tooltip>
+          </div>
+        </div>
         {sniffers?.map((sniffer, index) => {
           return (
             <div key={`config-row-${index}`} className={styles.inputs}>
@@ -171,12 +266,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                 onChange={(
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => {
-                  setSniffers((prev) => {
-                    const sniffers = [...prev];
-                    sniffers[index].config.port = +e.target.value;
-
-                    return sniffers;
-                  });
+                  handlePortChanged(e, index);
                 }}
               />
               <TextField
@@ -187,75 +277,74 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                 onChange={(
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => {
-                  setSniffers((prev) => {
-                    const sniffers = [...prev];
-                    sniffers[index].config.downstreamUrl = e.target.value;
-
-                    return sniffers;
-                  });
+                  handleUrlChanged(e, index);
                 }}
               />
               {sniffer.isNew === false && (
                 <>
-                  <Button
-                    color="success"
-                    onClick={() =>
-                      sniffer.config.port !== undefined &&
-                      handleStartClicked(sniffer.config.port)
-                    }
-                    disabled={sniffer.isStarted === true}
-                  >
-                    {startLoading === true ? (
-                      <CircularProgress />
-                    ) : (
-                      <PlayArrow></PlayArrow>
-                    )}
-                  </Button>
-                  <Button
-                    color="warning"
-                    disabled={sniffer.isStarted === false}
-                    onClick={() =>
-                      sniffer.config.port !== undefined &&
-                      handleStopClicked(sniffer.config.port)
-                    }
-                  >
-                    {stopLoading === true ? (
-                      <CircularProgress />
-                    ) : (
-                      <Stop></Stop>
-                    )}
-                  </Button>
+                  <Tooltip title={"Start sniffing requests"}>
+                    <Button
+                      color="success"
+                      onClick={() =>
+                        sniffer.config.port !== undefined &&
+                        handleStartClicked(sniffer.config.port)
+                      }
+                      disabled={sniffer.isStarted === true}
+                    >
+                      {startLoading === true ? (
+                        <CircularProgress />
+                      ) : (
+                        <PlayArrow />
+                      )}
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title={"Stop sniffing requests"}>
+                    <Button
+                      color="warning"
+                      disabled={sniffer.isStarted === false}
+                      onClick={() =>
+                        sniffer.config.port !== undefined &&
+                        handleStopClicked(sniffer.config.port)
+                      }
+                    >
+                      {stopLoading === true ? (
+                        <CircularProgress />
+                      ) : (
+                        <Stop></Stop>
+                      )}
+                    </Button>
+                  </Tooltip>
                 </>
               )}
               {sniffer.isNew === true && (
                 <>
-                  <Button
-                    color="info"
-                    disabled={
-                      sniffer.config.port === undefined ||
-                      sniffer.config.downstreamUrl === undefined
-                    }
-                    onClick={() => {
-                      handleSaveClicked(sniffer.config);
-                    }}
-                  >
-                    {saveLoading === true ? (
-                      <CircularProgress />
-                    ) : (
-                      <Save></Save>
-                    )}
-                  </Button>
+                  <Tooltip title="Save new sniffer">
+                    <Button
+                      color="info"
+                      disabled={
+                        sniffer.config.port === undefined ||
+                        sniffer.config.downstreamUrl === undefined
+                      }
+                      onClick={() => {
+                        handleSaveClicked(sniffer.config);
+                      }}
+                    >
+                      {saveLoading === true ? <CircularProgress /> : <Save />}
+                    </Button>
+                  </Tooltip>
                 </>
               )}
-              <Button
-                color="error"
-                onClick={() => {
-                  handleDeleteClicked(index);
-                }}
-                disabled={sniffer.isStarted === true}
-              >
-                <Delete></Delete>
-              </Button>
+              <Tooltip title="Remove the sniffer">
+                <Button
+                  color="error"
+                  onClick={() => {
+                    handleDeleteClicked(index);
+                  }}
+                  disabled={sniffer.isStarted === true}
+                >
+                  <Delete></Delete>
+                </Button>
+              </Tooltip>
             </div>
           );
         })}
@@ -264,7 +353,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             onClick={handleNewSnifferClicked}
             className={styles.addSnifferBtn}
           >
-            <Add></Add>
+            <Add />
             <Typography>New sniffer</Typography>
           </Button>
         </div>

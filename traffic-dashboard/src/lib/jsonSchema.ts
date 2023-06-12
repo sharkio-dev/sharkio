@@ -32,6 +32,10 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
     properties: {},
     required: [],
   };
+
+  if (jsonObject === undefined) {
+    return schema;
+  }
   const stack: [JsonSchema, JsonValue][] = [[schema, jsonObject]];
 
   while (stack.length) {
@@ -72,7 +76,7 @@ export function jsonSchemaToTypescriptInterface(
   interfaceName = "",
   isNested = false
 ): string {
-  let output = isNested ? "" : `type ${interfaceName} = {`;
+  let output = isNested ? "" : `type${" " + interfaceName + " "} = {\n`;
 
   if (schema.type === "object" && schema.properties) {
     for (const [key, value] of Object.entries(schema.properties)) {
@@ -83,13 +87,17 @@ export function jsonSchemaToTypescriptInterface(
       )}`;
     }
   } else if (schema.type === "array" && schema.items) {
-    output += `  ${jsonSchemaToTypescriptInterface(schema.items, "", true)}[];`;
+    output += `  ${jsonSchemaToTypescriptInterface(
+      schema.items,
+      "",
+      true
+    )}[];\n`;
   } else if (schema.type === "string") {
-    output += "string;";
+    output += "string;\n";
   } else if (schema.type === "number") {
-    output += "number;";
+    output += "number;\n";
   } else if (schema.type === "boolean") {
-    output += "boolean;";
+    output += "boolean;\n";
   }
 
   output += isNested ? "" : "}";

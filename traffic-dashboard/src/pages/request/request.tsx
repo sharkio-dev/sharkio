@@ -9,13 +9,40 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
+import { useParams } from "react-router-dom";
+import { RequestsMetadataContext } from "../../context/requests-context";
 import styles from "./requestCard.module.scss";
+import {
+  generateJsonSchema,
+  jsonSchemaToTypescriptInterface,
+} from "../../lib/jsonSchema";
 
 export const RequestPage: React.FC = () => {
-  const [request, _] = useState<any>(undefined);
+  const { id } = useParams();
+  const [typescript, setTypescript] = useState<any>(undefined);
+  const [schema, setSchema] = useState<any>(undefined);
+  const [request, setRequest] = useState<any>(undefined);
+  const { loadData, data } = useContext(RequestsMetadataContext);
+
+  useEffect(() => {
+    loadData?.();
+  }, []);
+
+  useEffect(() => {
+    console.log(data);
+    const request = data.find((request: any) => {
+      return request.id === id;
+    });
+    if (request) {
+      const schema = generateJsonSchema(request.invocations[0].body);
+      setSchema(schema);
+      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
+      setRequest(request);
+    }
+  }, [id, data]);
 
   const handleExecuteClicked = (
     url: string,
@@ -27,6 +54,7 @@ export const RequestPage: React.FC = () => {
 
   return (
     <div className={styles.requestPageContainer}>
+      {request === undefined && "No request found"}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
@@ -40,7 +68,6 @@ export const RequestPage: React.FC = () => {
               last invocation: {request.lastInvocationDate}
             </Typography>
           </Card>
-          {/* <Tab></Tab> */}
           <Card>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Invocations</Typography>
@@ -93,7 +120,16 @@ export const RequestPage: React.FC = () => {
           </Card>
           <Card>
             <div className={styles.cardTitle}>
-              <Typography variant="h6">Json Schema</Typography>
+              <Typography variant="h6">Body json schema</Typography>
+              <pre>{JSON.stringify(schema, null, 2)}</pre>
+            </div>
+          </Card>
+          <Card>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Body typescript type</Typography>
+              <pre>
+                <pre>{typescript}</pre>
+              </pre>
             </div>
           </Card>
           <Card>

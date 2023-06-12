@@ -16,9 +16,10 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { HttpMethod } from "../http-method/http-method";
-import styles from "./requests-card.module.scss";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
+import React from "react";
+import styles from "./requests-card.module.scss";
 
 export const RequestsCard = () => {
   const [filter, setFilter] = useState<string>();

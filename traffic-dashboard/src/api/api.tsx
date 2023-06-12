@@ -1,8 +1,6 @@
 import axios from "axios";
 import { SnifferCreateConfig } from "../types/types";
 
-// const snifferAdminAxios = new axios.Axios({ baseURL: "http://localhost:5012" });
-
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post("/sharkio/sniffer", JSON.stringify(config), {
     headers: {
@@ -36,7 +34,7 @@ export const executeRequest = (
   invocation: any
 ) => {
   return axios.post(
-    "/sharkio/sniffer/5100/actions/execute",
+    "/sharkio/sniffer/5555/actions/execute",
     { url, method, invocation },
     {
       headers: {
