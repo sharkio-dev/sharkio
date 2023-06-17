@@ -2,20 +2,28 @@ import { PlayArrow } from "@mui/icons-material";
 import {
   Button,
   Card,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Tabs,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
 import { useParams } from "react-router-dom";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import styles from "./requestCard.module.scss";
 import {
+  generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
@@ -23,8 +31,10 @@ import {
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
   const [typescript, setTypescript] = useState<any>(undefined);
+  const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
   const [request, setRequest] = useState<any>(undefined);
+  const [tab, setTab] = useState(0);
   const { loadData, data } = useContext(RequestsMetadataContext);
 
   useEffect(() => {
@@ -36,13 +46,20 @@ export const RequestPage: React.FC = () => {
     const request = data.find((request: any) => {
       return request.id === id;
     });
+
     if (request) {
       const schema = generateJsonSchema(request.invocations[0].body);
       setSchema(schema);
+      const curlCommand = generateCurlCommand(request);
+      setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
       setRequest(request);
     }
   }, [id, data]);
+
+  const handleTabChanged = (event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
+  };
 
   const handleExecuteClicked = (
     url: string,
@@ -114,32 +131,47 @@ export const RequestPage: React.FC = () => {
             </Table>
           </Card>
           <Card>
-            <div className={styles.cardTitle}>
-              <Typography variant="h6">OpenAPI</Typography>
-            </div>
-          </Card>
-          <Card>
-            <div className={styles.cardTitle}>
-              <Typography variant="h6">Body json schema</Typography>
-              <pre>{JSON.stringify(schema, null, 2)}</pre>
-            </div>
-          </Card>
-          <Card>
-            <div className={styles.cardTitle}>
-              <Typography variant="h6">Body typescript type</Typography>
-              <pre>
-                <pre>{typescript}</pre>
-              </pre>
-            </div>
-          </Card>
-          <Card>
-            <div className={styles.cardTitle}>
-              <Typography variant="h6">Raw JSON</Typography>
-            </div>
-            <pre>{JSON.stringify(request, null, 2)}</pre>
+            <Tabs value={tab} onChange={handleTabChanged}>
+              <Tab label="cUrl" value={0}></Tab>
+              <Tab label="Typescript" value={1}></Tab>
+              <Tab label="JSON Schema" value={2}></Tab>
+              <Tab label="RAW" value={3}></Tab>
+            </Tabs>
+            <TabContent index={0} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{curl}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={1} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{JSON.stringify(schema, null, 2)}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={2} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>
+                  <pre>{typescript}</pre>
+                </pre>
+              </div>
+            </TabContent>
+            <TabContent index={3} tabValue={tab}>
+              <>
+                <div className={styles.cardTitle}></div>
+                <pre>{JSON.stringify(request, null, 2)}</pre>
+              </>
+            </TabContent>
           </Card>
         </>
       )}
     </div>
   );
+};
+
+const TabContent: React.FC<
+  {
+    index: number;
+    tabValue: number;
+  } & PropsWithChildren
+> = ({ children, index, tabValue }) => {
+  return <>{index === tabValue && children}</>;
 };
