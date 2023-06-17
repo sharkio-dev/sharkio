@@ -50,6 +50,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       config: {
         port: undefined,
         downstreamUrl: undefined,
+        name: undefined,
       },
       isStarted: false,
       isNew: true,
@@ -147,6 +148,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       return;
     }
     const saveConfig: SnifferCreateConfig = {
+      name: config.name ?? "",
       port: config.port,
       downstreamUrl: config.downstreamUrl,
     };
@@ -205,6 +207,19 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       return sniffers;
     });
   };
+
+  const handleNameChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.name = e.target.value;
+
+      return sniffers;
+    });
+  };
+
   const handleConfigUploaded = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.files &&
       e.target.files[0]
@@ -260,6 +275,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             <div key={`config-row-${index}`} className={styles.inputs}>
               <TextField
                 label={"Port"}
+                placeholder="1234"
                 defaultValue={sniffer.config.port}
                 disabled={sniffer.isNew === false}
                 value={sniffer.config.port || ""}
@@ -271,6 +287,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
               />
               <TextField
                 label={"Proxy url"}
+                placeholder="http://example.com"
                 defaultValue={sniffer.config.downstreamUrl}
                 value={sniffer.config.downstreamUrl || ""}
                 disabled={sniffer.isNew === false}
@@ -278,6 +295,18 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
                 ) => {
                   handleUrlChanged(e, index);
+                }}
+              />
+              <TextField
+                label={"Name"}
+                placeholder="name"
+                defaultValue={sniffer.config.name}
+                value={sniffer.config.name || ""}
+                disabled={sniffer.isNew === false}
+                onChange={(
+                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+                ) => {
+                  handleNameChanged(e, index);
                 }}
               />
               {sniffer.isNew === false && (

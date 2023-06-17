@@ -12,6 +12,7 @@ import { Invocation, PathResponseData } from "../../../types/types";
 import { RequestMetadata } from "../request-metadata";
 
 export type SnifferConfig = {
+  name: string;
   port: number;
   downstreamUrl: string;
   id: string;
