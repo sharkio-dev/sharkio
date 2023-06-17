@@ -108,8 +108,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     setStartLoading(true);
     await startSniffer(port)
       .then(() => {
-        showSnackbar("then", "error");
-
         loadData();
       })
       .catch(() => {

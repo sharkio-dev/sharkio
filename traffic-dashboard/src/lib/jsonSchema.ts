@@ -103,3 +103,39 @@ export function jsonSchemaToTypescriptInterface(
   output += isNested ? "" : "}";
   return output;
 }
+
+type PathData = {
+  method: string;
+  hitCount: number;
+  lastInvocationDate?: Date;
+  invocations: Invocation[];
+};
+
+type Invocation = {
+  id: string;
+  timestamp: Date;
+  body?: any;
+  headers?: any;
+  cookies?: any;
+  params?: any;
+};
+
+export function generateCurlCommand(req: PathData): string {
+  const host = req.invocations[0].headers.host;
+  let curlCommand = `curl -X ${req.method} http://${host} \\\n`;
+
+  // Add request headers
+  for (const [key, value] of Object.entries(req.invocations[0].headers)) {
+    if (key === "host" || key.includes("sec-ch-ua")) {
+      continue;
+    }
+    curlCommand += `\t-H "${key}: ${value}" \\\n`;
+  }
+
+  // Add request body, if present
+  if (req.invocations[0].body) {
+    curlCommand += `\t-d '${JSON.stringify(req.invocations[0].body)}' \\\n`;
+  }
+
+  return curlCommand.slice(0, -2);
+}
