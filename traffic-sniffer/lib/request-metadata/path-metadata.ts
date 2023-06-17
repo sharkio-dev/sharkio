@@ -24,11 +24,12 @@ export class PathMetadata {
       invocations: [],
     };
     this.config = {
-      body_history_limit: 10,
-      record_bodies: true,
-      record_headers: true,
-      record_cookies: true,
-      record_params: true,
+      name: this.id,
+      bodyHistoryLimit: 10,
+      recordBodies: true,
+      recordHeaders: true,
+      recordCookies: true,
+      recordParams: true,
     };
   }
 
@@ -36,17 +37,17 @@ export class PathMetadata {
     this.incHitCount();
     this.data.lastInvocationDate = new Date();
 
-    if (this.data.invocations.length >= this.config.body_history_limit) {
+    if (this.data.invocations.length >= this.config.bodyHistoryLimit) {
       this.data.invocations.shift();
     }
 
     this.data.invocations.push({
       id: v4(),
       timestamp: new Date(),
-      body: this.config.record_bodies === true ? request.body : undefined,
-      headers: this.config.record_bodies === true ? request.headers : undefined,
-      cookies: this.config.record_bodies === true ? request.cookies : undefined,
-      params: this.config.record_params === true ? request.params : undefined,
+      body: this.config.recordBodies === true ? request.body : undefined,
+      headers: this.config.recordBodies === true ? request.headers : undefined,
+      cookies: this.config.recordBodies === true ? request.cookies : undefined,
+      params: this.config.recordParams === true ? request.params : undefined,
     });
   }
 

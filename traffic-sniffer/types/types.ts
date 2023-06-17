@@ -15,11 +15,12 @@ export type Invocation = {
 };
 
 export type PathMetadataConfig = {
-  body_history_limit: number;
-  record_bodies: boolean;
-  record_headers: boolean;
-  record_cookies: boolean;
-  record_params: boolean;
+  name: string;
+  bodyHistoryLimit: number;
+  recordBodies: boolean;
+  recordHeaders: boolean;
+  recordCookies: boolean;
+  recordParams: boolean;
 };
 
 export type PathResponseData = {

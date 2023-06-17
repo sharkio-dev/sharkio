@@ -21,6 +21,7 @@ export class SnifferController {
   stop() {
     this.sniffer.stop();
   }
+
   setup() {
     this.app.use(bodyParser.json());
     this.app.use(cookieparser());
