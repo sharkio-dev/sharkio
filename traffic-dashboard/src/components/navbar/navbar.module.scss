@@ -1,0 +1,31 @@
+.logo {
+  display: flex;
+  justify-content: center;
+  image-rendering: crisp-edges;
+}
+.logo img {
+  max-height: 50px; 
+  border-radius: 50%;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between; /* Align items on both ends */
+  
+  align-items: center; /* Vertically center the items */
+  margin-right: 15px;
+}
+
+.navbar_left {
+  display: flex;
+  align-items: center;
+ 
+}
+
+
+.logo_text {
+  font-size: 20px;
+  font-weight: bold;
+  font-family:'Brush Script MT', cursive;
+  margin-left: 15px;
+}
