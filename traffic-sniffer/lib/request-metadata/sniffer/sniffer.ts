@@ -62,6 +62,10 @@ export class Sniffer {
     return this.config.port;
   }
 
+  getServiceName() {
+    return this.config.name;
+  }
+
   getData(): PathResponseData[] {
     return this.data.getData();
   }

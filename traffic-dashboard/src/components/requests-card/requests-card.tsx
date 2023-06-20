@@ -111,9 +111,10 @@ export const RequestsCard = () => {
                           display: "flex",
                           justifyContent: "space-between",
                         }}
-                      >
+                      >   
                         <div className={styles.requestLeftSection}>
                           <div className={styles.methodContainer}>
+                            <HttpMethod method={req.service} />
                             <HttpMethod method={req.method} />
                           </div>
                           <span className={styles.url}>{req.url}</span>
