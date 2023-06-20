@@ -1,3 +1,7 @@
 import { startDashboard } from "traffic-dashboard";
 
-startDashboard();
+async function start() {
+    await startDashboard();
+}
+
+start();
