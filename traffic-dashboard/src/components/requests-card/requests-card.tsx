@@ -15,20 +15,24 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
+import { ServicesContext } from "../../context/services-context";
 import { HttpMethod } from "../http-method/http-method";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import React from "react";
 import styles from "./requests-card.module.scss";
+import { ServiceName } from "../service-name/service-name";
 
 export const RequestsCard = () => {
   const [filter, setFilter] = useState<string>();
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
+  const [servicesFilter, setServicesFilter] = useState<string[]>([]);
   const {
     data: requests,
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
+  // servicesMetaData
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +50,9 @@ export const RequestsCard = () => {
       (filter ? req.url.includes(filter) : true) &&
       (methodsFilter.length > 0
         ? methodsFilter.find((method) => method === req.method) !== undefined
+        : true) && 
+        (servicesFilter.length > 0
+        ? servicesFilter.find((service) => service === req.service) !== undefined
         : true)
   );
 
@@ -58,7 +65,7 @@ export const RequestsCard = () => {
           justifyContent: "space-between",
         }}
       >
-        <Input onChange={handleFilterChanged} placeholder="Search..."></Input>
+        <Input onChange={handleFilterChanged} placeholder="Search..."/>
         <Autocomplete
           freeSolo
           disablePortal
@@ -80,6 +87,29 @@ export const RequestsCard = () => {
           )}
           onChange={(_, value) => {
             setMethodsFilter(value);
+          }}
+        />
+        <Autocomplete
+          freeSolo
+          disablePortal
+          multiple
+          renderTags={(value: string[], getTagProps) =>
+            value.map((option: string, index: number) => (
+              <Chip
+                variant="outlined"
+                label={option}
+                {...getTagProps({ index })}
+              />
+            ))
+          }
+          id="combo-box-demo"
+          options={["test", "test2"]}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField variant="filled" {...params} label="Service" />
+          )}
+          onChange={(_, value) => {
+            setServicesFilter(value);
           }}
         />
       </Box>
@@ -113,8 +143,10 @@ export const RequestsCard = () => {
                         }}
                       >   
                         <div className={styles.requestLeftSection}>
+                          <div className={styles.serviceContainer}>
+                            <ServiceName service={req.service} />
+                          </div>
                           <div className={styles.methodContainer}>
-                            <HttpMethod method={req.service} />
                             <HttpMethod method={req.method} />
                           </div>
                           <span className={styles.url}>{req.url}</span>
