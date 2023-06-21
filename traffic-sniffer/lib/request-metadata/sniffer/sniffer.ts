@@ -50,7 +50,7 @@ export class Sniffer {
         "]:" +
         `${req.method} ${req.url} request logged`
     );
-    this.data.interceptRequest(req);
+    this.data.interceptRequest(req, this.config.name);
     next();
   }
 
@@ -60,10 +60,6 @@ export class Sniffer {
 
   getPort() {
     return this.config.port;
-  }
-
-  getServiceName() {
-    return this.config.name;
   }
 
   getData(): PathResponseData[] {

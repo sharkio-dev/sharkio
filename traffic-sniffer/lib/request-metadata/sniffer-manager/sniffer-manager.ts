@@ -29,19 +29,13 @@ export class SnifferManager {
   }
 
   getAllData() {
-    let newData: any[] = [];
+    let data: PathResponseData[] = [];
 
     this.sniffers.forEach((sniffer: Sniffer) => {
-      const service = sniffer.getServiceName();
-      const data = sniffer.getData();
-      newData = newData.concat(data.map(obj => ({
-        ...obj,
-        service: service
-      })));
-      // do not use concat, add an array with key that contains the sniffer name
+      data = data.concat(sniffer.getData());
     });
 
-    return newData;
+    return data;
   }
 
   getAllSniffers() {
