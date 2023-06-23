@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
-import { ServicesContext } from "../../context/services-context";
 import { HttpMethod } from "../http-method/http-method";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
