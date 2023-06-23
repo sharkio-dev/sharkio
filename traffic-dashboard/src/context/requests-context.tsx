@@ -1,11 +1,12 @@
 import { PropsWithChildren, createContext, useState } from "react";
-import { getRequests } from "../api/api";
+import { getRequests, getSniffers } from "../api/api";
 import { useSnackbar } from "../hooks/useSnackbar";
 
 export type RequestsMetadataContextType = {
   loadData?: () => void;
   loading?: boolean;
-  data?: any;
+  requestsData?: any;
+  servicesData?: any;
 };
 
 export const RequestsMetadataContext =
@@ -15,31 +16,52 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [requestsMetadata, setRequestsMetadata] =
-    useState<RequestsMetadataContextType>({ data: [] });
+    useState<RequestsMetadataContextType>({ requestsData: [] });
+
+  const [servicesList, setServicesList] =
+    useState<RequestsMetadataContextType>({ servicesData: [] });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const loadData = () => {
+  const loadData = async () => {
     if (loading) {
       return;
     }
 
-    setLoading(true);
-    getRequests()
-      .then((res) => {
-        setRequestsMetadata((prev) => ({ ...prev, data: res.data }));
-      })
-      .catch(() => {
-        setRequestsMetadata((prev) => ({ ...prev, data: [] }));
-        show("Failed to fetch requests!", "error");
-      })
+    setLoading(true);   
+    await Promise.all([
+      getRequests().then(handleRequests).catch(handleFailureRequests),
+      getSniffers().then(handleServices).catch(handleFailureServices)
+    ])
       .finally(() => setLoading(false));
   };
+
+  const handleRequests = (res: any) => {
+    setRequestsMetadata((prev) => ({ ...prev, requestsData: res.data }))
+  }
+
+  const handleFailureRequests = () => {
+    setRequestsMetadata((prev) => ({ ...prev, requestsData: [] }));
+        show("Failed to fetch requests!", "error");
+  }
+
+  const handleServices = (res: any) => {
+    const data = res.data.map((item: { config: { name: any; }; }) => item.config.name);
+    setServicesList((prev) => ({ ...prev, servicesData: data }))
+  }
+
+  const handleFailureServices = () => {
+    setRequestsMetadata((prev) => ({ ...prev, servicesData: [] }));
+        show("Failed to fetch services!", "error");
+  }
 
   const { show, component: snackBar } = useSnackbar();
 
   return (
     <RequestsMetadataContext.Provider
-      value={{ data: requestsMetadata.data, loadData, loading }}
+      value={{ requestsData: requestsMetadata.requestsData,
+               servicesData: servicesList.servicesData,
+               loadData, 
+               loading }}
     >
       {children}
       {snackBar}

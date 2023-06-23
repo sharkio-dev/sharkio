@@ -28,7 +28,8 @@ export const RequestsCard = () => {
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
   const [servicesFilter, setServicesFilter] = useState<string[]>([]);
   const {
-    data: requests,
+    requestsData: requests,
+    servicesData: services,
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
@@ -103,7 +104,7 @@ export const RequestsCard = () => {
             ))
           }
           id="combo-box-demo"
-          options={["test", "test2"]}
+          options={services}
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField variant="filled" {...params} label="Service" />
