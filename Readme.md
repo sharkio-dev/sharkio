@@ -70,6 +70,10 @@ For both:
 
 - npm run dev ( in root directory )
 
+## Architecture
+
+![image](https://github.com/idodav/sharkio/assets/21335259/6447c0cf-3bd5-4219-90b5-e3e064e4a60e)
+
 ## Screenshots
 <img width="1512" alt="Screenshot 2023-06-17 at 23 07 41" src="https://github.com/idodav/sharkio/assets/21335259/f2eb8993-a8a5-4857-9f80-fced384bd4da">
 <img width="1512" alt="Screenshot 2023-06-17 at 23 08 54" src="https://github.com/idodav/sharkio/assets/21335259/8d10504f-96cf-4236-8a34-169362113f5c">
