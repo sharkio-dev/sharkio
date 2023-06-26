@@ -6,7 +6,7 @@ interface IHttpMethodProps {
 
 export const HttpMethod: React.FC<IHttpMethodProps> = ({ method }) => {
   const color = methodColor(method);
-  return <Chip color={color} label={method}></Chip>;
+  return <Chip color={color} label={method}/>;
 };
 
 function methodColor(method: string) {

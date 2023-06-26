@@ -35,15 +35,17 @@ export const RequestPage: React.FC = () => {
   const [schema, setSchema] = useState<any>(undefined);
   const [request, setRequest] = useState<any>(undefined);
   const [tab, setTab] = useState(0);
-  const { loadData, data } = useContext(RequestsMetadataContext);
+  const { loadData, 
+          requestsData: requests,
+        } = useContext(RequestsMetadataContext);
 
   useEffect(() => {
     loadData?.();
   }, []);
 
   useEffect(() => {
-    console.log(data);
-    const request = data.find((request: any) => {
+    console.log(requests);
+    const request = requests.find((request: any) => {
       return request.id === id;
     });
 
@@ -55,7 +57,7 @@ export const RequestPage: React.FC = () => {
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
       setRequest(request);
     }
-  }, [id, data]);
+  }, [id, requests]);
 
   const handleTabChanged = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -93,7 +95,8 @@ export const RequestPage: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>execute</TableCell>
-                  <TableCell>id</TableCell>
+                  <TableCell>service</TableCell>
+                  <TableCell>request id</TableCell>
                   <TableCell>timestamp</TableCell>
                   <TableCell>body</TableCell>
                   <TableCell>params</TableCell>
@@ -117,6 +120,7 @@ export const RequestPage: React.FC = () => {
                           <PlayArrow color="success"></PlayArrow>
                         </Button>
                       </TableCell>
+                      <TableCell>{request.service}</TableCell>
                       <TableCell>{invocation.id}</TableCell>
                       <TableCell>{invocation.timestamp}</TableCell>
                       <TableCell>{JSON.stringify(invocation.body)}</TableCell>
