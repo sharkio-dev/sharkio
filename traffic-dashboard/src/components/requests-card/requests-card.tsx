@@ -32,7 +32,6 @@ export const RequestsCard = () => {
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
-  // servicesMetaData
   const navigate = useNavigate();
 
   useEffect(() => {
