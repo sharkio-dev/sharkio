@@ -118,7 +118,7 @@ export class SnifferManagerController {
           if (sniffer !== undefined) {
             await sniffer
               .execute(url, method, invocation)
-              .catch((e) => console.error("erro while executing"));
+              .catch((e) => console.error("error while executing"));
             res.sendStatus(200);
           } else {
             res.sendStatus(404);
@@ -148,6 +148,29 @@ export class SnifferManagerController {
         }
       }
     );
+    this.app.put(
+      "/sharkio/sniffer/:existingId",
+      async (req: Request, res: Response) => {
+        const { existingId } = req.params;
+        const { port } = req.body
+
+        try {
+          const sniffer = this.snifferManager.getSnifferById(existingId);
+          // verify that there is no sniffer with the port you want to change to.
+          const isPortAlreadyExists = this.snifferManager.getSnifferById(port.toString());
+          if ((sniffer !== undefined && !isPortAlreadyExists) || +port === +existingId) {
+            this.snifferManager.editSniffer(existingId, req.body)
+            res.sendStatus(200);
+          } else if (!sniffer) {
+            res.sendStatus(404);
+          } else if (isPortAlreadyExists) {
+            res.sendStatus(403);
+          }
+        } catch (e: any) {
+          res.sendStatus(500);
+        }
+      }
+    )
   }
 
   start(port: number = 5012) {
