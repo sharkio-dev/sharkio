@@ -75,8 +75,8 @@ For both:
 ![image](https://github.com/idodav/sharkio/assets/21335259/6447c0cf-3bd5-4219-90b5-e3e064e4a60e)
 
 ## Screenshots
-<img width="1512" alt="Screenshot 2023-06-17 at 23 07 41" src="https://github.com/idodav/sharkio/assets/21335259/f2eb8993-a8a5-4857-9f80-fced384bd4da">
-<img width="1512" alt="Screenshot 2023-06-17 at 23 08 54" src="https://github.com/idodav/sharkio/assets/21335259/8d10504f-96cf-4236-8a34-169362113f5c">
+<img width="1267" alt="Screenshot 2023-06-21 at 20 01 38" src="https://github.com/Oferlis/sharkio/assets/62609377/9b892d6c-b9b2-47b7-b265-2180ecd427d4">
+<img width="1267" alt="Screenshot 2023-06-26 at 12 32 47" src="https://github.com/Oferlis/sharkio/assets/62609377/8832a940-5ed4-4eb8-ac61-795d76a91790">
 
 ## Social links
 https://www.producthunt.com/posts/shakio
