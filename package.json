@@ -21,10 +21,12 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0",
+    "concurrently": "^8.2.0",
     "kill-port": "^2.0.1",
     "open": "^9.1.0",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
+    "ts-node": "^10.9.1",
     "yargs": "^17.7.2"
   },
   "files": [

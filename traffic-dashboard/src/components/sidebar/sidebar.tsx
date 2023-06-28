@@ -32,6 +32,13 @@ export const SideBar: React.FC<ISideBarProps> = ({ className }) => {
         >
           Request
         </ListItemButton>
+        <ListItemButton
+          onClick={() => {
+            navigate("/mocks");
+          }}
+        >
+          Mocks
+        </ListItemButton>
       </List>
     </Paper>
   );

@@ -10,6 +10,8 @@ import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation, PathResponseData } from "../../../types/types";
 import { RequestMetadata } from "../request-metadata";
+import MockController from './mock/mock-controller';
+import { MockManager } from "./mock/mock-handler";
 
 export type SnifferConfig = {
   name: string;
@@ -24,6 +26,8 @@ export class Sniffer {
   private config: SnifferConfig;
   private server: http.Server | undefined;
   private proxyMiddleware: RequestHandler;
+  private mockController: MockController;
+  private mockManager: MockManager;
   private id: string;
   private isStarted: boolean;
 
@@ -33,6 +37,8 @@ export class Sniffer {
     this.app = express();
     this.id = _config.id;
     this.isStarted = false;
+    this.mockManager = new MockManager();
+    this.mockController = new MockController(this.mockManager);
 
     this.proxyMiddleware = createProxyMiddleware({
       target: _config.downstreamUrl,
@@ -46,9 +52,9 @@ export class Sniffer {
   requestInterceptor(req: Request, res: Response, next: NextFunction) {
     console.log(
       "[" +
-        new Date().toISOString() +
-        "]:" +
-        `${req.method} ${req.url} request logged`
+      new Date().toISOString() +
+      "]:" +
+      `${req.method} ${req.url} request logged`
     );
     this.data.interceptRequest(req);
     next();
@@ -68,6 +74,7 @@ export class Sniffer {
 
   setup() {
     this.app.use(json());
+    this.mockController.setup(this.app);
     this.app.use(this.requestInterceptor.bind(this));
     this.app.use(this.proxyMiddleware);
   }
@@ -104,9 +111,9 @@ export class Sniffer {
         .on("error", (e) => {
           console.error(
             "Failed to start for proxy: \n" +
-              JSON.stringify(this.config, null, 2) +
-              "\n with error: \n" +
-              e.message
+            JSON.stringify(this.config, null, 2) +
+            "\n with error: \n" +
+            e.message
           );
           reject();
         })
