@@ -54,6 +54,8 @@ Please adhere to this project's `code of conduct`.
 
 ## Getting started
 
+- npm i -g concurrently ts-node 
+
 For the backend
 
 - cd into traffic-sniffer.
