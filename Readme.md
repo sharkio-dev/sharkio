@@ -36,18 +36,6 @@ Request mocking.
 | Collections           |           |
 | Share requests        |           |
 
-## Contributing
-
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-Please adhere to this project's `code of conduct`.
-
-## Acknowledgement
-
-- [Readme generator - readme.so](https://readme.so)
-
 ## How to use
 
 - npm install -g sharkio@latest
@@ -55,7 +43,9 @@ Please adhere to this project's `code of conduct`.
 - sharkio admin start
 - sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
 
-## Getting started
+## 🚀 Getting started
+
+- npm i -g concurrently ts-node 
 
 For the backend
 
@@ -92,3 +82,9 @@ For both:
 ## Social links
 
 https://www.producthunt.com/posts/shakio
+
+
+## Acknowledgement
+
+- [Readme generator - readme.so](https://readme.so)
+

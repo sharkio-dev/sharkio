@@ -134,4 +134,12 @@ export class Sniffer {
   getMiddleware() {
     return this.proxyMiddleware;
   }
+  getId() {
+    return this.id;
+  }
+  editSniffer(newConfig: SnifferConfig) {
+    this.changeConfig(newConfig)
+    this.id = newConfig.port.toString()
+    this.config.id = newConfig.port.toString()
+  }
 }
