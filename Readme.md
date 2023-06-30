@@ -20,21 +20,21 @@ Request mocking.
 
 ## 🔖 Features
 
-|                       | available |
-| --------------------- | --------- |
-| Inspect traffic       | V         |
-| Search                | V         |
-| Filter                | V         |
-| Repeat request        | V         |
-| Typescript generator  | V         |
-| JSON schema generator | V         |
-| Microservice support  | V         |
-| Open api generator    |           |
-| Request mocks         |           |
-| ChatGPT integration   |           |
-| Save requests         |           |
-| Collections           |           |
-| Share requests        |           |
+|   **Feature Name**    | **Available** |
+| :-------------------: | :-----------: |
+|    Inspect traffic    |      ✅       |
+|        Search         |      ✅       |
+|        Filter         |      ✅       |
+|    Repeat request     |      ✅       |
+| Typescript generator  |      ✅       |
+| JSON schema generator |      ✅       |
+| Microservice support  |      ✅       |
+|  Open api generator   |               |
+|     Request mocks     |               |
+|  ChatGPT integration  |               |
+|     Save requests     |               |
+|      Collections      |               |
+|    Share requests     |               |
 
 ## 🛠️ How to use
 
@@ -82,8 +82,7 @@ For both:
     <img width="1267" alt="Screenshot 2023-06-26 at 12 32 47" src="https://github.com/Oferlis/sharkio/assets/62609377/8832a940-5ed4-4eb8-ac61-795d76a91790">
 </details>
 
-
-## 	⚡ Social links
+## ⚡ Social links
 
 https://www.producthunt.com/posts/shakio
 
