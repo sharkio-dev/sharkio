@@ -24,7 +24,7 @@ export class SnifferManager {
     const res = this.sniffers.find((sniffer: Sniffer) => {
       return sniffer.getPort() === port;
     });
-    
+
     return res;
   }
 
@@ -67,6 +67,6 @@ export class SnifferManager {
     if (this.sniffers[existingIndex].getIsStarted() === true) {
       throw new Error("Cannot edit an active sniffer");
     }
-    this.sniffers[existingIndex].editSniffer(newConfig)
+    this.sniffers[existingIndex].editSniffer(newConfig);
   }
 }

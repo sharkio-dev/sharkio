@@ -37,7 +37,7 @@ export class RequestMetadata {
     pathMetadata: Map<string, PathMetadata>,
     method: string,
     url: string,
-    service: string,
+    service: string
   ) {
     let methodMetadata = pathMetadata.get(method);
 
