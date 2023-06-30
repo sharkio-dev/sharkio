@@ -81,9 +81,7 @@ For both:
 
 <details>
   <summary>Preview</summary>
-    <img src=assets/gif-demonstration.gif" raw=true alt=GIF Demonstration” style=“margin-right: 10px;”
-/>
-
+    <img src=assets/gif-demonstration.gif" raw=true alt=GIF Demonstration” style=“margin-right: 10px;”/>
 </details>
 
 ## Screenshots
