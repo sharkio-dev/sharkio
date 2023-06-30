@@ -47,6 +47,9 @@ Request mocking.
 
 - npm i -g concurrently ts-node
 
+To setup husky [pre-commit hook]:
+- npm run prepare
+
 For the backend
 
 - cd into traffic-sniffer.
