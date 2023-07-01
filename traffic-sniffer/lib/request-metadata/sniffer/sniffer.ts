@@ -138,7 +138,8 @@ export class Sniffer {
     return this.id;
   }
   editSniffer(newConfig: SnifferConfig) {
-    this.changeConfig(newConfig)
+    this.stop()
+    this.config = newConfig
     this.id = newConfig.port.toString()
     this.config.id = newConfig.port.toString()
   }
