@@ -2,15 +2,15 @@ import { PathResponseData } from "../../../types/types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import fs from 'fs'
 
-
 const setupFilePath = '../config/sniffers-setup.json'
+
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
   private setupFileData: SnifferConfig[]; 
 
   constructor() {
     this.sniffers = [];
-    this.setupFileData = this.validateSetupFileExists()
+    this.setupFileData = this.readSetupFileData()
     
     // if flag is added
     this.loadSnifferFromSetupFile()
@@ -94,8 +94,11 @@ export class SnifferManager {
   validateSetupFileExists() {
     if (!fs.existsSync(setupFilePath)) {
       fs.writeFileSync(setupFilePath, JSON.stringify([]), { flag: 'w'});
-    }
-    
+    }  
+  }
+
+  readSetupFileData() {
+    this.validateSetupFileExists
     const setupData: SnifferConfig[] = JSON.parse(fs.readFileSync(setupFilePath, "utf-8"));
     return setupData;    
   }
@@ -103,7 +106,7 @@ export class SnifferManager {
   loadSnifferFromSetupFile() {
     if (this.setupFileData.length !== 0) {
       this.setupFileData.forEach(item => {
-      this.createSniffer(item);
+        this.createSniffer(item);
       })
     }
   }
