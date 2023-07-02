@@ -13,6 +13,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
   },
+  "nodemonConfig": {
+    "ignore": ["config/*"]
+  },
   "author": "Ido David",
   "license": "ISC",
   "dependencies": {

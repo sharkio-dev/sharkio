@@ -1,8 +1,7 @@
 import fs from 'fs'
 import { SnifferConfig } from './sniffer/sniffer';
-import { SnifferManager } from '../..';
 
-const setupFilePath = '../config/sniffers-setup.json'
+const setupFilePath = process.env.SETUP_FILE_PATH ?? './config/sniffers-setup.json'
 
 
 export class SetupFile {

@@ -8,5 +8,3 @@ dist
 sharkio-0.1.0.tgz
 .idea
 *.tgz
-
-config/sniffers-setup.json
