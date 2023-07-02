@@ -1,19 +1,16 @@
 import { PathResponseData } from "../../../types/types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import fs from 'fs'
-
-const setupFilePath = '../config/sniffers-setup.json'
+import { SetupFile } from "../setup-file"
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
-  private setupFileData: SnifferConfig[]; 
+  private setupFileData: SetupFile;
 
   constructor() {
     this.sniffers = [];
-    this.setupFileData = this.readSetupFileData()
     
-    // if flag is added
-    this.loadSnifferFromSetupFile()
+    this.setupFileData = new SetupFile();
+    this.loadSnifferFromSetupFile();
   }
 
   createSniffer(snifferConfig: SnifferConfig) {
@@ -25,7 +22,7 @@ export class SnifferManager {
     
     const newSniffer = new Sniffer(snifferConfig);
     this.sniffers.push(newSniffer);
-    this.addSnifferToSetupFile(snifferConfig)
+    this.setupFileData.addSnifferToSetupFile(snifferConfig)
     return newSniffer;
   }
 
@@ -61,7 +58,7 @@ export class SnifferManager {
     }
 
     this.sniffers.splice(index, 1);
-    this.removeSnifferFromSetupFile(port)
+    this.setupFileData.removeSnifferFromSetupFile(port)
 
   }
   getSnifferById(id: string) {
@@ -79,54 +76,15 @@ export class SnifferManager {
       throw new Error("Cannot edit an active sniffer");
     }
     this.sniffers[existingIndex].editSniffer(newConfig)
-    this.updateSetupFile(existingId, newConfig)
+    this.setupFileData.updateSetupFile(existingId, newConfig)
   }
 
-  updateSetupFile(existingId: string, newConfig: SnifferConfig) {
-    const foundIndex = this.setupFileData.findIndex((item) => item.id === existingId);   
-    if (foundIndex === -1) {
-      throw new Error("item was not found")
-    }
-    this.setupFileData[foundIndex] = newConfig;
-    fs.writeFileSync(setupFilePath, JSON.stringify(this.setupFileData))
-  }
-
-  validateSetupFileExists() {
-    if (!fs.existsSync(setupFilePath)) {
-      fs.writeFileSync(setupFilePath, JSON.stringify([]), { flag: 'w'});
-    }  
-  }
-
-  readSetupFileData() {
-    this.validateSetupFileExists
-    const setupData: SnifferConfig[] = JSON.parse(fs.readFileSync(setupFilePath, "utf-8"));
-    return setupData;    
-  }
-  
   loadSnifferFromSetupFile() {
-    if (this.setupFileData.length !== 0) {
-      this.setupFileData.forEach(item => {
+    const loadedSetup: SnifferConfig[] = this.setupFileData.getSetup()
+    if (loadedSetup.length !== 0) {
+      loadedSetup.forEach(item => {
         this.createSniffer(item);
       })
     }
-  }
-
-  addSnifferToSetupFile(snifferConfig: SnifferConfig) {
-    if (this.setupFileData.indexOf(snifferConfig) === -1) {
-      this.setupFileData.push(snifferConfig)
-      fs.writeFileSync(setupFilePath, JSON.stringify(this.setupFileData))
-    }
-    else {
-      console.log("sniffer already listed");
-    }
-  }
-
-  removeSnifferFromSetupFile(port: number) {
-    const foundIndex = this.setupFileData.findIndex((item) => item.port === port);   
-    if (foundIndex === -1) {
-      throw new Error("item was not found")
-    }
-    this.setupFileData.splice(foundIndex, 1);
-    fs.writeFileSync(setupFilePath, JSON.stringify(this.setupFileData))
   }
 }
