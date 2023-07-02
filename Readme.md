@@ -84,7 +84,15 @@ For both:
 
 ## ⚡ Social links
 
-https://www.producthunt.com/posts/shakio
+  - ProductHunt page: https://www.producthunt.com/posts/shakio **Launch is coming soon!**
+  - Discord channel: https://discord.gg/fXuMxD23
+
+## 👩🏻‍💻 Want to contribute? 
+  - Fork the repo, clone it to your local environment and start exploring the code.
+  - Look for an issue, preferably from the next milestone list.
+  - Ask to be assigned to the issue.
+  - Got stuck? need an advice? find us in the Discord server.
+  - Found a bug? 🐛 please open an issue. 
 
 ## 🤝 Acknowledgement
 
