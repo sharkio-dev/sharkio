@@ -25,7 +25,7 @@ export type PathMetadataConfig = {
 
 export type PathResponseData = {
   id: string;
-  service: string,
+  service: string;
   method: string;
   hitCount: number;
   lastInvocationDate: Date | undefined;
