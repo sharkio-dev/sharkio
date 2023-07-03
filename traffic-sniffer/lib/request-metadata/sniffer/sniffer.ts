@@ -118,9 +118,16 @@ export class Sniffer {
   }
 
   stop() {
-    this.server?.close();
-    this.isStarted = false;
-    console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
+    return new Promise((resolve, reject) => {
+      this.server?.close((err) => {
+        if (err) {
+          reject(err);
+        }
+        this.isStarted = false;
+        console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
+        resolve(undefined);
+      });
+    });
   }
 
   getConfig() {
@@ -134,13 +141,15 @@ export class Sniffer {
   getMiddleware() {
     return this.proxyMiddleware;
   }
+
   getId() {
     return this.id;
   }
-  editSniffer(newConfig: SnifferConfig) {
-    this.stop()
-    this.config = newConfig
-    this.id = newConfig.port.toString()
-    this.config.id = newConfig.port.toString()
+
+  async editSniffer(newConfig: SnifferConfig) {
+    await this.stop();
+    this.config = newConfig;
+    this.id = newConfig.port.toString();
+    this.config.id = newConfig.port.toString();
   }
 }

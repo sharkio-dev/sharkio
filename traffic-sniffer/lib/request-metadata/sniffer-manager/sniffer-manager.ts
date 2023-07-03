@@ -53,6 +53,7 @@ export class SnifferManager {
 
     this.sniffers.splice(index, 1);
   }
+
   getSnifferById(id: string) {
     const res = this.sniffers.find((sniffer: Sniffer) => {
       return sniffer.getId() === id;
@@ -60,10 +61,12 @@ export class SnifferManager {
 
     return res;
   }
+
   editSniffer(existingId: string, newConfig: SnifferConfig) {
     const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
       return sniffer.getId() === existingId;
     });
+    // Not needed if we stop the sniffer beforehand
     if (this.sniffers[existingIndex].getIsStarted() === true) {
       throw new Error("Cannot edit an active sniffer");
     }
