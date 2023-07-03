@@ -99,20 +99,20 @@ export class Sniffer {
             "started sniffing" + JSON.stringify(this.config, null, 2)
           );
           this.isStarted = true;
-          resolve(undefined);
+          return resolve(undefined);
         })
-        .on("error", (e) => {
+        .on("error", (error) => {
           console.error(
             "Failed to start for proxy: \n" +
               JSON.stringify(this.config, null, 2) +
               "\n with error: \n" +
               e.message
           );
-          reject();
+          return reject(error);
         })
-        .on("clientError", () => {
+        .on("clientError", (error) => {
           console.error("clientError has occurred");
-          reject();
+          return reject(error);
         });
     });
   }
@@ -121,11 +121,11 @@ export class Sniffer {
     return new Promise((resolve, reject) => {
       this.server?.close((err) => {
         if (err) {
-          reject(err);
+          return reject(err);
         }
         this.isStarted = false;
         console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
-        resolve(undefined);
+        return resolve(undefined);
       });
     });
   }
