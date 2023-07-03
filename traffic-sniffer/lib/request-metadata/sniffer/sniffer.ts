@@ -63,7 +63,7 @@ export class Sniffer {
   }
 
   getData(): PathResponseData[] {
-    return this.data.getData();
+    return this.data.stats();
   }
 
   setup() {
@@ -73,12 +73,12 @@ export class Sniffer {
   }
 
   clearData() {
-    this.data.clearData();
+    this.data.invalidate();
   }
 
   execute(url: string, method: string, invocation: Invocation) {
     const executionUrl = `http://localhost:${this.config.port}${url}`;
-    return this.data.execute(executionUrl, method, invocation);
+    return this.data.execute(executionUrl, method, invocation, this.config.name);
   }
 
   changeConfig(newConfig: SnifferConfig) {

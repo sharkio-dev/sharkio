@@ -1,8 +1,9 @@
-import axios from "axios";
 import { Request } from "express";
 import { PathMetadata } from "./path-metadata";
 import { Invocation, PathResponseData } from "../../types/types";
 
+// This class only represents a mapping from the URL to the Methods we run on it
+// It's empty as heck and we can merge it with PathMetadata instead
 export class RequestMetadata {
   private paths: Map<string, Map<string, PathMetadata>>;
 
@@ -10,19 +11,7 @@ export class RequestMetadata {
     this.paths = new Map();
   }
 
-  interceptRequest(request: Request, service: string) {
-    const { method, path } = request;
-    const pathMetadata = this.getAndRegisterPath(path);
-    const methodMetadata = this.getAndRegisterMethod(
-      pathMetadata,
-      method,
-      path,
-      service
-    );
-    methodMetadata.interceptRequest(request);
-  }
-
-  private getAndRegisterPath(path: string) {
+  private ensureRequestMetadata(path: string) {
     let pathMetadata = this.paths.get(path);
 
     if (pathMetadata === undefined) {
@@ -33,7 +22,7 @@ export class RequestMetadata {
     return pathMetadata;
   }
 
-  private getAndRegisterMethod(
+  private ensureMethodMetadata(
     pathMetadata: Map<string, PathMetadata>,
     method: string,
     url: string,
@@ -49,33 +38,38 @@ export class RequestMetadata {
     return methodMetadata;
   }
 
-  execute(url: string, method: string, invocation: Invocation) {
-    return axios({
-      url: url,
-      method: method,
-      headers: invocation?.headers,
-      params: invocation?.params,
-      data: invocation?.body,
-    });
+  interceptRequest(request: Request, service: string) {
+    const { method, path } = request;
+    const pathMetadata = this.ensureRequestMetadata(path);
+    const methodMetadata = this.ensureMethodMetadata(
+      pathMetadata,
+      method,
+      path,
+      service
+    );
+    methodMetadata.interceptRequest(request);
   }
 
-  printStatistics() {
-    console.log(JSON.stringify(Array.from(this.paths.entries()), null, 2));
+  execute(url: string, method: string, invocation: Invocation, service: string) {
+    const pathMetadata = this.ensureRequestMetadata(url);
+    const methodMetadata = this.ensureMethodMetadata(pathMetadata, method, url, service);
+
+    return methodMetadata.execute(invocation);
   }
 
-  getData(): PathResponseData[] {
+  stats(): PathResponseData[] {
     const data: PathResponseData[] = [];
 
     for (const [path, methodMap] of this.paths) {
       for (const [method, methodMetadata] of methodMap) {
-        data.push(methodMetadata.getData());
+        data.push(methodMetadata.stats());
       }
     }
 
     return Object.keys(data).map((key: any) => data[key]);
   }
 
-  clearData() {
+  invalidate() {
     this.paths = new Map();
   }
 }

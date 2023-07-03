@@ -1,9 +1,3 @@
-export type PathData = {
-  method: string;
-  hitCount: number;
-  lastInvocationDate?: Date;
-  invocations: Invocation[];
-};
 
 export type Invocation = {
   id: string;
@@ -15,7 +9,7 @@ export type Invocation = {
 };
 
 export type PathMetadataConfig = {
-  name: string;
+  // name: string;
   bodyHistoryLimit: number;
   recordBodies: boolean;
   recordHeaders: boolean;
