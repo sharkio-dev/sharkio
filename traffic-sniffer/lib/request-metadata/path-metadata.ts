@@ -8,14 +8,12 @@ import {
 } from "../../types/types";
 
 export class PathMetadata {
-  static defaultConfig(): PathMetadataConfig {
-    return {
-      bodyHistoryLimit: 10,
-      recordBodies: true,
-      recordHeaders: true,
-      recordCookies: true,
-      recordParams: true,
-    };
+  static defaultConfig: PathMetadataConfig = {
+    bodyHistoryLimit: 10,
+    recordBodies: true,
+    recordHeaders: true,
+    recordCookies: true,
+    recordParams: true,
   }
 
   private id: string;
@@ -35,7 +33,7 @@ export class PathMetadata {
     this.hitCount = 0;
     this.lastInvocationDate = undefined;
     this.invocations = [];
-    this.config = PathMetadata.defaultConfig();
+    this.config = PathMetadata.defaultConfig;
   }
 
   interceptRequest(request: Request) {
