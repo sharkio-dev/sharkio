@@ -9,7 +9,6 @@ export type Invocation = {
 };
 
 export type PathMetadataConfig = {
-  // name: string;
   bodyHistoryLimit: number;
   recordBodies: boolean;
   recordHeaders: boolean;
