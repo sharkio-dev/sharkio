@@ -106,12 +106,14 @@ export class Sniffer {
             "Failed to start for proxy: \n" +
               JSON.stringify(this.config, null, 2) +
               "\n with error: \n" +
-              e.message
+              error.message
           );
+          // Create custom error if needed to expose more info the the application
           return reject(error);
         })
         .on("clientError", (error) => {
-          console.error("clientError has occurred");
+          console.error("clientError has occurred", error.message);
+          // Create custom error if needed to expose more info the the application
           return reject(error);
         });
     });
