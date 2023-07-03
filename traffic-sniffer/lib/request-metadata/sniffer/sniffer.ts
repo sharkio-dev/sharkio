@@ -121,13 +121,15 @@ export class Sniffer {
 
   stop() {
     return new Promise((resolve, reject) => {
+      const configString = JSON.stringify(this.config, null, 2);
+      console.log("stopping sniffer", configString);
       this.server?.close((error) => {
         if (error) {
-          console.error("couldn't stop the sniffer", JSON.stringify(this.config, null, 2), error.message);
+          console.error("couldn't stop the sniffer", configString, error.message);
           return reject(error);
         }
         this.isStarted = false;
-        console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
+        console.log("stopped sniffer", configString);
         return resolve(undefined);
       });
     });
