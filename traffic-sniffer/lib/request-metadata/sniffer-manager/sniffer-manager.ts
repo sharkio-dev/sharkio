@@ -1,16 +1,16 @@
 import { PathResponseData } from "../../../types/types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { SetupFile } from "../setup-file"
+import { FileConfig, ConfigLoader, SnifferConfigSetup } from "../setup-file"
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
-  private setupFileData: SetupFile;
+  private ConfigData: ConfigLoader;
 
   constructor() {
     this.sniffers = [];
-    
-    this.setupFileData = new SetupFile();
-    this.loadSnifferFromSetupFile();
+
+    this.ConfigData = new FileConfig();
+    this.loadSnifferFromConfig();
   }
 
   createSniffer(snifferConfig: SnifferConfig) {
@@ -22,7 +22,7 @@ export class SnifferManager {
     
     const newSniffer = new Sniffer(snifferConfig);
     this.sniffers.push(newSniffer);
-    this.setupFileData.addSnifferToSetupFile(snifferConfig)
+    this.ConfigData.addSniffer(snifferConfig)
     return newSniffer;
   }
 
@@ -58,7 +58,7 @@ export class SnifferManager {
     }
 
     this.sniffers.splice(index, 1);
-    this.setupFileData.removeSnifferFromSetupFile(port)
+    this.ConfigData.removeSniffer(port)
 
   }
   getSnifferById(id: string) {
@@ -76,15 +76,20 @@ export class SnifferManager {
       throw new Error("Cannot edit an active sniffer");
     }
     this.sniffers[existingIndex].editSniffer(newConfig)
-    this.setupFileData.updateSetupFile(existingId, newConfig)
+    this.ConfigData.update(existingId, newConfig, this.sniffers[existingIndex].getIsStarted())
   }
 
-  loadSnifferFromSetupFile() {
-    const loadedSetup: SnifferConfig[] = this.setupFileData.getSetup()
+  loadSnifferFromConfig() {
+    const loadedSetup: SnifferConfigSetup[] = this.ConfigData.getSetup()
     if (loadedSetup.length !== 0) {
       loadedSetup.forEach(item => {
-        this.createSniffer(item);
+        const sniffer: Sniffer = this.createSniffer(item);
+        if (item.isStarted) { sniffer.start(); }
       })
     }
+  }
+
+  setSnifferConfigToStarted(snifferId: string, isStarted: boolean){
+    this.ConfigData.setIsStarted(snifferId, isStarted);
   }
 }

@@ -3,56 +3,103 @@ import { SnifferConfig } from './sniffer/sniffer';
 
 const setupFilePath = process.env.SETUP_FILE_PATH ?? './config/sniffers-setup.json'
 
+export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean }
 
-export class SetupFile {
-    private setupData: SnifferConfig[]; 
+export interface ConfigLoader {
+    configData: SnifferConfigSetup[];
+
+    getSetup(): SnifferConfigSetup[];
+    update(existingId: string, newConfig: SnifferConfig, isStarted: boolean): void;
+    addSniffer(snifferConfig: SnifferConfig): void;
+    removeSniffer(port: number): void;
+    setIsStarted(snifferId: string, isStarted: boolean):  void;
+}
+
+export class FileConfig implements ConfigLoader {
+    configData: SnifferConfigSetup[];
 
     constructor() {
         this.validateSetupFileExists()
-        this.setupData = this.readSetupFileData();
+        this.configData = this.readSetupFileData();
     }
 
     getSetup() {
-        return this.setupData;
+        return this.configData;
     }
 
-    updateSetupFile(existingId: string, newConfig: SnifferConfig) {
-        const foundIndex = this.setupData.findIndex((item) => item.id === existingId);   
+    update(existingId: string, newConfig: SnifferConfig, isStarted: boolean) {
+        const foundIndex = this.configData.findIndex((item) => item.id === existingId);   
         if (foundIndex === -1) {
           throw new Error("item was not found")
         }
-        this.setupData[foundIndex] = newConfig;
-        fs.writeFileSync(setupFilePath, JSON.stringify(this.setupData))
+        this.configData[foundIndex] = this.createSnifferSetup(newConfig, isStarted);
+        this.writeToSetupFile()
       }
     
-      validateSetupFileExists() {
+    validateSetupFileExists() {
         if (!fs.existsSync(setupFilePath)) {
-          fs.writeFileSync(setupFilePath, JSON.stringify([]), { flag: 'w'});
-        }  
-      }
+            fs.writeFileSync(setupFilePath, JSON.stringify([]), { flag: 'w'});
+            }
+    }  
     
-      readSetupFileData() {
-        this.validateSetupFileExists
-        const setupData: SnifferConfig[] = JSON.parse(fs.readFileSync(setupFilePath, "utf-8"));
-        return setupData;    
-      }
+
+    readSetupFileData(): SnifferConfigSetup[] {
+        let setupData: SnifferConfigSetup[] = []
+        try {
+            setupData = JSON.parse(fs.readFileSync(setupFilePath, "utf-8"));
+        }
+        catch (err) {
+            throw new Error("setup file is not in right format!")
+        }
+        return setupData
+    }
+
+    addSniffer(snifferConfig: SnifferConfig) {
+        const addedObj = this.createSnifferSetup(snifferConfig, false)
     
-      addSnifferToSetupFile(snifferConfig: SnifferConfig) {
-        if (this.setupData.indexOf(snifferConfig) === -1) {
-          this.setupData.push(snifferConfig)
-          fs.writeFileSync(setupFilePath, JSON.stringify(this.setupData))
+        if (this.configData.findIndex((item) => item.id === snifferConfig.id ) === -1) {
+            this.configData.push(addedObj)
+            this.writeToSetupFile()
         }
         else {
-          console.log("sniffer already listed");
+            console.log("sniffer already listed");
         }
-      }
-    
-      removeSnifferFromSetupFile(port: number) {
-        const foundIndex = this.setupData.findIndex((item) => item.port === port);   
+    }
+
+    removeSniffer(port: number) {
+        const foundIndex = this.configData.findIndex((item) => item.port === port);   
+        if (foundIndex === -1) {
+            throw new Error("item was not found")
+        }
+        this.configData.splice(foundIndex, 1);
+        this.writeToSetupFile()
+
+    }
+
+    setIsStarted(snifferId: string, isStarted: boolean) {
+        const foundIndex = this.configData.findIndex((item) => item.id === snifferId);   
         if (foundIndex === -1) {
           throw new Error("item was not found")
         }
-        this.setupData.splice(foundIndex, 1);
-        fs.writeFileSync(setupFilePath, JSON.stringify(this.setupData))
-      }
+        const updatedSetup = this.configData[foundIndex];
+        updatedSetup.isStarted = isStarted
+        this.configData[foundIndex] = updatedSetup;
+        this.writeToSetupFile()
+    }
+
+    writeToSetupFile() {
+        fs.writeFile(setupFilePath, JSON.stringify(this.configData), (err) => {
+            if(err) { throw new Error("unable to update setup file"); }
+        })
+    }
+
+    createSnifferSetup(snifferConfig: SnifferConfig, isStarted: boolean): SnifferConfigSetup {
+        return {
+            id: snifferConfig.id,
+            name: snifferConfig.name,
+            downstreamUrl: snifferConfig.downstreamUrl,
+            port: snifferConfig.port,
+            isStarted: isStarted
+        }
+    }
 }
