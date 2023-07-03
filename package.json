@@ -15,7 +15,8 @@
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "author": "Ido David",
   "license": "ISC",
@@ -42,5 +43,8 @@
     "traffic-dashboard",
     "traffic-sniffer",
     "yargs"
-  ]
+  ],
+  "devDependencies": {
+    "husky": "^8.0.3"
+  }
 }

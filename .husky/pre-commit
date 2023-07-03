@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Formatting traffic-sniffer"
+cd traffic-sniffer
+npm run format
+
+cd ..
+
+echo "Formatting traffic-dashboard"
+cd traffic-dashboard
+npm run format
