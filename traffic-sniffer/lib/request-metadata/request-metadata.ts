@@ -2,9 +2,6 @@ import { Request } from "express";
 import { PathMetadata } from "./path-metadata";
 import { Invocation, PathResponseData } from "../../types/types";
 
-// This class only represents a mapping from the URL to the Methods we run on it
-// It's empty as heck and we can merge it with PathMetadata instead
-// All of the functionality is being delegated to the PathMetadata class
 export class RequestMetadata {
   private paths: Map<string, Map<string, PathMetadata>>;
 
@@ -67,8 +64,6 @@ export class RequestMetadata {
       }
     }
 
-    // WTF is even that?
-    // return Object.keys(result).map((key: any) => result[key]);
     return result;
   }
 
