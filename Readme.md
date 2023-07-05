@@ -100,3 +100,9 @@ For both:
 ## 🤝 Acknowledgement
 
 - [Readme generator - readme.so](https://readme.so)
+
+## 🏆 Contributors
+
+<a href = "https://github.com/dicedb/dice/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=idodav/sharkio"/>
+</a>
