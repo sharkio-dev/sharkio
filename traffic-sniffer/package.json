@@ -1,7 +1,7 @@
 {
   "name": "traffic-sniffer",
   "version": "1.0.0",
-  "description": "A nodejs proxt that reads all the traffic and makes sense of it",
+  "description": "A nodejs proxy that reads all the traffic and makes sense of it",
   "main": "./dist/main.js",
   "files": [
     "dist"
@@ -14,7 +14,7 @@
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
   },
   "nodemonConfig": {
-    "ignore": ["config/*"]
+    "ignore": ["./sniffers-setup.json"]
   },
   "author": "Ido David",
   "license": "ISC",

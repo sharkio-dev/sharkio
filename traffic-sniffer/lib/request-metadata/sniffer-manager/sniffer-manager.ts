@@ -1,6 +1,7 @@
 import { PathResponseData } from "../../../types/types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { FileConfig, ConfigLoader, SnifferConfigSetup } from "../file-config";
+import { FileConfig, SnifferConfigSetup } from "../setup-config/file-config";
+import { ConfigLoader } from "../setup-config/config-loader-interface";
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
@@ -10,7 +11,7 @@ export class SnifferManager {
     this.sniffers = [];
 
     this.ConfigData = new FileConfig();
-    this.loadSnifferFromConfig();
+    this.loadSniffersFromConfig();
   }
 
   createSniffer(snifferConfig: SnifferConfig) {
@@ -82,7 +83,7 @@ export class SnifferManager {
     );
   }
 
-  loadSnifferFromConfig() {
+  loadSniffersFromConfig() {
     const loadedSetup: SnifferConfigSetup[] = this.ConfigData.getSetup();
     if (loadedSetup.length !== 0) {
       loadedSetup.forEach((item) => {

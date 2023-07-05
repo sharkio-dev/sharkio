@@ -1,24 +1,13 @@
-import fs from "fs";
-import { SnifferConfig } from "./sniffer/sniffer";
+import fs from "fs/promises";
+import fsSync from "fs";
+
+import { SnifferConfig } from "../sniffer/sniffer";
+import { ConfigLoader } from "./config-loader-interface";
 
 const setupFilePath =
-  process.env.SETUP_FILE_PATH ?? "./config/sniffers-setup.json";
+  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
-
-export interface ConfigLoader {
-  configData: SnifferConfigSetup[];
-
-  getSetup(): SnifferConfigSetup[];
-  update(
-    existingId: string,
-    newConfig: SnifferConfig,
-    isStarted: boolean
-  ): void;
-  addSniffer(snifferConfig: SnifferConfig): void;
-  removeSniffer(port: number): void;
-  setIsStarted(snifferId: string, isStarted: boolean): void;
-}
 
 export class FileConfig implements ConfigLoader {
   configData: SnifferConfigSetup[];
@@ -43,16 +32,17 @@ export class FileConfig implements ConfigLoader {
     this.writeToSetupFile();
   }
 
-  validateSetupFileExists() {
-    if (!fs.existsSync(setupFilePath)) {
-      fs.writeFileSync(setupFilePath, JSON.stringify([]), { flag: "w" });
+  async validateSetupFileExists() {
+    if(!fsSync.existsSync(setupFilePath)) {
+        fsSync.writeFileSync(setupFilePath, JSON.stringify([]), { flag: "w" });
     }
   }
 
-  readSetupFileData(): SnifferConfigSetup[] {
+    readSetupFileData(): SnifferConfigSetup[] {
     let setupData: SnifferConfigSetup[] = [];
     try {
-      setupData = JSON.parse(fs.readFileSync(setupFilePath, "utf-8"));
+        const fileData: string = fsSync.readFileSync(setupFilePath, "utf-8")
+        setupData = JSON.parse(fileData);
     } catch (err) {
       throw new Error("setup file is not in right format!");
     }
@@ -95,12 +85,8 @@ export class FileConfig implements ConfigLoader {
     this.writeToSetupFile();
   }
 
-  writeToSetupFile() {
-    fs.writeFile(setupFilePath, JSON.stringify(this.configData), (err) => {
-      if (err) {
-        throw new Error("unable to update setup file");
-      }
-    });
+  async writeToSetupFile() {
+    await fs.writeFile(setupFilePath, JSON.stringify(this.configData, null, 2));
   }
 
   createSnifferSetup(
