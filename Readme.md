@@ -110,10 +110,8 @@ Note:
 
 ## 🏆 Contributors
 
+Appreciating all our fellow contributors:
+
 <a href = "https://github.com/dicedb/dice/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=idodav/sharkio"/>
-<<<<<<< HEAD
 </a>
-=======
-</a>
->>>>>>> ae022a38ccf4f5f93b83b965b8ab95f3ace723b2
