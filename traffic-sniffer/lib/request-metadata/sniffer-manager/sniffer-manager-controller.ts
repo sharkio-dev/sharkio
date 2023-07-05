@@ -96,7 +96,7 @@ export class SnifferManagerController {
         try {
           const sniffer = this.snifferManager.getSniffer(+port);
 
-          if (sniffer !== undefined) {
+          if (sniffer) {
             await sniffer.start();
             res.sendStatus(200);
             this.snifferManager.setSnifferConfigToStarted(sniffer.getId(), true);

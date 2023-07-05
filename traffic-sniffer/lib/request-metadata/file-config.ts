@@ -56,14 +56,15 @@ export class FileConfig implements ConfigLoader {
 
     addSniffer(snifferConfig: SnifferConfig) {
         const addedObj = this.createSnifferSetup(snifferConfig, false)
-    
-        if (this.configData.findIndex((item) => item.id === snifferConfig.id ) === -1) {
-            this.configData.push(addedObj)
-            this.writeToSetupFile()
-        }
-        else {
+        const isListed = this.configData.findIndex((item) => item.id === snifferConfig.id )
+
+        if (isListed !== -1) {
             console.log("sniffer already listed");
+            return;
         }
+        this.configData.push(addedObj)
+        this.writeToSetupFile()
+        
     }
 
     removeSniffer(port: number) {
