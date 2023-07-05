@@ -28,14 +28,14 @@ export class SnifferManager {
     return res;
   }
 
-  getAllData() {
-    let data: PathResponseData[] = [];
+  stats() {
+    let stats: PathResponseData[] = [];
 
     this.sniffers.forEach((sniffer: Sniffer) => {
-      data = data.concat(sniffer.getData());
+      stats.push(...sniffer.stats().interceptedRequests);
     });
 
-    return data;
+    return stats;
   }
 
   getAllSniffers() {

@@ -24,7 +24,7 @@ export class SnifferManagerController {
       "/sharkio/sniffer/invocation",
       (req: Request, res: Response) => {
         try {
-          res.send(this.snifferManager.getAllData()).status(200);
+          res.send(this.snifferManager.stats()).status(200);
         } catch (e) {
           res.sendStatus(500);
         }
@@ -33,13 +33,16 @@ export class SnifferManagerController {
 
     this.app.get("/sharkio/sniffer", (req: Request, res: Response) => {
       res
+        .status(200)
         .send(
-          this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => ({
-            config: sniffer.getConfig(),
-            isStarted: sniffer.getIsStarted(),
-          }))
-        )
-        .status(200);
+          this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
+            const { config, isStarted } = sniffer.stats();
+            return {
+              config,
+              isStarted,
+            };
+          })
+        );
     });
 
     this.app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {

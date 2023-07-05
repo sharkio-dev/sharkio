@@ -20,22 +20,22 @@ export type SnifferConfig = {
 
 export class Sniffer {
   private app: Express;
-  private data: InterceptedRequests;
+  private interceptedRequests: InterceptedRequests;
   private config: SnifferConfig;
-  private server: http.Server | undefined;
+  private server?: http.Server;
   private proxyMiddleware: RequestHandler;
   private id: string;
   private isStarted: boolean;
 
-  constructor(_config: SnifferConfig) {
-    this.data = new InterceptedRequests();
-    this.config = _config;
+  constructor(config: SnifferConfig) {
+    this.interceptedRequests = new InterceptedRequests();
+    this.config = config;
     this.app = express();
-    this.id = _config.id;
+    this.id = config.id;
     this.isStarted = false;
 
     this.proxyMiddleware = createProxyMiddleware({
-      target: _config.downstreamUrl,
+      target: config.downstreamUrl,
       secure: false,
       logLevel: "debug",
     });
@@ -50,7 +50,7 @@ export class Sniffer {
         "]:" +
         `${req.method} ${req.url} request logged`
     );
-    this.data.interceptRequest(req, this.config.name);
+    this.interceptedRequests.interceptRequest(req, this.config.name);
     next();
   }
 
@@ -62,32 +62,28 @@ export class Sniffer {
     return this.config.port;
   }
 
-  getData(): PathResponseData[] {
-    return this.data.stats();
-  }
-
   setup() {
     this.app.use(json());
     this.app.use(this.requestInterceptor.bind(this));
     this.app.use(this.proxyMiddleware);
   }
 
-  clearData() {
-    this.data.invalidate();
+  invalidateInterceptedRequests() {
+    this.interceptedRequests.invalidate();
   }
 
   execute(url: string, method: string, invocation: Invocation) {
     const executionUrl = `http://localhost:${this.config.port}${url}`;
-    return this.data.execute(executionUrl, method, invocation, this.config.name);
+    return this.interceptedRequests.execute(executionUrl, method, invocation, this.config.name);
   }
 
-  changeConfig(newConfig: SnifferConfig) {
+  async changeConfig(newConfig: SnifferConfig) {
     console.log("stopping server");
-    this.stop();
+    await this.stop();
     console.log("changing config");
     this.config = newConfig;
     console.log("starting server with new config");
-    this.start();
+    await this.start();
   }
 
   start() {
@@ -135,6 +131,24 @@ export class Sniffer {
     });
   }
 
+  async editSniffer(newConfig: SnifferConfig) {
+    await this.stop();
+    this.config = newConfig;
+    this.id = newConfig.port.toString();
+    this.config.id = newConfig.port.toString();
+  }
+
+  stats() {
+    const { config, isStarted, proxyMiddleware, id, interceptedRequests } = this;
+    return {
+      id,
+      config,
+      isStarted,
+      proxyMiddleware,
+      interceptedRequests: interceptedRequests.stats(),
+    };
+  }
+
   getConfig() {
     return this.config;
   }
@@ -149,12 +163,5 @@ export class Sniffer {
 
   getId() {
     return this.id;
-  }
-
-  async editSniffer(newConfig: SnifferConfig) {
-    await this.stop();
-    this.config = newConfig;
-    this.id = newConfig.port.toString();
-    this.config.id = newConfig.port.toString();
   }
 }
