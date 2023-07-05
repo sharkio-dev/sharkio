@@ -4,8 +4,7 @@ import fsSync from "fs";
 import { SnifferConfig } from "../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 
-const setupFilePath =
-  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
+const setupFilePath = process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
 
@@ -33,16 +32,16 @@ export class FileConfig implements ConfigLoader {
   }
 
   async validateSetupFileExists() {
-    if(!fsSync.existsSync(setupFilePath)) {
-        fsSync.writeFileSync(setupFilePath, JSON.stringify([]), { flag: "w" });
+    if (!fsSync.existsSync(setupFilePath)) {
+      fsSync.writeFileSync(setupFilePath, JSON.stringify([]), { flag: "w" });
     }
   }
 
-    readSetupFileData(): SnifferConfigSetup[] {
+  readSetupFileData(): SnifferConfigSetup[] {
     let setupData: SnifferConfigSetup[] = [];
     try {
-        const fileData: string = fsSync.readFileSync(setupFilePath, "utf-8")
-        setupData = JSON.parse(fileData);
+      const fileData: string = fsSync.readFileSync(setupFilePath, "utf-8");
+      setupData = JSON.parse(fileData);
     } catch (err) {
       throw new Error("setup file is not in right format!");
     }
