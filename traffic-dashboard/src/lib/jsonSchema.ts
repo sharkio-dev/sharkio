@@ -109,6 +109,7 @@ type PathData = {
   hitCount: number;
   lastInvocationDate?: Date;
   invocations: Invocation[];
+  url: string;
 };
 
 type Invocation = {
@@ -122,7 +123,7 @@ type Invocation = {
 
 export function generateCurlCommand(req: PathData): string {
   const host = req.invocations[0].headers.host;
-  let curlCommand = `curl -X ${req.method} http://${host} \\\n`;
+  let curlCommand = `curl -X ${req.method} http://${host}${req.url} \\\n`;
 
   // Add request headers
   for (const [key, value] of Object.entries(req.invocations[0].headers)) {
