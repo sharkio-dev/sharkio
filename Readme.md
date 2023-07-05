@@ -48,6 +48,7 @@ Request mocking.
 - npm i -g concurrently ts-node
 
 To setup husky [pre-commit hook]:
+
 - npm run prepare
 
 For the backend
@@ -65,6 +66,11 @@ For the frontend
 For both:
 
 - npm run dev ( in root directory )
+
+Note:
+
+- Incase you want a dummy server to test sniffing as shown in [visual demonstration of how to use](https://github.com/idodav/sharkio#visual-demonstration-how-to-run-the-application), then run the follwoing command:
+- npm run dev-server ( in root directory )
 
 ## 🏗️ Architecture
 
@@ -87,15 +93,16 @@ For both:
 
 ## ⚡ Social links
 
-  - ProductHunt page: https://www.producthunt.com/posts/shakio **Launch is coming soon!**
-  - Discord channel: https://discord.gg/fXuMxD23
+- ProductHunt page: https://www.producthunt.com/posts/shakio **Launch is coming soon!**
+- Discord channel: https://discord.gg/fXuMxD23
 
-## 👩🏻‍💻 Want to contribute? 
-  - Fork the repo, clone it to your local environment and start exploring the code.
-  - Look for an issue, preferably from the next milestone list.
-  - Ask to be assigned to the issue.
-  - Got stuck? need an advice? find us in the Discord server.
-  - Found a bug? 🐛 please open an issue. 
+## 👩🏻‍💻 Want to contribute?
+
+- Fork the repo, clone it to your local environment and start exploring the code.
+- Look for an issue, preferably from the next milestone list.
+- Ask to be assigned to the issue.
+- Got stuck? need an advice? find us in the Discord server.
+- Found a bug? 🐛 please open an issue.
 
 ## 🤝 Acknowledgement
 
