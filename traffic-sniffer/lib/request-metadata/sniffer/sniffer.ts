@@ -19,12 +19,12 @@ export type SnifferConfig = {
 };
 
 export class Sniffer {
+  private id: string;
   private app: Express;
   private interceptedRequests: InterceptedRequests;
   private config: SnifferConfig;
   private server?: http.Server;
   private proxyMiddleware: RequestHandler;
-  private id: string;
   private isStarted: boolean;
 
   constructor(config: SnifferConfig) {
