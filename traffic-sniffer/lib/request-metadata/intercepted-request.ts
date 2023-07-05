@@ -7,7 +7,22 @@ import {
   PathResponseData,
 } from "../../types/types";
 
-export class PathMetadata {
+export class RequestKey extends Object {
+  constructor(public readonly method: string, public readonly url: string) {
+    super();
+  }
+
+  static fromString(string: string) {
+    const [method, path] = string.split(" ");
+    return new this(method, path);
+  }
+
+  toString(): string {
+    return `${this.method} ${this.url}`;
+  }
+}
+
+export class InterceptedRequest {
   static readonly defaultConfig: PathMetadataConfig = {
     bodyHistoryLimit: 10,
     recordBodies: true,
@@ -25,21 +40,18 @@ export class PathMetadata {
   private invocations: Invocation[];
   private config: PathMetadataConfig;
 
-  constructor(method: string, url: string, service: string) {
+  constructor(key: RequestKey, service: string) {
     this.id = v4();
     this.service = service;
-    this.url = url;
-    this.method = method;
+    this.method = key.method;
+    this.url = key.url;
     this.hitCount = 0;
     this.lastInvocationDate = undefined;
     this.invocations = [];
-    this.config = PathMetadata.defaultConfig;
+    this.config = InterceptedRequest.defaultConfig;
   }
 
-  interceptRequest(request: Request) {
-    this.hitCount++;
-    this.lastInvocationDate = new Date();
-
+  private logInvocation(request: Request) {
     if (this.invocations.length >= this.config.bodyHistoryLimit) {
       this.invocations.shift();
     }
@@ -52,6 +64,12 @@ export class PathMetadata {
       cookies: this.config.recordBodies === true ? request.cookies : undefined,
       params: this.config.recordParams === true ? request.params : undefined,
     });
+  }
+
+  intercept(request: Request) {
+    this.hitCount++;
+    this.lastInvocationDate = new Date();
+    this.logInvocation(request);
   }
 
   async execute(invocation: Invocation) {

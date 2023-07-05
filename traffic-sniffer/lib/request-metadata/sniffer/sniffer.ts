@@ -9,7 +9,7 @@ import express, {
 import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation, PathResponseData } from "../../../types/types";
-import { RequestMetadata } from "../request-metadata";
+import { InterceptedRequests } from "../intercepted-requests";
 
 export type SnifferConfig = {
   name: string;
@@ -20,7 +20,7 @@ export type SnifferConfig = {
 
 export class Sniffer {
   private app: Express;
-  private data: RequestMetadata;
+  private data: InterceptedRequests;
   private config: SnifferConfig;
   private server: http.Server | undefined;
   private proxyMiddleware: RequestHandler;
@@ -28,7 +28,7 @@ export class Sniffer {
   private isStarted: boolean;
 
   constructor(_config: SnifferConfig) {
-    this.data = new RequestMetadata();
+    this.data = new InterceptedRequests();
     this.config = _config;
     this.app = express();
     this.id = _config.id;
