@@ -70,7 +70,7 @@ export class FileConfig implements ConfigLoader {
     removeSniffer(port: number) {
         const foundIndex = this.configData.findIndex((item) => item.port === port);   
         if (foundIndex === -1) {
-            throw new Error("item was not found")
+            throw new Error("item was not found") 
         }
         this.configData.splice(foundIndex, 1);
         this.writeToSetupFile()
