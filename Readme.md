@@ -70,7 +70,7 @@ For both:
 Note:
 
 - Incase you want a dummy server to test sniffing as shown in [visual demonstration of how to use](https://github.com/idodav/sharkio#visual-demonstration-how-to-run-the-application), then run the follwoing command:
-- npm run dev-server ( in root directory )
+- npm run demo ( in root directory )
 
 ## 🏗️ Architecture
 
