@@ -15,7 +15,7 @@
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
-    "dev-server": "npm run dev && nodemon dummy-server.js && npm run dev",
+    "dev-server": "npm run dev && nodemon dummy-server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
