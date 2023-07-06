@@ -93,7 +93,7 @@ Note:
 
 ## ⚡ Social links
 
-- ProductHunt page: https://www.producthunt.com/posts/shakio **Launch is coming soon!**
+- ProductHunt page: https://www.producthunt.com/posts/sharkio **Launch is coming soon!**
 - Discord channel: https://discord.gg/fXuMxD23
 
 ## 👩🏻‍💻 Want to contribute?
