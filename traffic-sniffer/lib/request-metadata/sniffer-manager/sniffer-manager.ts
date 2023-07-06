@@ -1,4 +1,6 @@
 import { PathResponseData } from "../../../types/types";
+import MockManager from "../sniffer/mock/mock-manager";
+import MockMiddleware from "../sniffer/mock/mock-middleware";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 
 export class SnifferManager {
@@ -16,6 +18,7 @@ export class SnifferManager {
     }
 
     const newSniffer = new Sniffer(snifferConfig);
+
     this.sniffers.push(newSniffer);
     return newSniffer;
   }

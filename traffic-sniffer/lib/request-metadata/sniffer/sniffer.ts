@@ -10,8 +10,8 @@ import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation, PathResponseData } from "../../../types/types";
 import { RequestMetadata } from "../request-metadata";
-import MockController from './mock/mock-controller';
-import { MockManager } from "./mock/mock-handler";
+import MockManager from "./mock/mock-manager";
+import MockMiddleware from "./mock/mock-middleware";
 
 export type SnifferConfig = {
   name: string;
@@ -26,10 +26,10 @@ export class Sniffer {
   private config: SnifferConfig;
   private server: http.Server | undefined;
   private proxyMiddleware: RequestHandler;
-  private mockController: MockController;
-  private mockManager: MockManager;
-  private id: string;
   private isStarted: boolean;
+  private id: string;
+  private mockManager: MockManager;
+  private mockMiddleware: MockMiddleware;
 
   constructor(_config: SnifferConfig) {
     this.data = new RequestMetadata();
@@ -38,7 +38,7 @@ export class Sniffer {
     this.id = _config.id;
     this.isStarted = false;
     this.mockManager = new MockManager();
-    this.mockController = new MockController(this.mockManager);
+    this.mockMiddleware = new MockMiddleware(this.mockManager);
 
     this.proxyMiddleware = createProxyMiddleware({
       target: _config.downstreamUrl,
@@ -52,9 +52,9 @@ export class Sniffer {
   requestInterceptor(req: Request, res: Response, next: NextFunction) {
     console.log(
       "[" +
-      new Date().toISOString() +
-      "]:" +
-      `${req.method} ${req.url} request logged`
+        new Date().toISOString() +
+        "]:" +
+        `${req.method} ${req.url} request logged`
     );
     this.data.interceptRequest(req);
     next();
@@ -74,8 +74,8 @@ export class Sniffer {
 
   setup() {
     this.app.use(json());
-    this.mockController.setup(this.app);
     this.app.use(this.requestInterceptor.bind(this));
+    this.app.use(this.mockMiddleware.mock.bind(this));
     this.app.use(this.proxyMiddleware);
   }
 
@@ -111,9 +111,9 @@ export class Sniffer {
         .on("error", (e) => {
           console.error(
             "Failed to start for proxy: \n" +
-            JSON.stringify(this.config, null, 2) +
-            "\n with error: \n" +
-            e.message
+              JSON.stringify(this.config, null, 2) +
+              "\n with error: \n" +
+              e.message
           );
           reject();
         })
@@ -140,5 +140,9 @@ export class Sniffer {
 
   getMiddleware() {
     return this.proxyMiddleware;
+  }
+
+  getMockManager() {
+    return this.mockManager;
   }
 }
