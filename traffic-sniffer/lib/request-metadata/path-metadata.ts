@@ -10,12 +10,14 @@ import {
 
 export class PathMetadata {
   private id: string;
+  private service: string;
   private url: string;
   private data: PathData;
   private config: PathMetadataConfig;
 
-  constructor(method: string, url: string) {
+  constructor(method: string, url: string, service: string) {
     this.id = v4();
+    this.service = service;
     this.url = url;
     this.data = {
       method,
@@ -66,11 +68,12 @@ export class PathMetadata {
   }
 
   getData(): PathResponseData {
-    const { id, url } = this;
+    const { id, url, service } = this;
     const { method, hitCount, lastInvocationDate, invocations } = this.data;
 
     const res: PathResponseData = {
       id,
+      service,
       url,
       method,
       hitCount,

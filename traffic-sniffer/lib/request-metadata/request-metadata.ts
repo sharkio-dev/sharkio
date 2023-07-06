@@ -10,13 +10,14 @@ export class RequestMetadata {
     this.paths = new Map();
   }
 
-  interceptRequest(request: Request) {
+  interceptRequest(request: Request, service: string) {
     const { method, path } = request;
     const pathMetadata = this.getAndRegisterPath(path);
     const methodMetadata = this.getAndRegisterMethod(
       pathMetadata,
       method,
-      path
+      path,
+      service
     );
     methodMetadata.interceptRequest(request);
   }
@@ -35,12 +36,13 @@ export class RequestMetadata {
   private getAndRegisterMethod(
     pathMetadata: Map<string, PathMetadata>,
     method: string,
-    url: string
+    url: string,
+    service: string
   ) {
     let methodMetadata = pathMetadata.get(method);
 
     if (methodMetadata === undefined) {
-      methodMetadata = new PathMetadata(method, url);
+      methodMetadata = new PathMetadata(method, url, service);
       pathMetadata.set(method, methodMetadata);
     }
 

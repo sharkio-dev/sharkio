@@ -56,7 +56,7 @@ export class Sniffer {
         "]:" +
         `${req.method} ${req.url} request logged`
     );
-    this.data.interceptRequest(req);
+    this.data.interceptRequest(req, this.config.name);
     next();
   }
 
@@ -144,5 +144,16 @@ export class Sniffer {
 
   getMockManager() {
     return this.mockManager;
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  editSniffer(newConfig: SnifferConfig) {
+    this.stop();
+    this.config = newConfig;
+    this.id = newConfig.port.toString();
+    this.config.id = newConfig.port.toString();
   }
 }

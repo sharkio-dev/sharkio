@@ -56,4 +56,20 @@ export class SnifferManager {
 
     this.sniffers.splice(index, 1);
   }
+  getSnifferById(id: string) {
+    const res = this.sniffers.find((sniffer: Sniffer) => {
+      return sniffer.getId() === id;
+    });
+
+    return res;
+  }
+  editSniffer(existingId: string, newConfig: SnifferConfig) {
+    const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
+      return sniffer.getId() === existingId;
+    });
+    if (this.sniffers[existingIndex].getIsStarted() === true) {
+      throw new Error("Cannot edit an active sniffer");
+    }
+    this.sniffers[existingIndex].editSniffer(newConfig);
+  }
 }

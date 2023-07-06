@@ -15,7 +15,9 @@
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "author": "Ido David",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "axios": "^1.4.0",
     "concurrently": "^8.2.0",
     "kill-port": "^2.0.1",
+    "nodemon": "^2.0.22",
     "open": "^9.1.0",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
@@ -42,5 +45,9 @@
     "traffic-dashboard",
     "traffic-sniffer",
     "yargs"
-  ]
+  ],
+  "devDependencies": {
+    "express": "^4.18.2",
+    "husky": "^8.0.3"
+  }
 }

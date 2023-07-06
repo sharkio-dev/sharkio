@@ -1,13 +1,15 @@
 # Sharkio
 
-## What is Sharkio
+## 🐳 What is Sharkio
+
 Sharkio is a development tool for api developers.
 It is a proxy that records all the requests that are sent to your servers.
 And provides you with a dashboard to analyze all the traffic.
 Sharkio also provides the ability to repeat requests.
 Generate types for youre favorite language based on real data.
 
-## Roadmap
+## 🗺️ Roadmap
+
 In the roadmap sharkio will support team functions.
 Also Sharkio will integrate with ChatGPT in order to allow easy use of api.
 Request automation.
@@ -16,43 +18,38 @@ Integration to Postman.
 Automatic CLI generation for your api with real data.
 Request mocking.
 
-## Features
-|                       | available |
-|-----------------------|-----------|
-| Inspect traffic       |     V     |
-| Search                |     V     |
-| Filter                |     V     |
-| Repeat request        |     V     |
-| Typescript generator  |     V     |
-| JSON schema generator |     V     |
-| Microservice support  |     V     |
-| Open api generator    |           |
-| Request mocks         |           |
-| ChatGPT integration   |           |
-| Save requests         |           |
-| Collections           |           |
-| Share requests        |           |
+## 🔖 Features
 
-## Contributing
+|   **Feature Name**    | **Available** |
+| :-------------------: | :-----------: |
+|    Inspect traffic    |      ✅       |
+|        Search         |      ✅       |
+|        Filter         |      ✅       |
+|    Repeat request     |      ✅       |
+| Typescript generator  |      ✅       |
+| JSON schema generator |      ✅       |
+| Microservice support  |      ✅       |
+|  Open api generator   |               |
+|     Request mocks     |               |
+|  ChatGPT integration  |               |
+|     Save requests     |               |
+|      Collections      |               |
+|    Share requests     |               |
 
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-Please adhere to this project's `code of conduct`.
-
-## Acknowledgement
-
-- [Readme generator - readme.so](https://readme.so)
-
-## How to use
+## 🛠️ How to use
 
 - npm install -g sharkio@latest
 - sharkio dashboard start
 - sharkio admin start
 - sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
 
-## Getting started
+## 🚀 Getting started
+
+- npm i -g concurrently ts-node
+
+To setup husky [pre-commit hook]:
+
+- npm run prepare
 
 For the backend
 
@@ -70,14 +67,51 @@ For both:
 
 - npm run dev ( in root directory )
 
-## Architecture
+Note:
+
+- Incase you want a dummy server to test sniffing as shown in [visual demonstration of how to use](https://github.com/idodav/sharkio#visual-demonstration-how-to-run-the-application), then run the follwoing command:
+- npm run demo ( in root directory )
+
+## 🏗️ Architecture
 
 ![image](https://github.com/idodav/sharkio/assets/21335259/6447c0cf-3bd5-4219-90b5-e3e064e4a60e)
 
-## Screenshots
-<img width="1512" alt="Screenshot 2023-06-17 at 23 07 41" src="https://github.com/idodav/sharkio/assets/21335259/f2eb8993-a8a5-4857-9f80-fced384bd4da">
-<img width="1512" alt="Screenshot 2023-06-17 at 23 08 54" src="https://github.com/idodav/sharkio/assets/21335259/8d10504f-96cf-4236-8a34-169362113f5c">
+## 📸 / 🎥 Screenshots
 
-## Social links
-https://www.producthunt.com/posts/shakio
+### Visual Demonstration: How to run the application?
 
+<details>
+  <summary>Preview How To Use</summary>
+    <img src="assets/gif-demonstration.gif" raw=true alt=GIF Demonstration” style=“margin-right: 10px;”/>
+</details>
+
+<details>
+  <summary>Preview UI interface</summary>
+    <img width="1267" alt="Screenshot 2023-06-21 at 20 01 38" src="https://github.com/Oferlis/sharkio/assets/62609377/9b892d6c-b9b2-47b7-b265-2180ecd427d4">
+    <img width="1267" alt="Screenshot 2023-06-26 at 12 32 47" src="https://github.com/Oferlis/sharkio/assets/62609377/8832a940-5ed4-4eb8-ac61-795d76a91790">
+</details>
+
+## ⚡ Social links
+
+- ProductHunt page: https://www.producthunt.com/posts/sharkio **Launch is coming soon!**
+- Discord channel: https://discord.gg/fXuMxD23
+
+## 👩🏻‍💻 Want to contribute?
+
+- Fork the repo, clone it to your local environment and start exploring the code.
+- Look for an issue, preferably from the next milestone list.
+- Ask to be assigned to the issue.
+- Got stuck? need an advice? find us in the Discord server.
+- Found a bug? 🐛 please open an issue.
+
+## 🤝 Acknowledgement
+
+- [Readme generator - readme.so](https://readme.so)
+
+## 🏆 Contributors
+
+Appreciating all our fellow contributors:
+
+<a href = "https://github.com/dicedb/dice/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=idodav/sharkio"/>
+</a>
