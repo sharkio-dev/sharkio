@@ -2,12 +2,18 @@ import { PathResponseData } from "../../../types/types";
 import MockManager from "../sniffer/mock/mock-manager";
 import MockMiddleware from "../sniffer/mock/mock-middleware";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
+import { FileConfig, SnifferConfigSetup } from "../setup-config/file-config";
+import { ConfigLoader } from "../setup-config/config-loader-interface";
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
+  private ConfigData: ConfigLoader;
 
   constructor() {
     this.sniffers = [];
+
+    this.ConfigData = new FileConfig();
+    this.loadSniffersFromConfig();
   }
 
   createSniffer(snifferConfig: SnifferConfig) {
@@ -20,6 +26,7 @@ export class SnifferManager {
     const newSniffer = new Sniffer(snifferConfig);
 
     this.sniffers.push(newSniffer);
+    this.ConfigData.addSniffer(snifferConfig);
     return newSniffer;
   }
 
@@ -55,6 +62,7 @@ export class SnifferManager {
     }
 
     this.sniffers.splice(index, 1);
+    this.ConfigData.removeSniffer(port);
   }
   getSnifferById(id: string) {
     const res = this.sniffers.find((sniffer: Sniffer) => {
@@ -72,6 +80,27 @@ export class SnifferManager {
       throw new Error("Cannot edit an active sniffer");
     }
     this.sniffers[existingIndex].editSniffer(newConfig);
+    this.ConfigData.update(
+      existingId,
+      newConfig,
+      this.sniffers[existingIndex].getIsStarted()
+    );
+  }
+
+  loadSniffersFromConfig() {
+    const loadedSetup: SnifferConfigSetup[] = this.ConfigData.getSetup();
+    if (loadedSetup.length !== 0) {
+      loadedSetup.forEach((item) => {
+        const sniffer: Sniffer = this.createSniffer(item);
+        if (item.isStarted) {
+          sniffer.start();
+        }
+      });
+    }
+  }
+
+  setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
+    this.ConfigData.setIsStarted(snifferId, isStarted);
   }
 
   getAllMocks() {
