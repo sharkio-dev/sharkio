@@ -21,34 +21,3 @@ export const Navbar: React.FC = () => {
     </AppBar>
   );
 };
-
-// import { Paper } from "@mui/material";
-// import React from "react";
-// import styles from "./navbar.module.scss";
-
-// interface INavbarProps {
-//   onBurgerClicked: () => void;
-//   minimized: boolean;
-// }
-
-// export const Navbar: React.FC<INavbarProps> = ({
-//   onBurgerClicked,
-//   minimized,
-// }) => {
-//   return (
-//     <Paper elevation={15} className={styles.paper}>
-//       <div className={styles.navbar_left}>
-//         <div className={styles.logo}>
-//           <a href="/home">
-//             <img src="shark-logo.png" alt="Logo" />
-//           </a>
-//         </div>
-//         {!minimized && (
-//           <>
-//             <div className={styles.logo_text}>SHARKIO</div>
-//           </>
-//         )}
-//       </div>
-//     </Paper>
-//   );
-// };
