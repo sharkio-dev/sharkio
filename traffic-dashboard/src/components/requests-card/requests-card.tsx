@@ -89,7 +89,12 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
               <List>
                 {filteredRequests &&
                   filteredRequests.map((req: any) => (
-                    <ListItemButton key={req.id}>
+                    <ListItemButton
+                      key={req.id}
+                      onClick={() => {
+                        navigate(generatePath(routes.REQUEST, { id: req.id }));
+                      }}
+                    >
                       <Box
                         sx={{
                           width: "100%",
@@ -130,16 +135,6 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
                               <div>{req.lastInvocationDate}</div>
                             </Box>
                             <Chip label={req.hitCount}></Chip>
-                            <IconButton
-                              size="small"
-                              onClick={() => {
-                                navigate(
-                                  generatePath(routes.REQUEST, { id: req.id })
-                                );
-                              }}
-                            >
-                              <Edit />
-                            </IconButton>
                           </Box>
                         </div>
                       </Box>

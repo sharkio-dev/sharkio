@@ -28,6 +28,7 @@ function App() {
               <Route path={routes.CONFIG} element={<Config />}></Route>
               <Route path={routes.REQUESTS} element={<Requests />}></Route>
               <Route path={routes.MOCKS} element={<Mocks />}></Route>
+              <Route path={"*"} element={<Home />}></Route>
             </Routes>
           </PageTemplate>
         </RequestMetadataProvider>
