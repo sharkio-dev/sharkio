@@ -63,6 +63,7 @@ export class SnifferManager {
 
     return res;
   }
+
   editSniffer(existingId: string, newConfig: SnifferConfig) {
     const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
       return sniffer.getId() === existingId;
@@ -71,5 +72,17 @@ export class SnifferManager {
       throw new Error("Cannot edit an active sniffer");
     }
     this.sniffers[existingIndex].editSniffer(newConfig);
+  }
+
+  getAllMocks() {
+    return this.sniffers.map((sniffer: Sniffer) => {
+      return {
+        service: {
+          name: sniffer.getConfig().name,
+          port: sniffer.getConfig().port,
+        },
+        mocks: sniffer.getMockManager().getAllMocks(),
+      };
+    });
   }
 }

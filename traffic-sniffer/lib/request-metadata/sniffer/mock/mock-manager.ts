@@ -4,12 +4,14 @@ import { ManagedMock, Mock } from "./mock.types";
 type mockId = string;
 
 export default class MockManager {
+  private isActive: boolean = true;
+
   constructor(private mocks: Map<mockId, ManagedMock> = new Map()) {}
 
   async addMock(mock: Mock): Promise<ManagedMock> {
     const managedMock: ManagedMock = {
       ...mock,
-      active: false,
+      active: true,
       id: `${mock.method} ${mock.endpoint}`,
     };
 
@@ -38,7 +40,7 @@ export default class MockManager {
   }
 
   getAllMocks() {
-    return Array.from(this.mocks.entries());
+    return Array.from(this.mocks.values());
   }
 
   activateMock(id: string) {
@@ -59,5 +61,16 @@ export default class MockManager {
     } else {
       throw new MockNotFoundError();
     }
+  }
+
+  deactivateManager() {
+    this.isActive = false;
+  }
+
+  activateManager() {
+    this.isActive = true;
+  }
+  getIsActive() {
+    return this.isActive;
   }
 }

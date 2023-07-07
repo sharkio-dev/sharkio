@@ -130,7 +130,8 @@ export class SnifferManagerController {
         }
       }
     );
-    this.app.put(
+    
+    app.put(
       "/sharkio/sniffer/:existingId",
       async (req: Request, res: Response) => {
         const { existingId } = req.params;

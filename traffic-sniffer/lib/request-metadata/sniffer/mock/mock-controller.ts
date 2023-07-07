@@ -34,6 +34,38 @@ export default class MockController {
       }
     );
 
+    app.post(
+      "/sharkio/mock/actions/activate",
+      async (req: Request, res: Response, next: NextFunction) => {
+        const mock = req.body;
+
+        try {
+          await this.mockManager.activateManager();
+
+          res.sendStatus(200);
+        } catch (e) {
+          console.error(e);
+          res.sendStatus(500);
+        }
+      }
+    );
+
+    app.post(
+      "/sharkio/mock/actions/deactivate",
+      async (req: Request, res: Response, next: NextFunction) => {
+        const mock = req.body;
+
+        try {
+          await this.mockManager.deactivateManager();
+
+          res.sendStatus(200);
+        } catch (e) {
+          console.error(e);
+          res.sendStatus(500);
+        }
+      }
+    );
+
     app.delete(
       "/sharkio/mock/:id",
       async (req: Request, res: Response, next: NextFunction) => {
