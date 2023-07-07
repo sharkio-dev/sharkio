@@ -11,7 +11,7 @@ export class MockManagerController {
       async (req: Request, res: Response, next: NextFunction) => {
         try {
           const mocks = this.snifferManager.getAllMocks();
-          res.send(mocks).status(200);
+          res.json(mocks).status(200);
         } catch (e) {
           console.error(e);
           res.sendStatus(500);

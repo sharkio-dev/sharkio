@@ -1,28 +1,30 @@
 import { Edit } from "@mui/icons-material";
 import {
-  Autocomplete,
   Box,
   Button,
   Card,
   Chip,
   CircularProgress,
   IconButton,
-  Input,
   List,
   ListItemButton,
-  TextField,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { RequestsMetadataContext } from "../../context/requests-context";
-import { HttpMethod } from "../http-method/http-method";
+import React, { useContext, useEffect, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
-import React from "react";
-import styles from "./requests-card.module.scss";
+import { RequestsMetadataContext } from "../../context/requests-context";
+import { FilterBar } from "../filter-bar/filter-bar";
+import { HttpMethod } from "../http-method/http-method";
 import { ServiceName } from "../service-name/service-name";
+import styles from "./requests-card.module.scss";
 
-export const RequestsCard = () => {
+interface IRequestCardProps {
+  withControls: boolean;
+}
+export const RequestsCard: React.FC<IRequestCardProps> = ({
+  withControls = false,
+}) => {
   const [filter, setFilter] = useState<string>();
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
   const [servicesFilter, setServicesFilter] = useState<string[]>([]);
@@ -49,69 +51,23 @@ export const RequestsCard = () => {
       (filter ? req.url.includes(filter) : true) &&
       (methodsFilter.length > 0
         ? methodsFilter.find((method) => method === req.method) !== undefined
-        : true) && 
-        (servicesFilter.length > 0
-        ? servicesFilter.find((service) => service === req.service) !== undefined
+        : true) &&
+      (servicesFilter.length > 0
+        ? servicesFilter.find((service) => service === req.service) !==
+          undefined
         : true)
   );
 
   return (
     <>
-      <Box
-        sx={{
-          padding: "20px 0px",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <Input onChange={handleFilterChanged} placeholder="Search..."/>
-        <Autocomplete
-          freeSolo
-          disablePortal
-          multiple
-          renderTags={(value: string[], getTagProps) =>
-            value.map((option: string, index: number) => (
-              <Chip
-                variant="outlined"
-                label={option}
-                {...getTagProps({ index })}
-              />
-            ))
-          }
-          id="combo-box-demo"
-          options={["GET", "POST", "PATCH", "PUT", "DELETE"]}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField variant="filled" {...params} label="Method" />
-          )}
-          onChange={(_, value) => {
-            setMethodsFilter(value);
-          }}
+      {withControls && (
+        <FilterBar
+          handleFilterChanged={handleFilterChanged}
+          services={services}
+          setMethodsFilter={setMethodsFilter}
+          setServicesFilter={setServicesFilter}
         />
-        <Autocomplete
-          freeSolo
-          disablePortal
-          multiple
-          renderTags={(value: string[], getTagProps) =>
-            value.map((option: string, index: number) => (
-              <Chip
-                variant="outlined"
-                label={option}
-                {...getTagProps({ index })}
-              />
-            ))
-          }
-          id="combo-box-demo"
-          options={services}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField variant="filled" {...params} label="Service" />
-          )}
-          onChange={(_, value) => {
-            setServicesFilter(value);
-          }}
-        />
-      </Box>
+      )}
       <div className={styles.container}>
         <Card className={styles.card}>
           <div className={styles.titleContainer}>
@@ -140,7 +96,7 @@ export const RequestsCard = () => {
                           display: "flex",
                           justifyContent: "space-between",
                         }}
-                      >   
+                      >
                         <div className={styles.requestLeftSection}>
                           <div className={styles.serviceContainer}>
                             <ServiceName service={req.service} />

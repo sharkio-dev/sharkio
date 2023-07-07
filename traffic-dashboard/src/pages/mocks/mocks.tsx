@@ -1,3 +1,4 @@
+import { AddBox } from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -5,17 +6,16 @@ import {
   AccordionSummary,
   Button,
   Card,
-  Dialog,
-  Input,
   Switch,
   TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getAllMocks } from "../../api/api";
+import { activateMock, deactivateMock, getAllMocks } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
-import styles from "./mocks.module.scss";
+import { HttpStatus } from "../../components/http-status/http-status";
 import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
+import styles from "./mocks.module.scss";
 
 type Mock = {
   method: string;
@@ -23,6 +23,7 @@ type Mock = {
   data: any;
   active: boolean;
   id: string;
+  status: number;
 };
 
 type Service = {
@@ -30,33 +31,48 @@ type Service = {
   port: number;
 };
 
-type ServiceMocks = {
+type ServiceMock = {
   service: Service;
   mocks: Mock[];
 };
 
 const Mocks = () => {
-  const [mocks, setMocks] = useState<ServiceMocks[]>([]);
+  const [mocks, setMocks] = useState<ServiceMock[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
 
-  useEffect(() => {
+  const loadData = () => {
     getAllMocks().then((res) => setMocks(res.data));
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
 
   const handleAddClicked = () => {
     setAddOpen(true);
   };
+
   const handleCloseModal = () => {
     setAddOpen(false);
+    loadData();
   };
 
   return (
     <>
-      <Button onClick={handleAddClicked}> add</Button>
+      <Button onClick={handleAddClicked}>
+        <AddBox />
+        &nbsp;&nbsp;add
+      </Button>
       <Card>
-        {mocks.flatMap((serviceMocks) => {
-          return serviceMocks.mocks.map((mock: Mock) => {
-            return <MockRow mock={mock} />;
+        {mocks.flatMap((serviceMock: ServiceMock) => {
+          return serviceMock.mocks.map((mock: Mock) => {
+            return (
+              <MockRow
+                mock={mock}
+                service={serviceMock.service}
+                loadData={loadData}
+              />
+            );
           });
         })}
       </Card>
@@ -65,7 +81,22 @@ const Mocks = () => {
   );
 };
 
-const MockRow: React.FC<{ mock: Mock }> = ({ mock }) => {
+const MockRow: React.FC<{
+  mock: Mock;
+  service: Service;
+  loadData: () => void;
+}> = ({ mock, service, loadData }) => {
+  const toggleActive = (newValue: boolean) => {
+    return newValue === true
+      ? activateMock(service.port, mock.method, mock.endpoint)
+      : deactivateMock(service.port, mock.method, mock.endpoint);
+  };
+  const handleSwitchClicked = (value: boolean) => {
+    toggleActive(value).finally(() => {
+      loadData();
+    });
+  };
+
   return (
     <>
       <Accordion>
@@ -76,17 +107,35 @@ const MockRow: React.FC<{ mock: Mock }> = ({ mock }) => {
         >
           <div className={styles.mockTitle}>
             <Switch
-              onClick={(e) => e.stopPropagation()}
-              value={mock.active}
-            ></Switch>
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onChange={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleSwitchClicked(
+                  (e.target.value === "true" && true) ||
+                    (e.target.value === "false" && false)
+                );
+              }}
+              checked={mock.active}
+            />
             <HttpMethod method={mock.method}></HttpMethod>
+            <HttpStatus status={mock.status} />
             <Typography>{mock.endpoint}</Typography>
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            <pre>{JSON.stringify(mock.data, null, 2)}</pre>
-          </Typography>
+          <TextField
+            className={styles.dataContainer}
+            label="Data"
+            placeholder="{}"
+            multiline
+            rows={5}
+            value={mock.data}
+            contentEditable={false}
+            disabled={true}
+          />
         </AccordionDetails>
       </Accordion>
     </>

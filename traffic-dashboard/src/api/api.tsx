@@ -62,11 +62,44 @@ export const createMock = (
   port: number,
   method: string,
   endpoint: string,
+  status: number,
   data: any
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock`,
-    { method, endpoint, data },
+    JSON.stringify({ method, endpoint, data, status }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const activateMock = (
+  port: number,
+  method: string,
+  endpoint: string,
+) => {
+  return axios.post(
+    `/sharkio/sniffer/${port}/mock/actions/activate`,
+    JSON.stringify({ id: `${method} ${endpoint}` }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const deactivateMock = (
+  port: number,
+  method: string,
+  endpoint: string,
+) => {
+  return axios.post(
+    `/sharkio/sniffer/${port}/mock/actions/deactivate`,
+    JSON.stringify({ id: `${method} ${endpoint}` }),
     {
       headers: {
         "Content-Type": "application/json",

@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DataObjectIcon from "@mui/icons-material/DataObject";
-import { ChevronLeft, ChevronRight, Home } from "@mui/icons-material";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  SwapHoriz,
+} from "@mui/icons-material";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import { Navbar } from "../navbar/navbar";
 import { useState } from "react";
@@ -58,6 +63,16 @@ export const SideBar: React.FC<ISideBarProps> = ({ className }) => {
           >
             <SettingsInputComponentIcon />
             {!minimized && <>Config</>}
+          </ListItemButton>
+          <ListItemButton
+            alignItems="center"
+            className={styles.listItem}
+            onClick={() => {
+              navigate("/requests");
+            }}
+          >
+            <SwapHoriz />
+            {!minimized && <>Requests</>}
           </ListItemButton>
           <ListItemButton
             alignItems="center"

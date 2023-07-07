@@ -1,4 +1,11 @@
-import { Dialog, Card, TextField, Typography, Button } from "@mui/material";
+import {
+  Dialog,
+  Card,
+  TextField,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import styles from "./add-mock-dialog.module.scss";
 import { useState } from "react";
 import { createMock } from "../../../api/api";
@@ -9,15 +16,19 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
   open,
   close,
 }) => {
-  const [port, setPort] = useState<number>(0);
-  const [method, setMethod] = useState<string>("");
+  const [port, setPort] = useState<number>();
+  const [method, setMethod] = useState<string>("GET");
   const [endpoint, setEndpoint] = useState<string>("");
-  const [data, setData] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<number>(200);
+  const [data, setData] = useState<unknown>("{ }");
+  const [isLoading, setIsLoading] = useState<boolean>();
 
   const handleAddMock = () => {
+    if (!port) {
+      return;
+    }
     setIsLoading(true);
-    createMock(port, method, endpoint, data)
+    createMock(port, method, endpoint, status, data)
       .then(() => {
         close();
       })
@@ -50,6 +61,13 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
           onChange={(e) => setEndpoint(e.target.value)}
         />
         <TextField
+          label="Status"
+          placeholder="1234"
+          type="number"
+          value={status}
+          onChange={(e) => setStatus(+e.target.value)}
+        />
+        <TextField
           label="Data"
           placeholder="{}"
           multiline
@@ -57,7 +75,9 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
           value={data}
           onChange={(e) => setData(e.target.value)}
         />
-        <Button onClick={handleAddMock}>add</Button>
+        <Button onClick={handleAddMock}>
+          {isLoading === true ? <CircularProgress /> : <>add</>}
+        </Button>
         <Button color="error" onClick={close}>
           cancel
         </Button>
