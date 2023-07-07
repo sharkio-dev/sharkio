@@ -76,6 +76,10 @@ export class SnifferManagerController {
 
           if (sniffer !== undefined) {
             sniffer.stop();
+            this.snifferManager.setSnifferConfigToStarted(
+              sniffer.getId(),
+              false
+            );
             res.sendStatus(200);
           } else {
             res.sendStatus(404);
@@ -95,9 +99,13 @@ export class SnifferManagerController {
         try {
           const sniffer = this.snifferManager.getSniffer(+port);
 
-          if (sniffer !== undefined) {
+          if (sniffer) {
             await sniffer.start();
             res.sendStatus(200);
+            this.snifferManager.setSnifferConfigToStarted(
+              sniffer.getId(),
+              true
+            );
           } else {
             res.sendStatus(404);
           }
