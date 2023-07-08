@@ -83,6 +83,12 @@ export class SnifferManagerController {
      *     tags:
      *      - sniffer
      *     description: Create a sniffer
+     *     requestBody:
+     *        description: Create a sniffer
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       201:
      *         description: Sniffer created
@@ -165,7 +171,6 @@ export class SnifferManagerController {
       "/sharkio/sniffer/:port/actions/start",
       async (req: Request, res: Response) => {
         const { port } = req.params;
-        const config = req.body;
 
         try {
           const sniffer = this.snifferManager.getSniffer(+port);
@@ -198,6 +203,12 @@ export class SnifferManagerController {
      *         in: query
      *         description: service port
      *         required: true
+     *     requestBody:
+     *        description: Execute a request from a sniffer
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: Request executed
@@ -276,6 +287,12 @@ export class SnifferManagerController {
      *         in: query
      *         description: service id
      *         required: true
+     *     requestBody:
+     *        description: Edit a sniffer
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: Sniffer edited

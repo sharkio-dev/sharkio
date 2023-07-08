@@ -39,6 +39,11 @@ export class MockManagerController {
      *     tags:
      *      - mock
      *     description: Get a mock
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
      *     responses:
      *       200:
      *         description: Returns a mock.
@@ -72,9 +77,20 @@ export class MockManagerController {
      *     tags:
      *      - mock
      *     description: Create a mock
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
+     *     requestBody:
+     *        description: Create a new mock
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
-     *       200:
-     *         description: Returns a mock.
+     *       201:
+     *         description: Mock created
      *       500:
      *         description: Server error
      */
@@ -89,7 +105,7 @@ export class MockManagerController {
 
           if (sniffer !== undefined) {
             const { id } = await sniffer.getMockManager().addMock(mock);
-            res.send(id).status(200);
+            res.send(id).status(201);
           } else {
             res.sendStatus(404);
           }
@@ -107,6 +123,17 @@ export class MockManagerController {
      *     tags:
      *      - mock
      *     description: Delete a mock
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
+     *     requestBody:
+     *        description: Create a new mock
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: mock deleted.
@@ -142,6 +169,17 @@ export class MockManagerController {
      *     tags:
      *      - mock
      *     description: Activate mock manager
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
+     *     requestBody:
+     *        description: Activate mock manager
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: Mock manager are activated
@@ -176,7 +214,18 @@ export class MockManagerController {
      *   post:
      *     tags:
      *      - mock
-     *     description: Deactivate mock manager for service
+     *     description: Deactivate mock manager
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
+     *     requestBody:
+     *        description: Deactivate mock manager
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: Mock manager deactivated for the service
@@ -212,6 +261,17 @@ export class MockManagerController {
      *     tags:
      *      - mock
      *     description: Activate a mock
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
+     *     requestBody:
+     *        description: Activate a mock
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: Mock activated
@@ -252,6 +312,17 @@ export class MockManagerController {
      *     tags:
      *      - mock
      *     description: Deactivate a mock
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         description: service port
+     *         required: true
+     *     requestBody:
+     *        description: Deactivate a mock
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
      *     responses:
      *       200:
      *         description: Mock Deactivated
