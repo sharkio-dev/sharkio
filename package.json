@@ -15,6 +15,7 @@
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
+    "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
@@ -45,6 +46,7 @@
     "yargs"
   ],
   "devDependencies": {
+    "express": "^4.18.2",
     "husky": "^8.0.3"
   }
 }
