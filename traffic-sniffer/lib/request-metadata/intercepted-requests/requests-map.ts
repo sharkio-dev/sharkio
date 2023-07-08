@@ -64,5 +64,5 @@ export class RequestsMap implements Map<RequestKey, InterceptedRequest> {
       return this.entries();
   }
 
-  [Symbol.toStringTag]: string = "Requests";
+  [Symbol.toStringTag]: string = RequestsMap.name;
 }
