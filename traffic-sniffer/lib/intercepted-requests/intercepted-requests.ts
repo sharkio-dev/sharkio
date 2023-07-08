@@ -27,8 +27,16 @@ export class InterceptedRequests {
     interceptedRequest.intercept(request);
   }
 
-  execute(url: string, method: string, invocation: Invocation, service: string) {
-    const interceptedRequest = this.ensureRequest(new RequestKey(method, url), service);
+  execute(
+    url: string,
+    method: string,
+    invocation: Invocation,
+    service: string
+  ) {
+    const interceptedRequest = this.ensureRequest(
+      new RequestKey(method, url),
+      service
+    );
     return interceptedRequest.execute(invocation);
   }
 

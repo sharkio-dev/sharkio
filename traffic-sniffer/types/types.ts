@@ -1,4 +1,3 @@
-
 export type Invocation = {
   id: string;
   timestamp: Date;

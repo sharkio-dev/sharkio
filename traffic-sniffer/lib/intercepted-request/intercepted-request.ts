@@ -15,7 +15,7 @@ export class InterceptedRequest {
     recordHeaders: true,
     recordCookies: true,
     recordParams: true,
-  }
+  };
 
   private id: string;
   private service: string;
@@ -69,8 +69,16 @@ export class InterceptedRequest {
   }
 
   stats(): PathResponseData {
-    const { id, url, service, method, hitCount, lastInvocationDate, invocations  } = this;
-    
+    const {
+      id,
+      url,
+      service,
+      method,
+      hitCount,
+      lastInvocationDate,
+      invocations,
+    } = this;
+
     return {
       id,
       service,

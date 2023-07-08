@@ -15,17 +15,15 @@ export class SnifferManagerController {
     });
 
     app.get("/sharkio/sniffer", (req: Request, res: Response) => {
-      res
-        .status(200)
-        .send(
-          this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
-            const { config, isStarted } = sniffer.stats();
-            return {
-              config,
-              isStarted,
-            };
-          })
-        );
+      res.status(200).send(
+        this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
+          const { config, isStarted } = sniffer.stats();
+          return {
+            config,
+            isStarted,
+          };
+        })
+      );
     });
 
     app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
@@ -141,7 +139,7 @@ export class SnifferManagerController {
         }
       }
     );
-    
+
     app.put(
       "/sharkio/sniffer/:existingId",
       async (req: Request, res: Response) => {

@@ -81,7 +81,12 @@ export class Sniffer {
 
   execute(url: string, method: string, invocation: Invocation) {
     const executionUrl = `http://localhost:${this.config.port}${url}`;
-    return this.interceptedRequests.execute(executionUrl, method, invocation, this.config.name);
+    return this.interceptedRequests.execute(
+      executionUrl,
+      method,
+      invocation,
+      this.config.name
+    );
   }
 
   async changeConfig(newConfig: SnifferConfig) {
@@ -128,7 +133,11 @@ export class Sniffer {
       console.log("stopping sniffer", configString);
       this.server?.close((error) => {
         if (error) {
-          console.error("couldn't stop the sniffer", configString, error.message);
+          console.error(
+            "couldn't stop the sniffer",
+            configString,
+            error.message
+          );
           return reject(error);
         }
         this.isStarted = false;
@@ -146,7 +155,8 @@ export class Sniffer {
   }
 
   stats() {
-    const { config, isStarted, proxyMiddleware, id, interceptedRequests } = this;
+    const { config, isStarted, proxyMiddleware, id, interceptedRequests } =
+      this;
     return {
       id,
       config,
