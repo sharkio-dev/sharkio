@@ -1,11 +1,14 @@
 import { Express, Request, Response } from "express";
-import { Sniffer } from "../sniffer/sniffer";
+import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
+import { z, ZodError } from "zod";
 
 export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
+    const portValidator = z.coerce.number().nonnegative("Port number cannot be negative");
+
     app.get("/sharkio/sniffer/invocation", (req: Request, res: Response) => {
       try {
         res.send(this.snifferManager.stats()).status(200);
@@ -27,25 +30,74 @@ export class SnifferManagerController {
     });
 
     app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
-      const { port } = req.params;
-      const sniffer = this.snifferManager.getSniffer(+port);
+      try {
+        const validator = z.object({
+          port: portValidator,
+        });
+        const { port } = validator.parse(req.params);
+        const sniffer = this.snifferManager.getSniffer(port);
 
-      if (sniffer !== undefined) {
-        res.send(sniffer).status(200);
-      } else {
-        res.sendStatus(404);
+        if (sniffer !== undefined) {
+          return res.send(sniffer).status(200);
+        } else {
+          return res.sendStatus(404);
+        }
+      } catch (e) {
+        switch (true) {
+          case e instanceof ZodError: {
+            const { errors } = e as ZodError;
+            return res.status(400).send(errors);
+          }
+
+          default: {
+            console.error("An unexpected error occured", {
+              dir: __dirname,
+              file: __filename,
+              method: "/sharkio/sniffer/:port",
+              error: e,
+              timestamp: new Date(),
+            });
+            return res.sendStatus(500);
+          }
+        }
       }
     });
 
     app.post("/sharkio/sniffer", (req: Request, res: Response) => {
-      const config = req.body;
-
       try {
-        this.snifferManager.createSniffer(config);
+        const validator = z.object({
+          name: z.string().nonempty(),
+          port: portValidator,
+          downstreamUrl: z.string().nonempty(),
+          id: z.string().nonempty(),
+        });
+        const config = validator.parse(req.body);
 
-        res.sendStatus(200);
-      } catch (e: any) {
-        res.sendStatus(500);
+        try {
+          this.snifferManager.createSniffer(config);
+
+          return res.sendStatus(200);
+        } catch (e: any) {
+          return res.sendStatus(500);
+        }
+      } catch (e) {
+        switch (true) { 
+          case e instanceof ZodError: {
+            const { errors } = e as ZodError;
+            return res.status(400).send(errors);
+          }
+
+          default: {
+            console.error("An unexpected error occured", {
+              dir: __dirname,
+              file: __filename,
+              method: "/sharkio/sniffer/:port",
+              error: e,
+              timestamp: new Date(),
+            });
+            return res.sendStatus(500);
+          }
+        }
       }
     });
 
