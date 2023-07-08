@@ -1,6 +1,4 @@
-import { PathResponseData } from "../../../types/types";
-import MockManager from "../sniffer/mock/mock-manager";
-import MockMiddleware from "../sniffer/mock/mock-middleware";
+import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { FileConfig, SnifferConfigSetup } from "../setup-config/file-config";
 import { ConfigLoader } from "../setup-config/config-loader-interface";
@@ -38,14 +36,14 @@ export class SnifferManager {
     return res;
   }
 
-  getAllData() {
-    let data: PathResponseData[] = [];
+  stats() {
+    let stats: PathResponseData[] = [];
 
     this.sniffers.forEach((sniffer: Sniffer) => {
-      data = data.concat(sniffer.getData());
+      stats.push(...sniffer.stats().interceptedRequests);
     });
 
-    return data;
+    return stats;
   }
 
   getAllSniffers() {
@@ -64,6 +62,7 @@ export class SnifferManager {
     this.sniffers.splice(index, 1);
     this.ConfigData.removeSniffer(port);
   }
+
   getSnifferById(id: string) {
     const res = this.sniffers.find((sniffer: Sniffer) => {
       return sniffer.getId() === id;
@@ -76,6 +75,7 @@ export class SnifferManager {
     const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
       return sniffer.getId() === existingId;
     });
+    // Not needed if we stop the sniffer beforehand
     if (this.sniffers[existingIndex].getIsStarted() === true) {
       throw new Error("Cannot edit an active sniffer");
     }

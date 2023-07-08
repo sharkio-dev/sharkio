@@ -8,21 +8,22 @@ export class SnifferManagerController {
   setup(app: Express) {
     app.get("/sharkio/sniffer/invocation", (req: Request, res: Response) => {
       try {
-        res.send(this.snifferManager.getAllData()).status(200);
+        res.send(this.snifferManager.stats()).status(200);
       } catch (e) {
         res.sendStatus(500);
       }
     });
 
     app.get("/sharkio/sniffer", (req: Request, res: Response) => {
-      res
-        .send(
-          this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => ({
-            config: sniffer.getConfig(),
-            isStarted: sniffer.getIsStarted(),
-          }))
-        )
-        .status(200);
+      res.status(200).send(
+        this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
+          const { config, isStarted } = sniffer.stats();
+          return {
+            config,
+            isStarted,
+          };
+        })
+      );
     });
 
     app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
@@ -138,7 +139,7 @@ export class SnifferManagerController {
         }
       }
     );
-    
+
     app.put(
       "/sharkio/sniffer/:existingId",
       async (req: Request, res: Response) => {

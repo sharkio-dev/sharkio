@@ -11,7 +11,7 @@
     "cli": "node ./index.mjs",
     "dashboard": "cd ./traffic-dashboard && npm run dev",
     "sniffer": "cd ./traffic-sniffer && npm run dev",
-    "build:dashboard": "cd ./traffic-sniffer && npm run build",
+    "build:dashboard": "cd ./traffic-dashboard && npm run build",
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",

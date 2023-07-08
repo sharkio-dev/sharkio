@@ -17,16 +17,16 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { useParams } from "react-router-dom";
 import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
-import { useParams } from "react-router-dom";
 import { RequestsMetadataContext } from "../../context/requests-context";
-import styles from "./requestCard.module.scss";
 import {
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
+import styles from "./requestCard.module.scss";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
@@ -59,7 +59,7 @@ export const RequestPage: React.FC = () => {
     }
   }, [id, requests]);
 
-  const handleTabChanged = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChanged = (_event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
@@ -148,14 +148,14 @@ export const RequestPage: React.FC = () => {
             </TabContent>
             <TabContent index={1} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>{JSON.stringify(schema, null, 2)}</pre>
+                <pre>
+                  <pre>{typescript}</pre>
+                </pre>
               </div>
             </TabContent>
             <TabContent index={2} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>
-                  <pre>{typescript}</pre>
-                </pre>
+                <pre>{JSON.stringify(schema, null, 2)}</pre>
               </div>
             </TabContent>
             <TabContent index={3} tabValue={tab}>

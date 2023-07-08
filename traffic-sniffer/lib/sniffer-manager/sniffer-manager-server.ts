@@ -9,7 +9,7 @@ interface IController {
 export class SnifferManagerServer {
   private readonly port: number = 5012;
   private app: Express;
-  private server: http.Server | undefined;
+  private server?: http.Server;
 
   constructor(controllers: IController[]) {
     this.app = express();

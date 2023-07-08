@@ -8,8 +8,8 @@ import express, {
 } from "express";
 import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Invocation, PathResponseData } from "../../../types/types";
-import { RequestMetadata } from "../request-metadata";
+import { Invocation } from "../../types";
+import { InterceptedRequests } from "../intercepted-requests/intercepted-requests";
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
 
@@ -21,27 +21,27 @@ export type SnifferConfig = {
 };
 
 export class Sniffer {
+  private id: string;
   private app: Express;
-  private data: RequestMetadata;
+  private interceptedRequests: InterceptedRequests;
   private config: SnifferConfig;
-  private server: http.Server | undefined;
+  private server?: http.Server;
   private proxyMiddleware: RequestHandler;
   private isStarted: boolean;
-  private id: string;
   private mockManager: MockManager;
   private mockMiddleware: MockMiddleware;
 
-  constructor(_config: SnifferConfig) {
-    this.data = new RequestMetadata();
-    this.config = _config;
+  constructor(config: SnifferConfig) {
+    this.interceptedRequests = new InterceptedRequests();
+    this.config = config;
     this.app = express();
-    this.id = _config.id;
+    this.id = config.id;
     this.isStarted = false;
     this.mockManager = new MockManager();
     this.mockMiddleware = new MockMiddleware(this.mockManager);
 
     this.proxyMiddleware = createProxyMiddleware({
-      target: _config.downstreamUrl,
+      target: config.downstreamUrl,
       secure: false,
       logLevel: "debug",
     });
@@ -56,7 +56,7 @@ export class Sniffer {
         "]:" +
         `${req.method} ${req.url} request logged`
     );
-    this.data.interceptRequest(req, this.config.name);
+    this.interceptedRequests.interceptRequest(req, this.config.name);
     next();
   }
 
@@ -68,10 +68,6 @@ export class Sniffer {
     return this.config.port;
   }
 
-  getData(): PathResponseData[] {
-    return this.data.getData();
-  }
-
   setup() {
     this.app.use(json());
     this.app.use(this.requestInterceptor.bind(this));
@@ -79,22 +75,27 @@ export class Sniffer {
     this.app.use(this.proxyMiddleware);
   }
 
-  clearData() {
-    this.data.clearData();
+  invalidateInterceptedRequests() {
+    this.interceptedRequests.invalidate();
   }
 
   execute(url: string, method: string, invocation: Invocation) {
     const executionUrl = `http://localhost:${this.config.port}${url}`;
-    return this.data.execute(executionUrl, method, invocation);
+    return this.interceptedRequests.execute(
+      executionUrl,
+      method,
+      invocation,
+      this.config.name
+    );
   }
 
-  changeConfig(newConfig: SnifferConfig) {
+  async changeConfig(newConfig: SnifferConfig) {
     console.log("stopping server");
-    this.stop();
+    await this.stop();
     console.log("changing config");
     this.config = newConfig;
     console.log("starting server with new config");
-    this.start();
+    await this.start();
   }
 
   start() {
@@ -106,28 +107,63 @@ export class Sniffer {
             "started sniffing" + JSON.stringify(this.config, null, 2)
           );
           this.isStarted = true;
-          resolve(undefined);
+          return resolve(undefined);
         })
-        .on("error", (e) => {
+        .on("error", (error) => {
           console.error(
             "Failed to start for proxy: \n" +
               JSON.stringify(this.config, null, 2) +
               "\n with error: \n" +
-              e.message
+              error.message
           );
-          reject();
+          // Create custom error if needed to expose more info the the application
+          return reject(error);
         })
-        .on("clientError", () => {
-          console.error("clientError has occurred");
-          reject();
+        .on("clientError", (error) => {
+          console.error("clientError has occurred", error.message);
+          // Create custom error if needed to expose more info the the application
+          return reject(error);
         });
     });
   }
 
   stop() {
-    this.server?.close();
-    this.isStarted = false;
-    console.log("stopping sniffer \n" + JSON.stringify(this.config, null, 2));
+    return new Promise((resolve, reject) => {
+      const configString = JSON.stringify(this.config, null, 2);
+      console.log("stopping sniffer", configString);
+      this.server?.close((error) => {
+        if (error) {
+          console.error(
+            "couldn't stop the sniffer",
+            configString,
+            error.message
+          );
+          return reject(error);
+        }
+        this.isStarted = false;
+        console.log("stopped sniffer", configString);
+        return resolve(undefined);
+      });
+    });
+  }
+
+  async editSniffer(newConfig: SnifferConfig) {
+    await this.stop();
+    this.config = newConfig;
+    this.id = newConfig.port.toString();
+    this.config.id = newConfig.port.toString();
+  }
+
+  stats() {
+    const { config, isStarted, proxyMiddleware, id, interceptedRequests } =
+      this;
+    return {
+      id,
+      config,
+      isStarted,
+      proxyMiddleware,
+      interceptedRequests: interceptedRequests.stats(),
+    };
   }
 
   getConfig() {
@@ -142,18 +178,11 @@ export class Sniffer {
     return this.proxyMiddleware;
   }
 
-  getMockManager() {
-    return this.mockManager;
-  }
-
   getId() {
     return this.id;
   }
 
-  editSniffer(newConfig: SnifferConfig) {
-    this.stop();
-    this.config = newConfig;
-    this.id = newConfig.port.toString();
-    this.config.id = newConfig.port.toString();
+  getMockManager() {
+    return this.mockManager;
   }
 }
