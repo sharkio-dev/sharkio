@@ -6,6 +6,19 @@ export class MockManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
+    /**
+     * @openapi
+     * /sharkio/sniffer/action/getMocks:
+     *   get:
+     *     tags:
+     *      - mock
+     *     description: Get all mocks
+     *     responses:
+     *       200:
+     *         description: Returns a all mocks.
+     *       500:
+     *         description: Server error
+     */
     app.get(
       "/sharkio/sniffer/action/getMocks",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +32,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock:
+     *   get:
+     *     tags:
+     *      - mock
+     *     description: Get a mock
+     *     responses:
+     *       200:
+     *         description: Returns a mock.
+     *       500:
+     *         description: Server error
+     */
     app.get(
       "/sharkio/sniffer/:port/mock",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -39,6 +65,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock:
+     *   post:
+     *     tags:
+     *      - mock
+     *     description: Create a mock
+     *     responses:
+     *       200:
+     *         description: Returns a mock.
+     *       500:
+     *         description: Server error
+     */
     app.post(
       "/sharkio/sniffer/:port/mock",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -61,6 +100,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock:
+     *   delete:
+     *     tags:
+     *      - mock
+     *     description: Delete a mock
+     *     responses:
+     *       200:
+     *         description: mock deleted.
+     *       500:
+     *         description: Server error
+     */
     app.delete(
       "/sharkio/sniffer/:port/mock",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -83,6 +135,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock/manager/actions/activate:
+     *   post:
+     *     tags:
+     *      - mock
+     *     description: Activate mock manager
+     *     responses:
+     *       200:
+     *         description: Mock manager are activated
+     *       500:
+     *         description: Server error
+     */
     app.post(
       "/sharkio/sniffer/:port/mock/manager/actions/activate",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -105,6 +170,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock/manager/actions/deactivate:
+     *   post:
+     *     tags:
+     *      - mock
+     *     description: Deactivate mock manager for service
+     *     responses:
+     *       200:
+     *         description: Mock manager deactivated for the service
+     *       500:
+     *         description: Server error
+     */
     app.post(
       "/sharkio/sniffer/:port/mock/manager/actions/deactivate",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -127,6 +205,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock/actions/activate:
+     *   post:
+     *     tags:
+     *      - mock
+     *     description: Activate a mock
+     *     responses:
+     *       200:
+     *         description: Mock activated
+     *       500:
+     *         description: Server error
+     */
     app.post(
       "/sharkio/sniffer/:port/mock/actions/activate",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -154,6 +245,19 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock/actions/deactivate:
+     *   post:
+     *     tags:
+     *      - mock
+     *     description: Deactivate a mock
+     *     responses:
+     *       200:
+     *         description: Mock Deactivated
+     *       500:
+     *         description: Server error
+     */
     app.post(
       "/sharkio/sniffer/:port/mock/actions/deactivate",
       async (req: Request, res: Response, next: NextFunction) => {
