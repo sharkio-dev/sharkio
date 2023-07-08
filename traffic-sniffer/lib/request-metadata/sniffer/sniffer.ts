@@ -171,4 +171,8 @@ export class Sniffer {
   getId() {
     return this.id;
   }
+
+  getMockManager() {
+    return this.mockManager;
+  }
 }
