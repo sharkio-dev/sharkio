@@ -8,3 +8,4 @@ dist
 sharkio-0.1.0.tgz
 .idea
 *.tgz
+.vit.config.ts.timestamp*
