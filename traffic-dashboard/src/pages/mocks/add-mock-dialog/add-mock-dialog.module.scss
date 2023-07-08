@@ -1,0 +1,12 @@
+.mockTItle {
+  display: flex;
+  align-items: center;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  padding: 15px;
+  min-width: 500px;
+}

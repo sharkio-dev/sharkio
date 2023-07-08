@@ -1,4 +1,6 @@
 import { PathResponseData } from "../../../types/types";
+import MockManager from "../sniffer/mock/mock-manager";
+import MockMiddleware from "../sniffer/mock/mock-middleware";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { FileConfig, SnifferConfigSetup } from "../setup-config/file-config";
 import { ConfigLoader } from "../setup-config/config-loader-interface";
@@ -22,6 +24,7 @@ export class SnifferManager {
     }
 
     const newSniffer = new Sniffer(snifferConfig);
+
     this.sniffers.push(newSniffer);
     this.ConfigData.addSniffer(snifferConfig);
     return newSniffer;
@@ -100,5 +103,17 @@ export class SnifferManager {
 
   setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
     this.ConfigData.setIsStarted(snifferId, isStarted);
+  }
+
+  getAllMocks() {
+    return this.sniffers.map((sniffer: Sniffer) => {
+      return {
+        service: {
+          name: sniffer.getConfig().name,
+          port: sniffer.getConfig().port,
+        },
+        mocks: sniffer.getMockManager().getAllMocks(),
+      };
+    });
   }
 }

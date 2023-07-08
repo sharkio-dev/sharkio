@@ -10,6 +10,8 @@ import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation, PathResponseData } from "../../../types/types";
 import { InterceptedRequests } from "../intercepted-requests";
+import MockManager from "./mock/mock-manager";
+import MockMiddleware from "./mock/mock-middleware";
 
 export type SnifferConfig = {
   name: string;
@@ -26,6 +28,8 @@ export class Sniffer {
   private server?: http.Server;
   private proxyMiddleware: RequestHandler;
   private isStarted: boolean;
+  private mockManager: MockManager;
+  private mockMiddleware: MockMiddleware;
 
   constructor(config: SnifferConfig) {
     this.interceptedRequests = new InterceptedRequests();
@@ -33,6 +37,8 @@ export class Sniffer {
     this.app = express();
     this.id = config.id;
     this.isStarted = false;
+    this.mockManager = new MockManager();
+    this.mockMiddleware = new MockMiddleware(this.mockManager);
 
     this.proxyMiddleware = createProxyMiddleware({
       target: config.downstreamUrl,
@@ -65,6 +71,7 @@ export class Sniffer {
   setup() {
     this.app.use(json());
     this.app.use(this.requestInterceptor.bind(this));
+    this.app.use(this.mockMiddleware.mock.bind(this));
     this.app.use(this.proxyMiddleware);
   }
 
