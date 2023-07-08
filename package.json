@@ -13,7 +13,7 @@
     "sniffer": "cd ./traffic-sniffer && npm run dev",
     "build:dashboard": "cd ./traffic-sniffer && npm run build",
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
-    "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run build\"",
+    "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -29,6 +29,7 @@
     "open": "^9.1.0",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
+    "ts-node": "^10.9.1",
     "yargs": "^17.7.2"
   },
   "files": [
@@ -47,6 +48,7 @@
   ],
   "devDependencies": {
     "express": "^4.18.2",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "prettier": "^3.0.0"
   }
 }

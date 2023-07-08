@@ -1,37 +1,20 @@
-import { json } from "body-parser";
-import express, { Express, Request, Response } from "express";
-import * as http from "http";
-import { SnifferManager } from "./sniffer-manager";
+import { Express, Request, Response } from "express";
 import { Sniffer } from "../sniffer/sniffer";
-import cors from "cors";
+import { SnifferManager } from "./sniffer-manager";
 
 export class SnifferManagerController {
-  private server: http.Server | undefined;
-  private app: Express;
-  private snifferManager: SnifferManager;
+  constructor(private readonly snifferManager: SnifferManager) {}
 
-  constructor() {
-    this.app = express();
-    this.snifferManager = new SnifferManager();
-    this.setup();
-  }
-
-  setup() {
-    this.app.use(cors());
-    this.app.use(json());
-
-    this.app.get(
-      "/sharkio/sniffer/invocation",
-      (req: Request, res: Response) => {
-        try {
-          res.send(this.snifferManager.getAllData()).status(200);
-        } catch (e) {
-          res.sendStatus(500);
-        }
+  setup(app: Express) {
+    app.get("/sharkio/sniffer/invocation", (req: Request, res: Response) => {
+      try {
+        res.send(this.snifferManager.getAllData()).status(200);
+      } catch (e) {
+        res.sendStatus(500);
       }
-    );
+    });
 
-    this.app.get("/sharkio/sniffer", (req: Request, res: Response) => {
+    app.get("/sharkio/sniffer", (req: Request, res: Response) => {
       res
         .send(
           this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => ({
@@ -42,7 +25,7 @@ export class SnifferManagerController {
         .status(200);
     });
 
-    this.app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
+    app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
       const { port } = req.params;
       const sniffer = this.snifferManager.getSniffer(+port);
 
@@ -53,7 +36,7 @@ export class SnifferManagerController {
       }
     });
 
-    this.app.post("/sharkio/sniffer", (req: Request, res: Response) => {
+    app.post("/sharkio/sniffer", (req: Request, res: Response) => {
       const config = req.body;
 
       try {
@@ -65,12 +48,11 @@ export class SnifferManagerController {
       }
     });
 
-    this.app.post(
+    app.post(
       "/sharkio/sniffer/:port/actions/stop",
       (req: Request, res: Response) => {
         try {
           const { port } = req.params;
-          const config = req.body;
 
           const sniffer = this.snifferManager.getSniffer(+port);
 
@@ -90,7 +72,7 @@ export class SnifferManagerController {
       }
     );
 
-    this.app.post(
+    app.post(
       "/sharkio/sniffer/:port/actions/start",
       async (req: Request, res: Response) => {
         const { port } = req.params;
@@ -115,7 +97,7 @@ export class SnifferManagerController {
       }
     );
 
-    this.app.post(
+    app.post(
       "/sharkio/sniffer/:port/actions/execute",
       async (req: Request, res: Response) => {
         const { port } = req.params;
@@ -137,7 +119,7 @@ export class SnifferManagerController {
       }
     );
 
-    this.app.delete(
+    app.delete(
       "/sharkio/sniffer/:port",
       async (req: Request, res: Response) => {
         const { port } = req.params;
@@ -156,7 +138,8 @@ export class SnifferManagerController {
         }
       }
     );
-    this.app.put(
+    
+    app.put(
       "/sharkio/sniffer/:existingId",
       async (req: Request, res: Response) => {
         const { existingId } = req.params;
@@ -184,19 +167,5 @@ export class SnifferManagerController {
         }
       }
     );
-  }
-
-  start(port: number = 5012) {
-    this.server = this.app.listen(port, () => {
-      console.log("server started listening on port 5012");
-    });
-  }
-
-  stop() {
-    this.server?.close();
-  }
-
-  getManager() {
-    return this.snifferManager;
   }
 }

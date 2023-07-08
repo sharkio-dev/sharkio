@@ -10,6 +10,8 @@ import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation, PathResponseData } from "../../../types/types";
 import { RequestMetadata } from "../request-metadata";
+import MockManager from "./mock/mock-manager";
+import MockMiddleware from "./mock/mock-middleware";
 
 export type SnifferConfig = {
   name: string;
@@ -24,8 +26,10 @@ export class Sniffer {
   private config: SnifferConfig;
   private server: http.Server | undefined;
   private proxyMiddleware: RequestHandler;
-  private id: string;
   private isStarted: boolean;
+  private id: string;
+  private mockManager: MockManager;
+  private mockMiddleware: MockMiddleware;
 
   constructor(_config: SnifferConfig) {
     this.data = new RequestMetadata();
@@ -33,6 +37,8 @@ export class Sniffer {
     this.app = express();
     this.id = _config.id;
     this.isStarted = false;
+    this.mockManager = new MockManager();
+    this.mockMiddleware = new MockMiddleware(this.mockManager);
 
     this.proxyMiddleware = createProxyMiddleware({
       target: _config.downstreamUrl,
@@ -69,6 +75,7 @@ export class Sniffer {
   setup() {
     this.app.use(json());
     this.app.use(this.requestInterceptor.bind(this));
+    this.app.use(this.mockMiddleware.mock.bind(this));
     this.app.use(this.proxyMiddleware);
   }
 
@@ -134,9 +141,15 @@ export class Sniffer {
   getMiddleware() {
     return this.proxyMiddleware;
   }
+
+  getMockManager() {
+    return this.mockManager;
+  }
+
   getId() {
     return this.id;
   }
+
   editSniffer(newConfig: SnifferConfig) {
     this.stop();
     this.config = newConfig;
