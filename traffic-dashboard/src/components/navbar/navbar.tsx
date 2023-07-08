@@ -1,8 +1,7 @@
-import MenuIcon from "@mui/icons-material/Menu";
-import { AppBar, IconButton, Toolbar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import styles from "./navbar.module.scss";
+import { AppBar } from "@mui/material";
 import React from "react";
+import styles from "./navbar.module.scss";
 
 export const Navbar: React.FC = () => {
   return (
