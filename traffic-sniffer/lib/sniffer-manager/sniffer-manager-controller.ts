@@ -7,7 +7,9 @@ export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
-    const portValidator = z.coerce.number().nonnegative("Port number cannot be negative");
+    const portValidator = z.coerce
+      .number()
+      .nonnegative("Port number cannot be negative");
 
     app.get("/sharkio/sniffer/invocation", (req: Request, res: Response) => {
       try {
@@ -81,7 +83,7 @@ export class SnifferManagerController {
           return res.sendStatus(500);
         }
       } catch (e) {
-        switch (true) { 
+        switch (true) {
           case e instanceof ZodError: {
             const { errors } = e as ZodError;
             return res.status(400).send(errors);
