@@ -31,7 +31,8 @@
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
     "ts-node": "^10.9.1",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "zod": "^3.21.4"
   },
   "files": [
     "index.js",
