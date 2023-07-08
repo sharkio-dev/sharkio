@@ -5,8 +5,8 @@ import {
   Invocation,
   PathMetadataConfig,
   PathResponseData,
-} from "../../../types/types";
-import { RequestKey } from "./Request-key";
+} from "../../types";
+import { RequestKey } from "./request-key";
 
 export class InterceptedRequest {
   static readonly defaultConfig: PathMetadataConfig = {

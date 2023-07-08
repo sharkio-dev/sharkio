@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { InterceptedRequest, RequestKey } from "../intercepted-request/";
-import { Invocation, PathResponseData } from "../../../types/types";
+import { Invocation, PathResponseData } from "../../types/types";
 import { RequestsMap } from "./requests-map";
 
 export class InterceptedRequests {
