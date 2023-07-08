@@ -7,12 +7,13 @@ import {
   PlayArrow,
   Save,
   Stop,
-  Edit
+  Edit,
 } from "@mui/icons-material";
 import {
   Button,
   Card,
   CircularProgress,
+  Collapse,
   TextField,
   Tooltip,
   Typography,
@@ -47,7 +48,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const fileUploadInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
     {
       config: {
@@ -57,7 +58,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       },
       isStarted: false,
       isNew: true,
-      isEditing: true,
+      isEditing: false,
     },
   ]);
 
@@ -155,7 +156,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       name: config.name ?? "",
       port: config.port,
       downstreamUrl: config.downstreamUrl,
-      id: config.port.toString()
+      id: config.port.toString(),
     };
 
     setSaveLoading(true);
@@ -249,25 +250,27 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         });
   };
 
-  const handleEditClicked = async (index: number, newConfig: SnifferCreateConfig) => {
+  const handleEditClicked = async (
+    index: number,
+    newConfig: SnifferCreateConfig
+  ) => {
     // meaning sniffer.isEditing = false
     if (sniffers[index].isEditing === false) {
       setSniffers((prev) => {
         return prev.map((sniffer: SnifferConfigRow, idx: number) => {
           if (index === idx) {
-            sniffer.isEditing = true
+            sniffer.isEditing = true;
           }
-          return sniffer
-        })
-      })
+          return sniffer;
+        });
+      });
       showSnackbar("Sniffer in edit mode", "info");
-
     } else {
       // meaning sniffer.isEditing = true
       setLoading(true);
       await editSniffer(newConfig)
         .then(() => {
-          loadData()
+          loadData();
           showSnackbar("Changes were saved", "info");
         })
         .catch(() => {
@@ -275,7 +278,61 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         })
         .finally(() => setLoading(false));
     }
-  }
+  };
+
+  const snifferConfigForm = (sniffer: SnifferConfigRow, index: number) => {
+    return (
+      <>
+        {!sniffer.isEditing && (
+          <Typography className={styles.snifferTitle} variant="h5">
+            {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
+          </Typography>
+        )}
+        <Collapse orientation="horizontal" in={sniffer.isEditing}>
+          <TextField
+            label={"Port"}
+            placeholder="1234"
+            defaultValue={sniffer.config.port}
+            disabled={sniffer.isEditing === false}
+            value={sniffer.config.port || ""}
+            onChange={(
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+            ) => {
+              handlePortChanged(e, index);
+            }}
+          />
+        </Collapse>
+        <Collapse orientation="horizontal" in={sniffer.isEditing}>
+          <TextField
+            label={"Proxy url"}
+            placeholder="http://example.com"
+            defaultValue={sniffer.config.downstreamUrl}
+            value={sniffer.config.downstreamUrl || ""}
+            disabled={sniffer.isEditing === false}
+            onChange={(
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+            ) => {
+              handleUrlChanged(e, index);
+            }}
+          />
+        </Collapse>
+        <Collapse orientation="horizontal" in={sniffer.isEditing}>
+          <TextField
+            label={"Name"}
+            placeholder="name"
+            defaultValue={sniffer.config.name}
+            value={sniffer.config.name || ""}
+            disabled={sniffer.isEditing === false}
+            onChange={(
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+            ) => {
+              handleNameChanged(e, index);
+            }}
+          />
+        </Collapse>
+      </>
+    );
+  };
 
   return (
     <>
@@ -307,42 +364,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         {sniffers?.map((sniffer, index) => {
           return (
             <div key={`config-row-${index}`} className={styles.inputs}>
-              <TextField
-                label={"Port"}
-                placeholder="1234"
-                defaultValue={sniffer.config.port}
-                disabled={sniffer.isEditing === false}
-                value={sniffer.config.port || ""}
-                onChange={(
-                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-                ) => {
-                  handlePortChanged(e, index);
-                }}
-              />
-              <TextField
-                label={"Proxy url"}
-                placeholder="http://example.com"
-                defaultValue={sniffer.config.downstreamUrl}
-                value={sniffer.config.downstreamUrl || ""}
-                disabled={sniffer.isEditing === false}
-                onChange={(
-                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-                ) => {
-                  handleUrlChanged(e, index);
-                }}
-              />
-              <TextField
-                label={"Name"}
-                placeholder="name"
-                defaultValue={sniffer.config.name}
-                value={sniffer.config.name || ""}
-                disabled={sniffer.isEditing === false}
-                onChange={(
-                  e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-                ) => {
-                  handleNameChanged(e, index);
-                }}
-              />
+              {snifferConfigForm(sniffer, index)}
               {sniffer.isNew === false && (
                 <>
                   <Tooltip title={"Start sniffing requests"}>
@@ -352,7 +374,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                         sniffer.config.port !== undefined &&
                         handleStartClicked(sniffer.config.port)
                       }
-                      disabled={sniffer.isStarted === true || sniffer.isEditing === true}
+                      disabled={
+                        sniffer.isStarted === true || sniffer.isEditing === true
+                      }
                     >
                       {startLoading === true ? (
                         <CircularProgress />
@@ -377,17 +401,24 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                       )}
                     </Button>
                   </Tooltip>
-                  <Tooltip title={sniffer.isEditing ? "Save changes" : "Edit the sniffer"}>
-                <Button
-                  color="info"
-                  onClick={() => {
-                    handleEditClicked(index, sniffer.config as SnifferCreateConfig);
-                  }}
-                  disabled={sniffer.isStarted === true}
-                >
-                  {sniffer.isEditing ? <Save /> : <Edit />}
-                </Button>
-              </Tooltip>
+                  <Tooltip
+                    title={
+                      sniffer.isEditing ? "Save changes" : "Edit the sniffer"
+                    }
+                  >
+                    <Button
+                      color="info"
+                      onClick={() => {
+                        handleEditClicked(
+                          index,
+                          sniffer.config as SnifferCreateConfig
+                        );
+                      }}
+                      disabled={sniffer.isStarted === true}
+                    >
+                      {sniffer.isEditing ? <Save /> : <Edit />}
+                    </Button>
+                  </Tooltip>
                 </>
               )}
               {sniffer.isNew === true && (
