@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import fsSync from "fs";
 
-import { SnifferConfig } from "../sniffer/sniffer";
+import { SnifferConfig } from "../request-metadata/sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 
 const setupFilePath = process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";

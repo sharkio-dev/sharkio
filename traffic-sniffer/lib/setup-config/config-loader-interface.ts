@@ -1,4 +1,4 @@
-import { SnifferConfig } from "../sniffer/sniffer";
+import { SnifferConfig } from "../request-metadata/sniffer/sniffer";
 import { SnifferConfigSetup } from "./file-config";
 
 export interface ConfigLoader {
