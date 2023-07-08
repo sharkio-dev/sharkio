@@ -14,7 +14,9 @@
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
   },
   "nodemonConfig": {
-    "ignore": ["./sniffers-setup.json"]
+    "ignore": [
+      "./sniffers-setup.json"
+    ]
   },
   "author": "Ido David",
   "license": "ISC",
@@ -33,7 +35,7 @@
     "express-http-proxy": "^1.6.3",
     "http-proxy-middleware": "^2.0.6",
     "install": "^0.13.0",
-    "node-json-db": "^2.1.4",
+    "node-json-db": "^2.2.0",
     "npm": "^9.6.5",
     "uuid": "^9.0.0",
     "yargs": "^17.7.1"
