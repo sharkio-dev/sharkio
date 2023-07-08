@@ -1,4 +1,4 @@
-import { InterceptedRequest, RequestKey } from "./intercepted-request";
+import { InterceptedRequest, RequestKey } from "../intercepted-request";
 
 export class RequestsMap implements Map<RequestKey, InterceptedRequest> {
   size: number;
