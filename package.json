@@ -17,7 +17,8 @@
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "husky install"
   },
   "author": "Ido David",
   "license": "ISC",
