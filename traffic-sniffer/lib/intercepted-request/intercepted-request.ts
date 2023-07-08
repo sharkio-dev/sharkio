@@ -1,11 +1,7 @@
 import axios from "axios";
 import { Request } from "express";
 import { v4 } from "uuid";
-import {
-  Invocation,
-  PathMetadataConfig,
-  PathResponseData,
-} from "../../types";
+import { Invocation, PathMetadataConfig, PathResponseData } from "../../types";
 import { RequestKey } from "./request-key";
 
 export class InterceptedRequest {
