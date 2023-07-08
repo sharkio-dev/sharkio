@@ -148,14 +148,14 @@ export const RequestPage: React.FC = () => {
             </TabContent>
             <TabContent index={1} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>{JSON.stringify(schema, null, 2)}</pre>
+                <pre>
+                  <pre>{typescript}</pre>
+                </pre>
               </div>
             </TabContent>
             <TabContent index={2} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>
-                  <pre>{typescript}</pre>
-                </pre>
+                <pre>{JSON.stringify(schema, null, 2)}</pre>
               </div>
             </TabContent>
             <TabContent index={3} tabValue={tab}>
