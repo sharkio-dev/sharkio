@@ -5,7 +5,7 @@ import {
   Invocation,
   PathMetadataConfig,
   PathResponseData,
-} from "../../types/types";
+} from "../../../types/types";
 
 export class RequestKey extends Object {
   constructor(public readonly method: string, public readonly url: string) {

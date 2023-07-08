@@ -9,7 +9,7 @@ import express, {
 import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation, PathResponseData } from "../../../types/types";
-import { InterceptedRequests } from "../intercepted-requests";
+import { InterceptedRequests } from "../intercepted-request/intercepted-requests";
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
 
