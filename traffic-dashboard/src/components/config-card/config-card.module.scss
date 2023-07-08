@@ -7,6 +7,10 @@
   flex-direction: row;
   column-gap: 10px;
   margin-bottom: 15px;
+  .snifferTitle {
+    align-self: center;
+    text-transform: capitalize;
+  }
 }
 
 .addSnifferBtn {
