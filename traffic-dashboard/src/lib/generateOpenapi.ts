@@ -4,7 +4,11 @@ import {
   OpenAPIResponse,
 } from "./openapi.interface";
 
-export function JsonToOpenapi(requests: unknown[], apiName: string, apiVersion: string) {
+export function JsonToOpenapi(
+  requests: unknown[],
+  apiName: string,
+  apiVersion: string
+) {
   const openApiDocument: OpenAPIDocument = {
     openapi: "3.0.0",
     info: {
@@ -15,14 +19,14 @@ export function JsonToOpenapi(requests: unknown[], apiName: string, apiVersion: 
     paths: {},
   };
 
-  handleRequests(openApiDocument, requests)
+  handleRequests(openApiDocument, requests);
 
   return openApiDocument;
 }
 
 function handleRequests(openApiDocument: OpenAPIDocument, requests: unknown[]) {
   requests.forEach((request: any) => {
-    console.log(request)
+    console.log(request);
     const { url, method, invocations } = request;
 
     if (!openApiDocument.paths[url]) {
@@ -35,13 +39,13 @@ function handleRequests(openApiDocument: OpenAPIDocument, requests: unknown[]) {
     };
 
     const response: OpenAPIResponse = {
-      description: 'Successful response',
+      description: "Successful response",
       content: {
-        'application/json': {
+        "application/json": {
           schema: {
-            type: 'array',
+            type: "array",
             items: {
-              $ref: '#/components/schemas/ResponseData',
+              $ref: "#/components/schemas/ResponseData",
             },
           },
         },

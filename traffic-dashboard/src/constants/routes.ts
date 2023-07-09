@@ -4,5 +4,5 @@ export const routes = {
   HOME: "/home",
   CONFIG: "/config",
   MOCKS: "/mocks",
-  OPENAPI: "/gen-openapi"
+  OPENAPI: "/gen-openapi",
 };
