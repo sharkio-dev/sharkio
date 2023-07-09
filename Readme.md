@@ -72,13 +72,11 @@ Note:
 
 <details>
   <summary> [1] Pre-commit hook is not installed during normal installation, what should I do? </summary>
-    To setup husky [pre-commit hook] manually by running this command:
-    - npm run prepare
+    To setup husky [pre-commit hook] manually by running this command: `npm run prepare`
 </details>
 <details>
   <summary> [2] What does `traffic-dashboard` and `traffic-snifer` directory contain? </summary>
-    - `traffic-dashboard` is the frontend code; 
-    - `traffic-snifer` is the backend code; 
+    `traffic-dashboard` is the frontend code || `traffic-snifer` is the backend code
 </details>
 
 ## 🏗️ Architecture
