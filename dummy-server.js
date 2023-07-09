@@ -15,7 +15,7 @@ let config = {
  * Access this API via http://localhost:5432 through postman
  */
 
-app.get("/hello", async (_req, res) => {
+app.get("/*", async (_req, res) => {
   try {
     res.json({ messaage: "Checkout Sniffer, API logs would be made" });
   } catch (error) {
