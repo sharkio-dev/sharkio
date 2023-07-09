@@ -28,6 +28,7 @@
     "kill-port": "^2.0.1",
     "nodemon": "^2.0.22",
     "open": "^9.1.0",
+    "swagger-jsdoc": "^6.2.8",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
     "ts-node": "^10.9.1",
