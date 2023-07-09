@@ -4,7 +4,11 @@ import {
   OpenAPIResponse,
 } from "./openapi.interface";
 
-export function JsonToOpenapi(requests: unknown[], apiName: string, apiVersion: string) {
+export function JsonToOpenapi(
+  requests: unknown[],
+  apiName: string,
+  apiVersion: string
+) {
   const openApiDocument: OpenAPIDocument = {
     openapi: "3.0.0",
     info: {
@@ -15,7 +19,7 @@ export function JsonToOpenapi(requests: unknown[], apiName: string, apiVersion: 
     paths: {},
   };
 
-  handleRequests(openApiDocument, requests)
+  handleRequests(openApiDocument, requests);
 
   return openApiDocument;
 }
