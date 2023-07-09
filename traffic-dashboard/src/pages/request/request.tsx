@@ -26,7 +26,7 @@ import {
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
-import { jsonSchemaToOpenapi } from "../../lib/generateOpenapi";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
 
 export const RequestPage: React.FC = () => {
@@ -57,7 +57,7 @@ export const RequestPage: React.FC = () => {
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
-      setOpenapi(jsonSchemaToOpenapi(request))
+      setOpenapi(JsonToOpenapi(new Array(request) ,request.service, "1.0.0"))
       setRequest(request);
     }
   }, [id, requests]);
@@ -169,7 +169,7 @@ export const RequestPage: React.FC = () => {
             </TabContent>
             <TabContent index={4} tabValue={tab}>
                 <div className={styles.cardTitle}>
-                  <pre>{openapi}</pre>
+                  <pre>{JSON.stringify(openapi, null ,2)}</pre>
                 </div>
             </TabContent>
           </Card>

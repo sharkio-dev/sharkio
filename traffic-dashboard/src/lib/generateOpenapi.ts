@@ -4,25 +4,51 @@ import {
   OpenAPIResponse,
 } from "./openapi.interface";
 
-export function jsonSchemaToOpenapi(request: any) {
-  const openAPIDocument: OpenAPIDocument = {
+export function JsonToOpenapi(requests: unknown[], apiName: string, apiVersion: string) {
+  const openApiDocument: OpenAPIDocument = {
     openapi: "3.0.0",
     info: {
-      title: "API",
-      version: "1.0.0",
+      title: apiName,
+      version: apiVersion,
       description: "",
     },
     paths: {},
   };
 
-  openAPIDocument.paths[request.url] = {};
+  handleRequests(openApiDocument, requests)
 
-  const operation: OpenAPIOperation = {
-    summary: `Endpoint for ${request.method}`,
-    responses: {},
-  };
+  return openApiDocument;
+}
 
-  openAPIDocument.paths[request.url][request.method.toLowerCase()] = operation;
+function handleRequests(openApiDocument: OpenAPIDocument, requests: unknown[]) {
+  requests.forEach((request: any) => {
+    console.log(request)
+    const { url, method, invocations } = request;
 
-  return JSON.stringify(openAPIDocument, null, 2);
+    if (!openApiDocument.paths[url]) {
+      openApiDocument.paths[url] = {};
+    }
+
+    const operation: OpenAPIOperation = {
+      summary: `Endpoint for ${method}`,
+      responses: {},
+    };
+
+    const response: OpenAPIResponse = {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/ResponseData',
+            },
+          },
+        },
+      },
+    };
+
+    //operation.responses['200'] = response;
+    openApiDocument.paths[url][method.toLowerCase()] = operation;
+  });
 }
