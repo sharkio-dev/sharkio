@@ -70,7 +70,7 @@ export const GenOpenAPI = () => {
         disabled={!service || !apiName || !apiVersion}>Create API</Button>
         </Card>
 
-      <div contentEditable="true">
+      <div>
         <pre>{JSON.stringify(openApiDoc, null, 2)}</pre> 
       </div>
     </div>
