@@ -29,8 +29,8 @@ Request mocking.
 | Typescript generator  |      ✅       |
 | JSON schema generator |      ✅       |
 | Microservice support  |      ✅       |
+|     Request mocks     |      ✅       |
 |  Open api generator   |               |
-|     Request mocks     |               |
 |  ChatGPT integration  |               |
 |     Save requests     |               |
 |      Collections      |               |
