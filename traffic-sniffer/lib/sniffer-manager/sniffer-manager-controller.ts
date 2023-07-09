@@ -194,7 +194,10 @@ export class SnifferManagerController {
           });
           const bodyValidator = z.object({
             url: z.string().url(),
-            method: z.string().toLowerCase().pipe(z.enum(["get", "post", "delete", "patch", "put"])),
+            method: z
+              .string()
+              .toLowerCase()
+              .pipe(z.enum(["get", "post", "delete", "patch", "put"])),
             invocation: z.object({
               id: z.string().nonempty(),
               timestamp: z.date(),
