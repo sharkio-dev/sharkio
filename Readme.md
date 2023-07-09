@@ -47,10 +47,6 @@ Request mocking.
 
 - npm i -g concurrently ts-node
 
-To setup husky [pre-commit hook]:
-
-- npm run prepare
-
 For the backend
 
 - cd into traffic-sniffer.
@@ -70,7 +66,20 @@ For both:
 Note:
 
 - Incase you want a dummy server to test sniffing as shown in [visual demonstration of how to use](https://github.com/idodav/sharkio#visual-demonstration-how-to-run-the-application), then run the follwoing command:
-- npm run demo ( in root directory )
+- `npm run demo` ( in root directory )
+
+### ❓ Setup FAQs:
+
+<details>
+  <summary> [1] Pre-commit hook is not installed during normal installation, what should I do? </summary>
+    To setup husky [pre-commit hook] manually by running this command:
+    - npm run prepare
+</details>
+<details>
+  <summary> [2] What does `traffic-dashboard` and `traffic-snifer` directory contain? </summary>
+    - `traffic-dashboard` is the frontend code; 
+    - `traffic-snifer` is the backend code; 
+</details>
 
 ## 🏗️ Architecture
 
@@ -112,6 +121,6 @@ Note:
 
 Appreciating all our fellow contributors:
 
-<a href = "https://github.com/dicedb/dice/graphs/contributors">
+<a href = "https://github.com/idodav/sharkio/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=idodav/sharkio"/>
 </a>
