@@ -1,4 +1,8 @@
-import { OpenAPIDocument, OpenAPIOperation, OpenAPIResponse } from "./openapi.interface";
+import {
+  OpenAPIDocument,
+  OpenAPIOperation,
+  OpenAPIResponse,
+} from "./openapi.interface";
 
 export function jsonSchemaToOpenapi(request: any) {
   const openAPIDocument: OpenAPIDocument = {
@@ -6,10 +10,10 @@ export function jsonSchemaToOpenapi(request: any) {
     info: {
       title: "API",
       version: "1.0.0",
-      description: ""
+      description: "",
     },
-    paths: {}
-  }
+    paths: {},
+  };
 
   openAPIDocument.paths[request.url] = {};
 
@@ -18,7 +22,7 @@ export function jsonSchemaToOpenapi(request: any) {
     responses: {},
   };
 
-  openAPIDocument.paths[request.url][request.method.toLowerCase()] = operation;  
-  
-  return JSON.stringify(openAPIDocument,null, 2);
+  openAPIDocument.paths[request.url][request.method.toLowerCase()] = operation;
+
+  return JSON.stringify(openAPIDocument, null, 2);
 }
