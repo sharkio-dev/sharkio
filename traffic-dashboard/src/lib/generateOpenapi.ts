@@ -38,21 +38,6 @@ function handleRequests(openApiDocument: OpenAPIDocument, requests: unknown[]) {
       responses: {},
     };
 
-    // const response: OpenAPIResponse = {
-    //   description: 'Successful response',
-    //   content: {
-    //     'application/json': {
-    //       schema: {
-    //         type: 'array',
-    //         items: {
-    //           $ref: '#/components/schemas/ResponseData',
-    //         },
-    //       },
-    //     },
-    //   },
-    // };
-
-    // operation.responses['200'] = response;
     openApiDocument.paths[url][method.toLowerCase()] = operation;
   });
 }
