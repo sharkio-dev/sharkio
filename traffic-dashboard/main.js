@@ -1,3 +1,0 @@
-import { startDashboard } from ".";
-
-startDashboard();
