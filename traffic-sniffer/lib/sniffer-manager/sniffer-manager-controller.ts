@@ -452,7 +452,7 @@ export class SnifferManagerController {
           const { existingId } = paramsValidator.parse(req.params);
           const { port } = bodyValidator.parse(req.body);
           const sniffer = this.snifferManager.getSnifferById(existingId);
-          
+
           // verify that there is no sniffer with the port you want to change to.
           const isPortAlreadyExists = this.snifferManager.getSnifferById(
             port.toString()
