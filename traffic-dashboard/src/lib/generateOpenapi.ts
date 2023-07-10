@@ -1,7 +1,6 @@
 import {
   OpenAPIDocument,
   OpenAPIOperation,
-  OpenAPIResponse,
 } from "./openapi.interface";
 
 export function JsonToOpenapi(
