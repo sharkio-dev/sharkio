@@ -1,0 +1,9 @@
+[
+  {
+    "id": "Sniffer-1",
+    "name": "CustomDummyServerSniffer",
+    "downstreamUrl": "http://localhost:3000",
+    "port": 5555,
+    "isStarted": true
+  }
+]

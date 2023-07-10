@@ -10,3 +10,4 @@ sharkio-0.1.0.tgz
 .idea
 
 sniffers-setup.json
+traffic-sniffer/local_db.json
