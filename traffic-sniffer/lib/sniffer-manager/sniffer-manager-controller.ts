@@ -442,28 +442,50 @@ export class SnifferManagerController {
     app.put(
       "/sharkio/sniffer/:existingId",
       async (req: Request, res: Response) => {
-        const { existingId } = req.params;
-        const { port } = req.body;
-
         try {
+          const paramsValidator = z.object({
+            existingId: z.string().nonempty(),
+          });
+          const bodyValidator = z.object({
+            port: portValidator,
+          });
+          const { existingId } = paramsValidator.parse(req.params);
+          const { port } = bodyValidator.parse(req.body);
           const sniffer = this.snifferManager.getSnifferById(existingId);
+          
           // verify that there is no sniffer with the port you want to change to.
           const isPortAlreadyExists = this.snifferManager.getSnifferById(
             port.toString()
           );
           if (
             (sniffer !== undefined && !isPortAlreadyExists) ||
-            +port === +existingId
+            port === +existingId
           ) {
             this.snifferManager.editSniffer(existingId, req.body);
-            res.sendStatus(200);
+            return res.sendStatus(200);
           } else if (!sniffer) {
-            res.sendStatus(404);
+            return res.sendStatus(404);
           } else if (isPortAlreadyExists) {
-            res.sendStatus(403);
+            return res.sendStatus(403);
           }
         } catch (e: any) {
-          res.sendStatus(500);
+          switch (true) {
+            case e instanceof ZodError: {
+              const { errors } = e as ZodError;
+              return res.status(400).send(errors);
+            }
+            default: {
+              console.error("An unexpected error occured", {
+                dir: __dirname,
+                file: __filename,
+                method: "PUT",
+                path: "/sharkio/sniffer/:existingId",
+                error: e,
+                timestamp: new Date(),
+              });
+              return res.sendStatus(500);
+            }
+          }
         }
       }
     );
