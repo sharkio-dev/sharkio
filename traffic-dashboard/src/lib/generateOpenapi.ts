@@ -1,7 +1,4 @@
-import {
-  OpenAPIDocument,
-  OpenAPIOperation,
-} from "./openapi.interface";
+import { OpenAPIDocument, OpenAPIOperation } from "./openapi.interface";
 
 export function JsonToOpenapi(
   requests: unknown[],
