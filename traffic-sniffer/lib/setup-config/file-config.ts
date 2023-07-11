@@ -39,10 +39,13 @@ export class FileConfig implements ConfigLoader {
 
   readSetupFileData(): SnifferConfigSetup[] {
     try {
-      const fileData = fsSync.readFileSync(setupFilePath, 'utf8');
+      const fileData = fsSync.readFileSync(setupFilePath, "utf8");
       const parsedData = JSON.parse(fileData);
-  
-      if (Array.isArray(parsedData) && parsedData.every((item: any) => typeof item === 'object')) {
+
+      if (
+        Array.isArray(parsedData) &&
+        parsedData.every((item: any) => typeof item === "object")
+      ) {
         return parsedData as SnifferConfigSetup[];
       } else {
         return [];
