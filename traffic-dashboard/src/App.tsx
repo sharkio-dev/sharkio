@@ -9,6 +9,7 @@ import { RequestPage } from "./pages/request/request";
 import { Config } from "./pages/config/config";
 import Mocks from "./pages/mocks/mocks";
 import { Requests } from "./pages/requests/requests";
+import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
 
 function App() {
   const theme = createTheme({
@@ -28,6 +29,7 @@ function App() {
               <Route path={routes.CONFIG} element={<Config />}></Route>
               <Route path={routes.REQUESTS} element={<Requests />}></Route>
               <Route path={routes.MOCKS} element={<Mocks />}></Route>
+              <Route path={routes.OPENAPI} element={<GenOpenAPI />}></Route>
               <Route path={"*"} element={<Home />}></Route>
             </Routes>
           </PageTemplate>
