@@ -307,15 +307,17 @@ export class SnifferManagerController {
 
         try {
           const sniffer = this.snifferManager.getSnifferById(existingId);
+
           // verify that there is no sniffer with the port you want to change to.
           const isPortAlreadyExists = this.snifferManager.getSnifferById(
             port.toString()
           );
+
           if (
             (sniffer !== undefined && !isPortAlreadyExists) ||
             +port === +existingId
           ) {
-            this.snifferManager.editSniffer(existingId, req.body);
+            await this.snifferManager.editSniffer(existingId, req.body);
             res.sendStatus(200);
           } else if (!sniffer) {
             res.sendStatus(404);

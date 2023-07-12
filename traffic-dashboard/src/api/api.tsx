@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SnifferCreateConfig } from "../types/types";
+import { SnifferConfig, SnifferCreateConfig } from "../types/types";
 
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post("/sharkio/sniffer", JSON.stringify(config), {
@@ -10,7 +10,7 @@ export const createSniffer = (config: SnifferCreateConfig) => {
 };
 
 export const getSniffers = () => {
-  return axios.get("/sharkio/sniffer");
+  return axios.get<SnifferConfig[]>("/sharkio/sniffer");
 };
 
 export const stopSniffer = (port: number) => {
@@ -79,7 +79,7 @@ export const createMock = (
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/activate`,
@@ -95,7 +95,7 @@ export const activateMock = (
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/deactivate`,

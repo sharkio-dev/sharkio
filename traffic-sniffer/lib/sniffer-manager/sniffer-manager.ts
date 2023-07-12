@@ -71,15 +71,17 @@ export class SnifferManager {
     return res;
   }
 
-  editSniffer(existingId: string, newConfig: SnifferConfig) {
+  async editSniffer(existingId: string, newConfig: SnifferConfig) {
     const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
       return sniffer.getId() === existingId;
     });
+
     // Not needed if we stop the sniffer beforehand
     if (this.sniffers[existingIndex].getIsStarted() === true) {
       throw new Error("Cannot edit an active sniffer");
     }
-    this.sniffers[existingIndex].editSniffer(newConfig);
+
+    await this.sniffers[existingIndex].editSniffer(newConfig);
     this.ConfigData.update(
       existingId,
       newConfig,
