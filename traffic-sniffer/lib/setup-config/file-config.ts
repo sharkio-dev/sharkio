@@ -38,14 +38,22 @@ export class FileConfig implements ConfigLoader {
   }
 
   readSetupFileData(): SnifferConfigSetup[] {
-    let setupData: SnifferConfigSetup[] = [];
     try {
-      const fileData: string = fsSync.readFileSync(setupFilePath, "utf-8");
-      setupData = JSON.parse(fileData);
-    } catch (err) {
-      throw new Error("setup file is not in right format!");
+      const fileData = fsSync.readFileSync(setupFilePath, "utf8");
+      const parsedData = JSON.parse(fileData);
+
+      if (
+        Array.isArray(parsedData) &&
+        parsedData.every((item: any) => typeof item === "object")
+      ) {
+        return parsedData as SnifferConfigSetup[];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error(`file was not in right format, overriding it`);
+      return [];
     }
-    return setupData;
   }
 
   addSniffer(snifferConfig: SnifferConfig) {
