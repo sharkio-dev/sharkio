@@ -148,7 +148,7 @@ export class Sniffer {
   }
 
   async editSniffer(newConfig: SnifferConfig) {
-    if (this.isStarted === true) {
+    if (this.isStarted) {
       await this.stop();
     }
     this.config = newConfig;
