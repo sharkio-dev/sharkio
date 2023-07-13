@@ -10,7 +10,7 @@
     "start": "nodemon main.ts",
     "dev": "nodemon main.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
   },
   "nodemonConfig": {
