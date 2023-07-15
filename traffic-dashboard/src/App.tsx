@@ -7,8 +7,9 @@ import { Home } from "./pages/home/Home";
 import { NewRequest } from "./pages/new-request/new-request";
 import { RequestPage } from "./pages/request/request";
 import { Config } from "./pages/config/config";
-import Mocks from "./pages/mocks/mocks";
+import MocksPage from "./pages/mocks/mocks";
 import { Requests } from "./pages/requests/requests";
+import { Service } from "./pages/service/service";
 
 function App() {
   const theme = createTheme({
@@ -27,7 +28,8 @@ function App() {
               <Route path={routes.REQUEST} element={<RequestPage />}></Route>
               <Route path={routes.CONFIG} element={<Config />}></Route>
               <Route path={routes.REQUESTS} element={<Requests />}></Route>
-              <Route path={routes.MOCKS} element={<Mocks />}></Route>
+              <Route path={routes.MOCKS} element={<MocksPage />}></Route>
+              <Route path={routes.SERVICE} element={<Service />}></Route>
               <Route path={"*"} element={<Home />}></Route>
             </Routes>
           </PageTemplate>

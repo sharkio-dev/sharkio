@@ -1,13 +1,12 @@
-import c from "classnames";
 import {
   Add,
   Delete,
+  Edit,
   FileDownload,
   FileUpload,
   PlayArrow,
   Save,
   Stop,
-  Edit,
 } from "@mui/icons-material";
 import {
   Button,
@@ -18,21 +17,24 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import c from "classnames";
+import { saveAs } from "file-saver";
 import { useEffect, useRef, useState } from "react";
+import { generatePath, useNavigate } from "react-router-dom";
 import {
   createSniffer,
   deleteSniffer,
+  editSniffer,
   getSniffers,
   startSniffer,
   stopSniffer,
-  editSniffer,
 } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
-import { saveAs } from "file-saver";
+import { routes } from "../../constants/routes";
 
-type SnifferConfigRow = {
+export type SnifferConfigRow = {
   isNew: boolean;
   config: Partial<SnifferConfig>;
   isStarted: boolean;
@@ -44,6 +46,7 @@ export type IConfigCardProps = {
 };
 
 export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
+  const navigate = useNavigate();
   const [stopLoading, setStopLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
@@ -281,10 +284,22 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   };
 
   const snifferConfigForm = (sniffer: SnifferConfigRow, index: number) => {
+    const handleSnifferClicked = () => {
+      navigate(
+        generatePath(routes.SERVICE, {
+          port: sniffer.config.port,
+        })
+      );
+    };
+
     return (
       <>
         {!sniffer.isEditing && (
-          <Typography className={styles.snifferTitle} variant="h5">
+          <Typography
+            className={styles.snifferTitle}
+            variant="h5"
+            onClick={handleSnifferClicked}
+          >
             {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
           </Typography>
         )}

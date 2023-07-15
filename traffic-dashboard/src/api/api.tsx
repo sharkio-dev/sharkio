@@ -13,6 +13,10 @@ export const getSniffers = () => {
   return axios.get("/sharkio/sniffer");
 };
 
+export const getSniffer = (port: number) => {
+  return axios.get(`/sharkio/sniffer/${port}`);
+};
+
 export const stopSniffer = (port: number) => {
   return axios.post(`/sharkio/sniffer/${port}/actions/stop`);
 };
@@ -79,7 +83,7 @@ export const createMock = (
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/activate`,
@@ -95,7 +99,7 @@ export const activateMock = (
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/deactivate`,

@@ -4,4 +4,5 @@ export const routes = {
   HOME: "/home",
   CONFIG: "/config",
   MOCKS: "/mocks",
+  SERVICE: "/service/:port",
 };
