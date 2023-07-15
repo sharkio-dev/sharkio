@@ -5,4 +5,5 @@ export const routes = {
   CONFIG: "/config",
   MOCKS: "/mocks",
   SERVICE: "/service/:port",
+  OPENAPI: "/gen-openapi",
 };

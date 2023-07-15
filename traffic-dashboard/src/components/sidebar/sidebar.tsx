@@ -5,6 +5,7 @@ import {
   SwapHoriz,
 } from "@mui/icons-material";
 import DataObjectIcon from "@mui/icons-material/DataObject";
+import ApiIcon from '@mui/icons-material/Api';
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import {
   IconButton,
@@ -77,6 +78,16 @@ export const SideBar: React.FC = () => {
           >
             <DataObjectIcon />
             {!minimized && <>Mocks</>}
+          </ListItemButton>
+          <ListItemButton
+            alignItems="center"
+            className={styles.listItem}
+            onClick={() => {
+              navigate("/gen-openapi");
+            }}
+          >
+            <ApiIcon />
+            {!minimized && <>OpenAPI</>}
           </ListItemButton>
         </List>
       </Paper>

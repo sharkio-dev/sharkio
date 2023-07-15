@@ -8,6 +8,8 @@ import {
   Save,
   Stop,
 } from "@mui/icons-material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
   Button,
   Card,
@@ -29,16 +31,17 @@ import {
   startSniffer,
   stopSniffer,
 } from "../../api/api";
+import { routes } from "../../constants/routes";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
-import { routes } from "../../constants/routes";
 
 export type SnifferConfigRow = {
   isNew: boolean;
   config: Partial<SnifferConfig>;
   isStarted: boolean;
   isEditing: boolean;
+  isCollapsed: boolean;
 };
 
 export type IConfigCardProps = {
@@ -62,6 +65,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       isStarted: false,
       isNew: true,
       isEditing: false,
+      isCollapsed: false,
     },
   ]);
 
@@ -99,6 +103,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
           isNew: true,
           isStarted: false,
           isEditing: true,
+          isCollapsed: false,
         },
       ]);
     });
@@ -205,6 +210,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       return sniffers;
     });
   };
+
   const handleUrlChanged = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     index: number
@@ -242,6 +248,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                 isNew: true,
                 isStarted: true,
                 isEditing: false,
+                isCollapsed: false,
               };
               return configRow;
             })
@@ -257,7 +264,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     index: number,
     newConfig: SnifferCreateConfig
   ) => {
-    // meaning sniffer.isEditing = false
     if (sniffers[index].isEditing === false) {
       setSniffers((prev) => {
         return prev.map((sniffer: SnifferConfigRow, idx: number) => {
@@ -269,7 +275,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
       showSnackbar("Sniffer in edit mode", "info");
     } else {
-      // meaning sniffer.isEditing = true
       setLoading(true);
       await editSniffer(newConfig)
         .then(() => {
@@ -283,6 +288,17 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     }
   };
 
+  const handleShowFieldsClicked = (index: number) => {
+    setSniffers((prevSniffers: SnifferConfigRow[]) => {
+      return prevSniffers.map((sniffer: SnifferConfigRow, idx: number) => {
+        if (index === idx) {
+          sniffer.isCollapsed = !sniffer.isCollapsed;
+        }
+        return sniffer;
+      });
+    });
+  };
+
   const snifferConfigForm = (sniffer: SnifferConfigRow, index: number) => {
     const handleSnifferClicked = () => {
       navigate(
@@ -294,16 +310,12 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
     return (
       <>
-        {!sniffer.isEditing && (
-          <Typography
-            className={styles.snifferTitle}
-            variant="h5"
-            onClick={handleSnifferClicked}
-          >
+        {sniffer.isCollapsed && (
+          <Typography className={styles.snifferTitle} variant="h5">
             {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
           </Typography>
         )}
-        <Collapse orientation="horizontal" in={sniffer.isEditing}>
+        <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
           <TextField
             label={"Port"}
             placeholder="1234"
@@ -317,7 +329,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             }}
           />
         </Collapse>
-        <Collapse orientation="horizontal" in={sniffer.isEditing}>
+        <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
           <TextField
             label={"Proxy url"}
             placeholder="http://example.com"
@@ -331,7 +343,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             }}
           />
         </Collapse>
-        <Collapse orientation="horizontal" in={sniffer.isEditing}>
+        <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
           <TextField
             label={"Name"}
             placeholder="name"
@@ -463,6 +475,20 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                   disabled={sniffer.isStarted === true}
                 >
                   <Delete></Delete>
+                </Button>
+              </Tooltip>
+              <Tooltip title="Show fields">
+                <Button
+                  color="info"
+                  onClick={() => {
+                    handleShowFieldsClicked(index);
+                  }}
+                >
+                  {!sniffer.isCollapsed ? (
+                    <ChevronLeftIcon />
+                  ) : (
+                    <ChevronRightIcon />
+                  )}
                 </Button>
               </Tooltip>
             </div>

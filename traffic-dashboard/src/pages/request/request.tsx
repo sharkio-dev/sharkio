@@ -26,11 +26,13 @@ import {
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
   const [typescript, setTypescript] = useState<any>(undefined);
+  const [openapi, setOpenapi] = useState<any>(undefined);
   const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
   const [request, setRequest] = useState<any>(undefined);
@@ -55,6 +57,7 @@ export const RequestPage: React.FC = () => {
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
+      setOpenapi(JsonToOpenapi(new Array(request) ,request.service, "1.0.0"))
       setRequest(request);
     }
   }, [id, requests]);
@@ -140,6 +143,7 @@ export const RequestPage: React.FC = () => {
               <Tab label="Typescript" value={1}></Tab>
               <Tab label="JSON Schema" value={2}></Tab>
               <Tab label="RAW" value={3}></Tab>
+              <Tab label="openAPI" value={4}></Tab>
             </Tabs>
             <TabContent index={0} tabValue={tab}>
               <div className={styles.cardTitle}>
@@ -159,10 +163,14 @@ export const RequestPage: React.FC = () => {
               </div>
             </TabContent>
             <TabContent index={3} tabValue={tab}>
-              <>
-                <div className={styles.cardTitle}></div>
+              <div className={styles.cardTitle}>
                 <pre>{JSON.stringify(request, null, 2)}</pre>
-              </>
+              </div>
+            </TabContent>
+            <TabContent index={4} tabValue={tab}>
+                <div className={styles.cardTitle}>
+                  <pre>{JSON.stringify(openapi, null ,2)}</pre>
+                </div>
             </TabContent>
           </Card>
         </>

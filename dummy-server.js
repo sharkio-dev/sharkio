@@ -1,23 +1,22 @@
 const express = require("express");
 const app = express();
-const axios = require("axios");
 
 /**
- * - Provided 5432 as sniffer URL with assumption the sniffing is being read at this port
  * - 3000 port is for the dummy server to run on
+ * - 5432 is a proxy
  */
 let config = {
-  snifferLocalUrl: "http://localhost:5432/sharkio/sniffer/3000",
   defaultPort: 3000,
 };
 
 /**
  * This is just a dummy `test-server` to ensure sniffing is working properly
+ *
+ * Access this API via http://localhost:5432 through postman
  */
 
 app.get("*", async (_req, res) => {
   try {
-    axios.get(config.snifferLocalUrl);
     res.json({ messaage: "Checkout Sniffer, API logs would be made" });
   } catch (error) {
     console.error(error.message);

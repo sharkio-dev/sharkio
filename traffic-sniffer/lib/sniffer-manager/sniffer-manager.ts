@@ -1,17 +1,14 @@
 import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { FileConfig, SnifferConfigSetup } from "../setup-config/file-config";
+import { FileConfig } from "../setup-config/file-config";
 import { ConfigLoader } from "../setup-config/config-loader-interface";
+import { SnifferConfigSetup } from "../setup-config/file-config.types";
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
-  private ConfigData: ConfigLoader;
 
-  constructor() {
+  constructor(private readonly configPersistency: ConfigLoader) {
     this.sniffers = [];
-
-    this.ConfigData = new FileConfig();
-    this.loadSniffersFromConfig();
   }
 
   createSniffer(snifferConfig: SnifferConfig) {
@@ -24,7 +21,7 @@ export class SnifferManager {
     const newSniffer = new Sniffer(snifferConfig);
 
     this.sniffers.push(newSniffer);
-    this.ConfigData.addSniffer(snifferConfig);
+    this.configPersistency.addSniffer(snifferConfig);
     return newSniffer;
   }
 
@@ -60,7 +57,7 @@ export class SnifferManager {
     }
 
     this.sniffers.splice(index, 1);
-    this.ConfigData.removeSniffer(port);
+    this.configPersistency.removeSniffer(port);
   }
 
   getSnifferById(id: string) {
@@ -71,36 +68,38 @@ export class SnifferManager {
     return res;
   }
 
-  editSniffer(existingId: string, newConfig: SnifferConfig) {
+  async editSniffer(existingId: string, newConfig: SnifferConfig) {
     const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
       return sniffer.getId() === existingId;
     });
+
     // Not needed if we stop the sniffer beforehand
     if (this.sniffers[existingIndex].getIsStarted() === true) {
       throw new Error("Cannot edit an active sniffer");
     }
-    this.sniffers[existingIndex].editSniffer(newConfig);
-    this.ConfigData.update(
+
+    await this.sniffers[existingIndex].editSniffer(newConfig);
+    this.configPersistency.update(
       existingId,
       newConfig,
       this.sniffers[existingIndex].getIsStarted()
     );
   }
 
-  loadSniffersFromConfig() {
-    const loadedSetup: SnifferConfigSetup[] = this.ConfigData.getSetup();
-    if (loadedSetup.length !== 0) {
-      loadedSetup.forEach((item) => {
+  async loadSniffersFromConfig(configPersistency: SnifferConfigSetup[]) {
+    if (configPersistency.length !== 0) {
+      configPersistency.forEach(async (item) => {
         const sniffer: Sniffer = this.createSniffer(item);
+
         if (item.isStarted) {
-          sniffer.start();
+          await sniffer.start();
         }
       });
     }
   }
 
   setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
-    this.ConfigData.setIsStarted(snifferId, isStarted);
+    this.configPersistency.setIsStarted(snifferId, isStarted);
   }
 
   getAllMocks() {
