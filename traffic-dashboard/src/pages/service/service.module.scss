@@ -1,0 +1,64 @@
+.title {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  text-transform: capitalize;
+  padding-bottom: 30px;
+}
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 300px 300px;
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+}
+
+.serviceCard {
+  padding: 15px;
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.titleBar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.configFields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.controlTitle {
+  display: flex;
+  gap: 30px;
+  padding-bottom: 30px;
+}
+.mockTitle {
+  margin-bottom: 30px;
+}
+
+.mocksCard {
+  grid-area: 1 / 2 / 2 / 2;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow: scroll !important;
+}
+
+.mockRowsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.requestsCard {
+  grid-area: 2 / 1 / 2 / 3;
+  overflow: scroll;
+  max-height: 300px;
+  overflow: scroll !important;
+}
+
+// .div1 { grid-area: 1 / 1 / 2 / 2; }
+// .div2 { grid-area: 2 / 1 / 3 / 2; }
+// .div3 { grid-area: 1 / 2 / 3 / 3; }

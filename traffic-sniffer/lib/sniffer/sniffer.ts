@@ -148,20 +148,21 @@ export class Sniffer {
   }
 
   async editSniffer(newConfig: SnifferConfig) {
-    await this.stop();
+    if (this.isStarted) {
+      await this.stop();
+    }
     this.config = newConfig;
     this.id = newConfig.port.toString();
     this.config.id = newConfig.port.toString();
   }
 
   stats() {
-    const { config, isStarted, proxyMiddleware, id, interceptedRequests } =
-      this;
+    const { config, isStarted, id, interceptedRequests } = this;
     return {
       id,
       config,
       isStarted,
-      proxyMiddleware,
+      mocks: this.mockManager.getAllMocks(),
       interceptedRequests: interceptedRequests.stats(),
     };
   }

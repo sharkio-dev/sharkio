@@ -24,3 +24,22 @@ export type PathResponseData = {
   url: string;
   invocations: Invocation[];
 };
+
+export type Mock = {
+  method: string;
+  endpoint: string;
+  data: any;
+  active: boolean;
+  id: string;
+  status: number;
+};
+
+export type Service = {
+  name: string;
+  port: number;
+};
+
+export type ServiceMock = {
+  service: Service;
+  mocks: Mock[];
+};

@@ -2,6 +2,8 @@ import { Express, Request, Response } from "express";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
 import { z, ZodError } from "zod";
+import { json } from "body-parser";
+
 export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
@@ -9,6 +11,7 @@ export class SnifferManagerController {
     const portValidator = z.coerce
       .number()
       .nonnegative("Port number cannot be negative");
+    app.use(json());
 
     /**
      * @openapi
@@ -78,7 +81,7 @@ export class SnifferManagerController {
         const sniffer = this.snifferManager.getSniffer(port);
 
         if (sniffer !== undefined) {
-          return res.send(sniffer).status(200);
+          return res.send(sniffer.stats()).status(200);
         } else {
           return res.sendStatus(404);
         }
@@ -456,12 +459,13 @@ export class SnifferManagerController {
           const isPortAlreadyExists = this.snifferManager.getSnifferById(
             port.toString()
           );
+
           if (
             (sniffer !== undefined && !isPortAlreadyExists) ||
             port === +existingId
           ) {
-            this.snifferManager.editSniffer(existingId, req.body);
-            return res.sendStatus(200);
+            await this.snifferManager.editSniffer(existingId, req.body);
+            res.sendStatus(200);
           } else if (!sniffer) {
             return res.sendStatus(404);
           } else if (isPortAlreadyExists) {
