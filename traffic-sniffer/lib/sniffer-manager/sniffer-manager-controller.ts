@@ -73,7 +73,7 @@ export class SnifferManagerController {
       const sniffer = this.snifferManager.getSniffer(+port);
 
       if (sniffer !== undefined) {
-        res.send(sniffer).status(200);
+        res.send(sniffer.stats()).status(200);
       } else {
         res.sendStatus(404);
       }

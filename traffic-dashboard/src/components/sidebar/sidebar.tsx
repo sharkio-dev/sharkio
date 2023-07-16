@@ -57,7 +57,7 @@ export const SideBar: React.FC = () => {
             }}
           >
             <SettingsInputComponentIcon />
-            {!minimized && <>Config</>}
+            {!minimized && <>Services</>}
           </ListItemButton>
           <ListItemButton
             alignItems="center"

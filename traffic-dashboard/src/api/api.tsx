@@ -13,6 +13,10 @@ export const getSniffers = () => {
   return axios.get<SnifferConfig[]>("/sharkio/sniffer");
 };
 
+export const getSniffer = (port: number) => {
+  return axios.get(`/sharkio/sniffer/${port}`);
+};
+
 export const stopSniffer = (port: number) => {
   return axios.post(`/sharkio/sniffer/${port}/actions/stop`);
 };
