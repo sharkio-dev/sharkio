@@ -2,7 +2,6 @@ import { Express, Request, Response } from "express";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
 import { z, ZodError } from "zod";
-
 export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
