@@ -1,31 +1,31 @@
-import { useEffect, useState } from "react";
-import { SnifferConfigRow } from "../../components/config-card/config-card";
-import { useSnackbar } from "../../hooks/useSnackbar";
-import { useParams } from "react-router-dom";
-import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
-import { Sniffer } from "../../types/types";
+import { PlayArrow, Stop } from "@mui/icons-material";
 import {
   Button,
   Card,
   Chip,
   CircularProgress,
-  Collapse,
   List,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { PlayArrow, Stop } from "@mui/icons-material";
-import styles from "./service.module.scss";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
 import { RequestRow } from "../../components/request-row/request-row";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { Sniffer } from "../../types/types";
+import styles from "./service.module.scss";
+import PublicIcon from "@mui/icons-material/Public";
 
-export const Service: React.FC = () => {
+const Service: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [stopLoading, setStopLoading] = useState<boolean>(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const params = useParams();
+  const navigate = useNavigate();
 
   const { port } = params;
 
@@ -121,6 +121,13 @@ export const Service: React.FC = () => {
                       )}
                     </Button>
                   </Tooltip>
+                  <Tooltip title={"Navigate to the url"}>
+                    <Link to={sniffer.config.downstreamUrl} target="_blank">
+                      <Button>
+                        <PublicIcon />
+                      </Button>
+                    </Link>
+                  </Tooltip>
                 </div>
               </div>
               <div>
@@ -167,9 +174,14 @@ export const Service: React.FC = () => {
               </div>
             </Card>
             <Card className={styles.requestsCard}>
+              <div className={styles.controlTitle}>
+                <Typography variant="h6">Requests</Typography>
+              </div>
               <List>
                 {sniffer.interceptedRequests.map((request: any) => {
-                  return <RequestRow request={request}></RequestRow>;
+                  return (
+                    <RequestRow request={request} service={request.service} />
+                  );
                 })}
               </List>
             </Card>
@@ -179,3 +191,5 @@ export const Service: React.FC = () => {
     </>
   );
 };
+
+export default Service;

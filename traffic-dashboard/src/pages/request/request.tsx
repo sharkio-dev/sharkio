@@ -21,25 +21,25 @@ import { useParams } from "react-router-dom";
 import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
 import { RequestsMetadataContext } from "../../context/requests-context";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import {
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
-import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
 
-export const RequestPage: React.FC = () => {
-  const { id } = useParams();
+const RequestPage: React.FC = () => {
+  const { id, port } = useParams();
   const [typescript, setTypescript] = useState<any>(undefined);
   const [openapi, setOpenapi] = useState<any>(undefined);
   const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
   const [request, setRequest] = useState<any>(undefined);
   const [tab, setTab] = useState(0);
-  const { loadData, 
-          requestsData: requests,
-        } = useContext(RequestsMetadataContext);
+  const { loadData, requestsData: requests } = useContext(
+    RequestsMetadataContext
+  );
 
   useEffect(() => {
     loadData?.();
@@ -57,7 +57,7 @@ export const RequestPage: React.FC = () => {
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
-      setOpenapi(JsonToOpenapi(new Array(request) ,request.service, "1.0.0"))
+      setOpenapi(JsonToOpenapi(new Array(request), request.service, "1.0.0"));
       setRequest(request);
     }
   }, [id, requests]);
@@ -71,7 +71,11 @@ export const RequestPage: React.FC = () => {
     method: string,
     invocation: any
   ) => {
-    executeRequest(url, method, invocation);
+    if (!port) {
+      console.error("port not defined");
+      return;
+    }
+    executeRequest(url, method, invocation, +port);
   };
 
   return (
@@ -168,9 +172,9 @@ export const RequestPage: React.FC = () => {
               </div>
             </TabContent>
             <TabContent index={4} tabValue={tab}>
-                <div className={styles.cardTitle}>
-                  <pre>{JSON.stringify(openapi, null ,2)}</pre>
-                </div>
+              <div className={styles.cardTitle}>
+                <pre>{JSON.stringify(openapi, null, 2)}</pre>
+              </div>
             </TabContent>
           </Card>
         </>
@@ -187,3 +191,5 @@ const TabContent: React.FC<
 > = ({ children, index, tabValue }) => {
   return <>{index === tabValue && children}</>;
 };
+
+export default RequestPage;

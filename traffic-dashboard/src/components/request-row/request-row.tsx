@@ -4,11 +4,16 @@ import { routes } from "../../constants/routes";
 import { HttpMethod } from "../http-method/http-method";
 import { ServiceName } from "../service-name/service-name";
 import styles from "./request-row.module.scss";
+import { SnifferConfig } from "../../types/types";
 interface IRequestRowProps {
   request: any;
+  service: SnifferConfig;
 }
 
-export const RequestRow: React.FC<IRequestRowProps> = ({ request }) => {
+export const RequestRow: React.FC<IRequestRowProps> = ({
+  request,
+  service,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -16,7 +21,10 @@ export const RequestRow: React.FC<IRequestRowProps> = ({ request }) => {
       <ListItemButton
         key={request.id}
         onClick={() => {
-          navigate(generatePath(routes.REQUEST, { id: request.id }));
+          alert(JSON.stringify(service));
+          navigate(
+            generatePath(routes.REQUEST, { id: request.id, port: service.port })
+          );
         }}
       >
         <Box

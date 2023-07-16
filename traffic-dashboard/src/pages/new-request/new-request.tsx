@@ -1,11 +1,11 @@
 import { Button, Card, Input, Typography } from "@mui/material";
 import styles from "./new-request.module.scss";
 
-export const NewRequest = () => {
+const NewRequest = () => {
   return (
     <>
       <Card className={styles.card}>
-      <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Request
         </Typography>
         <Input placeholder="Url"></Input>
@@ -22,3 +22,5 @@ export const NewRequest = () => {
     </>
   );
 };
+
+export default NewRequest;

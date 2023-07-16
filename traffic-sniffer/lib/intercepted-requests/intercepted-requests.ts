@@ -2,6 +2,7 @@ import { Request } from "express";
 import { InterceptedRequest, RequestKey } from "../intercepted-request/";
 import { Invocation, PathResponseData } from "../../types/types";
 import { RequestsMap } from "./requests-map";
+import { SnifferConfig } from "../sniffer/sniffer";
 
 export class InterceptedRequests {
   private requests: RequestsMap;
@@ -10,7 +11,7 @@ export class InterceptedRequests {
     this.requests = new RequestsMap();
   }
 
-  private ensureRequest(key: RequestKey, service: string) {
+  private ensureRequest(key: RequestKey, service: SnifferConfig) {
     if (this.requests.has(key)) {
       return this.requests.get(key)!;
     } else {
@@ -20,7 +21,7 @@ export class InterceptedRequests {
     }
   }
 
-  interceptRequest(request: Request, service: string) {
+  interceptRequest(request: Request, service: SnifferConfig) {
     const { method, path } = request;
     const key = new RequestKey(method, path);
     const interceptedRequest = this.ensureRequest(key, service);
@@ -31,7 +32,7 @@ export class InterceptedRequests {
     url: string,
     method: string,
     invocation: Invocation,
-    service: string
+    service: SnifferConfig
   ) {
     const interceptedRequest = this.ensureRequest(
       new RequestKey(method, url),

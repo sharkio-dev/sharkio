@@ -7,9 +7,9 @@ import {
   PlayArrow,
   Save,
   Stop,
+  ChevronLeft,
+  ChevronRight,
 } from "@mui/icons-material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
   Button,
   Card,
@@ -108,6 +108,23 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       ]);
     });
   };
+  const handleImportClicked = () => {
+    fileUploadInputRef.current?.click();
+  };
+
+  const handleExportClicked = () => {
+    const file = new Blob(
+      [
+        JSON.stringify(
+          sniffers.map((sniffer) => sniffer.config),
+          null,
+          2
+        ),
+      ],
+      { type: "text/plain;charset=utf-8" }
+    );
+    saveAs(file, "config.json");
+  };
 
   const handleStopClicked = async (port: number) => {
     setStopLoading(true);
@@ -156,6 +173,17 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     }
   };
 
+  const handlePortChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.port = +e.target.value;
+
+      return sniffers;
+    });
+  };
   const handleSaveClicked = async (config: Partial<SnifferConfig>) => {
     if (config.port === undefined || config.downstreamUrl === undefined) {
       return;
@@ -180,37 +208,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         setSaveLoading(false);
       });
   };
-
-  const handleImportClicked = () => {
-    fileUploadInputRef.current?.click();
-  };
-
-  const handleExportClicked = () => {
-    const file = new Blob(
-      [
-        JSON.stringify(
-          sniffers.map((sniffer) => sniffer.config),
-          null,
-          2
-        ),
-      ],
-      { type: "text/plain;charset=utf-8" }
-    );
-    saveAs(file, "config.json");
-  };
-
-  const handlePortChanged = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number
-  ) => {
-    setSniffers((prev) => {
-      const sniffers = [...prev];
-      sniffers[index].config.port = +e.target.value;
-
-      return sniffers;
-    });
-  };
-
   const handleUrlChanged = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     index: number
@@ -221,43 +218,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
       return sniffers;
     });
-  };
-
-  const handleNameChanged = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number
-  ) => {
-    setSniffers((prev) => {
-      const sniffers = [...prev];
-      sniffers[index].config.name = e.target.value;
-
-      return sniffers;
-    });
-  };
-
-  const handleConfigUploaded = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.files &&
-      e.target.files[0]
-        .text()
-        .then((res) => {
-          const config = JSON.parse(res);
-          setSniffers(
-            config.map((sniffer: any) => {
-              const configRow: SnifferConfigRow = {
-                config: sniffer,
-                isNew: true,
-                isStarted: true,
-                isEditing: false,
-                isCollapsed: false,
-              };
-              return configRow;
-            })
-          );
-          showSnackbar("Successfully set the config file", "info");
-        })
-        .catch(() => {
-          showSnackbar("Failed to import config", "error");
-        });
   };
 
   const handleEditClicked = async (
@@ -308,14 +268,25 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       );
     };
 
+    const handleDownstreamClicked = () => {
+      sniffer.config.downstreamUrl && navigate(sniffer.config.downstreamUrl);
+    };
+
     return (
       <>
-        {sniffer.isCollapsed && (
-          <Typography className={styles.snifferTitle} variant="h5">
+        {!sniffer.isCollapsed && !sniffer.isNew && (
+          <Typography
+            className={styles.snifferTitle}
+            variant="h5"
+            onClick={handleSnifferClicked}
+          >
             {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
           </Typography>
         )}
-        <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
+        <Collapse
+          orientation="horizontal"
+          in={sniffer.isCollapsed || sniffer.isNew}
+        >
           <TextField
             label={"Port"}
             placeholder="1234"
@@ -329,13 +300,19 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             }}
           />
         </Collapse>
-        <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
+        <Collapse
+          orientation="horizontal"
+          in={sniffer.isCollapsed || sniffer.isNew}
+        >
           <TextField
             label={"Proxy url"}
             placeholder="http://example.com"
             defaultValue={sniffer.config.downstreamUrl}
             value={sniffer.config.downstreamUrl || ""}
             disabled={sniffer.isEditing === false}
+            onClick={() =>
+              sniffer.isEditing === false && handleDownstreamClicked()
+            }
             onChange={(
               e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
             ) => {
@@ -343,7 +320,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             }}
           />
         </Collapse>
-        <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
+        <Collapse
+          orientation="horizontal"
+          in={sniffer.isCollapsed || sniffer.isNew}
+        >
           <TextField
             label={"Name"}
             placeholder="name"
@@ -359,6 +339,43 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         </Collapse>
       </>
     );
+  };
+
+  const handleNameChanged = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number
+  ) => {
+    setSniffers((prev) => {
+      const sniffers = [...prev];
+      sniffers[index].config.name = e.target.value;
+
+      return sniffers;
+    });
+  };
+
+  const handleConfigUploaded = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.files &&
+      e.target.files[0]
+        .text()
+        .then((res) => {
+          const config = JSON.parse(res);
+          setSniffers(
+            config.map((sniffer: any) => {
+              const configRow: SnifferConfigRow = {
+                config: sniffer,
+                isNew: true,
+                isStarted: true,
+                isEditing: false,
+                isCollapsed: false,
+              };
+              return configRow;
+            })
+          );
+          showSnackbar("Successfully set the config file", "info");
+        })
+        .catch(() => {
+          showSnackbar("Failed to import config", "error");
+        });
   };
 
   return (
@@ -484,11 +501,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                     handleShowFieldsClicked(index);
                   }}
                 >
-                  {!sniffer.isCollapsed ? (
-                    <ChevronLeftIcon />
-                  ) : (
-                    <ChevronRightIcon />
-                  )}
+                  {!sniffer.isCollapsed ? <ChevronLeft /> : <ChevronRight />}
                 </Button>
               </Tooltip>
             </div>

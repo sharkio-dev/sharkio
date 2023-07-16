@@ -56,7 +56,7 @@ export class Sniffer {
         "]:" +
         `${req.method} ${req.url} request logged`
     );
-    this.interceptedRequests.interceptRequest(req, this.config.name);
+    this.interceptedRequests.interceptRequest(req, this.config);
     next();
   }
 
@@ -85,7 +85,7 @@ export class Sniffer {
       executionUrl,
       method,
       invocation,
-      this.config.name
+      this.config
     );
   }
 

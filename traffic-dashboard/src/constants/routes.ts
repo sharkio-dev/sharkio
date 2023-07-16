@@ -1,5 +1,5 @@
 export const routes = {
-  REQUEST: "/request/:id",
+  REQUEST: "sniffer/:port/request/:id",
   REQUESTS: "/requests",
   HOME: "/home",
   CONFIG: "/config",

@@ -4,10 +4,9 @@ import {
   Card,
   CircularProgress,
   List,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { FilterBar } from "../filter-bar/filter-bar";
 import { RequestRow } from "../request-row/request-row";
@@ -28,7 +27,6 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadData?.();
@@ -66,7 +64,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
         <Card className={styles.card}>
           <div className={styles.titleContainer}>
             <Typography variant="h6">Requests</Typography>
-            <Button onClick={() => loadData?.()}>refresh</Button>
+            <Button onClick={loadData}>refresh</Button>
           </div>
           {loading ? (
             <Box
@@ -83,7 +81,10 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
               <List>
                 {filteredRequests &&
                   filteredRequests.map((req: any) => (
-                    <RequestRow request={req} />
+                    <RequestRow
+                      request={req}
+                      service={filteredRequests.service}
+                    />
                   ))}
               </List>
             </>

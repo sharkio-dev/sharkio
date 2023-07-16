@@ -1,9 +1,10 @@
 import { ConfigCard } from "../../components/config-card/config-card";
 
-export const Config = () => {
+const Config = () => {
   return (
     <>
       <ConfigCard />
     </>
   );
 };
+export default Config;

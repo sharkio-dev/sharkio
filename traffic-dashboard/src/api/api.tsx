@@ -46,10 +46,11 @@ export const getRequests = () => {
 export const executeRequest = (
   url: string,
   method: string,
-  invocation: any
+  invocation: any,
+  port: number
 ) => {
   return axios.post(
-    "/sharkio/sniffer/5555/actions/execute",
+    `/sharkio/sniffer/${port}/actions/execute`,
     { url, method, invocation },
     {
       headers: {

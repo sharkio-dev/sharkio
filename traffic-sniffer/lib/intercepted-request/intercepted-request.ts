@@ -3,6 +3,7 @@ import { Request } from "express";
 import { v4 } from "uuid";
 import { Invocation, PathMetadataConfig, PathResponseData } from "../../types";
 import { RequestKey } from "./request-key";
+import { SnifferConfig } from "../sniffer/sniffer";
 
 export class InterceptedRequest {
   static readonly defaultConfig: PathMetadataConfig = {
@@ -14,7 +15,7 @@ export class InterceptedRequest {
   };
 
   private id: string;
-  private service: string;
+  private service: SnifferConfig;
   private url: string;
   private method: string;
   private hitCount: number;
@@ -22,7 +23,7 @@ export class InterceptedRequest {
   private invocations: Invocation[];
   private config: PathMetadataConfig;
 
-  constructor(key: RequestKey, service: string) {
+  constructor(key: RequestKey, service: SnifferConfig) {
     this.id = v4();
     this.service = service;
     this.method = key.method;
