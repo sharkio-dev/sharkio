@@ -10,8 +10,6 @@ export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
-    app.use(json());
-
     /**
      * @openapi
      * /sharkio/sniffer/invocation:
