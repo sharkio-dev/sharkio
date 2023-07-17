@@ -6,7 +6,10 @@ import { requestValidator } from "../request-validator";
 import { portValidator } from "../request-validator/general-validators";
 
 export class SnifferManagerController {
-  constructor(private readonly snifferManager: SnifferManager) {}
+  constructor(
+    private readonly snifferManager: SnifferManager,
+    private readonly baseUrl: string = "/sharkio/sniffer"
+  ) {}
 
   setup(app: Express) {
     const router = Router();
@@ -92,7 +95,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "GET",
-            path: "/sharkio/sniffer/:port",
+            path: `${this.baseUrl}/:port`,
             error: e,
             timestamp: new Date(),
           });
@@ -140,7 +143,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port",
+            path: `${this.baseUrl}/:port`,
             error: e,
             timestamp: new Date(),
           });
@@ -194,7 +197,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/actions/stop",
+            path: `${this.baseUrl}/:port/actions/stop`,
             error: e,
             timestamp: new Date(),
           });
@@ -248,7 +251,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/actions/start",
+            path: `${this.baseUrl}/:port/actions/start`,
             error: e,
             timestamp: new Date(),
           });
@@ -322,7 +325,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/actions/execute",
+            path: `${this.baseUrl}/:port/actions/execute`,
             error: e,
             timestamp: new Date(),
           });
@@ -372,7 +375,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "DELETE",
-            path: "/sharkio/sniffer/:port",
+            path: `${this.baseUrl}/:port`,
             error: e,
             timestamp: new Date(),
           });
@@ -442,7 +445,7 @@ export class SnifferManagerController {
             dir: __dirname,
             file: __filename,
             method: "PUT",
-            path: "/sharkio/sniffer/:existingId",
+            path: `${this.baseUrl}/:existingId`,
             error: e,
             timestamp: new Date(),
           });
@@ -451,6 +454,6 @@ export class SnifferManagerController {
       }
     );
 
-    app.use("/sharkio/sniffer", router);
+    app.use(this.baseUrl, router);
   }
 }

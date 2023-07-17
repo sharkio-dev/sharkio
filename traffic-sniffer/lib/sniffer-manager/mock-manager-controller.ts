@@ -6,7 +6,10 @@ import { requestValidator } from "../request-validator";
 import { portValidator } from "../request-validator/general-validators";
 
 export class MockManagerController {
-  constructor(private readonly snifferManager: SnifferManager) {}
+  constructor(
+    private readonly snifferManager: SnifferManager,
+    private readonly baseUrl: string = "/sharkio/sniffer"
+  ) {}
 
   setup(app: Express) {
     const router = Router();
@@ -77,7 +80,7 @@ export class MockManagerController {
             dir: __dirname,
             file: __filename,
             method: "GET",
-            path: "/sharkio/sniffer/:port/mock",
+            path: `${this.baseUrl}/:port/mock`,
             error: e,
             timestamp: new Date(),
           });
@@ -104,11 +107,30 @@ export class MockManagerController {
      *          application/json:
      *            schema:
      *              type: object
-     *     responses:
-     *       201:
-     *         description: Mock created
-     *       500:
-     *         description: Server error
+     *              required:
+     *                - method
+     *                - endpoint
+     *                - data
+     *                - status
+     *              properties:
+     *                method:
+     *                  type: string
+     *                  enum: [GET, POST, UPDATE, DELETE, PUT]
+     *                endpoint:
+     *                  type: string
+     *                  example: "www.google.com"
+     *                data:
+     *                  type: any
+     *                status:
+     *                  type: integer
+     *                  example: 200
+     *      responses:
+     *        201:
+     *          description: Mock created
+     *        409:
+     *          description: Resource already exists
+     *        500:
+     *          description: Server error
      */
     app.post(
       "/:port/mock",
@@ -134,14 +156,14 @@ export class MockManagerController {
             const { id } = await sniffer.getMockManager().addMock(mock);
             return res.send(id).status(201);
           } else {
-            return res.sendStatus(404);
+            return res.sendStatus(409);
           }
         } catch (e) {
           console.error("An unexpected error occured", {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/mock",
+            path: `${this.baseUrl}/:port/mock`,
             error: e,
             timestamp: new Date(),
           });
@@ -168,11 +190,19 @@ export class MockManagerController {
      *          application/json:
      *            schema:
      *              type: object
+     *              required:
+     *                - mockId
+     *              properties:
+     *                mockId:
+     *                  type: string
+     *                  example: 1234
      *     responses:
-     *       200:
-     *         description: mock deleted.
-     *       500:
-     *         description: Server error
+     *        200:
+     *          description: mock deleted.
+     *        404:
+     *          description: Sniffer not found
+     *        500:
+     *          description: Server error
      */
     app.delete(
       "/:port/mock",
@@ -201,7 +231,7 @@ export class MockManagerController {
             dir: __dirname,
             file: __filename,
             method: "DELETE",
-            path: "/sharkio/sniffer/:port/mock",
+            path: `${this.baseUrl}/:port/mock`,
             error: e,
             timestamp: new Date(),
           });
@@ -222,15 +252,11 @@ export class MockManagerController {
      *         in: query
      *         description: service port
      *         required: true
-     *     requestBody:
-     *        description: Activate mock manager
-     *        content:
-     *          application/json:
-     *            schema:
-     *              type: object
      *     responses:
      *       200:
      *         description: Mock manager are activated
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
@@ -257,7 +283,7 @@ export class MockManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/mock/manager/actions/activate",
+            path: `${this.baseUrl}/:port/mock/manager/actions/activate`,
             error: e,
             timestamp: new Date(),
           });
@@ -313,7 +339,7 @@ export class MockManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/mock/manager/actions/deactivate",
+            path: `${this.baseUrl}/:port/mock/manager/actions/deactivate`,
             error: e,
             timestamp: new Date(),
           });
@@ -378,7 +404,7 @@ export class MockManagerController {
                 dir: __dirname,
                 file: __filename,
                 method: "POST",
-                path: "/sharkio/sniffer/:port/mock/actions/activate",
+                path: `${this.baseUrl}/:port/mock/actions/activate`,
                 error: e,
                 timestamp: new Date(),
               });
@@ -440,7 +466,7 @@ export class MockManagerController {
             dir: __dirname,
             file: __filename,
             method: "POST",
-            path: "/sharkio/sniffer/:port/mock/actions/deactivate",
+            path: `${this.baseUrl}/:port/mock/actions/deactivate`,
             error: e,
             timestamp: new Date(),
           });
@@ -449,6 +475,6 @@ export class MockManagerController {
       }
     );
 
-    app.use("/sharkio/sniffer", router);
+    app.use(this.baseUrl, router);
   }
 }
