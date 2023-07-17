@@ -23,7 +23,7 @@ export class SnifferManagerController {
      *     description: Get all request invocation
      *     responses:
      *       200:
-     *         description: Returns a all invocations.
+     *         description: Returns all invocations
      *       500:
      *         description: Server error
      */
@@ -44,7 +44,7 @@ export class SnifferManagerController {
      *     description: Get all sniffers
      *     responses:
      *       200:
-     *         description: Returns a all sniffers
+     *         description: Returns all sniffers
      *       500:
      *         description: Server error
      */
@@ -67,9 +67,20 @@ export class SnifferManagerController {
      *     tags:
      *      - sniffer
      *     description: Get a sniffers
+     *     parameters:
+     *       - name: port
+     *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
+     *         description: service port
+     *         required: true
      *     responses:
      *       200:
      *         description: Returns a sniffer
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
@@ -117,6 +128,29 @@ export class SnifferManagerController {
      *          application/json:
      *            schema:
      *              type: object
+     *              required:
+     *                - name
+     *                - port
+     *                - downstreamUrl
+     *                - id
+     *              properties:
+     *                name:
+     *                  type: string
+     *                  descirption: The name of the sniffer
+     *                  example: google sniffer
+     *                port:
+     *                  type: number
+     *                  description: The port on the sniffer will intercept on
+     *                  minimum: 0
+     *                  example: 8080
+     *                downstreamUrl:
+     *                  type: string
+     *                  description: The URL the sniffer will delegate the request to
+     *                  example: www.google.com
+     *                id:
+     *                  type: string
+     *                  description: The identity of the sniffer
+     *                  example: 6bd539be-4d3d-4101-bc99-64628640a86b
      *     responses:
      *       201:
      *         description: Sniffer created
@@ -137,7 +171,7 @@ export class SnifferManagerController {
         try {
           const config = req.body;
           this.snifferManager.createSniffer(config);
-          return res.sendStatus(200);
+          return res.sendStatus(201);
         } catch (e) {
           console.error("An unexpected error occured", {
             dir: __dirname,
@@ -162,11 +196,17 @@ export class SnifferManagerController {
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     responses:
      *       200:
      *         description: Sniffer stopped
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
@@ -216,11 +256,17 @@ export class SnifferManagerController {
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     responses:
      *       200:
      *         description: Sniffer started
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
@@ -270,6 +316,10 @@ export class SnifferManagerController {
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     requestBody:
@@ -278,9 +328,48 @@ export class SnifferManagerController {
      *          application/json:
      *            schema:
      *              type: object
+     *              properties:
+     *                url:
+     *                  type: string
+     *                  example: www.google.com
+     *                method:
+     *                  type: string
+     *                  description: Http status
+     *                  example: GET
+     *                  enum: [GET, POST, UPDATE, DELETE, PUT]
+     *                invocation:
+     *                  type: object
+     *                  properties:
+     *                    id:
+     *                      type: string
+     *                    timestamp:
+     *                      type: string
+     *                    body:
+     *                      description: The invocation body content
+     *                    headers:
+     *                      type: object
+     *                      properties:
+     *                        key:
+     *                          type: string
+     *                          example: value
+     *                    cookies:
+     *                      type: object
+     *                      properties:
+     *                        key:
+     *                          type: string
+     *                          example: value
+     *                    params:
+     *                      type: object
+     *                      properties:
+     *                        key:
+     *                          type: string
+     *                          example: value
+     *
      *     responses:
      *       200:
      *         description: Request executed
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
@@ -344,11 +433,17 @@ export class SnifferManagerController {
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     responses:
      *       200:
      *         description: Sniffer deleted
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
@@ -394,6 +489,9 @@ export class SnifferManagerController {
      *     parameters:
      *       - name: existingId
      *         in: query
+     *         schema:
+     *           type: string
+     *           example: 6bd539be-4d3d-4101-bc99-64628640a86b
      *         description: service id
      *         required: true
      *     requestBody:
@@ -402,9 +500,18 @@ export class SnifferManagerController {
      *          application/json:
      *            schema:
      *              type: object
+     *              properties:
+     *                port:
+     *                  type: integer
+     *                  minimum: 0
+     *                  example: 8080
      *     responses:
      *       200:
      *         description: Sniffer edited
+     *       403:
+     *         description: The port already has an allocated sniffer
+     *       404:
+     *         description: Sniffer not found
      *       500:
      *         description: Server error
      */
