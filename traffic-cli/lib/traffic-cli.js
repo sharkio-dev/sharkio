@@ -1,5 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /* import { Answer, ProviderValue } from './models/choice';
-//import { listActions } from './actions'; 
+//import { listActions } from './actions';
 
 
     const providerAnswer: Answer = await providerQuestion();

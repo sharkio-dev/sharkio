@@ -1,25 +1,12 @@
-{
+ {
   "name": "traffic-cli",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Micro service network monitoring and development tool",
-  "type": "module",
   "main": "/lib/index.js",
   "bin": {
     "traffic-cli":  "./bin/traffic-cli.js"
   },
   "bundledDependencies": true,
-    "keywords": [
-    "cli",
-    "traffic-cli",
-    "community",
-    "typescript",
-    "javascript",
-    "nodejs",
-    "documentation",
-    "generator",
-    "template",
-    "markdown"
-  ],
   "scripts": {
     "start": "npm run build && npm run global",
     "test": "npm run lint && npm run test:unit",
@@ -39,6 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/fs-extra": "^11.0.1",
+	"@inquirer/prompts": "^3.0.0",
     "axios": "^1.4.0",
     "concurrently": "^8.2.0",
     "figlet": "^1.6.0",

@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /* import * as inquirer from "inquirer";
 //import("inquirer").then(inquirer);
 // from "inquirer";
@@ -19,4 +21,4 @@ export async function providerQuestion(): Promise<Answer> {
         message: 'Select a command:',
         choices: listOfCommands,
     }]);
-} */
+} */ 

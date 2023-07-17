@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { showError } from './logger.util.ts';
+import { showError } from './logger.util';
 
 export const checkExistence = (path: string): boolean => {
     return fs.existsSync(process.cwd() + path);

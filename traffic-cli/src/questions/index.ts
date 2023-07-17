@@ -1,1 +1,1 @@
-export * from './provider.question.ts';
+export * from './provider.question';
