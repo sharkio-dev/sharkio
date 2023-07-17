@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from "express";
+import { Express, NextFunction, Request, Response, Router } from "express";
 import { SnifferManager } from "./sniffer-manager";
 import { MockNotFoundError } from "../sniffer/mock/exceptions";
 import { z } from "zod";
@@ -9,6 +9,8 @@ export class MockManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
+    const router = Router();
+
     /**
      * @openapi
      * /sharkio/sniffer/action/getMocks:
@@ -23,7 +25,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.get(
-      "/sharkio/sniffer/action/getMocks",
+      "/action/getMocks",
       async (req: Request, res: Response, next: NextFunction) => {
         try {
           const mocks = this.snifferManager.getAllMocks();
@@ -54,7 +56,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.get(
-      "/sharkio/sniffer/:port/mock",
+      "/:port/mock",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -109,7 +111,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.post(
-      "/sharkio/sniffer/:port/mock",
+      "/:port/mock",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -173,7 +175,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.delete(
-      "/sharkio/sniffer/:port/mock",
+      "/:port/mock",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -233,7 +235,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.post(
-      "/sharkio/sniffer/:port/mock/manager/actions/activate",
+      "/:port/mock/manager/actions/activate",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -289,7 +291,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.post(
-      "/sharkio/sniffer/:port/mock/manager/actions/deactivate",
+      "/:port/mock/manager/actions/deactivate",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -345,7 +347,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.post(
-      "/sharkio/sniffer/:port/mock/actions/activate",
+      "/:port/mock/actions/activate",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -412,7 +414,7 @@ export class MockManagerController {
      *         description: Server error
      */
     app.post(
-      "/sharkio/sniffer/:port/mock/actions/deactivate",
+      "/:port/mock/actions/deactivate",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -446,5 +448,7 @@ export class MockManagerController {
         }
       }
     );
+
+    app.use("/sharkio/sniffer", router);
   }
 }

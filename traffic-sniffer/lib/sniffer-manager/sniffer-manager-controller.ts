@@ -1,8 +1,7 @@
-import { Express, Request, Response } from "express";
+import { Express, Request, Response, Router } from "express";
 import { Sniffer } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
 import { z } from "zod";
-import { json } from "body-parser";
 import { requestValidator } from "../request-validator";
 import { portValidator } from "../request-validator/general-validators";
 
@@ -10,6 +9,8 @@ export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
+    const router = Router();
+
     /**
      * @openapi
      * /sharkio/sniffer/invocation:
@@ -23,7 +24,7 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.get("/sharkio/sniffer/invocation", (req: Request, res: Response) => {
+    router.get("/invocation", (req: Request, res: Response) => {
       try {
         res.status(200).send(this.snifferManager.stats());
       } catch (e) {
@@ -44,7 +45,7 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.get("/sharkio/sniffer", (req: Request, res: Response) => {
+    router.get("", (req: Request, res: Response) => {
       res.status(200).send(
         this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
           const { config, isStarted } = sniffer.stats();
@@ -69,8 +70,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.get(
-      "/sharkio/sniffer/:port",
+    router.get(
+      "/:port",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -119,8 +120,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
-      "/sharkio/sniffer",
+    router.post(
+      "",
       requestValidator({
         body: z.object({
           name: z.string().nonempty(),
@@ -166,8 +167,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
-      "/sharkio/sniffer/:port/actions/stop",
+    router.post(
+      "/:port/actions/stop",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -220,8 +221,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
-      "/sharkio/sniffer/:port/actions/start",
+    router.post(
+      "/:port/actions/start",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -280,8 +281,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
-      "/sharkio/sniffer/:port/actions/execute",
+    router.post(
+      "/:port/actions/execute",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -348,8 +349,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.delete(
-      "/sharkio/sniffer/:port",
+    router.delete(
+      "/:port",
       requestValidator({
         params: z.object({
           port: portValidator,
@@ -404,8 +405,8 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.put(
-      "/sharkio/sniffer/:existingId",
+    router.put(
+      "/:existingId",
       requestValidator({
         params: z.object({
           existingId: z.string().nonempty(),
@@ -449,5 +450,7 @@ export class SnifferManagerController {
         }
       }
     );
+
+    app.use("/sharkio/sniffer", router);
   }
 }
