@@ -6,7 +6,7 @@ export interface Validations {
   body?: ZodType;
 }
 
-export const validator =
+export const requestValidator =
   (validations: Validations) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {

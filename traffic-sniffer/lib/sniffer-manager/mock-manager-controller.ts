@@ -2,6 +2,7 @@ import { Express, NextFunction, Request, Response } from "express";
 import { SnifferManager } from "./sniffer-manager";
 import { MockNotFoundError } from "../sniffer/mock/exceptions";
 import { z, ZodError } from "zod";
+import { requestValidator } from "../request-validator";
 
 export class MockManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
@@ -57,15 +58,15 @@ export class MockManagerController {
      */
     app.get(
       "/sharkio/sniffer/:port/mock",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
-
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
-
-          const sniffer = this.snifferManager.getSniffer(port);
+          const { port } = req.params;
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
           if (sniffer !== undefined) {
             const mocks = sniffer.getMockManager().getAllMocks();
             return res.send(mocks).status(200);
@@ -73,23 +74,15 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          switch (true) {
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
-            }
-            default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
-                method: "GET",
-                path: "/sharkio/sniffer/:port/mock",
-                error: e,
-                timestamp: new Date(),
-              });
-              return res.sendStatus(500);
-            }
-          }
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "GET",
+            path: "/sharkio/sniffer/:port/mock",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -120,24 +113,23 @@ export class MockManagerController {
      */
     app.post(
       "/sharkio/sniffer/:port/mock",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
-        // A bit of an issue with the z.any()
-
-        // const bodyValidator = z.object({
-        //   method: z.string().nonempty(),
-        //   endpoint: z.string().nonempty(),
-        //   data: z.any(),
-        //   status: z.number().positive(),
-        // });
-
+        }),
+        body: z.object({
+          method: z.string().nonempty(),
+          endpoint: z.string().nonempty(),
+          data: z.any(),
+          status: z.number().positive(),
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
+          const { port } = req.params;
           const mock = req.body;
 
-          const sniffer = this.snifferManager.getSniffer(port);
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
 
           if (sniffer !== undefined) {
             const { id } = await sniffer.getMockManager().addMock(mock);
@@ -146,23 +138,15 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          switch (true) {
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
-            }
-            default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
-                method: "POST",
-                path: "/sharkio/sniffer/:port/mock",
-                error: e,
-                timestamp: new Date(),
-              });
-              return res.sendStatus(500);
-            }
-          }
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "POST",
+            path: "/sharkio/sniffer/:port/mock",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -193,18 +177,20 @@ export class MockManagerController {
      */
     app.delete(
       "/sharkio/sniffer/:port/mock",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
-        const bodyValidator = z.object({
+        }),
+        body: z.object({
           mockId: z.string().nonempty(),
-        });
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
-          const { mockId } = bodyValidator.parse(req.body);
+          const { port } = req.params;
+          const { mockId } = req.body;
 
-          const sniffer = this.snifferManager.getSniffer(port);
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
           if (sniffer !== undefined) {
             sniffer.getMockManager().removeMock(mockId);
             return res.sendStatus(200);
@@ -212,23 +198,15 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          switch (true) {
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
-            }
-            default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
-                method: "DELETE",
-                path: "/sharkio/sniffer/:port/mock",
-                error: e,
-                timestamp: new Date(),
-              });
-              return res.sendStatus(500);
-            }
-          }
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "DELETE",
+            path: "/sharkio/sniffer/:port/mock",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -259,13 +237,15 @@ export class MockManagerController {
      */
     app.post(
       "/sharkio/sniffer/:port/mock/manager/actions/activate",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
-          const sniffer = this.snifferManager.getSniffer(port);
+          const { port } = req.params;
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().deactivateManager();
@@ -274,23 +254,15 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          switch (true) {
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
-            }
-            default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
-                method: "POST",
-                path: "/sharkio/sniffer/:port/mock/manager/actions/activate",
-                error: e,
-                timestamp: new Date(),
-              });
-              return res.sendStatus(500);
-            }
-          }
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "POST",
+            path: "/sharkio/sniffer/:port/mock/manager/actions/activate",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -321,13 +293,15 @@ export class MockManagerController {
      */
     app.post(
       "/sharkio/sniffer/:port/mock/manager/actions/deactivate",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
-          const sniffer = this.snifferManager.getSniffer(port);
+          const { port } = req.params;
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().deactivateManager();
@@ -336,23 +310,15 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          switch (true) {
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
-            }
-            default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
-                method: "POST",
-                path: "/sharkio/sniffer/:port/mock/manager/actions/deactivate",
-                error: e,
-                timestamp: new Date(),
-              });
-              return res.sendStatus(500);
-            }
-          }
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "POST",
+            path: "/sharkio/sniffer/:port/mock/manager/actions/deactivate",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -383,18 +349,19 @@ export class MockManagerController {
      */
     app.post(
       "/sharkio/sniffer/:port/mock/actions/activate",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
-
-        const bodyValidator = z.object({
+        }),
+        body: z.object({
           mockId: z.string().nonempty(),
-        });
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
-          const { mockId } = bodyValidator.parse(req.body);
-          const sniffer = this.snifferManager.getSniffer(port);
+          const { port } = req.params;
+          const { mockId } = req.body;
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().activateMock(mockId);
@@ -406,10 +373,6 @@ export class MockManagerController {
           switch (true) {
             case e instanceof MockNotFoundError: {
               return res.sendStatus(404);
-            }
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
             }
             default: {
               console.error("An unexpected error occured", {
@@ -453,18 +416,19 @@ export class MockManagerController {
      */
     app.post(
       "/sharkio/sniffer/:port/mock/actions/deactivate",
-      async (req: Request, res: Response, next: NextFunction) => {
-        const paramsValidator = z.object({
+      requestValidator({
+        params: z.object({
           port: portValidator,
-        });
-        const bodyValidator = z.object({
+        }),
+        body: z.object({
           mockId: z.string().nonempty(),
-        });
-
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = paramsValidator.parse(req.params);
-          const { mockId } = bodyValidator.parse(req.body);
-          const sniffer = this.snifferManager.getSniffer(port);
+          const { port } = req.params;
+          const { mockId } = req.body;
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().deactivateMock(mockId);
@@ -473,23 +437,15 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          switch (true) {
-            case e instanceof ZodError: {
-              const { errors } = e as ZodError;
-              return res.status(400).send(errors);
-            }
-            default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
-                method: "POST",
-                path: "/sharkio/sniffer/:port/mock/actions/deactivate",
-                error: e,
-                timestamp: new Date(),
-              });
-              return res.sendStatus(500);
-            }
-          }
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "POST",
+            path: "/sharkio/sniffer/:port/mock/actions/deactivate",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
     );

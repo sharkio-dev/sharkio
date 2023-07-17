@@ -1,1 +1,1 @@
-export { Validations, validator } from "./request-validator";
+export { Validations, requestValidator } from "./request-validator";
