@@ -3,6 +3,7 @@ import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
 import { z, ZodError } from "zod";
 import { json } from "body-parser";
+import { validator } from "../request-validator";
 
 export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
@@ -72,40 +73,36 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    app.get("/sharkio/sniffer/:port", (req: Request, res: Response) => {
-      try {
-        const validator = z.object({
+    app.get(
+      "/sharkio/sniffer/:port",
+      validator({
+        params: z.object({
           port: portValidator,
-        });
-        const { port } = validator.parse(req.params);
-        const sniffer = this.snifferManager.getSniffer(port);
+        }),
+      }),
+      (req: Request, res: Response) => {
+        try {
+          const { port } = req.params;
+          const sniffer = this.snifferManager.getSniffer(+port);
 
-        if (sniffer !== undefined) {
-          return res.send(sniffer.stats()).status(200);
-        } else {
-          return res.sendStatus(404);
-        }
-      } catch (e) {
-        switch (true) {
-          case e instanceof ZodError: {
-            const { errors } = e as ZodError;
-            return res.status(400).send(errors);
+          if (sniffer !== undefined) {
+            return res.send(sniffer.stats()).status(200);
+          } else {
+            return res.sendStatus(404);
           }
-
-          default: {
-            console.error("An unexpected error occured", {
-              dir: __dirname,
-              file: __filename,
-              method: "GET",
-              path: "/sharkio/sniffer/:port",
-              error: e,
-              timestamp: new Date(),
-            });
-            return res.sendStatus(500);
-          }
+        } catch (e) {
+          console.error("An unexpected error occured", {
+            dir: __dirname,
+            file: __filename,
+            method: "GET",
+            path: "/sharkio/sniffer/:port",
+            error: e,
+            timestamp: new Date(),
+          });
+          return res.sendStatus(500);
         }
       }
-    });
+    );
 
     /**
      * @openapi
