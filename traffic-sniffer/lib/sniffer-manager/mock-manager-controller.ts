@@ -19,11 +19,11 @@ export class MockManagerController {
      * /sharkio/sniffer/action/getMocks:
      *   get:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Get all mocks
      *     responses:
      *       200:
-     *         description: Returns a all mocks.
+     *         description: Returns all mocks
      *       500:
      *         description: Server error
      */
@@ -45,16 +45,22 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock:
      *   get:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Get a mock
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     responses:
      *       200:
-     *         description: Returns a mock.
+     *         description: Returns a mock
+     *       404:
+     *         description: Mock not found
      *       500:
      *         description: Server error
      */
@@ -94,11 +100,15 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock:
      *   post:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Create a mock
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     requestBody:
@@ -107,30 +117,30 @@ export class MockManagerController {
      *          application/json:
      *            schema:
      *              type: object
-     *              required:
-     *                - method
-     *                - endpoint
-     *                - data
-     *                - status
      *              properties:
      *                method:
      *                  type: string
-     *                  enum: [GET, POST, UPDATE, DELETE, PUT]
+     *                  description: An HTTP method
+     *                  enum: [GET, POST, UPDATE, DELETE, PUT ]
+     *                  example: POST
+     *                body:
+     *                  description: The request payload
+     *                  example: { someKey: "someValue" }
      *                endpoint:
      *                  type: string
-     *                  example: "www.google.com"
-     *                data:
-     *                  type: any
+     *                  description: The request URL
+     *                  example: www.google.com
      *                status:
      *                  type: integer
+     *                  description: An HTTP status code
      *                  example: 200
-     *      responses:
-     *        201:
-     *          description: Mock created
-     *        409:
-     *          description: Resource already exists
-     *        500:
-     *          description: Server error
+     *     responses:
+     *       201:
+     *         description: Mock created
+     *       409:
+     *         description: Mock already exists
+     *       500:
+     *         description: Server error
      */
     app.post(
       "/:port/mock",
@@ -177,11 +187,15 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock:
      *   delete:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Delete a mock
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     requestBody:
@@ -190,19 +204,18 @@ export class MockManagerController {
      *          application/json:
      *            schema:
      *              type: object
-     *              required:
-     *                - mockId
      *              properties:
      *                mockId:
      *                  type: string
-     *                  example: 1234
+     *                  description: The id of the mock we reference
+     *                  example: 6bd539be-4d3d-4101-bc99-64628640a86b
      *     responses:
-     *        200:
-     *          description: mock deleted.
-     *        404:
-     *          description: Sniffer not found
-     *        500:
-     *          description: Server error
+     *       200:
+     *         description: Mock deleted
+     *       404:
+     *         description: Mock not found
+     *       500:
+     *         description: Server error
      */
     app.delete(
       "/:port/mock",
@@ -245,20 +258,24 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock/manager/actions/activate:
      *   post:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Activate mock manager
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     responses:
-     *       200:
-     *         description: Mock manager are activated
-     *       404:
-     *         description: Sniffer not found
-     *       500:
-     *         description: Server error
+     *        200:
+     *          description: Mock has been activated for the service
+     *        404:
+     *          description: Mock not found
+     *        500:
+     *          description: Server error
      */
     app.post(
       "/:port/mock/manager/actions/activate",
@@ -297,22 +314,22 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock/manager/actions/deactivate:
      *   post:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Deactivate mock manager
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
-     *     requestBody:
-     *        description: Deactivate mock manager
-     *        content:
-     *          application/json:
-     *            schema:
-     *              type: object
      *     responses:
      *       200:
-     *         description: Mock manager deactivated for the service
+     *         description: Mock has been deactivated for the service
+     *       404:
+     *         description: Mock not found
      *       500:
      *         description: Server error
      */
@@ -353,11 +370,15 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock/actions/activate:
      *   post:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Activate a mock
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     requestBody:
@@ -366,9 +387,16 @@ export class MockManagerController {
      *          application/json:
      *            schema:
      *              type: object
+     *              properties:
+     *                mockId:
+     *                  type: string
+     *                  description: The id of the mock we reference
+     *                  example: 6bd539be-4d3d-4101-bc99-64628640a86b
      *     responses:
      *       200:
      *         description: Mock activated
+     *       404:
+     *         description: Mock not found
      *       500:
      *         description: Server error
      */
@@ -420,11 +448,15 @@ export class MockManagerController {
      * /sharkio/sniffer/:port/mock/actions/deactivate:
      *   post:
      *     tags:
-     *      - mock
+     *       - mock
      *     description: Deactivate a mock
      *     parameters:
      *       - name: port
      *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
      *         description: service port
      *         required: true
      *     requestBody:
@@ -433,9 +465,16 @@ export class MockManagerController {
      *          application/json:
      *            schema:
      *              type: object
+     *              properties:
+     *                mockId:
+     *                  type: string
+     *                  description: The id of the mock we reference
+     *                  example: 6bd539be-4d3d-4101-bc99-64628640a86b
      *     responses:
      *       200:
-     *         description: Mock Deactivated
+     *         description: Mock deactivated
+     *       404:
+     *         description: Mock not found
      *       500:
      *         description: Server error
      */
