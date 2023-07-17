@@ -1,17 +1,15 @@
 import { Express, Request, Response } from "express";
-import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
+import { Sniffer } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import { json } from "body-parser";
 import { requestValidator } from "../request-validator";
+import { portValidator } from "../request-validator/general-validators";
 
 export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
-    const portValidator = z.coerce
-      .number()
-      .nonnegative("Port number cannot be negative");
     app.use(json());
 
     /**

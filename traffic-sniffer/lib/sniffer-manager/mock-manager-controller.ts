@@ -1,17 +1,14 @@
 import { Express, NextFunction, Request, Response } from "express";
 import { SnifferManager } from "./sniffer-manager";
 import { MockNotFoundError } from "../sniffer/mock/exceptions";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import { requestValidator } from "../request-validator";
+import { portValidator } from "../request-validator/general-validators";
 
 export class MockManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
-    const portValidator = z.coerce
-      .number()
-      .nonnegative("Port number cannot be negative");
-
     /**
      * @openapi
      * /sharkio/sniffer/action/getMocks:
