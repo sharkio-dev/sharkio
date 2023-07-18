@@ -152,7 +152,7 @@ export class MockManagerController {
           method: z.string().nonempty(),
           endpoint: z.string().nonempty(),
           data: z.any(),
-          status: z.number().positive(),
+          status: z.coerce.number().positive(),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {

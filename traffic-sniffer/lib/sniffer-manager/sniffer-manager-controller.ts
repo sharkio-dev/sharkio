@@ -387,7 +387,7 @@ export class SnifferManagerController {
             .pipe(z.enum(["get", "post", "delete", "patch", "put"])),
           invocation: z.object({
             id: z.string().nonempty(),
-            timestamp: z.date(),
+            timestamp: z.coerce.date(),
             body: z.any().optional(),
             headers: z.any().optional(),
             cookies: z.any().optional(),
