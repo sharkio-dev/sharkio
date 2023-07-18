@@ -16,6 +16,7 @@ export const requestValidator =
     } catch (e) {
       if (e instanceof ZodError) {
         const { errors } = e as ZodError;
+        console.error(req.params, req.body);
         return res.status(400).send(errors);
       } else {
         console.error("An unexpected error occured", {
