@@ -49,8 +49,7 @@ const MockRow: React.FC<{
                   e.stopPropagation();
                   e.preventDefault();
                   handleSwitchClicked(
-                    (e.target.value === "true" && true) ||
-                      (e.target.value === "false" && false)
+                    e.target.checked && true || false
                   );
                 }}
                 checked={mock.active}

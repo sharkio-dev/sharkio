@@ -27,7 +27,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.get(
+    router.get(
       "/action/getMocks",
       async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -64,7 +64,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.get(
+    router.get(
       "/:port/mock",
       requestValidator({
         params: z.object({
@@ -142,7 +142,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
+    router.post(
       "/:port/mock",
       requestValidator({
         params: z.object({
@@ -217,7 +217,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.delete(
+    router.delete(
       "/:port/mock",
       requestValidator({
         params: z.object({
@@ -277,7 +277,7 @@ export class MockManagerController {
      *        500:
      *          description: Server error
      */
-    app.post(
+    router.post(
       "/:port/mock/manager/actions/activate",
       requestValidator({
         params: z.object({
@@ -333,7 +333,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
+    router.post(
       "/:port/mock/manager/actions/deactivate",
       requestValidator({
         params: z.object({
@@ -400,7 +400,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
+    router.post(
       "/:port/mock/actions/activate",
       requestValidator({
         params: z.object({
@@ -478,7 +478,7 @@ export class MockManagerController {
      *       500:
      *         description: Server error
      */
-    app.post(
+    router.post(
       "/:port/mock/actions/deactivate",
       requestValidator({
         params: z.object({
