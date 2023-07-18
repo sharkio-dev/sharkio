@@ -61,7 +61,6 @@ describe("sniffer-manager-controlelr", () => {
       .set("Content-Type", "application/json")
       .send(snifferConfig);
 
-    console.log(response.body);
     expect(response.status).toEqual(201);
     expect(snifferManager.getAllSniffers().length).toEqual(1);
   });
