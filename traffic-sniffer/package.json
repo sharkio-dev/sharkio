@@ -11,7 +11,7 @@
     "dev": "nodemon main.ts",
     "prod": "node main.js",
     "build": "tsc",
-    "build:image":"docker build . -t sharkio-traffic-sniffer",
+    "build:image": "docker build . -t sharkio-traffic-sniffer",
     "test": "jest",
     "test:watch": "jest --watch",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
@@ -43,6 +43,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.0",
+    "winston": "^3.10.0",
     "yargs": "^17.7.1"
   },
   "devDependencies": {
