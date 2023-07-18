@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, json } from "express";
 import request from "supertest";
 import { SnifferManager, SnifferManagerController } from "../../../lib";
 import { ConfigLoader } from "../../../lib/setup-config/config-loader-interface";
@@ -37,6 +37,7 @@ describe("sniffer-manager-controlelr", () => {
 
   beforeAll(() => {
     app = express();
+    app.use(json());
     configPersistency = new FileConfig();
     snifferManager = new SnifferManager(configPersistency);
     snifferManagerController = new SnifferManagerController(snifferManager);
