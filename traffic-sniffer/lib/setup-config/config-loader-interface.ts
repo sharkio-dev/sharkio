@@ -3,7 +3,7 @@ import { SnifferConfigSetup } from "./file-config.types";
 
 export interface ConfigLoader {
   configData: SnifferConfigSetup[];
-  getSetup(): SnifferConfigSetup[];
+  getConfig(): SnifferConfigSetup[];
   update(
     existingId: string,
     newConfig: SnifferConfig,
