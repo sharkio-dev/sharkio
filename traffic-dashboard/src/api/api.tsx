@@ -87,7 +87,7 @@ export const activateMock = (
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/activate`,
-    JSON.stringify({ id: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export const deactivateMock = (
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/deactivate`,
-    JSON.stringify({ id: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
         "Content-Type": "application/json",

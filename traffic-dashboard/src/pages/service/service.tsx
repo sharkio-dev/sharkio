@@ -1,24 +1,22 @@
-import { useEffect, useState } from "react";
-import { SnifferConfigRow } from "../../components/config-card/config-card";
-import { useSnackbar } from "../../hooks/useSnackbar";
-import { useParams } from "react-router-dom";
-import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
-import { Sniffer } from "../../types/types";
+import { PlayArrow, Stop } from "@mui/icons-material";
 import {
   Button,
   Card,
   Chip,
   CircularProgress,
-  Collapse,
   List,
   TextField,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
-import { PlayArrow, Stop } from "@mui/icons-material";
-import styles from "./service.module.scss";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
 import { RequestRow } from "../../components/request-row/request-row";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { Sniffer } from "../../types/types";
+import styles from "./service.module.scss";
 
 export const Service: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);

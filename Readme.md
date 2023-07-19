@@ -30,7 +30,7 @@ Request mocking.
 | JSON schema generator |      ✅       |
 | Microservice support  |      ✅       |
 |     Request mocks     |      ✅       |
-|  Open api generator   |               |
+|  Open api generator   |      ✅       |
 |  ChatGPT integration  |               |
 |     Save requests     |               |
 |      Collections      |               |
@@ -38,7 +38,7 @@ Request mocking.
 
 ## 🛠️ How to use
 
-- npm install -g sharkio@latest
+- npm install -g @idodav/sharkio@latest
 - sharkio dashboard start
 - sharkio admin start
 - sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
