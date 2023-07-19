@@ -22,7 +22,6 @@ import {
 import c from "classnames";
 import { saveAs } from "file-saver";
 import { useEffect, useRef, useState } from "react";
-import { generatePath, useNavigate } from "react-router-dom";
 import {
   createSniffer,
   deleteSniffer,
@@ -31,7 +30,6 @@ import {
   startSniffer,
   stopSniffer,
 } from "../../api/api";
-import { routes } from "../../constants/routes";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
@@ -49,7 +47,6 @@ export type IConfigCardProps = {
 };
 
 export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
-  const navigate = useNavigate();
   const [stopLoading, setStopLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
@@ -300,14 +297,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   };
 
   const snifferConfigForm = (sniffer: SnifferConfigRow, index: number) => {
-    const handleSnifferClicked = () => {
-      navigate(
-        generatePath(routes.SERVICE, {
-          port: sniffer.config.port,
-        })
-      );
-    };
-
     return (
       <>
         {sniffer.isCollapsed && (

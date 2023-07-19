@@ -4,10 +4,9 @@ import {
   Card,
   CircularProgress,
   List,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { FilterBar } from "../filter-bar/filter-bar";
 import { RequestRow } from "../request-row/request-row";
@@ -28,7 +27,6 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadData?.();
