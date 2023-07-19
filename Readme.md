@@ -38,7 +38,7 @@ Request mocking.
 
 ## 🛠️ How to use
 
-- npm install -g sharkio@latest
+- npm install -g @idodav/sharkio@latest
 - sharkio dashboard start
 - sharkio admin start
 - sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
