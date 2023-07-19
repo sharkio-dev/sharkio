@@ -30,7 +30,7 @@ Request mocking.
 | JSON schema generator |      ✅       |
 | Microservice support  |      ✅       |
 |     Request mocks     |      ✅       |
-|  Open api generator   |               |
+|  Open api generator   |      ✅       |
 |  ChatGPT integration  |               |
 |     Save requests     |               |
 |      Collections      |               |
