@@ -18,7 +18,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "./sniffers-setup.json"
+      "./sniffers-setup.json",
+      "./sniffers-setup-temp.json"
     ]
   },
   "author": "Ido David",
