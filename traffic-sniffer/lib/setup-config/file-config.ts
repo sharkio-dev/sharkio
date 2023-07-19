@@ -3,6 +3,12 @@ import fsSync from "fs";
 import { SnifferConfig } from "../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 import { SnifferConfigSetup, setupFilePath } from "./file-config.types";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export class FileConfig implements ConfigLoader {
   configData: SnifferConfigSetup[];
@@ -47,7 +53,7 @@ export class FileConfig implements ConfigLoader {
         return [];
       }
     } catch (error) {
-      console.error(`file was not in right format, overriding it`);
+      log.error(`File was not in right format, overriding it`);
       return [];
     }
   }
@@ -59,7 +65,7 @@ export class FileConfig implements ConfigLoader {
     );
 
     if (isListed !== -1) {
-      console.log("sniffer already listed");
+      log.info("Sniffer already listed");
       return;
     }
     this.configData.push(addedObj);

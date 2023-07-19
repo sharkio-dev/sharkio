@@ -1,5 +1,11 @@
 import { Express, NextFunction, Request, Response } from "express";
 import MockManager from "./mock-manager";
+import { useLog } from "../../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export default class MockController {
   constructor(private readonly mockManager: MockManager) {}
@@ -10,10 +16,14 @@ export default class MockController {
       async (req: Request, res: Response, next: NextFunction) => {
         try {
           const mocks = this.mockManager.getAllMocks();
-          res.send(mocks).status(200);
+          return res.send(mocks).status(200);
         } catch (e) {
-          console.error(e);
-          res.sendStatus(500);
+          log.error("An unexpected error occurred", {
+            method: "GET",
+            path: "/sharkio/mock",
+            error: e,
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -25,11 +35,14 @@ export default class MockController {
 
         try {
           const { id } = await this.mockManager.addMock(mock);
-
-          res.send(id).status(200);
+          return res.send(id).status(200);
         } catch (e) {
-          console.error(e);
-          res.sendStatus(500);
+          log.error("An unexpected error occurred", {
+            method: "POST",
+            path: "/sharkio/mock",
+            error: e,
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -40,12 +53,15 @@ export default class MockController {
         const mock = req.body;
 
         try {
-          await this.mockManager.activateManager();
-
-          res.sendStatus(200);
+          this.mockManager.activateManager();
+          return res.sendStatus(200);
         } catch (e) {
-          console.error(e);
-          res.sendStatus(500);
+          log.error("An unexpected error occurred", {
+            method: "POST",
+            url: "/sharkio/mock/actions/activate",
+            error: e,
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -56,12 +72,15 @@ export default class MockController {
         const mock = req.body;
 
         try {
-          await this.mockManager.deactivateManager();
-
-          res.sendStatus(200);
+          this.mockManager.deactivateManager();
+          return res.sendStatus(200);
         } catch (e) {
-          console.error(e);
-          res.sendStatus(500);
+          log.error("An unexpected error occurred", {
+            method: "POST",
+            url: "/sharkio/mock/actions/deactivate",
+            error: e,
+          });
+          return res.sendStatus(500);
         }
       }
     );
@@ -72,10 +91,14 @@ export default class MockController {
         try {
           const { id } = req.body;
           this.mockManager.removeMock(id);
-          res.send().status(200);
+          return res.sendStatus(200);
         } catch (e) {
-          console.error(e);
-          res.sendStatus(500);
+          log.error("An unexpected error occured", {
+            method: "DELETE",
+            url: "/sharkio/mock/:id",
+            error: e,
+          });
+          return res.sendStatus(500);
         }
       }
     );

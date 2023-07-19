@@ -4,6 +4,12 @@ import { MockNotFoundError } from "../sniffer/mock/exceptions";
 import { z } from "zod";
 import { requestValidator } from "../request-validator";
 import { portValidator } from "../request-validator/general-validators";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export class MockManagerController {
   constructor(
@@ -34,7 +40,11 @@ export class MockManagerController {
           const mocks = this.snifferManager.getAllMocks();
           res.json(mocks).status(200);
         } catch (e) {
-          console.error(e);
+          log.error("An unexpected error occured", {
+            method: "GET",
+            path: `${this.baseUrl}/action/getMocks`,
+            error: e,
+          });
           res.sendStatus(500);
         }
       }
@@ -82,13 +92,10 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "GET",
             path: `${this.baseUrl}/:port/mock`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -169,13 +176,10 @@ export class MockManagerController {
             return res.sendStatus(409);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/mock`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -240,13 +244,10 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "DELETE",
             path: `${this.baseUrl}/:port/mock`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -296,13 +297,10 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/mock/manager/actions/activate`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -352,13 +350,10 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/mock/manager/actions/deactivate`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -428,13 +423,10 @@ export class MockManagerController {
               return res.sendStatus(404);
             }
             default: {
-              console.error("An unexpected error occured", {
-                dir: __dirname,
-                file: __filename,
+              log.error("An unexpected error occured", {
                 method: "POST",
                 path: `${this.baseUrl}/:port/mock/actions/activate`,
                 error: e,
-                timestamp: new Date(),
               });
               return res.sendStatus(500);
             }
@@ -501,13 +493,10 @@ export class MockManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/mock/actions/deactivate`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }

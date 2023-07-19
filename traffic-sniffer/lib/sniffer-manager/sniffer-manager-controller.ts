@@ -4,6 +4,12 @@ import { SnifferManager } from "./sniffer-manager";
 import { z } from "zod";
 import { requestValidator } from "../request-validator";
 import { portValidator } from "../request-validator/general-validators";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export class SnifferManagerController {
   constructor(
@@ -31,6 +37,11 @@ export class SnifferManagerController {
       try {
         res.status(200).send(this.snifferManager.stats());
       } catch (e) {
+        log.error("An unexpected error occured", {
+          method: "GET",
+          path: `${this.baseUrl}/invocation`,
+          error: e,
+        });
         res.sendStatus(500);
       }
     });
@@ -49,7 +60,7 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.get("", (req: Request, res: Response) => {
-      res.status(200).send(
+      return res.status(200).send(
         this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
           const { config, isStarted } = sniffer.stats();
           return {
@@ -102,13 +113,10 @@ export class SnifferManagerController {
             return res.sendStatus(404);
           }
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "GET",
             path: `${this.baseUrl}/:port`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -173,13 +181,10 @@ export class SnifferManagerController {
           this.snifferManager.createSniffer(config);
           return res.sendStatus(201);
         } catch (e) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -228,18 +233,15 @@ export class SnifferManagerController {
               sniffer.getId(),
               false
             );
-            res.sendStatus(200);
+            return res.sendStatus(200);
           } else {
-            res.sendStatus(404);
+            return res.sendStatus(404);
           }
         } catch (e: any) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/actions/stop`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -293,13 +295,10 @@ export class SnifferManagerController {
             return res.sendStatus(404);
           }
         } catch (e: any) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/actions/start`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -402,21 +401,22 @@ export class SnifferManagerController {
           const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
 
           if (sniffer !== undefined) {
-            await sniffer
-              .execute(url, method, invocation)
-              .catch((e) => console.error("error while executing"));
+            await sniffer.execute(url, method, invocation).catch((e) =>
+              log.error("Error while executing", {
+                method: "POST",
+                path: `${this.baseUrl}/:port/actions/execute`,
+                error: e,
+              })
+            );
             return res.sendStatus(200);
           } else {
             return res.sendStatus(404);
           }
         } catch (e: any) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "POST",
             path: `${this.baseUrl}/:port/actions/execute`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -466,13 +466,10 @@ export class SnifferManagerController {
             return res.sendStatus(404);
           }
         } catch (e: any) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "DELETE",
             path: `${this.baseUrl}/:port`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
@@ -548,13 +545,10 @@ export class SnifferManagerController {
             return res.sendStatus(403);
           }
         } catch (e: any) {
-          console.error("An unexpected error occured", {
-            dir: __dirname,
-            file: __filename,
+          log.error("An unexpected error occured", {
             method: "PUT",
             path: `${this.baseUrl}/:existingId`,
             error: e,
-            timestamp: new Date(),
           });
           return res.sendStatus(500);
         }
