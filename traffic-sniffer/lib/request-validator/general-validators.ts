@@ -1,5 +1,5 @@
 import { z } from "zod";
 
-export const portValidator = z
+export const portValidator = z.coerce
   .number()
   .nonnegative("Port number cannot be negative");
