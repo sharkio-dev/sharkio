@@ -1,5 +1,11 @@
-import { Request, Response, NextFunction, request } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ZodType, ZodError } from "zod";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export interface Validations {
   params?: ZodType;
@@ -18,13 +24,10 @@ export const requestValidator =
         const { errors } = e as ZodError;
         return res.status(400).send(errors);
       } else {
-        console.error("An unexpected error occured", {
-          dir: __dirname,
-          file: __filename,
+        log.error("An unexpected error occured", {
           method: req.method,
           path: req.path,
           error: e,
-          timestamp: new Date(),
         });
         return res.sendStatus(500);
       }
