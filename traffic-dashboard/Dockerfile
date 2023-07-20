@@ -1,10 +1,5 @@
-
-
-
-FROM node:latest AS builder
+FROM node:latest
 ENV NODE_ENV production
-# Add a work directory
-# RUN npm run build
 
 WORKDIR /app
 COPY /dist .
