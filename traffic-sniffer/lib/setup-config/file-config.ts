@@ -7,6 +7,12 @@ import {
   SnifferConfigSetup,
   sniffersConfigValidator,
 } from "./file-config.types";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export class FileConfig implements ConfigLoader {
   configData: SnifferConfigSetup[];
@@ -58,7 +64,9 @@ export class FileConfig implements ConfigLoader {
       }
 
       this.path = this.path.split(".json")[0] + "-temp" + ".json";
-      console.log("Using a temporary config file:" + this.path);
+      log.error(`Using a temporary config file`, {
+        path,
+      });
 
       return [];
     }
@@ -71,7 +79,7 @@ export class FileConfig implements ConfigLoader {
     );
 
     if (isListed !== -1) {
-      console.log("sniffer already listed");
+      log.info("Sniffer already listed");
       return;
     }
     this.configData.push(addedObj);

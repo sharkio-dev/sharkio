@@ -12,6 +12,12 @@ import { Invocation } from "../../types";
 import { InterceptedRequests } from "../intercepted-requests/intercepted-requests";
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export type SnifferConfig = {
   name: string;
@@ -50,12 +56,11 @@ export class Sniffer {
   }
 
   requestInterceptor(req: Request, res: Response, next: NextFunction) {
-    console.log(
-      "[" +
-        new Date().toISOString() +
-        "]:" +
-        `${req.method} ${req.url} request logged`
-    );
+    log.info("Request logged", {
+      config: this.config,
+      method: req.method,
+      url: req.url,
+    });
     this.interceptedRequests.interceptRequest(req, this.config.name);
     next();
   }
@@ -90,38 +95,38 @@ export class Sniffer {
   }
 
   async changeConfig(newConfig: SnifferConfig) {
-    console.log("stopping server");
+    log.info("Stopping server", {
+      config: this.config,
+    });
     await this.stop();
-    console.log("changing config");
+    log.info("Changing config", {
+      config: this.config,
+    });
     this.config = newConfig;
-    console.log("starting server with new config");
+    log.info("Starting server with new config", {
+      config: this.config,
+    });
     await this.start();
   }
 
   start() {
-    console.log("starting sniffer \n" + JSON.stringify(this.config, null, 2));
+    log.info("Starting sniffer", { config: this.config });
     return new Promise((resolve, reject) => {
       this.server = this.app
         .listen(this.config.port, () => {
-          console.log(
-            "started sniffing" + JSON.stringify(this.config, null, 2)
-          );
+          log.info("Started sniffing", { config: this.config });
           this.isStarted = true;
           return resolve(undefined);
         })
         .on("error", (error) => {
-          console.error(
-            "Failed to start for proxy: \n" +
-              JSON.stringify(this.config, null, 2) +
-              "\n with error: \n" +
-              error.message
-          );
-          // Create custom error if needed to expose more info the the application
+          log.error("Failed to start sniffer for proxy", {
+            config: this.config,
+            error: error.message,
+          });
           return reject(error);
         })
         .on("clientError", (error) => {
-          console.error("clientError has occurred", error.message);
-          // Create custom error if needed to expose more info the the application
+          log.error("A clientError has occurred", { error: error.message });
           return reject(error);
         });
     });
@@ -129,19 +134,17 @@ export class Sniffer {
 
   stop() {
     return new Promise((resolve, reject) => {
-      const configString = JSON.stringify(this.config, null, 2);
-      console.log("stopping sniffer", configString);
+      log.info("Stopping sniffer", { config: this.config });
       this.server?.close((error) => {
         if (error) {
-          console.error(
-            "couldn't stop the sniffer",
-            configString,
-            error.message
-          );
+          log.error("couldn't stop the sniffer", {
+            config: this.config,
+            error: error.message,
+          });
           return reject(error);
         }
         this.isStarted = false;
-        console.log("stopped sniffer", configString);
+        log.info("Stopped sniffer", { config: this.config });
         return resolve(undefined);
       });
     });
