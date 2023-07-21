@@ -1,0 +1,12 @@
+version: '3'
+services:
+  backend:
+    build: ./traffic-sniffer
+    ports:
+      - 5012:5012
+  
+  frontend:
+    build: ./traffic-dashboard
+    ports:
+      - 8080:8080
+      - 5173:5173
