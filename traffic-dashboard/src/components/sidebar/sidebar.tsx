@@ -5,7 +5,7 @@ import {
   SwapHoriz,
 } from "@mui/icons-material";
 import DataObjectIcon from "@mui/icons-material/DataObject";
-import ApiIcon from '@mui/icons-material/Api';
+import ApiIcon from "@mui/icons-material/Api";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import {
   IconButton,
@@ -13,7 +13,7 @@ import {
   ListItem,
   ListItemButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +30,14 @@ export const SideBar: React.FC = () => {
   return (
     <div className={styles.sidebarContainer} data-is-minimized={minimized}>
       <Paper className={styles.paper} elevation={8}>
+        <div className={styles.sharkioContainer}>
+          <div className={styles.logo}>
+            <a href="/home">
+              <img src="shark-logo.png" alt="Logo" />
+            </a>
+          </div>
+          {!minimized && <div className={styles.logo_text}>𝐒𝐡𝐚𝐫𝐤𝐢𝐨</div>}
+        </div>
         <div className={styles.toggleMenu} onClick={handleMenuIconClicked}>
           <IconButton>
             {minimized ? <ChevronRight /> : <ChevronLeft />}
