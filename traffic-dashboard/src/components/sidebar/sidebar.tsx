@@ -4,8 +4,8 @@ import {
   Home,
   SwapHoriz,
 } from "@mui/icons-material";
-import DataObjectIcon from "@mui/icons-material/DataObject";
 import ApiIcon from "@mui/icons-material/Api";
+import DataObjectIcon from "@mui/icons-material/DataObject";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import {
   IconButton,
@@ -15,6 +15,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import c from "classnames";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./sidebar.module.scss";
@@ -28,15 +29,24 @@ export const SideBar: React.FC = () => {
   };
 
   return (
-    <div className={styles.sidebarContainer} data-is-minimized={minimized}>
+    <div
+      className={c({
+        [styles.sidebarContainer]: true,
+        [styles.sidebarContainerMinimized]: minimized,
+      })}
+    >
       <Paper className={styles.paper} elevation={8}>
-        <div className={styles.sharkioContainer}>
+        <div
+          className={c({
+            [styles.sharkioContainer]: true,
+          })}
+        >
           <div className={styles.logo}>
             <a href="/home">
               <img src="shark-logo.png" alt="Logo" />
             </a>
           </div>
-          {!minimized && <div className={styles.logo_text}>𝐒𝐡𝐚𝐫𝐤𝐢𝐨</div>}
+          {!minimized && <div className={styles.logoText}>𝐒𝐡𝐚𝐫𝐤𝐢𝐨</div>}
         </div>
         <div className={styles.toggleMenu} onClick={handleMenuIconClicked}>
           <IconButton>
@@ -44,22 +54,31 @@ export const SideBar: React.FC = () => {
           </IconButton>
         </div>
         <List>
-          <ListItem>
+          <ListItem
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
+          >
             <Typography>Menu</Typography>
           </ListItem>
           <ListItemButton
-            alignItems="center"
             onClick={() => {
               navigate("/home");
             }}
-            className={styles.listItem}
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
           >
             <Home />
             {!minimized && <>Home</>}
           </ListItemButton>
           <ListItemButton
-            alignItems="center"
-            className={styles.listItem}
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
             onClick={() => {
               navigate("/config");
             }}
@@ -68,8 +87,10 @@ export const SideBar: React.FC = () => {
             {!minimized && <>Services</>}
           </ListItemButton>
           <ListItemButton
-            alignItems="center"
-            className={styles.listItem}
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
             onClick={() => {
               navigate("/requests");
             }}
@@ -78,8 +99,10 @@ export const SideBar: React.FC = () => {
             {!minimized && <>Requests</>}
           </ListItemButton>
           <ListItemButton
-            alignItems="center"
-            className={styles.listItem}
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
             onClick={() => {
               navigate("/mocks");
             }}
@@ -88,8 +111,10 @@ export const SideBar: React.FC = () => {
             {!minimized && <>Mocks</>}
           </ListItemButton>
           <ListItemButton
-            alignItems="center"
-            className={styles.listItem}
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
             onClick={() => {
               navigate("/gen-openapi");
             }}
