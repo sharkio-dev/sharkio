@@ -9,10 +9,9 @@
 .serviceGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 350px 400px;
+  grid-template-rows: 300px 300px;
   grid-column-gap: 15px;
   grid-row-gap: 15px;
-  height: 100%;
 }
 
 .serviceCard {
