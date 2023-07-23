@@ -47,7 +47,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
       (servicesFilter.length > 0
         ? servicesFilter.find((service) => service === req.service) !==
           undefined
-        : true)
+        : true),
   );
 
   return (

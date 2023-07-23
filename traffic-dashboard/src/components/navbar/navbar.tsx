@@ -15,7 +15,10 @@ export const Navbar: React.FC = () => {
           </div>
           <div className={styles.logo_text}>SHARKIO</div>
         </div>
-        <AccountCircleIcon className={styles.account_circle_icon} fontSize="large" />
+        <AccountCircleIcon
+          className={styles.account_circle_icon}
+          fontSize="large"
+        />
       </div>
     </AppBar>
   );

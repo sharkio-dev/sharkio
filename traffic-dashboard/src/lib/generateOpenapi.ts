@@ -3,7 +3,7 @@ import { OpenAPIDocument, OpenAPIOperation } from "./openapi.interface";
 export function JsonToOpenapi(
   requests: unknown[],
   apiName: string,
-  apiVersion: string
+  apiVersion: string,
 ) {
   const openApiDocument: OpenAPIDocument = {
     openapi: "3.0.0",

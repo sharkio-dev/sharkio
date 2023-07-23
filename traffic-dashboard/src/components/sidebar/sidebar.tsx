@@ -5,7 +5,7 @@ import {
   SwapHoriz,
 } from "@mui/icons-material";
 import DataObjectIcon from "@mui/icons-material/DataObject";
-import ApiIcon from '@mui/icons-material/Api';
+import ApiIcon from "@mui/icons-material/Api";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import {
   IconButton,
@@ -13,7 +13,7 @@ import {
   ListItem,
   ListItemButton,
   Paper,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";

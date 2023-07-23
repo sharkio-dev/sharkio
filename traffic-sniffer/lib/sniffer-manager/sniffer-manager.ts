@@ -81,7 +81,7 @@ export class SnifferManager {
     this.configPersistency.update(
       existingId,
       newConfig,
-      this.sniffers[existingIndex].getIsStarted()
+      this.sniffers[existingIndex].getIsStarted(),
     );
   }
 
