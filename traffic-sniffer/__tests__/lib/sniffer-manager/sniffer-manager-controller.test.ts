@@ -21,7 +21,7 @@ jest.mock("../../../lib/setup-config/file-config", () => {
     update(
       existingId: string,
       newConfig: SnifferConfig,
-      isStarted: boolean
+      isStarted: boolean,
     ): void {}
 
     addSniffer(snifferConfig: SnifferConfig): void {
