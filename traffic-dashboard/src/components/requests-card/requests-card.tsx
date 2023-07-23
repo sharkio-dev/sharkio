@@ -47,7 +47,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
       (servicesFilter.length > 0
         ? servicesFilter.find((service) => service === req.service) !==
           undefined
-        : true)
+        : true),
   );
 
   return (
@@ -80,8 +80,8 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
             <>
               <List>
                 {filteredRequests &&
-                  filteredRequests.map((req: any) => (
-                    <RequestRow request={req} />
+                  filteredRequests.map((req) => (
+                    <RequestRow request={req} key={req.id} />
                   ))}
               </List>
             </>

@@ -35,7 +35,7 @@ export const editSniffer = async (newConfig: SnifferCreateConfig) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
@@ -46,7 +46,7 @@ export const getRequests = () => {
 export const executeRequest = (
   url: string,
   method: string,
-  invocation: any
+  invocation: any,
 ) => {
   return axios.post(
     "/sharkio/sniffer/5555/actions/execute",
@@ -55,7 +55,7 @@ export const executeRequest = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
@@ -68,7 +68,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any
+  data: any,
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock`,
@@ -77,7 +77,7 @@ export const createMock = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
@@ -112,7 +112,7 @@ export const deleteMock = (id: string, port: number) => {
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string
+  endpoint: string,
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/activate`,
@@ -121,14 +121,14 @@ export const activateMock = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string
+  endpoint: string,
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/deactivate`,
@@ -137,6 +137,6 @@ export const deactivateMock = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };

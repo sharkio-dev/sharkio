@@ -1,3 +1,4 @@
+import React from "react";
 import { Chip } from "@mui/material";
 
 interface IHttpMethodProps {
@@ -6,7 +7,7 @@ interface IHttpMethodProps {
 
 export const HttpMethod: React.FC<IHttpMethodProps> = ({ method }) => {
   const color = methodColor(method);
-  return <Chip color={color} label={method}/>;
+  return <Chip color={color} label={method} />;
 };
 
 function methodColor(method: string) {

@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Add,
   Delete,
@@ -29,6 +30,7 @@ type MockRowProps = {
   service: Service;
   editable: boolean;
   loadData: () => void;
+<<<<<<< HEAD
   onEditClick: () => void;
   onDeleteClick: (id: string) => void;
 };
@@ -41,6 +43,9 @@ const MockRow: React.FC<MockRowProps> = ({
   onDeleteClick,
   onEditClick,
 }) => {
+=======
+}> = ({ mock, service, editable = false, loadData }) => {
+>>>>>>> main
   const toggleActive = (newValue: boolean) => {
     return newValue === true
       ? activateMock(service.port, mock.method, mock.endpoint)

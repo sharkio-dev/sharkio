@@ -4,6 +4,7 @@
   height: 100%;
   width: 240px;
 }
+
 .sidebarContainer[data-is-minimized="true"] {
   width: 75px;
 }
@@ -27,7 +28,7 @@
   z-index: 1000;
   position: absolute;
   right: -12px;
-  top: 16.5px;
+  top: 111px;
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -35,4 +36,28 @@
   justify-content: center;
   align-items: center;
   background-color: #4ea0e3;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  image-rendering: crisp-edges;
+}
+
+.logo img {
+  max-height: 50px;
+  border-radius: 50%;
+}
+
+.sharkioContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  max-height: 100%;
+  overflow: hidden;
+  column-gap: 20px;
+
+  font-size: 25px;
+  vertical-align: middle;
 }
