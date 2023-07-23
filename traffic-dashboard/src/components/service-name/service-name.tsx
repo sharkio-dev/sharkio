@@ -1,10 +1,10 @@
 import { Chip } from "@mui/material";
 
 interface IServiceNameProps {
-    service: string
+  service: string;
 }
 
-export const ServiceName: React.FC<IServiceNameProps> = ({service}) => {
-    const color = "success";
-    return <Chip color={color} label={service}/>
-}
+export const ServiceName: React.FC<IServiceNameProps> = ({ service }) => {
+  const color = "success";
+  return <Chip color={color} label={service} />;
+};

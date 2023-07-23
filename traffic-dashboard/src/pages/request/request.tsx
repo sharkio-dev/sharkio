@@ -37,9 +37,9 @@ export const RequestPage: React.FC = () => {
   const [schema, setSchema] = useState<any>(undefined);
   const [request, setRequest] = useState<any>(undefined);
   const [tab, setTab] = useState(0);
-  const { loadData, 
-          requestsData: requests,
-        } = useContext(RequestsMetadataContext);
+  const { loadData, requestsData: requests } = useContext(
+    RequestsMetadataContext,
+  );
 
   useEffect(() => {
     loadData?.();
@@ -57,7 +57,7 @@ export const RequestPage: React.FC = () => {
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
-      setOpenapi(JsonToOpenapi(new Array(request) ,request.service, "1.0.0"))
+      setOpenapi(JsonToOpenapi(new Array(request), request.service, "1.0.0"));
       setRequest(request);
     }
   }, [id, requests]);
@@ -69,7 +69,7 @@ export const RequestPage: React.FC = () => {
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: any
+    invocation: any,
   ) => {
     executeRequest(url, method, invocation);
   };
@@ -116,7 +116,7 @@ export const RequestPage: React.FC = () => {
                             handleExecuteClicked(
                               request.url,
                               request.method,
-                              invocation
+                              invocation,
                             );
                           }}
                         >
@@ -168,9 +168,9 @@ export const RequestPage: React.FC = () => {
               </div>
             </TabContent>
             <TabContent index={4} tabValue={tab}>
-                <div className={styles.cardTitle}>
-                  <pre>{JSON.stringify(openapi, null ,2)}</pre>
-                </div>
+              <div className={styles.cardTitle}>
+                <pre>{JSON.stringify(openapi, null, 2)}</pre>
+              </div>
             </TabContent>
           </Card>
         </>

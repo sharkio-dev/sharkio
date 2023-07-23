@@ -5,7 +5,7 @@ export const NewRequest = () => {
   return (
     <>
       <Card className={styles.card}>
-      <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Request
         </Typography>
         <Input placeholder="Url"></Input>
