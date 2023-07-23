@@ -1,3 +1,4 @@
+import React from "react";
 import { AddBox } from "@mui/icons-material";
 import { Button, Card } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -6,7 +7,7 @@ import MockRow from "../../components/mock/mock-row";
 import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
 import { Mock, ServiceMock } from "../../types/types";
 
-const MocksPage = () => {
+const MocksPage: React.FC = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
 
@@ -38,6 +39,7 @@ const MocksPage = () => {
           return serviceMock.mocks.map((mock: Mock) => {
             return (
               <MockRow
+                key={mock.id}
                 mock={mock}
                 service={serviceMock.service}
                 loadData={loadData}
