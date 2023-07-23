@@ -1,14 +1,22 @@
 import { AddBox } from "@mui/icons-material";
 import { Button, Card } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getAllMocks } from "../../api/api";
+import { deleteMock, getAllMocks } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
-import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
+import { useSnackbar } from "../../hooks/useSnackbar";
 import { Mock, ServiceMock } from "../../types/types";
+import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
+import { EditMockDialog } from "./edit-mock-dialog/edit-mock.dialog";
 
 const MocksPage = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<{ open: boolean; mock: any }>({
+    open: false,
+    mock: null,
+  });
+
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const loadData = () => {
     getAllMocks().then((res) => setMocks(res.data));
@@ -24,7 +32,19 @@ const MocksPage = () => {
 
   const handleCloseModal = () => {
     setAddOpen(false);
+    setEditOpen({ open: false, mock: null });
     loadData();
+  };
+
+  const handleEditClicked = (mock: Mock, port: number) => {
+    setEditOpen({ open: true, mock: { ...mock, port } });
+  };
+
+  const handleDeleteClicked = (id: string, port: number) => {
+    deleteMock(id, port).then(() => {
+      showSnackbar("Mock removed successfully", "info");
+      loadData();
+    });
   };
 
   return (
@@ -42,12 +62,25 @@ const MocksPage = () => {
                 service={serviceMock.service}
                 loadData={loadData}
                 editable={true}
+                onEditClick={() =>
+                  handleEditClicked(mock, serviceMock.service.port)
+                }
+                onDeleteClick={() =>
+                  handleDeleteClicked(mock.id, serviceMock.service.port)
+                }
               />
             );
           });
         })}
       </Card>
       <AddMockDialog open={addOpen} close={handleCloseModal} />
+      <EditMockDialog
+        mock={editOpen.mock}
+        open={editOpen.open}
+        close={handleCloseModal}
+      />
+
+      {snackBar}
     </>
   );
 };

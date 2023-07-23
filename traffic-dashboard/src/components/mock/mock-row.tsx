@@ -1,24 +1,46 @@
 import {
+  Add,
+  Delete,
+  Edit,
+  ExpandMore,
+  FileDownload,
+  FileUpload,
+  PlayArrow,
+  Save,
+  Stop,
+} from "@mui/icons-material";
+import {
   Accordion,
-  AccordionSummary,
-  Switch,
-  Typography,
   AccordionDetails,
+  AccordionSummary,
+  IconButton,
+  Switch,
   TextField,
+  Typography,
 } from "@mui/material";
 import { activateMock, deactivateMock } from "../../api/api";
 import { Mock, Service } from "../../types/types";
 import { HttpMethod } from "../http-method/http-method";
 import { HttpStatus } from "../http-status/http-status";
 import styles from "./mock-row.module.scss";
-import { ExpandMore } from "@mui/icons-material";
 
-const MockRow: React.FC<{
+type MockRowProps = {
   mock: Mock;
   service: Service;
   editable: boolean;
   loadData: () => void;
-}> = ({ mock, service, editable=false, loadData }) => {
+  onEditClick: () => void;
+  onDeleteClick: (id: string) => void;
+};
+
+const MockRow: React.FC<MockRowProps> = ({
+  mock,
+  service,
+  editable = false,
+  loadData,
+  onDeleteClick,
+  onEditClick,
+}) => {
   const toggleActive = (newValue: boolean) => {
     return newValue === true
       ? activateMock(service.port, mock.method, mock.endpoint)
@@ -37,7 +59,11 @@ const MockRow: React.FC<{
         <AccordionSummary
           aria-controls="panel2d-content"
           id="panel2d-header"
-          expandIcon={<ExpandMore />}
+          expandIcon={
+            <IconButton>
+              <ExpandMore />
+            </IconButton>
+          }
         >
           <div className={styles.mockTitle}>
             {editable && (
@@ -48,9 +74,7 @@ const MockRow: React.FC<{
                 onChange={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  handleSwitchClicked(
-                    e.target.checked && true || false
-                  );
+                  handleSwitchClicked((e.target.checked && true) || false);
                 }}
                 checked={mock.active}
               />
@@ -58,6 +82,24 @@ const MockRow: React.FC<{
             <HttpMethod method={mock.method}></HttpMethod>
             <HttpStatus status={mock.status} />
             <Typography>{mock.endpoint}</Typography>
+          </div>
+          <div className={styles.mockActions}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onEditClick()
+              }}
+            >
+              <Edit />
+            </IconButton>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteClick(mock.id)
+              }}
+            >
+              <Delete />
+            </IconButton>
           </div>
         </AccordionSummary>
         <AccordionDetails>
