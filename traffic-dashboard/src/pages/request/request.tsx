@@ -28,7 +28,7 @@ import {
 } from "../../lib/jsonSchema";
 import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
-import { InterceptedRequest } from "../../types/types";
+import { InterceptedRequest, Invocation } from "../../types/types";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
@@ -44,11 +44,12 @@ export const RequestPage: React.FC = () => {
 
   useEffect(() => {
     loadData?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     console.log(requests);
-    const request = requests.find((request: any) => {
+    const request = requests?.find((request) => {
       return request.id === id;
     });
 
@@ -70,7 +71,7 @@ export const RequestPage: React.FC = () => {
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: any,
+    invocation: Invocation,
   ) => {
     executeRequest(url, method, invocation);
   };
