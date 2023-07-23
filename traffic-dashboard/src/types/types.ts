@@ -42,7 +42,8 @@ export type Sniffer = {
 export type Mock = {
   method: string;
   endpoint: string;
-  data: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any; // The datatype can really accept all values
   active: boolean;
   id: string;
   status: number;

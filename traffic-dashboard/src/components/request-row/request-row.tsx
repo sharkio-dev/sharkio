@@ -1,11 +1,13 @@
+import React from "react";
 import { ListItemButton, Box, Chip } from "@mui/material";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { HttpMethod } from "../http-method/http-method";
 import { ServiceName } from "../service-name/service-name";
 import styles from "./request-row.module.scss";
+import { InterceptedRequest } from "../../types/types";
 interface IRequestRowProps {
-  request: any;
+  request: InterceptedRequest;
 }
 
 export const RequestRow: React.FC<IRequestRowProps> = ({ request }) => {
