@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Add,
   Delete,
@@ -170,7 +171,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         loadData();
         showSnackbar("Created sniffer", "info");
       })
-      .catch((_) => {
+      .catch(() => {
         showSnackbar("Failed to create proxy", "error");
       })
       .finally(() => {

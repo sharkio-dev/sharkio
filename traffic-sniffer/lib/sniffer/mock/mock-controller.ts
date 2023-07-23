@@ -25,7 +25,7 @@ export default class MockController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     app.post(
@@ -44,7 +44,7 @@ export default class MockController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     app.post(
@@ -63,7 +63,7 @@ export default class MockController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     app.post(
@@ -82,7 +82,7 @@ export default class MockController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     app.delete(
@@ -100,7 +100,7 @@ export default class MockController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
   }
 }

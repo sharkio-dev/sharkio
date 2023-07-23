@@ -14,7 +14,7 @@ const log = useLog({
 export class MockManagerController {
   constructor(
     private readonly snifferManager: SnifferManager,
-    private readonly baseUrl: string = "/sharkio/sniffer",
+    private readonly baseUrl: string = "/sharkio/sniffer"
   ) {}
 
   setup(app: Express) {
@@ -47,7 +47,7 @@ export class MockManagerController {
           });
           res.sendStatus(500);
         }
-      },
+      }
     );
 
     /**
@@ -99,7 +99,7 @@ export class MockManagerController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     /**
@@ -183,7 +183,7 @@ export class MockManagerController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     /**
@@ -251,7 +251,7 @@ export class MockManagerController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     /**
@@ -304,7 +304,7 @@ export class MockManagerController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     /**
@@ -357,7 +357,7 @@ export class MockManagerController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     /**
@@ -432,7 +432,7 @@ export class MockManagerController {
             }
           }
         }
-      },
+      }
     );
 
     /**
@@ -500,7 +500,7 @@ export class MockManagerController {
           });
           return res.sendStatus(500);
         }
-      },
+      }
     );
 
     app.use(this.baseUrl, router);

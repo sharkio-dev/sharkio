@@ -1,8 +1,9 @@
+import React from "react";
 import { Snackbar, Alert, AlertColor } from "@mui/material";
 import { useState } from "react";
 
 type useSnackbarType = () => {
-  component: any;
+  component: React.JSX.Element; // any
   show: (content: string, severity: AlertColor) => void;
   hide: () => void;
 };
