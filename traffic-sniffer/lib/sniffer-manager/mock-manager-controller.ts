@@ -186,6 +186,51 @@ export class MockManagerController {
       }
     );
 
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock:
+     *  put:
+     *    tags:
+     *      - mock
+     *    description: Delete a mock
+     *    parameters:
+     *       - name: port
+     *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
+     *         description: service port
+     *         required: true
+     *    requestBody:
+     *        description: Create a new mock
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
+     *              properties:
+     *                mockId:
+     *                  type: string
+     *                  description: The id of the mock we reference
+     *                  example: 6bd539be-4d3d-4101-bc99-64628640a86b
+     *                method:
+     *                  type: string
+     *                  description: An HTTP method
+     *                  enum: [GET, POST, UPDATE, DELETE, PUT ]
+     *                  example: POST
+     *                body:
+     *                  description: The request payload
+     *                  example: { someKey: "someValue" }
+     *                endpoint:
+     *                  type: string
+     *                  description: The request URL
+     *                  example: www.google.com
+     *                status:
+     *                  type: integer
+     *                  description: An HTTP status code
+     *                  example: 200
+     */
+
     router.put(
       "/:port/mock",
       requestValidator({
