@@ -24,40 +24,41 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.showUpdate = exports.showCreate = exports.showGenerate = exports.showInfo = exports.showSuccess = exports.showError = exports.showTitleAndBanner = void 0;
-const kleur_1 = require("kleur");
+//import { red, green, cyan } from 'kleur';
 const figlet = __importStar(require("figlet"));
 const console_message_1 = require("../models/console-message");
+const { cyan, red, green } = require('kleur');
 const newLine = '\n';
 const showTitleAndBanner = () => {
-    console.log((0, kleur_1.cyan)(figlet.textSync(console_message_1.ConsoleMessage.TITLE, { horizontalLayout: 'full' })));
-    console.info((0, kleur_1.cyan)(console_message_1.ConsoleMessage.BANNER));
+    console.log(green(figlet.textSync(console_message_1.ConsoleMessage.TITLE, { horizontalLayout: 'full' })));
+    console.info(cyan(console_message_1.ConsoleMessage.BANNER));
 };
 exports.showTitleAndBanner = showTitleAndBanner;
 const showError = (message) => {
-    console.error((0, kleur_1.red)(console_message_1.ConsoleMessage.ERROR) + message);
+    console.error(red(console_message_1.ConsoleMessage.ERROR) + message);
 };
 exports.showError = showError;
 const showSuccess = (message) => {
-    console.log((0, kleur_1.green)(console_message_1.ConsoleMessage.SUCCESS) + message + newLine);
+    console.log(green(console_message_1.ConsoleMessage.SUCCESS) + message + newLine);
 };
 exports.showSuccess = showSuccess;
 const showInfo = (message) => {
-    console.info((0, kleur_1.cyan)(console_message_1.ConsoleMessage.INFO) + message + newLine);
+    console.info(cyan(console_message_1.ConsoleMessage.INFO) + message + newLine);
 };
 exports.showInfo = showInfo;
 const showGenerate = (fileName) => {
-    console.log((0, kleur_1.cyan)(console_message_1.ConsoleMessage.GENERATE) + `${fileName}...`);
+    console.log(cyan(console_message_1.ConsoleMessage.GENERATE) + `${fileName}...`);
 };
 exports.showGenerate = showGenerate;
 const showCreate = (fileName, filePath) => {
     filePath
-        ? console.log((0, kleur_1.green)(console_message_1.ConsoleMessage.CREATE) + `${fileName} in ${filePath}`)
-        : console.log((0, kleur_1.green)(console_message_1.ConsoleMessage.CREATE) + `${fileName}`);
+        ? console.log(green(console_message_1.ConsoleMessage.CREATE) + `${fileName} in ${filePath}`)
+        : console.log(green(console_message_1.ConsoleMessage.CREATE) + `${fileName}`);
 };
 exports.showCreate = showCreate;
 const showUpdate = (fileName, filePath) => {
     filePath
-        ? console.log((0, kleur_1.green)(console_message_1.ConsoleMessage.UPDATE) + `${fileName} in ${filePath}`)
-        : console.log((0, kleur_1.green)(console_message_1.ConsoleMessage.UPDATE) + `${fileName}`);
+        ? console.log(green(console_message_1.ConsoleMessage.UPDATE) + `${fileName} in ${filePath}`)
+        : console.log(green(console_message_1.ConsoleMessage.UPDATE) + `${fileName}`);
 };
 exports.showUpdate = showUpdate;
