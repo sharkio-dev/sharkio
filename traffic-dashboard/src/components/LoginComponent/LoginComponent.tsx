@@ -1,16 +1,11 @@
 
 import React, { useState } from "react";
-import { AppBar, Avatar, Button, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import {  Avatar, Button, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
-
 import Box from '@mui/material/Box';
-import { Login } from "@mui/icons-material";
 
-type Props = {
-    // Define your component's props here
-};
 
-const LoginComponent: React.FC<Props> = (props) => {
+const LoginComponent: React.FC<{}> = (props) => {
     //this login state is example for auth user
     const [login, setLogin] = useState(true)
     const [anchorElUser, setAnchorElUser] = useState(false);
