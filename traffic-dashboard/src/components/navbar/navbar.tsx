@@ -1,9 +1,11 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { AppBar } from "@mui/material";
-import React from "react";
+import { AppBar, Button } from "@mui/material";
+import React, { useState } from "react";
 import styles from "./navbar.module.scss";
+import LoginComponent from "../LoginComponent/LoginComponent";
 
 export const Navbar: React.FC = () => {
+
   return (
     <AppBar position="relative">
       <div className={styles.navbar}>
@@ -15,7 +17,7 @@ export const Navbar: React.FC = () => {
           </div>
           <div className={styles.logo_text}>SHARKIO</div>
         </div>
-        <AccountCircleIcon className={styles.account_circle_icon} fontSize="large" />
+       <LoginComponent/>
       </div>
     </AppBar>
   );
