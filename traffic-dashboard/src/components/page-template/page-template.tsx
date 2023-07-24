@@ -12,7 +12,6 @@ export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
         {sideMenuOpen && <SideBar />}
         <div className={styles.page}>
           <Navbar></Navbar>
-          <div className={styles.appBar}></div>
           <div className={styles.content}>{children}</div>
         </div>
       </div>
