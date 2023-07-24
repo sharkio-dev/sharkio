@@ -7,7 +7,7 @@ import MockRow from "../../components/mock/mock-row";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { Mock, ServiceMock } from "../../types/types";
 import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
-import { EditMockDialog } from "./edit-mock-dialog/edit-mock.dialog";
+import { EditMockDialog } from "./edit-mock-dialog/edit-mock-dialog";
 
 const MocksPage: React.FC = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
