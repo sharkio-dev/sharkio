@@ -1,10 +1,14 @@
-version: '3'
+version: "3"
 services:
   backend:
     build: ./traffic-sniffer
     ports:
       - 5012:5012
-  
+      - 5555:5555
+      - 5556:5556
+    extra_hosts:
+      - localhost:host-gateway
+
   frontend:
     build: ./traffic-dashboard
     ports:
