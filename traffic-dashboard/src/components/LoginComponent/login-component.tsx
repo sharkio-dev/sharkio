@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
 import styles from './login-component.module.scss'
 
 const LoginComponent: React.FC<{}> = (props) => {

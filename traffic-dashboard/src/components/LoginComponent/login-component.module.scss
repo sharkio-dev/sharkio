@@ -1,13 +1,15 @@
 $primary-color: #90caf9;
 
-.my_box{
-    flex-grow: 0;
-    border: 1px solid $primary-color ; // Assuming "primary.main" is a valid variable
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 10px;
-  }
+.my_box {
+  flex-grow: 0;
+  border: 1px solid $primary-color; // Assuming "primary.main" is a valid variable
+  padding: 5px;
+  border-radius: 10px;
+}
+.my_box:hover {
+  cursor: pointer;
+}
 
-  .userName{
-    color: $primary-color;
-  }
+.userName {
+  color: $primary-color;
+}
