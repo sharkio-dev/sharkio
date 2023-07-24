@@ -22,6 +22,7 @@ import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import {
+  JsonSchema,
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
@@ -29,13 +30,14 @@ import {
 import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
 import { InterceptedRequest, Invocation } from "../../types/types";
+import { OpenAPIDocument } from "../../lib/openapi.interface";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
-  const [typescript, setTypescript] = useState<any>(undefined);
-  const [openapi, setOpenapi] = useState<any>(undefined);
-  const [curl, setCurl] = useState<any>(undefined);
-  const [schema, setSchema] = useState<any>(undefined);
+  const [typescript, setTypescript] = useState<string | undefined>(undefined);
+  const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(undefined);
+  const [curl, setCurl] = useState<string | undefined>(undefined);
+  const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
   const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
   const [tab, setTab] = useState(0);
   const { loadData, requestsData: requests } = useContext(
