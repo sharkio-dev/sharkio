@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Add,
   Delete,
@@ -173,7 +174,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         loadData();
         showSnackbar("Created sniffer", "info");
       })
-      .catch((_) => {
+      .catch(() => {
         showSnackbar("Failed to create proxy", "error");
       })
       .finally(() => {
@@ -191,17 +192,17 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         JSON.stringify(
           sniffers.map((sniffer) => sniffer.config),
           null,
-          2
+          2,
         ),
       ],
-      { type: "text/plain;charset=utf-8" }
+      { type: "text/plain;charset=utf-8" },
     );
     saveAs(file, "config.json");
   };
 
   const handlePortChanged = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     setSniffers((prev) => {
       const sniffers = [...prev];
@@ -213,7 +214,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
   const handleUrlChanged = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     setSniffers((prev) => {
       const sniffers = [...prev];
@@ -225,7 +226,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
   const handleNameChanged = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     setSniffers((prev) => {
       const sniffers = [...prev];
@@ -251,7 +252,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                 isCollapsed: false,
               };
               return configRow;
-            })
+            }),
           );
           showSnackbar("Successfully set the config file", "info");
         })
@@ -262,7 +263,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
   const handleEditClicked = async (
     index: number,
-    newConfig: SnifferCreateConfig
+    newConfig: SnifferCreateConfig,
   ) => {
     if (sniffers[index].isEditing === false) {
       setSniffers((prev) => {
@@ -327,7 +328,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             disabled={sniffer.isEditing === false}
             value={sniffer.config.port || ""}
             onChange={(
-              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
             ) => {
               handlePortChanged(e, index);
             }}
@@ -341,7 +342,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             value={sniffer.config.downstreamUrl || ""}
             disabled={sniffer.isEditing === false}
             onChange={(
-              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
             ) => {
               handleUrlChanged(e, index);
             }}
@@ -355,7 +356,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             value={sniffer.config.name || ""}
             disabled={sniffer.isEditing === false}
             onChange={(
-              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
             ) => {
               handleNameChanged(e, index);
             }}
@@ -442,7 +443,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                       onClick={() => {
                         handleEditClicked(
                           index,
-                          sniffer.config as SnifferCreateConfig
+                          sniffer.config as SnifferCreateConfig,
                         );
                       }}
                       disabled={sniffer.isStarted === true}

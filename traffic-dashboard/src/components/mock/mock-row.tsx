@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Accordion,
   AccordionSummary,
@@ -18,7 +19,7 @@ const MockRow: React.FC<{
   service: Service;
   editable: boolean;
   loadData: () => void;
-}> = ({ mock, service, editable=false, loadData }) => {
+}> = ({ mock, service, editable = false, loadData }) => {
   const toggleActive = (newValue: boolean) => {
     return newValue === true
       ? activateMock(service.port, mock.method, mock.endpoint)
@@ -48,9 +49,7 @@ const MockRow: React.FC<{
                 onChange={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  handleSwitchClicked(
-                    e.target.checked && true || false
-                  );
+                  handleSwitchClicked((e.target.checked && true) || false);
                 }}
                 checked={mock.active}
               />

@@ -37,7 +37,7 @@ app.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
     const alternativePort = defaultPort + 1;
     console.log(
-      `Port ${defaultPort} is already in use. Trying port ${alternativePort} to initialize dummy test-server...`
+      `Port ${defaultPort} is already in use. Trying port ${alternativePort} to initialize dummy test-server...`,
     );
     init(alternativePort);
   } else {
