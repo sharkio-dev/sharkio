@@ -1,0 +1,14 @@
+$primary-color: #90caf9;
+
+.my_box {
+  flex-grow: 0;
+  padding: 5px;
+  border-radius: 10px;
+}
+.my_box:hover {
+  cursor: pointer;
+}
+
+.userName {
+  color: $primary-color;
+}
