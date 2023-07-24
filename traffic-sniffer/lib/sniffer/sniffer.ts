@@ -50,6 +50,8 @@ export class Sniffer {
       target: config.downstreamUrl,
       secure: false,
       logLevel: "debug",
+      autoRewrite: true,
+      changeOrigin: true,
     });
 
     this.setup();
@@ -90,7 +92,7 @@ export class Sniffer {
       executionUrl,
       method,
       invocation,
-      this.config.name,
+      this.config.name
     );
   }
 

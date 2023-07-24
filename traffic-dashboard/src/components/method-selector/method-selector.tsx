@@ -14,7 +14,7 @@ export const MethodSelector: React.FC<IMethodSelectProps> = ({ onChange }) => {
       multiple
       renderTags={(value: string[], getTagProps) =>
         value.map((option: string, index: number) => (
-          <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+          <Chip variant="outlined" label={option} {...getTagProps({ index })} key={option} />
         ))
       }
       options={methods}

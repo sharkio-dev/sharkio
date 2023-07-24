@@ -1,3 +1,4 @@
+import React from "react";
 import { PlayArrow, Stop } from "@mui/icons-material";
 import {
   Button,
@@ -15,7 +16,7 @@ import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
 import { RequestRow } from "../../components/request-row/request-row";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { Sniffer } from "../../types/types";
+import { InterceptedRequest, Sniffer } from "../../types/types";
 import styles from "./service.module.scss";
 
 export const Service: React.FC = () => {
@@ -155,6 +156,7 @@ export const Service: React.FC = () => {
                 {sniffer.mocks.map((mock) => {
                   return (
                     <MockRow
+                      key={mock.id}
                       mock={mock}
                       service={sniffer.config}
                       editable={true}
@@ -166,8 +168,8 @@ export const Service: React.FC = () => {
             </Card>
             <Card className={styles.requestsCard}>
               <List>
-                {sniffer.interceptedRequests.map((request: any) => {
-                  return <RequestRow request={request}></RequestRow>;
+                {sniffer.interceptedRequests.map((request: InterceptedRequest) => {
+                  return <RequestRow key={request.id} request={request}></RequestRow>;
                 })}
               </List>
             </Card>

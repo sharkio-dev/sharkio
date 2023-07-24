@@ -1,11 +1,13 @@
+import React from "react";
 import { useContext, useEffect, useState } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { Autocomplete, Button, Card, Chip, TextField } from "@mui/material";
 import styles from "./gen-openapi.module.scss";
 import { OpenAPIDocument } from "../../lib/openapi.interface";
 import { JsonToOpenapi } from "../../lib/generateOpenapi";
+import { InterceptedRequest } from "../../types/types";
 
-export const GenOpenAPI = () => {
+export const GenOpenAPI: React.FC = () => {
   const {
     requestsData: requests,
     servicesData: services,
@@ -18,9 +20,9 @@ export const GenOpenAPI = () => {
   const [openApiDoc, setOpenApiDoc] = useState<OpenAPIDocument>();
 
   const onSubmit = () => {
-    const filteredRequests: [] = requests.filter(
-      (req: any) => req.service === service,
-    );
+    const filteredRequests: InterceptedRequest[] = requests?.filter(
+      (req) => req.service === service,
+    ) || [];
     setOpenApiDoc(JsonToOpenapi(filteredRequests, apiName, apiVersion));
   };
 
@@ -47,6 +49,7 @@ export const GenOpenAPI = () => {
                 variant="outlined"
                 label={option}
                 {...getTagProps({ index })}
+                key={option}
               />
             ))
           }

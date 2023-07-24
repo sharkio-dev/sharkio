@@ -4,7 +4,7 @@ export class RequestsMap implements Map<RequestKey, InterceptedRequest> {
   size: number;
 
   constructor(
-    private readonly map: Map<string, InterceptedRequest> = new Map(),
+    private readonly map: Map<string, InterceptedRequest> = new Map()
   ) {
     this.size = map.size;
   }
@@ -24,9 +24,9 @@ export class RequestsMap implements Map<RequestKey, InterceptedRequest> {
     callbackfn: (
       value: InterceptedRequest,
       key: RequestKey,
-      map: Map<RequestKey, InterceptedRequest>,
+      map: Map<RequestKey, InterceptedRequest>
     ) => void,
-    thisArg?: any,
+    thisArg?: any
   ): void {
     this.map.forEach((value, key) => {
       callbackfn.apply(thisArg, [value, RequestKey.fromString(key), this]);

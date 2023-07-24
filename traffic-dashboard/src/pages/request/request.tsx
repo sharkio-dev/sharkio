@@ -28,6 +28,7 @@ import {
 } from "../../lib/jsonSchema";
 import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
+import { InterceptedRequest } from "../../types/types";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
@@ -35,7 +36,7 @@ export const RequestPage: React.FC = () => {
   const [openapi, setOpenapi] = useState<any>(undefined);
   const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
-  const [request, setRequest] = useState<any>(undefined);
+  const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
   const [tab, setTab] = useState(0);
   const { loadData, requestsData: requests } = useContext(
     RequestsMetadataContext,
@@ -107,9 +108,9 @@ export const RequestPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {request.invocations.map((invocation: any) => {
+                {request.invocations.map((invocation) => {
                   return (
-                    <TableRow>
+                    <TableRow key={invocation.id}>
                       <TableCell>
                         <Button
                           onClick={() => {
