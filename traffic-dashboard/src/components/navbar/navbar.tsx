@@ -1,7 +1,7 @@
 import { AppBar } from "@mui/material";
 import React, { useState } from "react";
 import styles from "./navbar.module.scss";
-import LoginComponent from "../LoginComponent/login-component";
+import LoginComponent from "../login-component/login-component";
 
 export const Navbar: React.FC = () => {
 
