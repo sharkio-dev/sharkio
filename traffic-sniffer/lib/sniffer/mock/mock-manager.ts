@@ -36,15 +36,12 @@ export default class MockManager {
     let managedMock = this.mocks.get(id);
 
     if (managedMock !== undefined) {
-      const newId = `${mock.method} ${mock.endpoint}`;
       managedMock = {
         ...managedMock,
         ...mock,
-        id: newId,
       };
 
-      this.mocks.delete(id);
-      this.mocks.set(newId, managedMock);
+      this.mocks.set(id, managedMock);
     } else {
       throw new MockNotFoundError();
     }

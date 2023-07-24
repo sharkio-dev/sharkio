@@ -192,7 +192,7 @@ export class MockManagerController {
      *  put:
      *    tags:
      *      - mock
-     *    description: Delete a mock
+     *    description: Updated a mock
      *    parameters:
      *       - name: port
      *         in: query
@@ -203,7 +203,7 @@ export class MockManagerController {
      *         description: service port
      *         required: true
      *    requestBody:
-     *        description: Create a new mock
+     *        description: Updated mock
      *        content:
      *          application/json:
      *            schema:
