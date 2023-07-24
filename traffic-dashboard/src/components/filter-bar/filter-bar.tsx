@@ -1,3 +1,4 @@
+import React from "react";
 import { Autocomplete, Chip, Input, TextField } from "@mui/material";
 import { ChangeEventHandler } from "react";
 import { MethodSelector } from "../method-selector/method-selector";
@@ -30,6 +31,7 @@ export const FilterBar: React.FC<IFilterBarProps> = ({
               variant="outlined"
               label={option}
               {...getTagProps({ index })}
+              key={option}
             />
           ))
         }

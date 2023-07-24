@@ -101,7 +101,7 @@ Note:
 ## ⚡ Social links
 
 - ProductHunt page: https://www.producthunt.com/posts/sharkio **Launch is coming soon!**
-- Discord channel: https://discord.gg/fXuMxD23
+- Discord server: [https://discord.gg/fXuMxD23](https://discord.gg/GUXywqVn9)
 
 ## 👩🏻‍💻 Want to contribute?
 

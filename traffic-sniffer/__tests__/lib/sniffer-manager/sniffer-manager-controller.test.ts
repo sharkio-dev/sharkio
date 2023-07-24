@@ -29,7 +29,7 @@ jest.mock("../../../lib/setup-config/file-config", () => {
   return { FileConfig: MockFileConfig };
 });
 
-describe("sniffer-manager-controlelr", () => {
+describe("sniffer-manager-controller", () => {
   let app: Express;
   let configPersistency: ConfigLoader;
   let snifferManager: SnifferManager;
@@ -38,7 +38,7 @@ describe("sniffer-manager-controlelr", () => {
   beforeAll(() => {
     app = express();
     app.use(json());
-    configPersistency = new FileConfig();
+    configPersistency = new FileConfig("");
     snifferManager = new SnifferManager(configPersistency);
     snifferManagerController = new SnifferManagerController(snifferManager);
     snifferManagerController.setup(app);
