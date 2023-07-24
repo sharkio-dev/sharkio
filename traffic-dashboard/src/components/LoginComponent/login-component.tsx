@@ -8,10 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import styles from './login-component.module.scss'
+import styles from "./login-component.module.scss";
 
-const LoginComponent: React.FC<{}> = (props) => {
-  //this login state is example for auth user
+const LoginComponent: React.FC = () => {
   const [login, setLogin] = useState(true);
   const [anchorElUser, setAnchorElUser] = useState(false);
 
@@ -20,8 +19,12 @@ const LoginComponent: React.FC<{}> = (props) => {
   const handleOpenUserMenu = () => {
     setAnchorElUser(!anchorElUser);
   };
-  const handleCloseUserMenu = () => {
+
+  const handleCloseUserMenu = (setting: string) => {
     setAnchorElUser(!anchorElUser);
+    if (setting === "Logout") {
+      setLogin(true);
+    }
   };
 
   return (
@@ -32,8 +35,7 @@ const LoginComponent: React.FC<{}> = (props) => {
         </Button>
       ) : (
         <div>
-          <div  onClick={handleOpenUserMenu} className={styles.my_box}>
-            <span className={styles.userName}>User </span>
+          <div onClick={handleOpenUserMenu} className={styles.my_box}>
             <Tooltip title="Open settings">
               <IconButton sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" sx={{ width: 34, height: 34 }} />
@@ -55,7 +57,10 @@ const LoginComponent: React.FC<{}> = (props) => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key={setting}
+                  onClick={() => handleCloseUserMenu(setting)}
+                >
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -68,7 +73,6 @@ const LoginComponent: React.FC<{}> = (props) => {
 };
 
 export default LoginComponent;
-
 
 // sx={{
 //     flexGrow: 0,
