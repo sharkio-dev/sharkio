@@ -36,10 +36,12 @@ export const RequestPage: React.FC = () => {
   const [openapi, setOpenapi] = useState<any>(undefined);
   const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
-  const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
+  const [request, setRequest] = useState<InterceptedRequest | undefined>(
+    undefined
+  );
   const [tab, setTab] = useState(0);
   const { loadData, requestsData: requests } = useContext(
-    RequestsMetadataContext,
+    RequestsMetadataContext
   );
 
   useEffect(() => {
@@ -47,8 +49,10 @@ export const RequestPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(requests);
-    const request = requests.find((request: any) => {
+    if (requests == null) {
+      return;
+    }
+    const request: any = requests.find((request: any) => {
       return request.id === id;
     });
 
@@ -70,7 +74,7 @@ export const RequestPage: React.FC = () => {
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: any,
+    invocation: any
   ) => {
     executeRequest(url, method, invocation);
   };
@@ -117,7 +121,7 @@ export const RequestPage: React.FC = () => {
                             handleExecuteClicked(
                               request.url,
                               request.method,
-                              invocation,
+                              invocation
                             );
                           }}
                         >

@@ -13,12 +13,10 @@ import { RequestRow } from "../request-row/request-row";
 import styles from "./requests-card.module.scss";
 
 interface IRequestCardProps {
-  className?: string;
   withControls: boolean;
 }
 export const RequestsCard: React.FC<IRequestCardProps> = ({
   withControls = false,
-  className,
 }) => {
   const [filter, setFilter] = useState<string>();
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
@@ -49,7 +47,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
       (servicesFilter.length > 0
         ? servicesFilter.find((service) => service === req.service) !==
           undefined
-        : true),
+        : true)
   );
 
   return (

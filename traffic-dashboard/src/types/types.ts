@@ -16,9 +16,9 @@ export type SnifferCreateConfig = {
 export type Invocation = {
   id: string;
   timestamp: string;
-  body: unknown;
-  headers: unknown;
-  params: unknown;
+  body: any;
+  headers: any;
+  params: any;
 };
 
 export type InterceptedRequest = {
