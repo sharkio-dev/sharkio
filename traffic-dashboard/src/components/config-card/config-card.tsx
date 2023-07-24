@@ -34,6 +34,8 @@ import {
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
+import { generatePath, useNavigate } from "react-router-dom";
+import { routes } from "../../constants/routes";
 
 export type SnifferConfigRow = {
   isNew: boolean;
@@ -63,7 +65,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       isStarted: false,
       isNew: true,
       isEditing: false,
-      isCollapsed: false,
+      isCollapsed: true,
     },
   ]);
 
@@ -79,7 +81,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
           ...config,
           isNew: false,
           isEditing: false,
-          isCollapsed: false,
+          isCollapsed: true,
         }));
 
         setSniffers(configs);
@@ -298,11 +300,23 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     });
   };
 
+  const navigate = useNavigate();
   const snifferConfigForm = (sniffer: SnifferConfigRow, index: number) => {
+    const navigateToSniffer = () => {
+      navigate(
+        generatePath(routes.SERVICE, {
+          port: sniffer.config.port,
+        })
+      );
+    };
     return (
       <>
         {sniffer.isCollapsed && (
-          <Typography className={styles.snifferTitle} variant="h5">
+          <Typography
+            className={styles.snifferTitle}
+            variant="h5"
+            onClick={navigateToSniffer}
+          >
             {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
           </Typography>
         )}

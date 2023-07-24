@@ -2,7 +2,7 @@ import React from "react";
 import { PropsWithChildren, createContext, useState } from "react";
 import { getRequests, getSniffers } from "../api/api";
 import { useSnackbar } from "../hooks/useSnackbar";
-import { InterceptedRequest, Sniffer } from "../types/types";
+import { InterceptedRequest } from "../types/types";
 
 export type RequestsMetadataContextType = {
   loadData?: () => void;

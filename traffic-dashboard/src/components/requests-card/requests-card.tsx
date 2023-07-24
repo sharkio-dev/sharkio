@@ -13,10 +13,12 @@ import { RequestRow } from "../request-row/request-row";
 import styles from "./requests-card.module.scss";
 
 interface IRequestCardProps {
+  className?: string;
   withControls: boolean;
 }
 export const RequestsCard: React.FC<IRequestCardProps> = ({
   withControls = false,
+  className,
 }) => {
   const [filter, setFilter] = useState<string>();
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
@@ -61,12 +63,12 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
           setServicesFilter={setServicesFilter}
         />
       )}
-      <div className={styles.container}>
-        <Card className={styles.card}>
-          <div className={styles.titleContainer}>
-            <Typography variant="h6">Requests</Typography>
-            <Button onClick={() => loadData?.()}>refresh</Button>
-          </div>
+      <Card className={styles.card}>
+        <div className={styles.titleContainer}>
+          <Typography variant="h6">Requests</Typography>
+          <Button onClick={() => loadData?.()}>refresh</Button>
+        </div>
+        <div className={styles.requestsSection}>
           {loading ? (
             <Box
               sx={{
@@ -87,11 +89,11 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
               </List>
             </>
           )}
-          <div className={styles.requestCardFooter}>
-            <div>items:{filteredRequests?.length}</div>
-          </div>
-        </Card>
-      </div>
+        </div>
+        <div className={styles.requestCardFooter}>
+          <div>items:{filteredRequests?.length}</div>
+        </div>
+      </Card>
     </>
   );
 };

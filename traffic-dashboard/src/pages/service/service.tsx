@@ -48,7 +48,7 @@ export const Service: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, [loadData]);
+  }, []);
 
   const handleStopClicked = async (port: number) => {
     setStopLoading(true);
