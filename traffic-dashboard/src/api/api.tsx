@@ -62,6 +62,7 @@ export const executeRequest = (
 export const getAllMocks = () => {
   return axios.get("/sharkio/sniffer/action/getMocks");
 };
+
 export const createMock = (
   port: number,
   method: string,
@@ -78,6 +79,34 @@ export const createMock = (
       },
     },
   );
+};
+
+export const editMock = (
+  id: string,
+  port: number,
+  method: string,
+  endpoint: string,
+  status: number,
+  data: any
+) => {
+  return axios.put(
+    `/sharkio/sniffer/${port}/mock`,
+    JSON.stringify({ mockId: id, method, endpoint, data, status }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const deleteMock = (id: string, port: number) => {
+  return axios.delete(`/sharkio/sniffer/${port}/mock`, {
+    data: { mockId: id },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 export const activateMock = (
