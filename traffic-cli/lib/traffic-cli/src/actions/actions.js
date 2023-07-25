@@ -45,7 +45,5 @@ async function executeAction(config) {
         },
     });
     console.log(answer);
-    /* 	const answer = await axios.post("http://localhost:5012/sharkio/sniffer/:5551/actions/execute",config);
-        console.log(answer); */
 }
 exports.executeAction = executeAction;
