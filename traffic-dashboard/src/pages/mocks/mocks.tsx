@@ -1,7 +1,6 @@
-import React from "react";
 import { AddBox } from "@mui/icons-material";
 import { Button, Card } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { deleteMock, getAllMocks } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -12,10 +11,11 @@ import { EditMockDialog } from "./edit-mock-dialog/edit-mock-dialog";
 const MocksPage: React.FC = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
-  const [editOpen, setEditOpen] = useState<{ open: boolean; mock: any }>({
-    open: false,
-    mock: null,
-  });
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+
+  const [editMock, setEditMock] = useState<
+    (Omit<Mock, "active"> & { port: number }) | null
+  >(null);
 
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
@@ -33,12 +33,14 @@ const MocksPage: React.FC = () => {
 
   const handleCloseModal = () => {
     setAddOpen(false);
-    setEditOpen({ open: false, mock: null });
+    setEditOpen(false);
+    setEditMock(null);
     loadData();
   };
 
   const handleEditClicked = (mock: Mock, port: number) => {
-    setEditOpen({ open: true, mock: { ...mock, port } });
+    setEditOpen(true);
+    setEditMock({ ...mock, port });
   };
 
   const handleDeleteClicked = (id: string, port: number) => {
@@ -77,9 +79,10 @@ const MocksPage: React.FC = () => {
       </Card>
       <AddMockDialog open={addOpen} close={handleCloseModal} />
       <EditMockDialog
-        mock={editOpen.mock}
-        open={editOpen.open}
+        mock={editMock!}
+        open={editOpen && editMock !== null}
         close={handleCloseModal}
+        onDataChange={setEditMock}
       />
 
       {snackBar}

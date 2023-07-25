@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { editMock } from "../../../api/api";
 import { Mock } from "../../../types/types";
 import styles from "./edit-mock-dialog.module.scss";
@@ -15,32 +15,28 @@ type EditMockDialogProps = {
   open: boolean;
   close: () => void;
   mock: Omit<Mock, "active"> & { port: number };
-};
-
-type FormType = {
-  port: number;
-  method: string;
-  endpoint: string;
-  status: number;
-  data: unknown;
+  onDataChange: (data: Omit<Mock, "active"> & { port: number }) => void;
 };
 
 export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
-  const { close, open, mock } = props;
-
-  const [form, setForm] = useState<FormType>({ ...mock });
+  const { close, open, mock, onDataChange } = props;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { data, port, status, endpoint, method } = form;
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    onDataChange({ ...mock, [e.target.name]: e.target.value });
   };
 
   const handleEditMock = () => {
-    if (!port) return;
-    editMock(mock.id, port, method, endpoint, status, data)
+    if (!mock.port) return;
+    editMock(
+      mock.id,
+      mock.port,
+      mock.method,
+      mock.endpoint,
+      mock.status,
+      mock.data
+    )
       .then(() => {
         close();
       })
@@ -52,12 +48,8 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
       });
   };
 
-  useEffect(() => {
-    if (mock) setForm(mock);
-  }, [mock]);
-
   return (
-    <Dialog open={open} onClose={close}  id="edit">
+    <Dialog open={open} onClose={close} id="edit">
       <Card className={styles.card}>
         <Typography>Edit mock</Typography>
         <TextField
@@ -65,21 +57,21 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
           name="port"
           placeholder="1234"
           type="number"
-          value={port}
-          onChange={(e) => setForm({ ...form, port: +e.target.value })}
+          value={mock?.port}
+          onChange={(e) => onDataChange({ ...mock, port: +e.target.value })}
         />
         <TextField
           label="Method"
           name="method"
           placeholder="GET"
-          value={method}
+          value={mock?.method}
           onChange={handleChange}
         />
         <TextField
           label="Endpoint"
           name="endpoint"
           placeholder="/example"
-          value={endpoint}
+          value={mock?.endpoint}
           onChange={handleChange}
         />
         <TextField
@@ -87,8 +79,8 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
           name="status"
           placeholder="1234"
           type="number"
-          value={status}
-          onChange={(e) => setForm({ ...form, port: +e.target.value })}
+          value={mock?.status}
+          onChange={(e) => onDataChange({ ...mock, port: +e.target.value })}
         />
         <TextField
           label="Data"
@@ -96,7 +88,7 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
           placeholder="{}"
           multiline
           rows={5}
-          value={data}
+          value={mock?.data}
           onChange={handleChange}
         />
 

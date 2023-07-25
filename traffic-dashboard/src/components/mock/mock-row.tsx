@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Add,
   Delete,
@@ -19,6 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import React from "react";
 import { activateMock, deactivateMock } from "../../api/api";
 import { Mock, Service } from "../../types/types";
 import { HttpMethod } from "../http-method/http-method";
@@ -86,17 +86,19 @@ const MockRow: React.FC<MockRowProps> = ({
           </div>
           <div className={styles.mockActions}>
             <IconButton
+              color="info"
               onClick={(e) => {
                 e.stopPropagation();
-                onEditClick()
+                onEditClick();
               }}
             >
               <Edit />
             </IconButton>
             <IconButton
+              color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                onDeleteClick(mock.id)
+                onDeleteClick(mock.id);
               }}
             >
               <Delete />
