@@ -1,11 +1,13 @@
 import { Express, Request, Response } from "express";
 import { Sniffer } from "../sniffer/sniffer";
 import { SnifferManager } from "./sniffer-manager";
+import { json } from "body-parser";
 
 export class SnifferManagerController {
   constructor(private readonly snifferManager: SnifferManager) {}
 
   setup(app: Express) {
+	app.use(json());
     /**
      * @openapi
      * /sharkio/sniffer/invocation:
@@ -42,7 +44,7 @@ export class SnifferManagerController {
      */
     app.get("/sharkio/sniffer", (req: Request, res: Response) => {
       res.status(200).send(
-        this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
+          this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
           const { config, isStarted } = sniffer.stats();
           return {
             config,

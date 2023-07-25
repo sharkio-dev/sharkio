@@ -4,8 +4,7 @@ import fsSync from "fs";
 import { SnifferConfig } from "../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 
-const setupFilePath = process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
-
+const setupFilePath = process.env.SETUP_FILE_PATH ?? "../traffic-sniffer/sniffers-setup.json";
 export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
 
 export class FileConfig implements ConfigLoader {

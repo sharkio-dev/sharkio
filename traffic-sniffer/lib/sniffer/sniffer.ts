@@ -154,9 +154,9 @@ export class Sniffer {
     this.config.id = newConfig.port.toString();
   }
 
-  stats() {
+   stats() {
     const { config, isStarted, proxyMiddleware, id, interceptedRequests } =
-      this;
+       this;
     return {
       id,
       config,

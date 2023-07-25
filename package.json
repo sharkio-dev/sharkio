@@ -8,13 +8,13 @@
     "sharkio": "index.mjs"
   },
   "scripts": {
-    "cli": "node ./index.mjs",
+    "cli": "node traffic-cli/bin/traffic-cli.js",
     "dashboard": "cd ./traffic-dashboard && npm run dev",
     "sniffer": "cd ./traffic-sniffer && npm run dev",
     "build:dashboard": "cd ./traffic-dashboard && npm run build",
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
-    "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
+    "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
@@ -23,15 +23,23 @@
   "author": "Ido David",
   "license": "ISC",
   "dependencies": {
+    "@types/fs-extra": "^11.0.1",
     "axios": "^1.4.0",
     "concurrently": "^8.2.0",
+    "figlet": "^1.6.0",
+    "fs-extra": "^11.1.1",
+    "inquirer": "^9.2.7",
+    "inversify": "^6.0.1",
     "kill-port": "^2.0.1",
+    "kleur": "^4.1.5",
     "nodemon": "^2.0.22",
     "open": "^9.1.0",
+    "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.2.8",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",
-    "ts-node": "^10.9.1",
+    "tslib": "^2.6.0",
+    "vite": "^4.4.2",
     "yargs": "^17.7.2"
   },
   "files": [
@@ -49,8 +57,15 @@
     "yargs"
   ],
   "devDependencies": {
+    "@liftr/tscov": "^2.0.0",
+    "@types/figlet": "^1.5.6",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^20.4.1",
     "express": "^4.18.2",
     "husky": "^8.0.3",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "typedoc": "^0.24.8",
+    "typescript": "^5.1.6"
   }
 }
