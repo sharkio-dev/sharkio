@@ -30,7 +30,7 @@ Request mocking.
 | JSON schema generator |      ✅       |
 | Microservice support  |      ✅       |
 |     Request mocks     |      ✅       |
-|  Open api generator   |               |
+|  Open api generator   |      ✅       |
 |  ChatGPT integration  |               |
 |     Save requests     |               |
 |      Collections      |               |
@@ -38,18 +38,15 @@ Request mocking.
 
 ## 🛠️ How to use
 
-- npm install -g sharkio@latest
+- npm install -g @idodav/sharkio@latest
 - sharkio dashboard start
 - sharkio admin start
 - sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
 
 ## 🚀 Getting started
 
+### Running in development 
 - npm i -g concurrently ts-node
-
-To setup husky [pre-commit hook]:
-
-- npm run prepare
 
 For the backend
 
@@ -70,7 +67,29 @@ For both:
 Note:
 
 - Incase you want a dummy server to test sniffing as shown in [visual demonstration of how to use](https://github.com/idodav/sharkio#visual-demonstration-how-to-run-the-application), then run the follwoing command:
-- npm run demo ( in root directory )
+- `npm run demo` ( in root directory )
+
+### Running in production - using Docker
+Run whole project:
+- in root of project, use:
+- `docker-compose up`
+- NOTE: use ports 5550-5560 as proxies, make sure they are available.
+
+Run backend/frontend only:
+- `cd` to relevent folder
+- build the Docker image: `npm run docker:build`
+- run the app: `npm run docker:run`
+
+## ❓ Setup FAQs:
+
+<details>
+  <summary> [1] Pre-commit hook is not installed during normal installation, what should I do? </summary>
+    To setup husky [pre-commit hook] manually by running this command: `npm run prepare`
+</details>
+<details>
+  <summary> [2] What does `traffic-dashboard` and `traffic-snifer` directory contain? </summary>
+    `traffic-dashboard` is the frontend code || `traffic-snifer` is the backend code
+</details>
 
 ## 🏗️ Architecture
 
@@ -94,7 +113,7 @@ Note:
 ## ⚡ Social links
 
 - ProductHunt page: https://www.producthunt.com/posts/sharkio **Launch is coming soon!**
-- Discord channel: https://discord.gg/fXuMxD23
+- Discord server: [https://discord.gg/fXuMxD23](https://discord.gg/GUXywqVn9)
 
 ## 👩🏻‍💻 Want to contribute?
 
@@ -112,6 +131,6 @@ Note:
 
 Appreciating all our fellow contributors:
 
-<a href = "https://github.com/dicedb/dice/graphs/contributors">
+<a href = "https://github.com/idodav/sharkio/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=idodav/sharkio"/>
 </a>

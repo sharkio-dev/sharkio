@@ -26,18 +26,21 @@ import {
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
+import { InterceptedRequest } from "../../types/types";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
   const [typescript, setTypescript] = useState<any>(undefined);
+  const [openapi, setOpenapi] = useState<any>(undefined);
   const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
-  const [request, setRequest] = useState<any>(undefined);
+  const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
   const [tab, setTab] = useState(0);
-  const { loadData, 
-          requestsData: requests,
-        } = useContext(RequestsMetadataContext);
+  const { loadData, requestsData: requests } = useContext(
+    RequestsMetadataContext,
+  );
 
   useEffect(() => {
     loadData?.();
@@ -55,6 +58,7 @@ export const RequestPage: React.FC = () => {
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
+      setOpenapi(JsonToOpenapi(new Array(request), request.service, "1.0.0"));
       setRequest(request);
     }
   }, [id, requests]);
@@ -66,7 +70,7 @@ export const RequestPage: React.FC = () => {
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: any
+    invocation: any,
   ) => {
     executeRequest(url, method, invocation);
   };
@@ -87,7 +91,7 @@ export const RequestPage: React.FC = () => {
               last invocation: {request.lastInvocationDate}
             </Typography>
           </Card>
-          <Card>
+          <Card className={styles.invocationsCardContainer}>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Invocations</Typography>
             </div>
@@ -104,16 +108,16 @@ export const RequestPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {request.invocations.map((invocation: any) => {
+                {request.invocations.map((invocation) => {
                   return (
-                    <TableRow>
+                    <TableRow key={invocation.id}>
                       <TableCell>
                         <Button
                           onClick={() => {
                             handleExecuteClicked(
                               request.url,
                               request.method,
-                              invocation
+                              invocation,
                             );
                           }}
                         >
@@ -140,6 +144,7 @@ export const RequestPage: React.FC = () => {
               <Tab label="Typescript" value={1}></Tab>
               <Tab label="JSON Schema" value={2}></Tab>
               <Tab label="RAW" value={3}></Tab>
+              <Tab label="openAPI" value={4}></Tab>
             </Tabs>
             <TabContent index={0} tabValue={tab}>
               <div className={styles.cardTitle}>
@@ -159,10 +164,14 @@ export const RequestPage: React.FC = () => {
               </div>
             </TabContent>
             <TabContent index={3} tabValue={tab}>
-              <>
-                <div className={styles.cardTitle}></div>
+              <div className={styles.cardTitle}>
                 <pre>{JSON.stringify(request, null, 2)}</pre>
-              </>
+              </div>
+            </TabContent>
+            <TabContent index={4} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{JSON.stringify(openapi, null, 2)}</pre>
+              </div>
             </TabContent>
           </Card>
         </>

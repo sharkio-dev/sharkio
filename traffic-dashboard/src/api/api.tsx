@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SnifferCreateConfig } from "../types/types";
+import { SnifferConfig, SnifferCreateConfig } from "../types/types";
 
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post("/sharkio/sniffer", JSON.stringify(config), {
@@ -10,7 +10,11 @@ export const createSniffer = (config: SnifferCreateConfig) => {
 };
 
 export const getSniffers = () => {
-  return axios.get("/sharkio/sniffer");
+  return axios.get<SnifferConfig[]>("/sharkio/sniffer");
+};
+
+export const getSniffer = (port: number) => {
+  return axios.get(`/sharkio/sniffer/${port}`);
 };
 
 export const stopSniffer = (port: number) => {
@@ -31,7 +35,7 @@ export const editSniffer = async (newConfig: SnifferCreateConfig) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
@@ -42,7 +46,7 @@ export const getRequests = () => {
 export const executeRequest = (
   url: string,
   method: string,
-  invocation: any
+  invocation: any,
 ) => {
   return axios.post(
     "/sharkio/sniffer/5555/actions/execute",
@@ -51,19 +55,20 @@ export const executeRequest = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
 export const getAllMocks = () => {
   return axios.get("/sharkio/sniffer/action/getMocks");
 };
+
 export const createMock = (
   port: number,
   method: string,
   endpoint: string,
   status: number,
-  data: any
+  data: any,
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock`,
@@ -72,8 +77,36 @@ export const createMock = (
       headers: {
         "Content-Type": "application/json",
       },
+    },
+  );
+};
+
+export const editMock = (
+  id: string,
+  port: number,
+  method: string,
+  endpoint: string,
+  status: number,
+  data: any
+) => {
+  return axios.put(
+    `/sharkio/sniffer/${port}/mock`,
+    JSON.stringify({ mockId: id, method, endpoint, data, status }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
   );
+};
+
+export const deleteMock = (id: string, port: number) => {
+  return axios.delete(`/sharkio/sniffer/${port}/mock`, {
+    data: { mockId: id },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 export const activateMock = (
@@ -83,12 +116,12 @@ export const activateMock = (
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/activate`,
-    JSON.stringify({ id: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
@@ -99,11 +132,11 @@ export const deactivateMock = (
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/deactivate`,
-    JSON.stringify({ id: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };

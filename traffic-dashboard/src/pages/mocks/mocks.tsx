@@ -1,44 +1,23 @@
 import { AddBox } from "@mui/icons-material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Card,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { activateMock, deactivateMock, getAllMocks } from "../../api/api";
-import { HttpMethod } from "../../components/http-method/http-method";
-import { HttpStatus } from "../../components/http-status/http-status";
+import { Button, Card } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { deleteMock, getAllMocks } from "../../api/api";
+import MockRow from "../../components/mock/mock-row";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { Mock, ServiceMock } from "../../types/types";
 import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
-import styles from "./mocks.module.scss";
+import { EditMockDialog } from "./edit-mock-dialog/edit-mock-dialog";
 
-type Mock = {
-  method: string;
-  endpoint: string;
-  data: any;
-  active: boolean;
-  id: string;
-  status: number;
-};
-
-type Service = {
-  name: string;
-  port: number;
-};
-
-type ServiceMock = {
-  service: Service;
-  mocks: Mock[];
-};
-
-const Mocks = () => {
+const MocksPage: React.FC = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+
+  const [editMock, setEditMock] = useState<
+    (Omit<Mock, "active"> & { port: number }) | null
+  >(null);
+
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const loadData = () => {
     getAllMocks().then((res) => setMocks(res.data));
@@ -54,7 +33,21 @@ const Mocks = () => {
 
   const handleCloseModal = () => {
     setAddOpen(false);
+    setEditOpen(false);
+    setEditMock(null);
     loadData();
+  };
+
+  const handleEditClicked = (mock: Mock, port: number) => {
+    setEditOpen(true);
+    setEditMock({ ...mock, port });
+  };
+
+  const handleDeleteClicked = (id: string, port: number) => {
+    deleteMock(id, port).then(() => {
+      showSnackbar("Mock removed successfully", "info");
+      loadData();
+    });
   };
 
   return (
@@ -68,78 +61,33 @@ const Mocks = () => {
           return serviceMock.mocks.map((mock: Mock) => {
             return (
               <MockRow
+                key={mock.id}
                 mock={mock}
                 service={serviceMock.service}
                 loadData={loadData}
+                editable={true}
+                onEditClick={() =>
+                  handleEditClicked(mock, serviceMock.service.port)
+                }
+                onDeleteClick={() =>
+                  handleDeleteClicked(mock.id, serviceMock.service.port)
+                }
               />
             );
           });
         })}
       </Card>
       <AddMockDialog open={addOpen} close={handleCloseModal} />
+      <EditMockDialog
+        mock={editMock!}
+        open={editOpen && editMock !== null}
+        close={handleCloseModal}
+        onDataChange={setEditMock}
+      />
+
+      {snackBar}
     </>
   );
 };
 
-const MockRow: React.FC<{
-  mock: Mock;
-  service: Service;
-  loadData: () => void;
-}> = ({ mock, service, loadData }) => {
-  const toggleActive = (newValue: boolean) => {
-    return newValue === true
-      ? activateMock(service.port, mock.method, mock.endpoint)
-      : deactivateMock(service.port, mock.method, mock.endpoint);
-  };
-  const handleSwitchClicked = (value: boolean) => {
-    toggleActive(value).finally(() => {
-      loadData();
-    });
-  };
-
-  return (
-    <>
-      <Accordion>
-        <AccordionSummary
-          aria-controls="panel2d-content"
-          id="panel2d-header"
-          expandIcon={<ExpandMoreIcon />}
-        >
-          <div className={styles.mockTitle}>
-            <Switch
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              onChange={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                handleSwitchClicked(
-                  (e.target.value === "true" && true) ||
-                    (e.target.value === "false" && false)
-                );
-              }}
-              checked={mock.active}
-            />
-            <HttpMethod method={mock.method}></HttpMethod>
-            <HttpStatus status={mock.status} />
-            <Typography>{mock.endpoint}</Typography>
-          </div>
-        </AccordionSummary>
-        <AccordionDetails>
-          <TextField
-            className={styles.dataContainer}
-            label="Data"
-            placeholder="{}"
-            multiline
-            rows={5}
-            value={mock.data}
-            contentEditable={false}
-            disabled={true}
-          />
-        </AccordionDetails>
-      </Accordion>
-    </>
-  );
-};
-
-export default Mocks;
+export default MocksPage;

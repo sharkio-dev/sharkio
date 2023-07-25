@@ -16,7 +16,7 @@
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cd ./traffic-sniffer && npm test",
     "prepare": "husky install",
     "postinstall": "husky install"
   },
@@ -36,10 +36,8 @@
     "open": "^9.1.0",
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.2.8",
-    "traffic-dashboard": "file:traffic-dashboard",
-    "traffic-sniffer": "file:traffic-sniffer",
-    "tslib": "^2.6.0",
-    "vite": "^4.4.2",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
     "yargs": "^17.7.2"
   },
   "files": [
@@ -57,15 +55,12 @@
     "yargs"
   ],
   "devDependencies": {
-    "@liftr/tscov": "^2.0.0",
-    "@types/figlet": "^1.5.6",
-    "@types/inquirer": "^9.0.3",
-    "@types/node": "^20.4.1",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.33.0",
     "express": "^4.18.2",
     "husky": "^8.0.3",
     "prettier": "^3.0.0",
-    "ts-node": "^10.9.1",
-    "typedoc": "^0.24.8",
-    "typescript": "^5.1.6"
   }
 }

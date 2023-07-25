@@ -1,6 +1,5 @@
 import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { FileConfig } from "../setup-config/file-config";
 import { ConfigLoader } from "../setup-config/config-loader-interface";
 import { SnifferConfigSetup } from "../setup-config/file-config.types";
 
