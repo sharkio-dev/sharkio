@@ -36,7 +36,7 @@ export class SnifferManager {
     let stats: PathResponseData[] = [];
 
     await this.sniffers.forEach((sniffer: Sniffer) => {
-       stats.push(...sniffer.stats().interceptedRequests);
+      stats.push(...sniffer.stats().interceptedRequests);
     });
 
     return stats;
@@ -81,7 +81,7 @@ export class SnifferManager {
     this.configPersistency.update(
       existingId,
       newConfig,
-      this.sniffers[existingIndex].getIsStarted()
+      this.sniffers[existingIndex].getIsStarted(),
     );
   }
 

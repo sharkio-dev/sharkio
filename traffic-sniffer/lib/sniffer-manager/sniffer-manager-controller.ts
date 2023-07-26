@@ -14,7 +14,7 @@ const log = useLog({
 export class SnifferManagerController {
   constructor(
     private readonly snifferManager: SnifferManager,
-    private readonly baseUrl: string = "/sharkio/sniffer"
+    private readonly baseUrl: string = "/sharkio/sniffer",
   ) {}
 
   setup(app: Express) {
@@ -66,7 +66,7 @@ export class SnifferManagerController {
             config,
             isStarted,
           };
-        })
+        }),
       );
     });
 
@@ -119,7 +119,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     /**
@@ -187,7 +187,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     /**
@@ -230,7 +230,7 @@ export class SnifferManagerController {
             sniffer.stop();
             this.snifferManager.setSnifferConfigToStarted(
               sniffer.getId(),
-              false
+              false,
             );
             return res.sendStatus(200);
           } else {
@@ -244,7 +244,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     /**
@@ -287,7 +287,7 @@ export class SnifferManagerController {
             await sniffer.start();
             this.snifferManager.setSnifferConfigToStarted(
               sniffer.getId(),
-              true
+              true,
             );
             return res.sendStatus(200);
           } else {
@@ -301,7 +301,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     /**
@@ -405,7 +405,7 @@ export class SnifferManagerController {
                 method: "POST",
                 path: `${this.baseUrl}/:port/actions/execute`,
                 error: e,
-              })
+              }),
             );
             return res.sendStatus(200);
           } else {
@@ -419,7 +419,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     /**
@@ -472,7 +472,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     /**
@@ -529,7 +529,7 @@ export class SnifferManagerController {
 
           // verify that there is no sniffer with the port you want to change to.
           const isPortAlreadyExists = this.snifferManager.getSnifferById(
-            port.toString()
+            port.toString(),
           );
 
           if (
@@ -551,7 +551,7 @@ export class SnifferManagerController {
           });
           return res.sendStatus(500);
         }
-      }
+      },
     );
 
     app.use(this.baseUrl, router);
