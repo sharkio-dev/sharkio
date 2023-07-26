@@ -2,8 +2,6 @@ import { SnifferConfig } from "../../../traffic-sniffer/lib/sniffer/sniffer";
 export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
 import z from "zod";
 
-export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
-
 const snifferConfigValidator = z.object({
   name: z.string(),
   port: z.number(),

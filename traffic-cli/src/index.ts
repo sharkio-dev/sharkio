@@ -74,28 +74,22 @@ showTitleAndBanner();
   }
   
 })();
-//const answer = await select({
-/* 	message: "Please select a command",
-	choices: listOfCommands
-}); */
 
-	
-/* select({ choices: listOfCommands, message: "Please select a command" })
-	//.then((question) =>  console.log(question))
-	.then((question) => {
-		 if (question == ProviderValue.listRequests)
-		  {
-			//console.log("h")
-			console.log(Actions());
-		  }
-		  
-	  }); */
-	  
-/* input({ message: green("Enter your name") })
-  .then((res) => console.log(res))
-  .then((res) => {
-    select({ choices: listOfCommands, message: "hello" }).then((res) =>
-      console.log("res2"),
-    );
-  });
- */
+{
+  "url": "www.google.com",
+  "method": "GET",
+  "invocation": {
+    "id": "string",
+    "timestamp": "string",
+    "body": "string",
+    "headers": {
+      "key": "value"
+    },
+    "cookies": {
+      "key": "value"
+    },
+    "params": {
+      "key": "value"
+    }
+  }
+}
