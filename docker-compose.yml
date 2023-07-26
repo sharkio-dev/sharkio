@@ -1,0 +1,25 @@
+version: "3"
+services:
+  backend:
+    build: ./traffic-sniffer
+    ports:
+      - 5012:5012
+      - 5550:5550
+      - 5551:5551
+      - 5552:5552
+      - 5553:5553
+      - 5554:5554
+      - 5555:5555
+      - 5556:5556
+      - 5557:5557
+      - 5558:5558
+      - 5559:5559
+      - 5560:5560
+    extra_hosts:
+      - localhost:host-gateway
+
+  frontend:
+    build: ./traffic-dashboard
+    ports:
+      - 8080:8080
+      - 5173:5173

@@ -1,6 +1,6 @@
 import { Express, NextFunction, Request, Response } from "express";
-import MockManager from "./mock-manager";
 import { useLog } from "../../log";
+import MockManager from "./mock-manager";
 
 const log = useLog({
   dirname: __dirname,
@@ -78,6 +78,25 @@ export default class MockController {
           log.error("An unexpected error occurred", {
             method: "POST",
             url: "/sharkio/mock/actions/deactivate",
+            error: e,
+          });
+          return res.sendStatus(500);
+        }
+      }
+    );
+
+    app.put(
+      "/sharkio/mock",
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const { mockId, ...mock } = req.body;
+
+          this.mockManager.updateMock(mockId, mock);
+          return res.sendStatus(200);
+        } catch (e) {
+          log.error("An unexpected error occured", {
+            method: "PUT",
+            url: "/sharkio/mock",
             error: e,
           });
           return res.sendStatus(500);

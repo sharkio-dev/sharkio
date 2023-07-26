@@ -45,6 +45,7 @@ Request mocking.
 
 ## 🚀 Getting started
 
+### Running in development 
 - npm i -g concurrently ts-node
 
 For the backend
@@ -67,6 +68,17 @@ Note:
 
 - Incase you want a dummy server to test sniffing as shown in [visual demonstration of how to use](https://github.com/idodav/sharkio#visual-demonstration-how-to-run-the-application), then run the follwoing command:
 - `npm run demo` ( in root directory )
+
+### Running in production - using Docker
+Run whole project:
+- in root of project, use:
+- `docker-compose up`
+- NOTE: use ports 5550-5560 as proxies, make sure they are available.
+
+Run backend/frontend only:
+- `cd` to relevent folder
+- build the Docker image: `npm run docker:build`
+- run the app: `npm run docker:run`
 
 ## ❓ Setup FAQs:
 

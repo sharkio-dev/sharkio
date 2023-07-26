@@ -94,7 +94,7 @@ export const RequestPage: React.FC = () => {
               last invocation: {request.lastInvocationDate}
             </Typography>
           </Card>
-          <Card>
+          <Card className={styles.invocationsCardContainer}>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Invocations</Typography>
             </div>

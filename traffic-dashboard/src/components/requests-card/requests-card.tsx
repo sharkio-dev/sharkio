@@ -18,7 +18,6 @@ interface IRequestCardProps {
 }
 export const RequestsCard: React.FC<IRequestCardProps> = ({
   withControls = false,
-  className,
 }) => {
   const [filter, setFilter] = useState<string>();
   const [methodsFilter, setMethodsFilter] = useState<string[]>([]);
@@ -50,7 +49,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
       (servicesFilter.length > 0
         ? servicesFilter.find((service) => service === req.service) !==
           undefined
-        : true),
+        : true)
   );
 
   return (
