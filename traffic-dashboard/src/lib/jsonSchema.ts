@@ -106,15 +106,6 @@ export function jsonSchemaToTypescriptInterface(
   return output;
 }
 
-type Invocation = {
-  id: string;
-  timestamp: Date;
-  body?: any;
-  headers?: any;
-  cookies?: any;
-  params?: any;
-};
-
 export function generateCurlCommand(req: InterceptedRequest): string {
   const host = req.invocations[0].headers.host;
   let curlCommand = `curl -X ${req.method} http://${host}${req.url} \\\n`;

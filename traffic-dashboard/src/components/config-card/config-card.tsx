@@ -94,6 +94,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
   useEffect(() => {
     loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleNewSnifferClicked = () => {
