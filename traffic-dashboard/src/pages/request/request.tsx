@@ -35,23 +35,27 @@ import { OpenAPIDocument } from "../../lib/openapi.interface";
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
   const [typescript, setTypescript] = useState<string | undefined>(undefined);
-  const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(undefined);
+  const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
+    undefined
+  );
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
-  const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
+  const [request, setRequest] = useState<InterceptedRequest | undefined>(
+    undefined
+  );
   const [tab, setTab] = useState(0);
   const { loadData, requestsData: requests } = useContext(
-    RequestsMetadataContext,
+    RequestsMetadataContext
   );
 
   useEffect(() => {
     loadData?.();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     console.log(requests);
-    const request = requests?.find((request) => {
+    const request: any = requests?.find((request) => {
       return request.id === id;
     });
 
@@ -73,7 +77,7 @@ export const RequestPage: React.FC = () => {
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: Invocation,
+    invocation: Invocation
   ) => {
     executeRequest(url, method, invocation);
   };
@@ -120,7 +124,7 @@ export const RequestPage: React.FC = () => {
                             handleExecuteClicked(
                               request.url,
                               request.method,
-                              invocation,
+                              invocation
                             );
                           }}
                         >

@@ -48,7 +48,7 @@ export const Service: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStopClicked = async (port: number) => {
@@ -162,6 +162,12 @@ export const Service: React.FC = () => {
                       service={sniffer.config}
                       editable={true}
                       loadData={loadData}
+                      onEditClick={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      onDeleteClick={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
                     />
                   );
                 })}
@@ -169,9 +175,16 @@ export const Service: React.FC = () => {
             </Card>
             <Card className={styles.requestsCard}>
               <List>
-                {sniffer.interceptedRequests.map((request: InterceptedRequest) => {
-                  return <RequestRow key={request.id} request={request}></RequestRow>;
-                })}
+                {sniffer.interceptedRequests.map(
+                  (request: InterceptedRequest) => {
+                    return (
+                      <RequestRow
+                        key={request.id}
+                        request={request}
+                      ></RequestRow>
+                    );
+                  }
+                )}
               </List>
             </Card>
           </div>

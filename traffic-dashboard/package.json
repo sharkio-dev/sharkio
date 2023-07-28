@@ -14,8 +14,8 @@
     "dev": "vite",
     "start": "node ./main.js",
     "build": "tsc && vite build",
-    "docker:build":"docker build . -t sharkio-traffic-dashboard",
-    "docker:run":"docker run -p 5173:5173 -p 8080:8080 --name sharkio-dashboard -d sharkio-traffic-dashboard",
+    "docker:build": "docker build . -t sharkio-traffic-dashboard",
+    "docker:run": "docker run -p 5173:5173 -p 8080:8080 --name sharkio-dashboard -d sharkio-traffic-dashboard",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
@@ -46,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.0-beta.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
