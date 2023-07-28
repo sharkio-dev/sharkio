@@ -31,6 +31,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
 
   useEffect(() => {
     loadData?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFilterChanged: React.ChangeEventHandler<
@@ -40,7 +41,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
   };
 
   const filteredRequests = requests?.filter(
-    (req: any) =>
+    (req) =>
       (filter ? req.url.includes(filter) : true) &&
       (methodsFilter.length > 0
         ? methodsFilter.find((method) => method === req.method) !== undefined

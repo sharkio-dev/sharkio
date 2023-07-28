@@ -1,10 +1,10 @@
 import { Express, NextFunction, Request, Response, Router } from "express";
-import { SnifferManager } from "./sniffer-manager";
-import { MockNotFoundError } from "../sniffer/mock/exceptions";
 import { z } from "zod";
+import { useLog } from "../log";
 import { requestValidator } from "../request-validator";
 import { portValidator } from "../request-validator/general-validators";
-import { useLog } from "../log";
+import { MockNotFoundError } from "../sniffer/mock/exceptions";
+import { SnifferManager } from "./sniffer-manager";
 
 const log = useLog({
   dirname: __dirname,
@@ -178,6 +178,89 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
+            path: `${this.baseUrl}/:port/mock`,
+            error: e,
+          });
+          return res.sendStatus(500);
+        }
+      }
+    );
+
+    /**
+     * @openapi
+     * /sharkio/sniffer/:port/mock:
+     *  put:
+     *    tags:
+     *      - mock
+     *    description: Updated a mock
+     *    parameters:
+     *       - name: port
+     *         in: query
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           example: 8080
+     *         description: service port
+     *         required: true
+     *    requestBody:
+     *        description: Updated mock
+     *        content:
+     *          application/json:
+     *            schema:
+     *              type: object
+     *              properties:
+     *                mockId:
+     *                  type: string
+     *                  description: The id of the mock we reference
+     *                  example: 6bd539be-4d3d-4101-bc99-64628640a86b
+     *                method:
+     *                  type: string
+     *                  description: An HTTP method
+     *                  enum: [GET, POST, UPDATE, DELETE, PUT ]
+     *                  example: POST
+     *                body:
+     *                  description: The request payload
+     *                  example: { someKey: "someValue" }
+     *                endpoint:
+     *                  type: string
+     *                  description: The request URL
+     *                  example: www.google.com
+     *                status:
+     *                  type: integer
+     *                  description: An HTTP status code
+     *                  example: 200
+     */
+
+    router.put(
+      "/:port/mock",
+      requestValidator({
+        params: z.object({
+          port: portValidator,
+        }),
+        body: z.object({
+          mockId: z.string().nonempty(),
+          method: z.string().nonempty(),
+          endpoint: z.string().nonempty(),
+          data: z.any(),
+          status: z.coerce.number().positive(),
+        }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const { port } = req.params;
+          const { mockId, ...mock } = req.body;
+
+          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+
+          if (sniffer !== undefined) {
+            sniffer.getMockManager().updateMock(mockId, mock);
+            return res.sendStatus(200);
+          } else {
+            return res.sendStatus(404);
+          }
+        } catch (e: any) {
+          log.error("An unexpected error occured", {
+            method: "PUT",
             path: `${this.baseUrl}/:port/mock`,
             error: e,
           });

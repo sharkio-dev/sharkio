@@ -1,7 +1,8 @@
+import { InterceptedRequest } from "../types/types";
 import { OpenAPIDocument, OpenAPIOperation } from "./openapi.interface";
 
 export function JsonToOpenapi(
-  requests: unknown[],
+  requests: InterceptedRequest[],
   apiName: string,
   apiVersion: string
 ) {
@@ -20,8 +21,11 @@ export function JsonToOpenapi(
   return openApiDocument;
 }
 
-function handleRequests(openApiDocument: OpenAPIDocument, requests: unknown[]) {
-  requests.forEach((request: any) => {
+function handleRequests(
+  openApiDocument: OpenAPIDocument,
+  requests: InterceptedRequest[]
+) {
+  requests.forEach((request) => {
     const { url, method, invocations } = request;
 
     if (!openApiDocument.paths[url]) {
@@ -30,7 +34,7 @@ function handleRequests(openApiDocument: OpenAPIDocument, requests: unknown[]) {
 
     const operation: OpenAPIOperation = {
       summary: `Endpoint for ${method}`,
-      requestBody: invocations[0].body,
+      requestBody: invocations[0].body!,
       responses: {},
     };
 

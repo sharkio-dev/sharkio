@@ -13,10 +13,12 @@
     "sniffer": "cd ./traffic-sniffer && npm run dev",
     "build:dashboard": "cd ./traffic-dashboard && npm run build",
     "build:sniffer": "cd ./traffic-sniffer && npm run build",
+    "format:dashboard": "cd ./traffic-dashboard && npm run format",
+    "format:sniffer": "cd ./traffic-sniffer && npm run format",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cd ./traffic-sniffer && npm test",
     "prepare": "husky install",
     "postinstall": "husky install"
   },

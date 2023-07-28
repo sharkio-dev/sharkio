@@ -22,20 +22,22 @@ import { executeRequest } from "../../api/api";
 import { HttpMethod } from "../../components/http-method/http-method";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import {
+  JsonSchema,
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from "../../lib/jsonSchema";
 import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import styles from "./requestCard.module.scss";
-import { InterceptedRequest } from "../../types/types";
+import { InterceptedRequest, Invocation } from "../../types/types";
+import { OpenAPIDocument } from "../../lib/openapi.interface";
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
-  const [typescript, setTypescript] = useState<any>(undefined);
-  const [openapi, setOpenapi] = useState<any>(undefined);
-  const [curl, setCurl] = useState<any>(undefined);
-  const [schema, setSchema] = useState<any>(undefined);
+  const [typescript, setTypescript] = useState<string | undefined>(undefined);
+  const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(undefined);
+  const [curl, setCurl] = useState<string | undefined>(undefined);
+  const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
   const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
   const [tab, setTab] = useState(0);
   const { loadData, requestsData: requests } = useContext(
@@ -44,11 +46,12 @@ export const RequestPage: React.FC = () => {
 
   useEffect(() => {
     loadData?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     console.log(requests);
-    const request = requests.find((request: any) => {
+    const request = requests?.find((request) => {
       return request.id === id;
     });
 
@@ -70,7 +73,7 @@ export const RequestPage: React.FC = () => {
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: any,
+    invocation: Invocation,
   ) => {
     executeRequest(url, method, invocation);
   };

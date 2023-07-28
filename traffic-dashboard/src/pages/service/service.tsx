@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { PlayArrow, Stop } from "@mui/icons-material";
 import {
   Button,
@@ -30,24 +30,25 @@ export const Service: React.FC = () => {
 
   const [sniffer, setSniffer] = useState<Sniffer>();
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (loading) return;
     if (!port) return;
 
     setLoading(true);
 
     await getSniffer(+port)
-      .then((res: any) => {
+      .then((res) => {
         setSniffer(res.data);
       })
       .catch(() => {
         showSnackbar("Failed to get sniffer", "error");
       })
       .finally(() => setLoading(false));
-  };
+  }, [loading, port, showSnackbar]);
 
   useEffect(() => {
     loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStopClicked = async (port: number) => {
