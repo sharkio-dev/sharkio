@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Add,
   Delete,
@@ -72,12 +72,12 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (loading) return;
     setLoading(true);
     await getSniffers()
-      .then((res: any) => {
-        const configs = res.data.map((config: any) => ({
+      .then((res) => {
+        const configs: SnifferConfigRow[] = res.data.map((config) => ({
           ...config,
           isNew: false,
           isEditing: false,
@@ -90,10 +90,11 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         showSnackbar("Failed to get config", "error");
       })
       .finally(() => setLoading(false));
-  };
+  }, [loading, showSnackbar]);
 
   useEffect(() => {
     loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleNewSnifferClicked = () => {

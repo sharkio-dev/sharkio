@@ -1,13 +1,7 @@
 import {
-  Add,
   Delete,
   Edit,
   ExpandMore,
-  FileDownload,
-  FileUpload,
-  PlayArrow,
-  Save,
-  Stop,
 } from "@mui/icons-material";
 import {
   Accordion,
