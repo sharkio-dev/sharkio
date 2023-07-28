@@ -14,9 +14,14 @@ jest.mock("../../../lib/setup-config/file-config", () => {
       this.configData = configData;
     }
 
+    getConfig(): SnifferConfigSetup[] {
+      throw new Error("Method not implemented.");
+    }
+
     getSetup(): SnifferConfigSetup[] {
       return [];
     }
+
     update(
       existingId: string,
       newConfig: SnifferConfig,
@@ -26,6 +31,7 @@ jest.mock("../../../lib/setup-config/file-config", () => {
     removeSniffer(port: number): void {}
     setIsStarted(snifferId: string, isStarted: boolean): void {}
   }
+
   return { FileConfig: MockFileConfig };
 });
 
