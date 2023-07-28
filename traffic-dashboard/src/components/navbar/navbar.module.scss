@@ -37,6 +37,13 @@
   border-radius: 0px !important;
 }
 
-.account_circle_icon {
-  cursor: pointer;
+.navbar_right {
+  display: flex;
+  align-items: center;
+}
+
+.github_link {
+  color: #fff;
+  font-size: 0px;
+  margin-right: 5px;
 }
