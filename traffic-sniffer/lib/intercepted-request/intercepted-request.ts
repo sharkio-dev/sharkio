@@ -3,6 +3,13 @@ import { Request } from "express";
 import { v4 } from "uuid";
 import { Invocation, PathMetadataConfig, PathResponseData } from "../../types";
 import { RequestKey } from "./request-key";
+import { SnifferConfig } from "../sniffer/sniffer";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export class InterceptedRequest {
   static readonly defaultConfig: PathMetadataConfig = {
@@ -14,7 +21,7 @@ export class InterceptedRequest {
   };
 
   private id: string;
-  private service: string;
+  private serviceId: string;
   private url: string;
   private method: string;
   private hitCount: number;
@@ -22,9 +29,9 @@ export class InterceptedRequest {
   private invocations: Invocation[];
   private config: PathMetadataConfig;
 
-  constructor(key: RequestKey, service: string) {
+  constructor(key: RequestKey, serviceId: SnifferConfig["id"]) {
     this.id = v4();
-    this.service = service;
+    this.serviceId = serviceId;
     this.method = key.method;
     this.url = key.url;
     this.hitCount = 0;
@@ -55,6 +62,7 @@ export class InterceptedRequest {
   }
 
   async execute(invocation: Invocation) {
+    log.info("executing request");
     return await axios({
       url: this.url,
       method: this.method,
@@ -68,7 +76,7 @@ export class InterceptedRequest {
     const {
       id,
       url,
-      service,
+      serviceId,
       method,
       hitCount,
       lastInvocationDate,
@@ -77,7 +85,7 @@ export class InterceptedRequest {
 
     return {
       id,
-      service,
+      serviceId,
       url,
       method,
       hitCount,

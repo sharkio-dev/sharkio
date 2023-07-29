@@ -1,3 +1,5 @@
+import { SnifferConfig } from "../../traffic-sniffer/lib/sniffer/sniffer";
+
 export type Invocation = {
   id: string;
   timestamp: Date;
@@ -17,7 +19,7 @@ export type PathMetadataConfig = {
 
 export type PathResponseData = {
   id: string;
-  service: string;
+  serviceId: SnifferConfig["id"];
   method: string;
   hitCount: number;
   lastInvocationDate: Date | undefined;

@@ -31,7 +31,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
 
   useEffect(() => {
     loadData?.();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFilterChanged: React.ChangeEventHandler<
@@ -47,7 +47,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
         ? methodsFilter.find((method) => method === req.method) !== undefined
         : true) &&
       (servicesFilter.length > 0
-        ? servicesFilter.find((service) => service === req.service) !==
+        ? servicesFilter.find((service) => service === req.serviceId) !==
           undefined
         : true)
   );
@@ -57,7 +57,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
       {withControls && (
         <FilterBar
           handleFilterChanged={handleFilterChanged}
-          services={services}
+          services={services ?? []}
           setMethodsFilter={setMethodsFilter}
           setServicesFilter={setServicesFilter}
         />
@@ -83,7 +83,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
               <List>
                 {filteredRequests &&
                   filteredRequests.map((req) => (
-                    <RequestRow request={req} key={req.id} />
+                    <RequestRow request={req} key={req.id} serviceId={req.serviceId} />
                   ))}
               </List>
             </>
