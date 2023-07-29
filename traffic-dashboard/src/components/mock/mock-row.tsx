@@ -1,8 +1,4 @@
-import {
-  Delete,
-  Edit,
-  ExpandMore,
-} from "@mui/icons-material";
+import { Delete, Edit, ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -24,8 +20,8 @@ type MockRowProps = {
   service: Service;
   editable: boolean;
   loadData: () => void;
-  onEditClick: () => void;
-  onDeleteClick: (id: string) => void;
+  onEditClick?: () => void;
+  onDeleteClick?: (id: string) => void;
 };
 
 const MockRow: React.FC<MockRowProps> = ({
@@ -83,7 +79,7 @@ const MockRow: React.FC<MockRowProps> = ({
               color="info"
               onClick={(e) => {
                 e.stopPropagation();
-                onEditClick();
+                onEditClick?.();
               }}
             >
               <Edit />
@@ -92,7 +88,7 @@ const MockRow: React.FC<MockRowProps> = ({
               color="error"
               onClick={(e) => {
                 e.stopPropagation();
-                onDeleteClick(mock.id);
+                onDeleteClick?.(mock.id);
               }}
             >
               <Delete />

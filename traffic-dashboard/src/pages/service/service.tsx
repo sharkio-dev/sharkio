@@ -48,7 +48,7 @@ export const Service: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStopClicked = async (port: number) => {
@@ -169,9 +169,17 @@ export const Service: React.FC = () => {
             </Card>
             <Card className={styles.requestsCard}>
               <List>
-                {sniffer.interceptedRequests.map((request: InterceptedRequest) => {
-                  return <RequestRow key={request.id} request={request}></RequestRow>;
-                })}
+                {sniffer.interceptedRequests.map(
+                  (request: InterceptedRequest) => {
+                    return (
+                      <RequestRow
+                        key={request.id}
+                        request={request}
+                        serviceId={request.serviceId}
+                      />
+                    );
+                  }
+                )}
               </List>
             </Card>
           </div>
