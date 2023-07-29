@@ -3,15 +3,16 @@ import { OpenAPIDocument, OpenAPIOperation } from "./openapi.interface";
 
 export function JsonToOpenapi(
   requests: InterceptedRequest[],
-  apiName: string,
-  apiVersion: string
+  apiName = "",
+  apiVersion = "",
+  description = ""
 ) {
   const openApiDocument: OpenAPIDocument = {
     openapi: "3.0.0",
     info: {
       title: apiName,
       version: apiVersion,
-      description: "",
+      description,
     },
     paths: {},
   };
