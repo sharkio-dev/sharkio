@@ -8,7 +8,7 @@ import {
   PlayArrow,
   Save,
   Stop,
-} from "@mui/icons-material";
+} from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -17,13 +17,13 @@ import {
   Switch,
   TextField,
   Typography,
-} from "@mui/material";
-import React from "react";
-import { activateMock, deactivateMock } from "../../api/api";
-import { Mock, Service } from "../../types/types";
-import { HttpMethod } from "../http-method/http-method";
-import { HttpStatus } from "../http-status/http-status";
-import styles from "./mock-row.module.scss";
+} from '@mui/material';
+import React from 'react';
+import { activateMock, deactivateMock } from '../../api/api';
+import { Mock, Service } from '../../types/types';
+import { HttpMethod } from '../http-method/http-method';
+import { HttpStatus } from '../http-status/http-status';
+import styles from './mock-row.module.scss';
 
 type MockRowProps = {
   mock: Mock;

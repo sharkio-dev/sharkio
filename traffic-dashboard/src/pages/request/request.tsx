@@ -1,4 +1,4 @@
-import { PlayArrow } from "@mui/icons-material";
+import { PlayArrow } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -10,25 +10,25 @@ import {
   TableRow,
   Tabs,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import React, {
   PropsWithChildren,
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useParams } from "react-router-dom";
-import { executeRequest } from "../../api/api";
-import { HttpMethod } from "../../components/http-method/http-method";
-import { RequestsMetadataContext } from "../../context/requests-context";
+} from 'react';
+import { useParams } from 'react-router-dom';
+import { executeRequest } from '../../api/api';
+import { HttpMethod } from '../../components/http-method/http-method';
+import { RequestsMetadataContext } from '../../context/requests-context';
 import {
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
-} from "../../lib/jsonSchema";
-import { JsonToOpenapi } from "../../lib/generateOpenapi";
-import styles from "./requestCard.module.scss";
-import { InterceptedRequest } from "../../types/types";
+} from '../../lib/jsonSchema';
+import { JsonToOpenapi } from '../../lib/generateOpenapi';
+import styles from './requestCard.module.scss';
+import { InterceptedRequest } from '../../types/types';
 
 export const RequestPage: React.FC = () => {
   const { id } = useParams();
@@ -36,7 +36,9 @@ export const RequestPage: React.FC = () => {
   const [openapi, setOpenapi] = useState<any>(undefined);
   const [curl, setCurl] = useState<any>(undefined);
   const [schema, setSchema] = useState<any>(undefined);
-  const [request, setRequest] = useState<InterceptedRequest | undefined>(undefined);
+  const [request, setRequest] = useState<InterceptedRequest | undefined>(
+    undefined,
+  );
   const [tab, setTab] = useState(0);
   const { loadData, requestsData: requests } = useContext(
     RequestsMetadataContext,
@@ -57,8 +59,8 @@ export const RequestPage: React.FC = () => {
       setSchema(schema);
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
-      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
-      setOpenapi(JsonToOpenapi(new Array(request), request.service, "1.0.0"));
+      setTypescript(jsonSchemaToTypescriptInterface(schema, 'body'));
+      setOpenapi(JsonToOpenapi(new Array(request), request.service, '1.0.0'));
       setRequest(request);
     }
   }, [id, requests]);
@@ -77,7 +79,7 @@ export const RequestPage: React.FC = () => {
 
   return (
     <div className={styles.requestPageContainer}>
-      {request === undefined && "No request found"}
+      {request === undefined && 'No request found'}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>

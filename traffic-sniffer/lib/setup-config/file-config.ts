@@ -33,7 +33,7 @@ export class FileConfig implements ConfigLoader {
 
   update(existingId: string, newConfig: SnifferConfig, isStarted: boolean) {
     const foundIndex = this.configData.findIndex(
-      (item) => item.id === existingId
+      (item) => item.id === existingId,
     );
     if (foundIndex === -1) {
       throw new Error("item was not found");
@@ -75,7 +75,7 @@ export class FileConfig implements ConfigLoader {
   addSniffer(snifferConfig: SnifferConfig) {
     const addedObj = this.createSnifferSetup(snifferConfig, false);
     const isListed = this.configData.findIndex(
-      (item) => item.id === snifferConfig.id
+      (item) => item.id === snifferConfig.id,
     );
 
     if (isListed !== -1) {
@@ -97,7 +97,7 @@ export class FileConfig implements ConfigLoader {
 
   setIsStarted(snifferId: string, isStarted: boolean) {
     const foundIndex = this.configData.findIndex(
-      (item) => item.id === snifferId
+      (item) => item.id === snifferId,
     );
     if (foundIndex === -1) {
       throw new Error("item was not found");
@@ -114,7 +114,7 @@ export class FileConfig implements ConfigLoader {
 
   createSnifferSetup(
     snifferConfig: SnifferConfig,
-    isStarted: boolean
+    isStarted: boolean,
   ): SnifferConfigSetup {
     return {
       id: snifferConfig.id,

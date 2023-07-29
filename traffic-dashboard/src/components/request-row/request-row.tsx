@@ -1,11 +1,11 @@
-import React from "react";
-import { ListItemButton, Box, Chip } from "@mui/material";
-import { generatePath, useNavigate } from "react-router-dom";
-import { routes } from "../../constants/routes";
-import { HttpMethod } from "../http-method/http-method";
-import { ServiceName } from "../service-name/service-name";
-import styles from "./request-row.module.scss";
-import { InterceptedRequest } from "../../types/types";
+import React from 'react';
+import { ListItemButton, Box, Chip } from '@mui/material';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { routes } from '../../constants/routes';
+import { HttpMethod } from '../http-method/http-method';
+import { ServiceName } from '../service-name/service-name';
+import styles from './request-row.module.scss';
+import { InterceptedRequest } from '../../types/types';
 interface IRequestRowProps {
   request: InterceptedRequest;
 }
@@ -23,9 +23,9 @@ export const RequestRow: React.FC<IRequestRowProps> = ({ request }) => {
       >
         <Box
           sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
           <div className={styles.requestLeftSection}>
@@ -41,20 +41,20 @@ export const RequestRow: React.FC<IRequestRowProps> = ({ request }) => {
           <div>
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                columnGap: "15px",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                columnGap: '15px',
               }}
             >
               <Box
                 sx={{
                   display: {
-                    xs: "none",
-                    sm: "none",
-                    md: "none",
-                    lg: "block",
-                    xl: "block",
+                    xs: 'none',
+                    sm: 'none',
+                    md: 'none',
+                    lg: 'block',
+                    xl: 'block',
                   },
                 }}
               >

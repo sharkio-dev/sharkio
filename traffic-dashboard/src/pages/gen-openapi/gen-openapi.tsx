@@ -1,11 +1,11 @@
-import React from "react";
-import { useContext, useEffect, useState } from "react";
-import { RequestsMetadataContext } from "../../context/requests-context";
-import { Autocomplete, Button, Card, Chip, TextField } from "@mui/material";
-import styles from "./gen-openapi.module.scss";
-import { OpenAPIDocument } from "../../lib/openapi.interface";
-import { JsonToOpenapi } from "../../lib/generateOpenapi";
-import { InterceptedRequest } from "../../types/types";
+import React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { RequestsMetadataContext } from '../../context/requests-context';
+import { Autocomplete, Button, Card, Chip, TextField } from '@mui/material';
+import styles from './gen-openapi.module.scss';
+import { OpenAPIDocument } from '../../lib/openapi.interface';
+import { JsonToOpenapi } from '../../lib/generateOpenapi';
+import { InterceptedRequest } from '../../types/types';
 
 export const GenOpenAPI: React.FC = () => {
   const {
@@ -14,15 +14,14 @@ export const GenOpenAPI: React.FC = () => {
     loadData,
   } = useContext(RequestsMetadataContext);
 
-  const [apiName, setApiName] = useState<string>("");
-  const [service, setServices] = useState<string>("");
-  const [apiVersion, setApiVersion] = useState<string>("");
+  const [apiName, setApiName] = useState<string>('');
+  const [service, setServices] = useState<string>('');
+  const [apiVersion, setApiVersion] = useState<string>('');
   const [openApiDoc, setOpenApiDoc] = useState<OpenAPIDocument>();
 
   const onSubmit = () => {
-    const filteredRequests: InterceptedRequest[] = requests?.filter(
-      (req) => req.service === service,
-    ) || [];
+    const filteredRequests: InterceptedRequest[] =
+      requests?.filter((req) => req.service === service) || [];
     setOpenApiDoc(JsonToOpenapi(filteredRequests, apiName, apiVersion));
   };
 
@@ -57,7 +56,7 @@ export const GenOpenAPI: React.FC = () => {
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Service" />}
           onChange={(_, value: string | null) => {
-            const newValue: string = value ?? "";
+            const newValue: string = value ?? '';
             setServices(newValue);
           }}
         />
