@@ -1,8 +1,8 @@
-import React from "react";
-import { Autocomplete, Chip, Input, TextField } from "@mui/material";
-import { ChangeEventHandler } from "react";
-import { MethodSelector } from "../method-selector/method-selector";
-import styles from "./filter-bar.module.scss";
+import React from 'react';
+import { Autocomplete, Chip, Input, TextField } from '@mui/material';
+import { ChangeEventHandler } from 'react';
+import { MethodSelector } from '../method-selector/method-selector';
+import styles from './filter-bar.module.scss';
 
 interface IFilterBarProps {
   services: string[];

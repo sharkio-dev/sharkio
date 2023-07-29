@@ -1,5 +1,5 @@
-import React from "react";
-import { PlayArrow, Stop } from "@mui/icons-material";
+import React from 'react';
+import { PlayArrow, Stop } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -9,15 +9,15 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
-import MockRow from "../../components/mock/mock-row";
-import { RequestRow } from "../../components/request-row/request-row";
-import { useSnackbar } from "../../hooks/useSnackbar";
-import { InterceptedRequest, Sniffer } from "../../types/types";
-import styles from "./service.module.scss";
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getSniffer, startSniffer, stopSniffer } from '../../api/api';
+import MockRow from '../../components/mock/mock-row';
+import { RequestRow } from '../../components/request-row/request-row';
+import { useSnackbar } from '../../hooks/useSnackbar';
+import { InterceptedRequest, Sniffer } from '../../types/types';
+import styles from './service.module.scss';
 
 export const Service: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,7 +41,7 @@ export const Service: React.FC = () => {
         setSniffer(res.data);
       })
       .catch(() => {
-        showSnackbar("Failed to get sniffer", "error");
+        showSnackbar('Failed to get sniffer', 'error');
       })
       .finally(() => setLoading(false));
   };
@@ -55,7 +55,7 @@ export const Service: React.FC = () => {
     await stopSniffer(port)
       .then(() => loadData())
       .catch(() => {
-        showSnackbar("Failed to stop sniffer", "error");
+        showSnackbar('Failed to stop sniffer', 'error');
       })
       .finally(() => setStopLoading(false));
   };
@@ -67,7 +67,7 @@ export const Service: React.FC = () => {
         loadData();
       })
       .catch(() => {
-        showSnackbar("Failed to start sniffer", "error");
+        showSnackbar('Failed to start sniffer', 'error');
       })
       .finally(() => {
         setStartLoading(false);
@@ -94,7 +94,7 @@ export const Service: React.FC = () => {
               <div className={styles.controlTitle}>
                 <Typography variant="h6">Control</Typography>
                 <div>
-                  <Tooltip title={"Start sniffing requests"}>
+                  <Tooltip title={'Start sniffing requests'}>
                     <Button
                       color="success"
                       onClick={() => handleStartClicked(sniffer.config.port)}
@@ -107,7 +107,7 @@ export const Service: React.FC = () => {
                       )}
                     </Button>
                   </Tooltip>
-                  <Tooltip title={"Stop sniffing requests"}>
+                  <Tooltip title={'Stop sniffing requests'}>
                     <Button
                       color="error"
                       disabled={sniffer.isStarted === false}
@@ -125,24 +125,24 @@ export const Service: React.FC = () => {
               <div>
                 <div className={styles.configFields}>
                   <TextField
-                    label={"Port"}
+                    label={'Port'}
                     placeholder="1234"
                     defaultValue={sniffer.config.port}
                     disabled={sniffer.isStarted === true}
-                    value={sniffer.config.port || ""}
+                    value={sniffer.config.port || ''}
                   />
                   <TextField
-                    label={"Proxy url"}
+                    label={'Proxy url'}
                     placeholder="http://example.com"
                     defaultValue={sniffer.config.downstreamUrl}
-                    value={sniffer.config.downstreamUrl || ""}
+                    value={sniffer.config.downstreamUrl || ''}
                     disabled={sniffer.isStarted === true}
                   />
                   <TextField
-                    label={"Name"}
+                    label={'Name'}
                     placeholder="name"
                     defaultValue={sniffer.config.name}
-                    value={sniffer.config.name || ""}
+                    value={sniffer.config.name || ''}
                     disabled={sniffer.isStarted === true}
                   />
                 </div>
@@ -168,9 +168,16 @@ export const Service: React.FC = () => {
             </Card>
             <Card className={styles.requestsCard}>
               <List>
-                {sniffer.interceptedRequests.map((request: InterceptedRequest) => {
-                  return <RequestRow key={request.id} request={request}></RequestRow>;
-                })}
+                {sniffer.interceptedRequests.map(
+                  (request: InterceptedRequest) => {
+                    return (
+                      <RequestRow
+                        key={request.id}
+                        request={request}
+                      ></RequestRow>
+                    );
+                  },
+                )}
               </List>
             </Card>
           </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Add,
   Delete,
@@ -8,9 +8,9 @@ import {
   PlayArrow,
   Save,
   Stop,
-} from "@mui/icons-material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+} from '@mui/icons-material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Button,
   Card,
@@ -19,10 +19,10 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@mui/material";
-import c from "classnames";
-import { saveAs } from "file-saver";
-import { useEffect, useRef, useState } from "react";
+} from '@mui/material';
+import c from 'classnames';
+import { saveAs } from 'file-saver';
+import { useEffect, useRef, useState } from 'react';
 import {
   createSniffer,
   deleteSniffer,
@@ -30,12 +30,12 @@ import {
   getSniffers,
   startSniffer,
   stopSniffer,
-} from "../../api/api";
-import { useSnackbar } from "../../hooks/useSnackbar";
-import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
-import styles from "./config-card.module.scss";
-import { generatePath, useNavigate } from "react-router-dom";
-import { routes } from "../../constants/routes";
+} from '../../api/api';
+import { useSnackbar } from '../../hooks/useSnackbar';
+import { SnifferConfig, SnifferCreateConfig } from '../../types/types';
+import styles from './config-card.module.scss';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { routes } from '../../constants/routes';
 
 export type SnifferConfigRow = {
   isNew: boolean;
@@ -87,7 +87,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         setSniffers(configs);
       })
       .catch(() => {
-        showSnackbar("Failed to get config", "error");
+        showSnackbar('Failed to get config', 'error');
       })
       .finally(() => setLoading(false));
   };
@@ -115,7 +115,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     await stopSniffer(port)
       .then(() => loadData())
       .catch(() => {
-        showSnackbar("Failed to stop sniffer", "error");
+        showSnackbar('Failed to stop sniffer', 'error');
       })
       .finally(() => setStopLoading(false));
   };
@@ -127,7 +127,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         loadData();
       })
       .catch(() => {
-        showSnackbar("Failed to start sniffer", "error");
+        showSnackbar('Failed to start sniffer', 'error');
       })
       .finally(() => {
         setStartLoading(false);
@@ -151,7 +151,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             configs.splice(index, 1);
             return configs;
           });
-          showSnackbar("Removed sniffer successfully", "info");
+          showSnackbar('Removed sniffer successfully', 'info');
         });
       }
     }
@@ -162,7 +162,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       return;
     }
     const saveConfig: SnifferCreateConfig = {
-      name: config.name ?? "",
+      name: config.name ?? '',
       port: config.port,
       downstreamUrl: config.downstreamUrl,
       id: config.port.toString(),
@@ -172,10 +172,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     await createSniffer(saveConfig)
       .then(() => {
         loadData();
-        showSnackbar("Created sniffer", "info");
+        showSnackbar('Created sniffer', 'info');
       })
       .catch(() => {
-        showSnackbar("Failed to create proxy", "error");
+        showSnackbar('Failed to create proxy', 'error');
       })
       .finally(() => {
         setSaveLoading(false);
@@ -195,9 +195,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
           2,
         ),
       ],
-      { type: "text/plain;charset=utf-8" },
+      { type: 'text/plain;charset=utf-8' },
     );
-    saveAs(file, "config.json");
+    saveAs(file, 'config.json');
   };
 
   const handlePortChanged = (
@@ -254,10 +254,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
               return configRow;
             }),
           );
-          showSnackbar("Successfully set the config file", "info");
+          showSnackbar('Successfully set the config file', 'info');
         })
         .catch(() => {
-          showSnackbar("Failed to import config", "error");
+          showSnackbar('Failed to import config', 'error');
         });
   };
 
@@ -274,16 +274,16 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
           return sniffer;
         });
       });
-      showSnackbar("Sniffer in edit mode", "info");
+      showSnackbar('Sniffer in edit mode', 'info');
     } else {
       setLoading(true);
       await editSniffer(newConfig)
         .then(() => {
           loadData();
-          showSnackbar("Changes were saved", "info");
+          showSnackbar('Changes were saved', 'info');
         })
         .catch(() => {
-          showSnackbar("Failed to edit config", "error");
+          showSnackbar('Failed to edit config', 'error');
         })
         .finally(() => setLoading(false));
     }
@@ -306,7 +306,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       navigate(
         generatePath(routes.SERVICE, {
           port: sniffer.config.port,
-        })
+        }),
       );
     };
     return (
@@ -317,16 +317,16 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             variant="h5"
             onClick={navigateToSniffer}
           >
-            {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
+            {sniffer.config.name == '' ? 'No Name' : sniffer.config.name}
           </Typography>
         )}
         <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
           <TextField
-            label={"Port"}
+            label={'Port'}
             placeholder="1234"
             defaultValue={sniffer.config.port}
             disabled={sniffer.isEditing === false}
-            value={sniffer.config.port || ""}
+            value={sniffer.config.port || ''}
             onChange={(
               e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
             ) => {
@@ -336,10 +336,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         </Collapse>
         <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
           <TextField
-            label={"Proxy url"}
+            label={'Proxy url'}
             placeholder="http://example.com"
             defaultValue={sniffer.config.downstreamUrl}
-            value={sniffer.config.downstreamUrl || ""}
+            value={sniffer.config.downstreamUrl || ''}
             disabled={sniffer.isEditing === false}
             onChange={(
               e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -350,10 +350,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         </Collapse>
         <Collapse orientation="horizontal" in={!sniffer.isCollapsed}>
           <TextField
-            label={"Name"}
+            label={'Name'}
             placeholder="name"
             defaultValue={sniffer.config.name}
-            value={sniffer.config.name || ""}
+            value={sniffer.config.name || ''}
             disabled={sniffer.isEditing === false}
             onChange={(
               e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -374,12 +374,12 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             Config
           </Typography>
           <div>
-            <Tooltip title={"export"}>
+            <Tooltip title={'export'}>
               <Button onClick={handleExportClicked}>
                 <FileDownload />
               </Button>
             </Tooltip>
-            <Tooltip title={"import"}>
+            <Tooltip title={'import'}>
               <Button onClick={handleImportClicked}>
                 <FileUpload />
                 <input
@@ -399,7 +399,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
               {snifferConfigForm(sniffer, index)}
               {sniffer.isNew === false && (
                 <>
-                  <Tooltip title={"Start sniffing requests"}>
+                  <Tooltip title={'Start sniffing requests'}>
                     <Button
                       color="success"
                       onClick={() =>
@@ -417,7 +417,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                       )}
                     </Button>
                   </Tooltip>
-                  <Tooltip title={"Stop sniffing requests"}>
+                  <Tooltip title={'Stop sniffing requests'}>
                     <Button
                       color="warning"
                       disabled={sniffer.isStarted === false}
@@ -435,7 +435,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                   </Tooltip>
                   <Tooltip
                     title={
-                      sniffer.isEditing ? "Save changes" : "Edit the sniffer"
+                      sniffer.isEditing ? 'Save changes' : 'Edit the sniffer'
                     }
                   >
                     <Button

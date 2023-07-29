@@ -5,12 +5,12 @@ import {
   CircularProgress,
   List,
   Typography,
-} from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import { RequestsMetadataContext } from "../../context/requests-context";
-import { FilterBar } from "../filter-bar/filter-bar";
-import { RequestRow } from "../request-row/request-row";
-import styles from "./requests-card.module.scss";
+} from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { RequestsMetadataContext } from '../../context/requests-context';
+import { FilterBar } from '../filter-bar/filter-bar';
+import { RequestRow } from '../request-row/request-row';
+import styles from './requests-card.module.scss';
 
 interface IRequestCardProps {
   className?: string;
@@ -48,7 +48,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
       (servicesFilter.length > 0
         ? servicesFilter.find((service) => service === req.service) !==
           undefined
-        : true)
+        : true),
   );
 
   return (
@@ -70,9 +70,9 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
           {loading ? (
             <Box
               sx={{
-                display: "flex",
-                padding: "20px",
-                justifyContent: "center",
+                display: 'flex',
+                padding: '20px',
+                justifyContent: 'center',
               }}
             >
               <CircularProgress />

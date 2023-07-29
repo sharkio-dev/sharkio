@@ -45,7 +45,8 @@ Request mocking.
 
 ## 🚀 Getting started
 
-### Running in development 
+### Running in development
+
 - npm i -g concurrently ts-node
 
 For the backend
@@ -70,12 +71,15 @@ Note:
 - `npm run demo` ( in root directory )
 
 ### Running in production - using Docker
+
 Run whole project:
+
 - in root of project, use:
 - `docker-compose up`
 - NOTE: use ports 5550-5560 as proxies, make sure they are available.
 
 Run backend/frontend only:
+
 - `cd` to relevent folder
 - build the Docker image: `npm run docker:build`
 - run the app: `npm run docker:run`

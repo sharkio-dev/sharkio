@@ -1,16 +1,16 @@
-import { OpenAPIDocument, OpenAPIOperation } from "./openapi.interface";
+import { OpenAPIDocument, OpenAPIOperation } from './openapi.interface';
 
 export function JsonToOpenapi(
   requests: unknown[],
   apiName: string,
-  apiVersion: string
+  apiVersion: string,
 ) {
   const openApiDocument: OpenAPIDocument = {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
       title: apiName,
       version: apiVersion,
-      description: "",
+      description: '',
     },
     paths: {},
   };

@@ -92,7 +92,7 @@ export class Sniffer {
       executionUrl,
       method,
       invocation,
-      this.config.name
+      this.config.name,
     );
   }
 
