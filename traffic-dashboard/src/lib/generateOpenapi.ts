@@ -1,14 +1,14 @@
-import { InterceptedRequest } from "../types/types";
-import { OpenAPIDocument, OpenAPIOperation } from "./openapi.interface";
+import { InterceptedRequest } from '../types/types';
+import { OpenAPIDocument, OpenAPIOperation } from './openapi.interface';
 
 export function JsonToOpenapi(
   requests: InterceptedRequest[],
-  apiName = "",
-  apiVersion = "",
-  description = ""
+  apiName = '',
+  apiVersion = '',
+  description = '',
 ) {
   const openApiDocument: OpenAPIDocument = {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
       title: apiName,
       version: apiVersion,
@@ -24,7 +24,7 @@ export function JsonToOpenapi(
 
 function handleRequests(
   openApiDocument: OpenAPIDocument,
-  requests: InterceptedRequest[]
+  requests: InterceptedRequest[],
 ) {
   requests.forEach((request) => {
     const { url, method, invocations } = request;

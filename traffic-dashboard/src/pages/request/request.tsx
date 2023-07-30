@@ -1,4 +1,4 @@
-import { PlayArrow } from "@mui/icons-material";
+import { PlayArrow } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -11,43 +11,43 @@ import {
   TableRow,
   Tabs,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import React, {
   PropsWithChildren,
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useParams } from "react-router-dom";
-import { executeRequest } from "../../api/api";
-import { HttpMethod } from "../../components/http-method/http-method";
-import { RequestsMetadataContext } from "../../context/requests-context";
+} from 'react';
+import { useParams } from 'react-router-dom';
+import { executeRequest } from '../../api/api';
+import { HttpMethod } from '../../components/http-method/http-method';
+import { RequestsMetadataContext } from '../../context/requests-context';
 import {
   JsonObject,
   JsonSchema,
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
-} from "../../lib/jsonSchema";
-import { JsonToOpenapi } from "../../lib/generateOpenapi";
-import styles from "./requestCard.module.scss";
+} from '../../lib/jsonSchema';
+import { JsonToOpenapi } from '../../lib/generateOpenapi';
+import styles from './requestCard.module.scss';
 import {
   InterceptedRequest,
   Invocation,
   SnifferConfig,
-} from "../../types/types";
-import { OpenAPIDocument } from "../../lib/openapi.interface";
+} from '../../types/types';
+import { OpenAPIDocument } from '../../lib/openapi.interface';
 
 export const RequestPage: React.FC = () => {
   const { id, serviceId } = useParams();
   const [typescript, setTypescript] = useState<string | undefined>(undefined);
   const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
-    undefined
+    undefined,
   );
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
   const [request, setRequest] = useState<InterceptedRequest | undefined>(
-    undefined
+    undefined,
   );
   const [tab, setTab] = useState(0);
   const {
@@ -69,13 +69,13 @@ export const RequestPage: React.FC = () => {
 
     if (request) {
       const schema = generateJsonSchema(
-        request.invocations[0].body as JsonObject
+        request.invocations[0].body as JsonObject,
       );
       setSchema(schema);
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
-      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
-      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, "1.0.0"));
+      setTypescript(jsonSchemaToTypescriptInterface(schema, 'body'));
+      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, '1.0.0'));
       setRequest(request);
     }
   }, [id, requests]);
@@ -86,7 +86,7 @@ export const RequestPage: React.FC = () => {
 
   return (
     <div className={styles.requestPageContainer}>
-      {request === undefined && "No request found"}
+      {request === undefined && 'No request found'}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
@@ -153,7 +153,7 @@ export const RequestPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {" "}
+                {' '}
                 {request.invocations.map((invocation) => {
                   return (
                     <InvocationRow
@@ -197,15 +197,15 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
   const handleExecuteClicked = (
     url: string,
     method: string,
-    invocation: Invocation
+    invocation: Invocation,
   ) => {
     if (!service?.port) {
-      console.error("service was not found for requests");
+      console.error('service was not found for requests');
       return;
     }
     setExecuteLoading(true);
     executeRequest(service?.port, url, method, invocation).finally(() =>
-      setExecuteLoading(false)
+      setExecuteLoading(false),
     );
   };
 
@@ -216,9 +216,9 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
           <Button
             onClick={() => {
               handleExecuteClicked(
-                "http://localhost:" + `${service?.port}` + `${request.url}`,
+                'http://localhost:' + `${service?.port}` + `${request.url}`,
                 request.method,
-                invocation
+                invocation,
               );
             }}
           >
@@ -229,7 +229,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
             )}
           </Button>
         </TableCell>
-        <TableCell>{service?.name ?? ""}</TableCell>
+        <TableCell>{service?.name ?? ''}</TableCell>
         <TableCell>{invocation.id}</TableCell>
         <TableCell>{invocation.timestamp}</TableCell>
         <TableCell>{JSON.stringify(invocation.body)}</TableCell>

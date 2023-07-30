@@ -1,8 +1,8 @@
-import React from "react";
-import { PropsWithChildren, createContext, useState } from "react";
-import { getRequests, getSniffers } from "../api/api";
-import { useSnackbar } from "../hooks/useSnackbar";
-import { InterceptedRequest, SnifferConfig } from "../types/types";
+import React from 'react';
+import { PropsWithChildren, createContext, useState } from 'react';
+import { getRequests, getSniffers } from '../api/api';
+import { useSnackbar } from '../hooks/useSnackbar';
+import { InterceptedRequest, SnifferConfig } from '../types/types';
 
 export type RequestsMetadataContextType = {
   loadData?: () => void;
@@ -43,19 +43,17 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
 
   const handleFailureRequests = () => {
     setRequestsMetadata((prev) => ({ ...prev, requestsData: [] }));
-    show("Failed to fetch requests!", "error");
+    show('Failed to fetch requests!', 'error');
   };
 
   const handleServices = (res: any) => {
-    const data = res.data.map(
-      (item: { config: { name: any } }) => item.config,
-    );
-    setServicesList((prev) => ({ ...prev, servicesData: data}));
+    const data = res.data.map((item: { config: { name: any } }) => item.config);
+    setServicesList((prev) => ({ ...prev, servicesData: data }));
   };
 
   const handleFailureServices = () => {
     setRequestsMetadata((prev) => ({ ...prev, servicesData: [] }));
-    show("Failed to fetch services!", "error");
+    show('Failed to fetch services!', 'error');
   };
 
   const { show, component: snackBar } = useSnackbar();
