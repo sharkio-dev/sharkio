@@ -1,5 +1,5 @@
 export const routes = {
-  REQUEST: '/request/:id',
+  REQUEST: '/service/:serviceId/request/:id',
   REQUESTS: '/requests',
   HOME: '/home',
   CONFIG: '/config',

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SnifferConfig, SnifferCreateConfig } from '../types/types';
+import { Invocation, Sniffer, SnifferCreateConfig } from '../types/types';
 
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post('/sharkio/sniffer', JSON.stringify(config), {
@@ -10,7 +10,7 @@ export const createSniffer = (config: SnifferCreateConfig) => {
 };
 
 export const getSniffers = () => {
-  return axios.get<SnifferConfig[]>('/sharkio/sniffer');
+  return axios.get<Sniffer[]>('/sharkio/sniffer');
 };
 
 export const getSniffer = (port: number) => {
@@ -44,12 +44,13 @@ export const getRequests = () => {
 };
 
 export const executeRequest = (
+  port: number,
   url: string,
   method: string,
-  invocation: any,
+  invocation: Invocation,
 ) => {
   return axios.post(
-    '/sharkio/sniffer/5555/actions/execute',
+    `http://localhost:5173/sharkio/sniffer/${port}/actions/execute`,
     { url, method, invocation },
     {
       headers: {

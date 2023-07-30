@@ -3,9 +3,10 @@ import { Autocomplete, Chip, Input, TextField } from '@mui/material';
 import { ChangeEventHandler } from 'react';
 import { MethodSelector } from '../method-selector/method-selector';
 import styles from './filter-bar.module.scss';
+import { SnifferConfig } from '../../types/types';
 
 interface IFilterBarProps {
-  services: string[];
+  services: SnifferConfig[];
   handleFilterChanged: ChangeEventHandler<
     HTMLTextAreaElement | HTMLInputElement
   >;
@@ -35,7 +36,7 @@ export const FilterBar: React.FC<IFilterBarProps> = ({
             />
           ))
         }
-        options={services}
+        options={services.map((service) => service.id)}
         sx={{ width: 300 }}
         renderInput={(params) => (
           <TextField variant="filled" {...params} label="Service" />

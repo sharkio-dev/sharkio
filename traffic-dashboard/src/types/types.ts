@@ -16,14 +16,14 @@ export type SnifferCreateConfig = {
 export type Invocation = {
   id: string;
   timestamp: string;
-  body: unknown;
-  headers: unknown;
-  params: unknown;
+  body: Record<string, string>;
+  headers: Record<string, string>;
+  params: Record<string, string>;
 };
 
 export type InterceptedRequest = {
   id: string;
-  service: string;
+  serviceId: string;
   url: string;
   method: string;
   hitCount: number;

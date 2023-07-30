@@ -1,3 +1,5 @@
+import { InterceptedRequest } from '../types/types';
+
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 export interface JsonObject {
@@ -104,24 +106,7 @@ export function jsonSchemaToTypescriptInterface(
   return output;
 }
 
-type PathData = {
-  method: string;
-  hitCount: number;
-  lastInvocationDate?: Date;
-  invocations: Invocation[];
-  url: string;
-};
-
-type Invocation = {
-  id: string;
-  timestamp: Date;
-  body?: any;
-  headers?: any;
-  cookies?: any;
-  params?: any;
-};
-
-export function generateCurlCommand(req: PathData): string {
+export function generateCurlCommand(req: InterceptedRequest): string {
   const host = req.invocations[0].headers.host;
   let curlCommand = `curl -X ${req.method} http://${host}${req.url} \\\n`;
 
