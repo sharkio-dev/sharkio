@@ -16,13 +16,24 @@ import { getSniffer, startSniffer, stopSniffer } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
 import { RequestRow } from "../../components/request-row/request-row";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { InterceptedRequest, Sniffer } from "../../types/types";
+import { InterceptedRequest, Mock, Sniffer } from "../../types/types";
 import styles from "./service.module.scss";
+import { EditMockDialog } from "../mocks/edit-mock-dialog/edit-mock-dialog";
 
 export const Service: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [stopLoading, setStopLoading] = useState<boolean>(false);
+  const [editMock, setEditMock] = useState<
+    (Omit<Mock, "active"> & { port: number }) | null
+  >(null);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+  const handleCloseModal = () => {
+    setEditOpen(false);
+    setEditMock(null);
+    loadData();
+  };
+
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const params = useParams();
 
@@ -114,11 +125,7 @@ export const Service: React.FC = () => {
                       disabled={sniffer.isStarted === false}
                       onClick={() => handleStopClicked(sniffer.config.port)}
                     >
-                      {stopLoading === true ? (
-                        <CircularProgress />
-                      ) : (
-                        <Stop></Stop>
-                      )}
+                      {stopLoading === true ? <CircularProgress /> : <Stop />}
                     </Button>
                   </Tooltip>
                 </div>
@@ -162,10 +169,20 @@ export const Service: React.FC = () => {
                       service={sniffer.config}
                       editable={true}
                       loadData={loadData}
+                      onEditClick={() => {
+                        setEditMock({ ...mock, port: +(port ?? 0) });
+                        setEditOpen(true);
+                      }}
                     />
                   );
                 })}
               </div>
+              <EditMockDialog
+                mock={editMock!}
+                open={editOpen && editMock !== null}
+                close={handleCloseModal}
+                onDataChange={setEditMock}
+              />
             </Card>
             <Card className={styles.requestsCard}>
               <List>
