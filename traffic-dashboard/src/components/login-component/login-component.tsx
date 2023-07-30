@@ -28,7 +28,7 @@ const LoginComponent: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className={styles.login_component_container}>
       {login ? (
         <Button variant="outlined" onClick={() => setLogin(!login)}>
           Login

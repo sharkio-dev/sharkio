@@ -2,13 +2,13 @@ import React from 'react';
 import { PropsWithChildren, createContext, useState } from 'react';
 import { getRequests, getSniffers } from '../api/api';
 import { useSnackbar } from '../hooks/useSnackbar';
-import { InterceptedRequest } from '../types/types';
+import { InterceptedRequest, SnifferConfig } from '../types/types';
 
 export type RequestsMetadataContextType = {
   loadData?: () => void;
   loading?: boolean;
   requestsData?: InterceptedRequest[];
-  servicesData?: any;
+  servicesData?: SnifferConfig[];
 };
 
 export const RequestsMetadataContext =
@@ -47,9 +47,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
   };
 
   const handleServices = (res: any) => {
-    const data = res.data.map(
-      (item: { config: { name: any } }) => item.config.name,
-    );
+    const data = res.data.map((item: { config: { name: any } }) => item.config);
     setServicesList((prev) => ({ ...prev, servicesData: data }));
   };
 
