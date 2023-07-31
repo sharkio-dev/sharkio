@@ -1,13 +1,13 @@
 {
-  "name": "traffic-dashboard",
-  "private": true,
+  "name": "@idodav/sharkio-traffic-dashboard",
   "version": "0.1.0",
   "type": "module",
   "proxy": "http://localhost:5012",
   "files": [
     "dist",
     "index.js",
-    "main.js"
+    "main.js",
+    "package.json"
   ],
   "main": "index.js",
   "scripts": {
