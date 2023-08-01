@@ -8,6 +8,10 @@ And provides you with a dashboard to analyze all the traffic.
 Sharkio also provides the ability to repeat requests.
 Generate types for youre favorite language based on real data.
 
+## Help us help you!
+
+<a href="https://www.buymeacoffee.com/sharkio"><img src="https://img.buymeacoffee.com/button-api/?text=Sponsor Sharkio&emoji=💰&slug=sharkio&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
 ## 🗺️ Roadmap
 
 In the roadmap sharkio will support team functions.
