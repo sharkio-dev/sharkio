@@ -3,13 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.executeAction = exports.getReqlistAction = void 0;
+exports.executeAction = exports.addRequest = exports.getReqlistAction = void 0;
 const axios_1 = __importDefault(require("axios"));
+//requests = new InterceptedRequests();
 async function getReqlistAction() {
     // POST something to the server 
-    await axios_1.default.post("http://localhost:5012");
-    await axios_1.default.post("http://localhost:5012");
-    await axios_1.default.post("http://localhost:5012");
+    await axios_1.default.get("http://localhost:5012/sharkio/sniffer");
+    await axios_1.default.get("http://localhost:5012/sharkio/sniffer");
+    await axios_1.default.get("http://localhost:5012/sharkio/sniffer");
+    //await axios.post("http://localhost:3000");
+    //await axios.post("http://localhost:5012");
+    //await axios.post("http://localhost:5012");
     const answer = await axios_1.default.get("http://localhost:5012/sharkio/sniffer/invocation");
     // TODO print only data
     console.log(answer);
@@ -29,21 +33,57 @@ exports.getReqlistAction = getReqlistAction;
     //	});
     
 } */
-async function executeAction(config) {
-    //const url = config.url;
-    const method = config.method;
-    const invocation = config.invocation;
-    const sniffer_port = config.sniffer_port;
-    const server_port = config.server_port;
-    const executionUrl = `http://localhost:${server_port}/sharkio/sniffer/${sniffer_port}/actions/execute`;
+async function addRequest(config, sniffer_name) {
+    // this will have a new rout in the controller which will basically execute the log request in intercepted request
+    /* 	{
+      "url": "www.google.com",
+      "method": "GET",
+      "invocation": {
+        "id": "string",
+        "timestamp": "string",
+        "body": "string",
+        "headers": {
+          "key": "value"
+        },
+        "cookies": {
+          "key": "value"
+        },
+        "params": {
+          "key": "value"
+        }
+      }
+    } */
+    const executionUrl = `http://localhost:5012/sharkio/sniffer/5551/actions/execute`;
+    const url = 'http://localhost:5012/';
     //TODO switch config to a request
     //TODO how to get sniffer's port
     //console.log(config.url);
-    const answer = await axios_1.default.post(executionUrl, { executionUrl, method, invocation }, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    const method = config.method;
+    const invocation = config.invocation;
+    const answer = await axios_1.default.post(executionUrl, { url, method, invocation });
     console.log(answer);
+    //	requests.interceptRequest(req, sniffer_name)
+}
+exports.addRequest = addRequest;
+async function executeAction(config) {
+    //this will be able to execute a detaied configuration or an id of a logged request
+    //const url = config.url;
+    /*  	const method = config.method;
+        const invocation = config.invocation;
+        const sniffer_port = config.sniffer_port;
+        const server_port = config.server_port;
+        const executionUrl = `http://localhost:${server_port}/sharkio/sniffer/${sniffer_port}/actions/execute`;
+        //TODO switch config to a request
+        //TODO how to get sniffer's port
+        //console.log(config.url);
+        const answer = await axios.post(executionUrl,
+        { executionUrl, method, invocation },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+        );
+        console.log(answer);  */
 }
 exports.executeAction = executeAction;

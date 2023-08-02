@@ -9,6 +9,7 @@
   "bundledDependencies": true,
   "scripts": {
     "start": "npm run build && npm run global",
+	"controller":  "concurrently --kill-others \"nodemon main.ts\" \"nodemon ../dummy-server.js\"",
 	"dev": "concurrently --kill-others \"cd ../traffic-sniffer && npm run dev\" \"npm start\"",
 	"test": "echo \"Error: no test specified\" && exit 1",
 	"demo": "concurrently --kill-others \"nodemon ../dummy-server.js \" \"npm run dev\"",
