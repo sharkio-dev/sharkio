@@ -20,6 +20,7 @@ import c from 'classnames';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './sidebar.module.scss';
+import { routes } from '../../constants/routes';
 
 export const SideBar: React.FC = () => {
   const navigate = useNavigate();
@@ -122,6 +123,18 @@ export const SideBar: React.FC = () => {
           >
             <ApiIcon />
             {!minimized && <>OpenAPI</>}
+          </ListItemButton>
+          <ListItemButton
+            className={c({
+              [styles.listItem]: true,
+              [styles.listItemMinimized]: minimized,
+            })}
+            onClick={() => {
+              navigate(routes.COLLECTION);
+            }}
+          >
+            <ApiIcon />
+            {!minimized && <>Collection</>}
           </ListItemButton>
         </List>
       </Paper>

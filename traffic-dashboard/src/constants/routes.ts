@@ -6,4 +6,5 @@ export const routes = {
   MOCKS: '/mocks',
   SERVICE: '/service/:port',
   OPENAPI: '/gen-openapi',
+  COLLECTION: '/collections',
 };
