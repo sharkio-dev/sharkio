@@ -19,6 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "main.jsss"],
+  "include": ["src", "main.jsss", "process-env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

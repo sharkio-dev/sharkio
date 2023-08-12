@@ -10,3 +10,4 @@ sharkio-0.1.0.tgz
 *.tgz
 .vit.config.ts.timestamp*
 sniffers-setup.json
+.env
