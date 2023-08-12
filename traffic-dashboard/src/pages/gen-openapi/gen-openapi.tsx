@@ -21,18 +21,18 @@ import { InterceptedRequest, SnifferConfig } from '../../types/types';
 import styles from './gen-openapi.module.scss';
 
 export const GenOpenAPI: React.FC = () => {
+  const snackBar = useSnackbar();
   const {
     requestsData: requests,
     servicesData: services,
     loadData,
   } = useContext(RequestsMetadataContext);
 
-  const [service, setService] = useState<string | undefined>(undefined);
   const [openApiDoc, setOpenApiDoc] = useState<OpenAPIDocument>();
 
-  const onSubmit = () => {
+  const onSubmit = (serviceId: string) => {
     const filteredRequests: InterceptedRequest[] =
-      requests?.filter((req) => req.serviceId === service) || [];
+      requests?.filter((req) => req.serviceId === serviceId) || [];
 
     setOpenApiDoc(
       JsonToOpenapi(filteredRequests, undefined, undefined, undefined),
@@ -43,7 +43,7 @@ export const GenOpenAPI: React.FC = () => {
     loadData?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const snackBar = useSnackbar();
+
   const handleExportClicked = () => {
     const file = new Blob([JSON.stringify(openApiDoc, null, 2)], {
       type: 'text/plain;charset=utf-8',
@@ -73,13 +73,9 @@ export const GenOpenAPI: React.FC = () => {
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Service" />}
           onChange={(_, value: string | SnifferConfig | null) => {
-            if (value === null) {
-              setService(undefined);
-            }
             const newValue =
               typeof value === 'object' ? value && value.id : value;
-            newValue && setService(newValue);
-            onSubmit();
+            newValue && onSubmit(newValue);
           }}
         />
       </Card>
