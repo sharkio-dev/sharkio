@@ -1,11 +1,10 @@
+import { Typography } from '@mui/material';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Session } from '@supabase/supabase-js';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { supabaseClient } from '../../utils/supabase-auth';
 import styles from './auth.module.scss';
-import { SharkSpinner } from '../../components/shark-spinner/shark-spinner';
-import { Typography } from '@mui/material';
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
@@ -38,6 +37,7 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
             appearance={{ theme: ThemeSupa }}
             providers={['github']}
             view="sign_in"
+            redirectTo="http://localhost:5173"
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { AddBox } from '@mui/icons-material';
+import { AddBox, Construction } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -76,6 +76,13 @@ export const Collections: React.FC = () => {
         </Card>
         <Card className={styles.collectionRequestsCard}>
           {selectedCollection?.name}
+
+          <div className={styles.construction}>
+            <div>
+              <Construction className={styles.constructionIcon} />
+            </div>
+            <div>This part is still under construction</div>
+          </div>
         </Card>
       </div>
       <Dialog open={isAddDialogOpen} onClose={close}>
