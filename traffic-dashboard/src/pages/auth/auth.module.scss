@@ -1,0 +1,23 @@
+.authContainer {
+  padding: 50px;
+}
+
+.authHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.sharkioLogo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 30px;
+}
+
+.auth {
+  padding: 100px;
+  padding-top: unset;
+}
