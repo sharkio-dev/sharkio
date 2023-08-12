@@ -4,6 +4,8 @@ import { Session } from '@supabase/supabase-js';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { supabaseClient } from '../../utils/supabase-auth';
 import styles from './auth.module.scss';
+import { SharkSpinner } from '../../components/shark-spinner/shark-spinner';
+import { Typography } from '@mui/material';
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
@@ -24,17 +26,21 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
 
   if (!session) {
     return (
-      <>
+      <div className={styles.authContainer}>
+        <div className={styles.authHeader}>
+          <img className={styles.sharkioLogo} src="shark-logo.png" alt="Logo" />
+          <Typography variant="h3">Welcome to sharkio!</Typography>
+        </div>
         <div className={styles.auth}>
           <Auth
             supabaseClient={supabaseClient}
-            theme="light"
+            theme="dark"
             appearance={{ theme: ThemeSupa }}
             providers={['github']}
             view="sign_in"
           />
         </div>
-      </>
+      </div>
     );
   } else {
     return children;
