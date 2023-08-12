@@ -12,6 +12,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
+    "dev2": "vite -c vite.production.config.ts",
     "start": "node ./main.js",
     "build": "tsc && vite build",
     "docker:build": "docker build . -t sharkio-traffic-dashboard",
