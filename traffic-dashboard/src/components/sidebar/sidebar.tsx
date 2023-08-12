@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ChevronLeft,
   ChevronRight,
+  FolderCopyOutlined,
   Home,
   SwapHoriz,
 } from '@mui/icons-material';
@@ -133,8 +134,8 @@ export const SideBar: React.FC = () => {
               navigate(routes.COLLECTION);
             }}
           >
-            <ApiIcon />
-            {!minimized && <>Collection</>}
+            <FolderCopyOutlined />
+            {!minimized && <>Collections</>}
           </ListItemButton>
         </List>
       </Paper>

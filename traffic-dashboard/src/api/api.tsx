@@ -141,3 +141,15 @@ export const deactivateMock = (
     },
   );
 };
+
+export const getCollections = () => {
+  return axios.get('/sharkio/collection');
+};
+
+export const createCollection = (name: string) => {
+  return axios.post('/sharkio/collection', JSON.stringify({ name }), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};

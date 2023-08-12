@@ -1,13 +1,16 @@
-type CreateCollectionBody = {
+import { Invocation } from "../../types";
+
+export type CreateCollectionBody = {
   name: string;
 };
 
-type UpdateCollectionBody = {
+export type UpdateCollectionBody = {
   id: string;
   name?: string;
 };
 
-type Collection = {
+export type Collection = {
   id: string;
   name: string;
+  invocations?: Invocation[];
 };

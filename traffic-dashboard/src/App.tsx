@@ -12,6 +12,7 @@ import { NewRequest } from './pages/new-request/new-request';
 import { RequestPage } from './pages/request/request';
 import { Requests } from './pages/requests/requests';
 import { Service } from './pages/service/service';
+import { Collections } from './pages/collections/collections';
 
 function App(): React.JSX.Element {
   const theme = createTheme({
@@ -34,6 +35,7 @@ function App(): React.JSX.Element {
               <Route path={routes.SERVICE} element={<Service />}></Route>
               <Route path={routes.MOCKS} element={<Mocks />}></Route>
               <Route path={routes.OPENAPI} element={<GenOpenAPI />}></Route>
+              <Route path={routes.COLLECTION} element={<Collections />}></Route>
               <Route path={'*'} element={<Home />}></Route>
             </Routes>
           </PageTemplate>
