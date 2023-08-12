@@ -74,13 +74,56 @@ export class CollectionManagerController {
       "/collection",
       async (req: Request, res: Response, next: NextFunction) => {
         try {
+          const { name } = req.body;
           const collections = this.collectionManager.create({
-            name: "My collection",
+            name,
           });
           res.json(collections).status(200);
         } catch (e) {
           log.error("An unexpected error occured", {
-            method: "GET",
+            method: "POST",
+            path: `${this.baseUrl}/collection`,
+            error: e,
+          });
+          res.sendStatus(500);
+        }
+      },
+    );
+
+    /**
+     * @openapi
+     * /sharkio/collection:
+     *   post:
+     *     tags:
+     *       - collection
+     *     description: Create a collection
+     *     requestBody:
+     *            description: Create a new mock
+     *            content:
+     *              application/json:
+     *                schema:
+     *                  type: object
+     *                  properties:
+     *                    name:
+     *                      type: string
+     *                      description: Collection name
+     *                      example: My collection
+     *     responses:
+     *       201:
+     *         description: Collection created
+     *       500:
+     *         description: Server error
+     */
+    router.delete(
+      "/collection",
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const { id } = req.body;
+          const collections = this.collectionManager.remove(id);
+          res.json(collections).status(200);
+        } catch (e) {
+          log.error("An unexpected error occured", {
+            method: "DELETE",
             path: `${this.baseUrl}/collection`,
             error: e,
           });

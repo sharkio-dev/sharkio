@@ -52,10 +52,12 @@ const MocksPage: React.FC = () => {
 
   return (
     <>
-      <Button onClick={handleAddClicked}>
-        <AddBox />
-        &nbsp;&nbsp;add
-      </Button>
+      <div>
+        Mocks
+        <Button onClick={handleAddClicked}>
+          <AddBox />
+        </Button>
+      </div>
       <Card>
         {mocks.flatMap((serviceMock: ServiceMock) => {
           return serviceMock.mocks.map((mock: Mock) => {
