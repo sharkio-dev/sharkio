@@ -13,6 +13,7 @@ import { NewRequest } from './pages/new-request/new-request';
 import { RequestPage } from './pages/request/request';
 import { Requests } from './pages/requests/requests';
 import { Service } from './pages/service/service';
+import { Collections } from './pages/collections/collections';
 
 function App(): React.JSX.Element {
   const theme = createTheme({
@@ -29,15 +30,16 @@ function App(): React.JSX.Element {
             <PageTemplate>
               <Routes>
                 <Route path={routes.HOME} element={<Home />} />
-                <Route path="/new-request" element={<NewRequest />}></Route>
-                <Route path={routes.REQUEST} element={<RequestPage />}></Route>
-                <Route path={routes.CONFIG} element={<Config />}></Route>
-                <Route path={routes.REQUESTS} element={<Requests />}></Route>
-                <Route path={routes.MOCKS} element={<MocksPage />}></Route>
-                <Route path={routes.SERVICE} element={<Service />}></Route>
-                <Route path={routes.MOCKS} element={<Mocks />}></Route>
-                <Route path={routes.OPENAPI} element={<GenOpenAPI />}></Route>
-                <Route path={'*'} element={<AuthUI />}></Route>
+                <Route path="/new-request" element={<NewRequest />} />
+                <Route path={routes.REQUEST} element={<RequestPage />} />
+                <Route path={routes.CONFIG} element={<Config />} />
+                <Route path={routes.REQUESTS} element={<Requests />} />
+                <Route path={routes.MOCKS} element={<MocksPage />} />
+                <Route path={routes.SERVICE} element={<Service />} />
+                <Route path={routes.MOCKS} element={<Mocks />} />
+                <Route path={routes.OPENAPI} element={<GenOpenAPI />} />
+                <Route path={routes.COLLECTION} element={<Collections />} />
+                <Route path={'*'} element={<AuthUI />} />
               </Routes>
             </PageTemplate>
           </RequestMetadataProvider>
