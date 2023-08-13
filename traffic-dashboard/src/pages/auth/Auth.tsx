@@ -4,7 +4,6 @@ import { Session } from '@supabase/supabase-js';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { supabaseClient } from '../../utils/supabase-auth';
 import styles from './auth.module.scss';
-import { SharkSpinner } from '../../components/shark-spinner/shark-spinner';
 import { Typography } from '@mui/material';
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
@@ -32,6 +31,7 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
           <Typography variant="h3">Welcome to sharkio!</Typography>
         </div>
         <div className={styles.auth}>
+          {window.location.origin}
           <Auth
             supabaseClient={supabaseClient}
             theme="dark"
