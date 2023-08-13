@@ -63,7 +63,7 @@ export const RequestPage: React.FC = () => {
 
   useEffect(() => {
     console.log(requests);
-    const request = requests?.find((request) => {
+    const request: any = requests?.find((request) => {
       return request.id === id;
     });
 
