@@ -35,9 +35,9 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
             supabaseClient={supabaseClient}
             theme="dark"
             appearance={{ theme: ThemeSupa }}
-            providers={['github']}
+            providers={['github', 'google']}
             view="sign_in"
-            redirectTo="http://localhost:5173"
+            redirectTo={window.location.origin}
           />
         </div>
       </div>
