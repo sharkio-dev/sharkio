@@ -63,7 +63,7 @@ export class Sniffer {
       method: req.method,
       url: req.url,
     });
-    this.interceptedRequests.interceptRequest(req, this.config.name);
+    this.interceptedRequests.interceptRequest(req, this.config.id);
     next();
   }
 
@@ -87,12 +87,11 @@ export class Sniffer {
   }
 
   execute(url: string, method: string, invocation: Invocation) {
-    const executionUrl = `http://localhost:${this.config.port}${url}`;
     return this.interceptedRequests.execute(
-      executionUrl,
+      url,
       method,
       invocation,
-      this.config.name
+      this.config.name,
     );
   }
 

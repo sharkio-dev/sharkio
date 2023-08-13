@@ -8,6 +8,10 @@ And provides you with a dashboard to analyze all the traffic.
 Sharkio also provides the ability to repeat requests.
 Generate types for youre favorite language based on real data.
 
+## Help us help you!
+
+<a href="https://www.buymeacoffee.com/sharkio"><img src="https://img.buymeacoffee.com/button-api/?text=Sponsor Sharkio&emoji=💰&slug=sharkio&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
 ## 🗺️ Roadmap
 
 In the roadmap sharkio will support team functions.
@@ -45,7 +49,8 @@ Request mocking.
 
 ## 🚀 Getting started
 
-### Running in development 
+### Running in development
+
 - npm i -g concurrently ts-node
 
 For the backend
@@ -70,12 +75,15 @@ Note:
 - `npm run demo` ( in root directory )
 
 ### Running in production - using Docker
+
 Run whole project:
+
 - in root of project, use:
 - `docker-compose up`
 - NOTE: use ports 5550-5560 as proxies, make sure they are available.
 
 Run backend/frontend only:
+
 - `cd` to relevent folder
 - build the Docker image: `npm run docker:build`
 - run the app: `npm run docker:run`

@@ -17,7 +17,9 @@
     "format:sniffer": "cd ./traffic-sniffer && npm run format",
     "build": "concurrently --kill-others \"cd ./traffic-sniffer && npm run build\"  \"cd ./traffic-dashboard && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev\"",
+    "dev2": "concurrently --kill-others \"cd ./traffic-sniffer && npm run dev\"  \"cd ./traffic-dashboard && npm run dev2\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
+    "format": "prettier -w . && git add .",
     "test": "cd ./traffic-sniffer && npm test",
     "prepare": "husky install",
     "postinstall": "husky install"
@@ -27,8 +29,9 @@
   "dependencies": {
     "axios": "^1.4.0",
     "concurrently": "^8.2.0",
+    "copy-to-clipboard": "^3.3.3",
     "kill-port": "^2.0.1",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "open": "^9.1.0",
     "swagger-jsdoc": "^6.2.8",
     "traffic-dashboard": "file:traffic-dashboard",
@@ -57,7 +60,8 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.33.0",
     "express": "^4.18.2",
-    "husky": "^8.0.3",
-    "prettier": "^3.0.0"
+    "husky": "^8.0.0",
+    "prettier": "^3.0.0",
+    "pretty-quick": "^3.1.3"
   }
 }

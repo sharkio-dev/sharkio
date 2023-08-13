@@ -1,8 +1,9 @@
-import { AppBar } from "@mui/material";
-import React from "react";
-import styles from "./navbar.module.scss";
-import LoginComponent from "../login-component/login-component";
-import GitHubIcon from "@mui/icons-material/GitHub";
+import { AppBar } from '@mui/material';
+import React from 'react';
+import styles from './navbar.module.scss';
+import LoginComponent from '../login-component/login-component';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 export const Navbar: React.FC = () => {
   return (
     <AppBar position="relative">
@@ -13,6 +14,7 @@ export const Navbar: React.FC = () => {
             className={styles.github_link}
             href="https://github.com/idodav/sharkio"
             target="_blank"
+            rel="noreferrer"
           >
             <GitHubIcon fontSize="large" />
           </a>

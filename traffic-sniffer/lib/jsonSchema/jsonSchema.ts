@@ -70,7 +70,7 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
 export function jsonSchemaToTypescriptInterface(
   schema: JsonSchema,
   interfaceName = "",
-  isNested = false
+  isNested = false,
 ): string {
   let output = isNested ? "" : `type ${interfaceName} = {`;
 
@@ -79,7 +79,7 @@ export function jsonSchemaToTypescriptInterface(
       output += `  ${key}: ${jsonSchemaToTypescriptInterface(
         value,
         key,
-        true
+        true,
       )}`;
     }
   } else if (schema.type === "array" && schema.items) {

@@ -1,7 +1,8 @@
-import { PlayArrow } from "@mui/icons-material";
+import { PlayArrow } from '@mui/icons-material';
 import {
   Button,
   Card,
+  CircularProgress,
   Tab,
   Table,
   TableBody,
@@ -10,47 +11,54 @@ import {
   TableRow,
   Tabs,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import React, {
   PropsWithChildren,
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useParams } from "react-router-dom";
-import { executeRequest } from "../../api/api";
-import { HttpMethod } from "../../components/http-method/http-method";
-import { RequestsMetadataContext } from "../../context/requests-context";
+} from 'react';
+import { useParams } from 'react-router-dom';
+import { executeRequest } from '../../api/api';
+import { HttpMethod } from '../../components/http-method/http-method';
+import { RequestsMetadataContext } from '../../context/requests-context';
 import {
+  JsonObject,
   JsonSchema,
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
-} from "../../lib/jsonSchema";
-import { JsonToOpenapi } from "../../lib/generateOpenapi";
-import styles from "./requestCard.module.scss";
-import { InterceptedRequest, Invocation } from "../../types/types";
-import { OpenAPIDocument } from "../../lib/openapi.interface";
+} from '../../lib/jsonSchema';
+import { JsonToOpenapi } from '../../lib/generateOpenapi';
+import styles from './requestCard.module.scss';
+import {
+  InterceptedRequest,
+  Invocation,
+  SnifferConfig,
+} from '../../types/types';
+import { OpenAPIDocument } from '../../lib/openapi.interface';
 
 export const RequestPage: React.FC = () => {
-  const { id } = useParams();
+  const { id, serviceId } = useParams();
   const [typescript, setTypescript] = useState<string | undefined>(undefined);
   const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
-    undefined
+    undefined,
   );
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
   const [request, setRequest] = useState<InterceptedRequest | undefined>(
-    undefined
+    undefined,
   );
   const [tab, setTab] = useState(0);
-  const { loadData, requestsData: requests } = useContext(
-    RequestsMetadataContext
-  );
+  const {
+    loadData,
+    requestsData: requests,
+    servicesData: services,
+  } = useContext(RequestsMetadataContext);
+  const service = services?.find((service) => service.id === serviceId);
 
   useEffect(() => {
     loadData?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -60,12 +68,14 @@ export const RequestPage: React.FC = () => {
     });
 
     if (request) {
-      const schema = generateJsonSchema(request.invocations[0].body);
+      const schema = generateJsonSchema(
+        request.invocations[0].body as JsonObject,
+      );
       setSchema(schema);
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
-      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
-      setOpenapi(JsonToOpenapi(new Array(request), request.service, "1.0.0"));
+      setTypescript(jsonSchemaToTypescriptInterface(schema, 'body'));
+      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, '1.0.0'));
       setRequest(request);
     }
   }, [id, requests]);
@@ -74,17 +84,9 @@ export const RequestPage: React.FC = () => {
     setTab(newValue);
   };
 
-  const handleExecuteClicked = (
-    url: string,
-    method: string,
-    invocation: Invocation
-  ) => {
-    executeRequest(url, method, invocation);
-  };
-
   return (
     <div className={styles.requestPageContainer}>
-      {request === undefined && "No request found"}
+      {request === undefined && 'No request found'}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
@@ -97,53 +99,6 @@ export const RequestPage: React.FC = () => {
             <Typography>
               last invocation: {request.lastInvocationDate}
             </Typography>
-          </Card>
-          <Card className={styles.invocationsCardContainer}>
-            <div className={styles.cardTitle}>
-              <Typography variant="h6">Invocations</Typography>
-            </div>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>execute</TableCell>
-                  <TableCell>service</TableCell>
-                  <TableCell>request id</TableCell>
-                  <TableCell>timestamp</TableCell>
-                  <TableCell>body</TableCell>
-                  <TableCell>params</TableCell>
-                  <TableCell>headers</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {request.invocations.map((invocation) => {
-                  return (
-                    <TableRow key={invocation.id}>
-                      <TableCell>
-                        <Button
-                          onClick={() => {
-                            handleExecuteClicked(
-                              request.url,
-                              request.method,
-                              invocation
-                            );
-                          }}
-                        >
-                          <PlayArrow color="success"></PlayArrow>
-                        </Button>
-                      </TableCell>
-                      <TableCell>{request.service}</TableCell>
-                      <TableCell>{invocation.id}</TableCell>
-                      <TableCell>{invocation.timestamp}</TableCell>
-                      <TableCell>{JSON.stringify(invocation.body)}</TableCell>
-                      <TableCell>{JSON.stringify(invocation.params)}</TableCell>
-                      <TableCell>
-                        {JSON.stringify(invocation.headers)}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
           </Card>
           <Card>
             <Tabs value={tab} onChange={handleTabChanged}>
@@ -181,6 +136,37 @@ export const RequestPage: React.FC = () => {
               </div>
             </TabContent>
           </Card>
+          <Card className={styles.invocationsCardContainer}>
+            <div className={styles.cardTitle}>
+              <Typography variant="h6">Invocations</Typography>
+            </div>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>execute</TableCell>
+                  <TableCell>service</TableCell>
+                  <TableCell>request id</TableCell>
+                  <TableCell>timestamp</TableCell>
+                  <TableCell>body</TableCell>
+                  <TableCell>params</TableCell>
+                  <TableCell>headers</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {' '}
+                {request.invocations.map((invocation) => {
+                  return (
+                    <InvocationRow
+                      key={invocation.id}
+                      service={service}
+                      invocation={invocation}
+                      request={request}
+                    />
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Card>
         </>
       )}
     </div>
@@ -194,4 +180,62 @@ const TabContent: React.FC<
   } & PropsWithChildren
 > = ({ children, index, tabValue }) => {
   return <>{index === tabValue && children}</>;
+};
+interface InvocationRowProps {
+  invocation: Invocation;
+  service?: SnifferConfig;
+  request: any;
+}
+
+const InvocationRow: React.FC<InvocationRowProps> = ({
+  invocation,
+  service,
+  request,
+}) => {
+  const [executeLoading, setExecuteLoading] = useState(false);
+
+  const handleExecuteClicked = (
+    url: string,
+    method: string,
+    invocation: Invocation,
+  ) => {
+    if (!service?.port) {
+      console.error('service was not found for requests');
+      return;
+    }
+    setExecuteLoading(true);
+    executeRequest(service?.port, url, method, invocation).finally(() =>
+      setExecuteLoading(false),
+    );
+  };
+
+  return (
+    <>
+      <TableRow key={invocation.id}>
+        <TableCell>
+          <Button
+            onClick={() => {
+              handleExecuteClicked(
+                'http://localhost:' + `${service?.port}` + `${request.url}`,
+                request.method,
+                invocation,
+              );
+            }}
+          >
+            {executeLoading ? (
+              <CircularProgress />
+            ) : (
+              <PlayArrow color="success"></PlayArrow>
+            )}
+          </Button>
+        </TableCell>
+        <TableCell>{service?.name ?? ''}</TableCell>
+        <TableCell>{invocation.id}</TableCell>
+        <TableCell>{invocation.timestamp}</TableCell>
+        <TableCell>{JSON.stringify(invocation.body)}</TableCell>
+        <TableCell>{JSON.stringify(invocation.params)}</TableCell>
+        <TableCell>{JSON.stringify(invocation.headers)}</TableCell>
+      </TableRow>
+    </>
+  );
 };
