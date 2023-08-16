@@ -30,7 +30,6 @@ const LoginComponent: React.FC = () => {
     })();
   }, []);
 
-  // לממש פה את הפרטי משתמש כשהוא מתחבר
   return (
     <div className={styles.login_component_container}>
       <div>
