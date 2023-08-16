@@ -3,8 +3,8 @@ import { FileConfig } from  "../traffic-sniffer/lib/setup-config/file-config";
 import { SnifferConfigSetup } from  "../traffic-sniffer/lib/setup-config/file-config.types";
 import { MockManagerController } from  "../traffic-sniffer/lib/sniffer-manager/mock-manager-controller";
 import { SnifferManager } from  "../traffic-sniffer/lib/sniffer-manager/sniffer-manager";
-import { SnifferManagerController } from "../traffic-sniffer/lib/sniffer-manager/sniffer-manager-controller";
-//import {CliSnifferManagerController} from "./src/models/cli-sniffer-controller";
+//import { SnifferManagerController } from "../traffic-sniffer/lib/sniffer-manager/sniffer-manager-controller";
+import {CliSnifferManagerController} from "./src/models/cli-sniffer-controller";
 import { SnifferManagerServer } from "../traffic-sniffer/lib/sniffer-manager/sniffer-manager-server";
 import { SwaggerUiController } from  "../traffic-sniffer/lib/swagger/swagger-controller";
 export const setupFilePath =
@@ -20,7 +20,7 @@ async function main() {
   const configData: SnifferConfigSetup[] = fileConfig.getConfig();
   await snifferManager.loadSniffersFromConfig(configData);
 
-  const snifferController = new SnifferManagerController(snifferManager);
+  const snifferController = new CliSnifferManagerController(snifferManager);
   const mockManagerController = new MockManagerController(snifferManager);
   //const swaggerUi = new SwaggerUiController();
   const snifferManagerServer = new SnifferManagerServer([

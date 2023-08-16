@@ -1,9 +1,10 @@
 import { input } from "@inquirer/prompts";
 import select, { Separator  } from "@inquirer/select";
 import { showTitleAndBanner } from './utils/logger.util';
-import { getReqlistAction, executeAction , addRequest} from './actions/actions'; 
+import { getReqlistAction, executeAction , addReqAction} from './actions/actions'; 
 const { cyan, red, green } = require('kleur/colors');
 import { Request, Response} from "express";
+import {v4} from "uuid";
 //import {Answer} from '../models/choice';
 
 export enum ProviderValue {
@@ -21,7 +22,8 @@ const listOfCommands = [
 ];
 export type Config = {
 	url: string;
-	sniffer_mame: string;
+	sniffer_port: number
+	//sniffer_mame: string;
 	//server_port: number;
 	method: string;
 	invocation: Object;
@@ -38,7 +40,7 @@ showTitleAndBanner();
 	{
 		await getReqlistAction();
 	}
-  else if (answer == ProviderValue.addRequest)
+  else if (answer == ProviderValue.execute)
   {	  
 	const act_url = await input({
 		message: "Please enter url",
@@ -48,9 +50,9 @@ showTitleAndBanner();
 	   message: "Please enter request method",
 	   default: "GET"
 	});
-	const act_sniffer_mame = await input({
-	   message: "Please enter sniffer name",
-	   default: "cli_snif"
+	const act_sniffer_port = await input({
+	   message: "Please enter sniffer port",
+	   default: "5551"
 	});
 	const body = await input({
 	   message: "Please enter request body:",
@@ -68,23 +70,62 @@ showTitleAndBanner();
 	   message: "Please enter request params:",
 	   default: ""
 	});
+	const act_sniffer_port_num = +act_sniffer_port
 	const timestamp= new Date();
-	const act_invocation = {"id": act_sniffer_mame, "timestamp":timestamp, "body":body, "headers":headers, "cookies": cookies, "params":params
+	const act_id = v4();
+	const act_invocation = {"id": act_id, "timestamp":timestamp, "body":body, "headers":headers, "cookies": cookies, "params":params
 	}
 	const input_config: Config = {
 		url: act_url,
-		sniffer_mame: act_sniffer_mame,
-		//server_port: act_server_port_num,
+		//sniffer_mame: act_sniffer_mame,
+		sniffer_port: act_sniffer_port_num,
         method: act_method,
 		invocation: act_invocation
     }
-	await addRequest(input_config,act_sniffer_mame);
+	await executeAction(input_config);
   }
-  else if (answer == ProviderValue.execute){
-// id for existing request
-// or same fields as addRequest to add a new one and execute it 
-/* 	const id="5551";
-	await executeAction(id); */
+  else if (answer == ProviderValue.addRequest){
+	const act_url = await input({
+		message: "Please enter url",
+	    default: "http://localhost:5012"
+	  });
+    const act_method = await input({
+	   message: "Please enter request method",
+	   default: "GET"
+	});
+	const act_sniffer_port = await input({
+	   message: "Please enter sniffer port",
+	   default: "5551"
+	});
+	const body = await input({
+	   message: "Please enter request body:",
+	   default: ""
+	});
+	const headers = await input({
+	   message: "Please enter request headers:",
+	   default: ""
+	});
+	const cookies = await input({
+	   message: "Please enter request cookies:",
+	   default: ""
+	});
+	const params = await input({
+	   message: "Please enter request params:",
+	   default: ""
+	});
+	const act_sniffer_port_num = +act_sniffer_port
+	const timestamp= new Date();
+	const act_id = v4();
+	const act_invocation = {"id": act_id, "timestamp":timestamp, "body":body, "headers":headers, "cookies": cookies, "params":params
+	}
+	const input_config: Config = {
+		url: act_url,
+		//sniffer_mame: act_sniffer_mame,
+		sniffer_port: act_sniffer_port_num,
+        method: act_method,
+		invocation: act_invocation
+    }
+	await addReqAction(input_config);
   }
   
 })();

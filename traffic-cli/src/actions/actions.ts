@@ -36,31 +36,10 @@ export async function getReqlistAction(){
 	//	});
 	
 } */
-export async function addRequest(config: Config,sniffer_name: string){
-	// this will have a new rout in the controller which will basically execute the log request in intercepted request
-/* 	{
-  "url": "www.google.com",
-  "method": "GET",
-  "invocation": {
-    "id": "string",
-    "timestamp": "string",
-    "body": "string",
-    "headers": {
-      "key": "value"
-    },
-    "cookies": {
-      "key": "value"
-    },
-    "params": {
-      "key": "value"
-    }
-  }
-} */
-	const executionUrl = `http://localhost:5012/sharkio/sniffer/5551/actions/execute`;
-	const url = 'http://localhost:5012/'
-	//TODO switch config to a request
-	//TODO how to get sniffer's port
-	//console.log(config.url);
+export async function executeAction(config: Config){
+	const url = config.url;
+	const sniffer_port = config.sniffer_port;
+	const executionUrl = `${url}/sharkio/sniffer/${sniffer_port}/actions/execute`;
 	const method = config.method;
 	const invocation = config.invocation;
 	const answer = await axios.post(executionUrl,
@@ -72,26 +51,23 @@ export async function addRequest(config: Config,sniffer_name: string){
     } */
     );
   	console.log(answer); 
-//	requests.interceptRequest(req, sniffer_name)
 }
-export async function executeAction(config: Config){
-	//this will be able to execute a detaied configuration or an id of a logged request
-	//const url = config.url;
-/*  	const method = config.method;
-	const invocation = config.invocation;
+export async function addReqAction(config: Config){
+	// this will have a new rout in the controller which will basically execute the log request in intercepted request
+	// dowsn't work because  intercepted requests is private
+	const url = config.url;
 	const sniffer_port = config.sniffer_port;
-	const server_port = config.server_port;
-	const executionUrl = `http://localhost:${server_port}/sharkio/sniffer/${sniffer_port}/actions/execute`;
-	//TODO switch config to a request
-	//TODO how to get sniffer's port
-	//console.log(config.url);
+	const executionUrl = `${url}/sharkio/sniffer/${sniffer_port}/actions/addRequest`;
+	const method = config.method;
+	const invocation = config.invocation;
 	const answer = await axios.post(executionUrl,
-    { executionUrl, method, invocation },
-    {
+    { url, method, invocation },
+/*     {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    } */
     );
-  	console.log(answer);  */
+  	console.log(answer); 
+
 }

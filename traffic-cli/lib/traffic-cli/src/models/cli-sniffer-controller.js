@@ -392,6 +392,123 @@ class CliSnifferManagerController {
             }
         });
         /**
+         * //@openapi
+         * /sharkio/sniffer/:port/actions/addRequest:
+         *   post:
+         *     tags:
+         *      - sniffer
+         *     description: Add a request to the logged requests of this sniffer
+         *     parameters:
+         *       - name: port
+         *         in: query
+         *         schema:
+         *           type: integer
+         *           minimum: 0
+         *           example: 8080
+         *         description: service port
+         *         required: true
+         *     requestBody:
+         *        description: Add a request to the logged requests
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                url:
+         *                  type: string
+         *                  example: www.google.com
+         *                method:
+         *                  type: string
+         *                  description: Http status
+         *                  example: GET
+         *                  enum: [GET, POST, UPDATE, DELETE, PUT]
+         *                invocation:
+         *                  type: object
+         *                  properties:
+         *                    id:
+         *                      type: string
+         *                    timestamp:
+         *                      type: string
+         *                    body:
+         *                      description: The invocation body content
+         *                    headers:
+         *                      type: object
+         *                      properties:
+         *                        key:
+         *                          type: string
+         *                          example: value
+         *                    cookies:
+         *                      type: object
+         *                      properties:
+         *                        key:
+         *                          type: string
+         *                          example: value
+         *                    params:
+         *                      type: object
+         *                      properties:
+         *                        key:
+         *                          type: string
+         *                          example: value
+         *
+         *     responses:
+         *       200:
+         *         description: Request executed
+         *       404:
+         *         description: Sniffer not found
+         *       500:
+         *         description: Server error
+         */
+        /*     router.post(
+              "/:port/actions/addRequest",
+              requestValidator({
+                params: z.object({
+                  port: portValidator,
+                }),
+                body: z.object({
+                  url: z.string().url(),
+                  method: z
+                    .string()
+                    .toLowerCase()
+                    .pipe(z.enum(["get", "post", "delete", "patch", "put"])),
+                  invocation: z.object({
+                    id: z.string().nonempty(),
+                    timestamp: z.coerce.date(),
+                    body: z.any().optional(),
+                    headers: z.any().optional(),
+                    cookies: z.any().optional(),
+                    params: z.any().optional(),
+                  }),
+                }),
+              }),
+              async (req: Request, res: Response) => {
+                try {
+                  const { port } = req.params;
+                  const { url, method, invocation } = req.body;
+                  const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+        
+                  if (sniffer !== undefined) {
+                    await sniffer.interceptedRequests.interceptRequest(req, sniffer.config.name).catch((e) =>
+                      log.error("Error while executing", {
+                        method: "POST",
+                        path: `${this.baseUrl}/:port/actions/execute`,
+                        error: e,
+                      }),
+                    );
+                    return res.sendStatus(200);
+                  } else {
+                    return res.sendStatus(404);
+                  }
+                } catch (e: any) {
+                  log.error("An unexpected error occured", {
+                    method: "POST",
+                    path: `${this.baseUrl}/:port/actions/execute`,
+                    error: e,
+                  });
+                  return res.sendStatus(500);
+                }
+              },
+            ); */
+        /**
          * @openapi
          * /sharkio/sniffer/:port:
          *   delete:
