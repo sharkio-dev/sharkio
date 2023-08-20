@@ -1,0 +1,34 @@
+
+listRequests:
+for each path in paths print url
+
+METHOD + Endpoint
+1. GET /user
+2. DELETE /user
+
+ENDPOINTS
+1. /user
+
+SELECT METHOD:
+1. DELETE
+2. POST
+
+
+execute:
+body
+params
+headers
+method
+
+which server to send to?
+1. "https://petstore3.swagger.io/api/v3"
+2. "https://petstore3.swagger.io/api/v1"
+3. "https://petstore3.swagger.io/api/v2"
+
+what is the body that you want?
+please fill body:
+id: sadklsdafjk
+name: hello
+
+params
+headers
