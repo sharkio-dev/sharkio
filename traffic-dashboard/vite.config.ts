@@ -5,7 +5,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 // https://vitejs.dev/config/
 export default () => {
   return defineConfig({
-    plugins: [react(), basicSsl()],
+    plugins: [react()],
     server: {
       proxy: {
         // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
