@@ -5,13 +5,21 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { supabaseClient } from '../../utils/supabase-auth';
 import styles from './auth.module.scss';
 import { Typography } from '@mui/material';
+import { useAuthStore } from '../../stores/authStore';
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
+  const { signIn } = useAuthStore();
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      const userDetails = session?.user.user_metadata;
+      signIn({
+        fullName: userDetails?.full_name,
+        email: userDetails?.email,
+        profileImg: userDetails?.avatar_url,
+      });
     });
 
     const {
