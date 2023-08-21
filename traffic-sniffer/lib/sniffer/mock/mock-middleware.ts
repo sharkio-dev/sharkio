@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import MockManager from "./mock-manager";
 
 export default class MockMiddleware {

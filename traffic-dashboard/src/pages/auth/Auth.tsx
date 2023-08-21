@@ -39,7 +39,6 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
           <Typography variant="h3">Welcome to sharkio!</Typography>
         </div>
         <div className={styles.auth}>
-          {window.location.origin}
           <Auth
             supabaseClient={supabaseClient}
             theme="dark"
