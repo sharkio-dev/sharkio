@@ -1,0 +1,110 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "https://petstore3.swagger.io/api/v3"
+    },
+    {
+      "url": "https://petstore3.swagger.io/api/v1"
+    },
+    {
+      "url": "https://petstore3.swagger.io/api/v2"
+    }
+  ],
+  "paths": {
+    "/user/create/dorin": {
+      "post": {
+        "summary": "Endpoint for POST",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hello": {
+                    "type": "string"
+                  },
+                  "this": {
+                    "type": "string"
+                  },
+                  "ido": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Endpoint for GET",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/user": {
+      "delete": {
+        "summary": "Endpoint for DELETE",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Endpoint for POST",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

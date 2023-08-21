@@ -8,17 +8,8 @@
   },
   "bundledDependencies": true,
   "scripts": {
-    "start": "npm run build && npm run global",
-	"controller":  "concurrently --kill-others \"nodemon main.ts\" \"nodemon ../dummy-server.js\"",
-	"dev": "concurrently --kill-others \"cd ../traffic-sniffer && npm run dev\" \"npm start\"",
-	"test": "echo \"Error: no test specified\" && exit 1",
-	"demo": "concurrently --kill-others \"nodemon ../dummy-server.js \" \"npm run dev\"",
-    "lint": "tslint -p . --fix",
-    "build": "npm run clean:some && tsc -p .",
-    "global": "npm i -g && traffic-cli",
-    "clean:some": "rm -rf ./lib ./docs",
-    "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib ./docs",
-    "refresh": "npm run clean:all && npm install"
+    "dev": "ts-node ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hadar Hezi",
   "license": "ISC",

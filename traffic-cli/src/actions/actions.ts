@@ -2,19 +2,20 @@ import axios from 'axios';
 import { PathResponseData } from "../../../traffic-sniffer/types";
 import { Request, Response } from "express";
 import {Config} from "../index"
-import {InterceptedRequests} from  "../../../traffic-sniffer/lib/intercepted-requests"
+import fsSync from "fs";
+//import {InterceptedRequests} from  "../../../traffic-sniffer/lib/intercepted-requests"
+
 
 //requests = new InterceptedRequests();
 export async function getReqlistAction(){
 
-	
-	// POST something to the server 
-	await axios.get("http://localhost:5012/sharkio/sniffer");
-	await axios.get("http://localhost:5012/sharkio/sniffer");
-	await axios.get("http://localhost:5012/sharkio/sniffer");
-	//await axios.post("http://localhost:3000");
-	//await axios.post("http://localhost:5012");
-	//await axios.post("http://localhost:5012");
+	const fileData = fsSync.readFileSync("src/openapi.json", "utf8");
+	const parsedData = JSON.parse(fileData);
+	// Go through the open-api file
+	console.log(Object.keys(parsedData.paths));
+	parsedData.paths.forEach(function (value: string) {
+		console.log(value);
+	});
 	const answer = await axios.get("http://localhost:5012/sharkio/sniffer/invocation");
 // TODO print only data
 	console.log(answer);
