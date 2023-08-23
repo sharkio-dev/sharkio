@@ -86,6 +86,7 @@ export default class MockManager {
   activateManager() {
     this.isActive = true;
   }
+
   getIsActive() {
     return this.isActive;
   }
