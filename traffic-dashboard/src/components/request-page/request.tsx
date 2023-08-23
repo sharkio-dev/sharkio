@@ -1,4 +1,4 @@
-import { PlayArrow, Save } from '@mui/icons-material';
+import { FolderCopyOutlined, PlayArrow } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -15,6 +15,7 @@ import {
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { executeRequest, saveRequestToCollection } from '../../api/api';
 import { HttpMethod } from '../../components/http-method/http-method';
+import { useSnackbar } from '../../hooks/useSnackbar';
 import { JsonToOpenapi } from '../../lib/generateOpenapi';
 import {
   JsonObject,
@@ -30,9 +31,8 @@ import {
   Invocation,
   SnifferConfig,
 } from '../../types/types';
-import styles from './requestCard.module.scss';
-import { useSnackbar } from '../../hooks/useSnackbar';
 import { CollectionPickerModal } from '../collections-picker-modal/collection-picker-modal';
+import styles from './requestCard.module.scss';
 
 interface IRequestPageProps {
   service: SnifferConfig;
@@ -105,7 +105,7 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
                   setSelectCollectionDialogOpen(true);
                 }}
               >
-                <Save />
+                <FolderCopyOutlined />
               </Button>
             </div>
             <HttpMethod method={request.method} />
