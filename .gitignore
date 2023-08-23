@@ -12,3 +12,5 @@ sharkio-0.1.0.tgz
 sniffers-setup.json
 .env
 .DS_Store
+
+yarn.lock
