@@ -5,7 +5,6 @@ import {
   CircularProgress,
   Dialog,
   List,
-  ListItem,
   ListItemButton,
   TextField,
   Typography,
@@ -14,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { createCollection, getCollections } from '../../api/api';
 import { Collection } from '../../types/types';
 import styles from './collections.module.scss';
+import { RequestRow } from '../../components/request-row/request-row';
 
 export const Collections: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -23,7 +23,10 @@ export const Collections: React.FC = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
 
   const loadCollections = () => {
-    getCollections().then((res) => setCollections(res.data));
+    getCollections().then((res) => {
+      setCollections(res.data);
+      setSelectedCollection(res.data[0]);
+    });
   };
 
   useEffect(() => {
@@ -75,13 +78,18 @@ export const Collections: React.FC = () => {
           </List>
         </Card>
         <Card className={styles.collectionRequestsCard}>
-          {selectedCollection?.name}
-
-          <div className={styles.construction}>
-            <div>
-              <Construction className={styles.constructionIcon} />
-            </div>
-            <div>This part is still under construction</div>
+          <div>{selectedCollection?.name}</div>
+          <div>
+            {selectedCollection?.requests.map(
+              (request) =>
+                request && (
+                  <RequestRow
+                    key={request.id}
+                    request={request}
+                    serviceId={request.serviceId}
+                  />
+                ),
+            )}
           </div>
         </Card>
       </div>

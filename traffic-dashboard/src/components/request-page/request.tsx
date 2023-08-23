@@ -1,4 +1,4 @@
-import { PlayArrow } from '@mui/icons-material';
+import { PlayArrow, Save } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -12,16 +12,10 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import React, {
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { useParams } from 'react-router-dom';
-import { executeRequest } from '../../api/api';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { executeRequest, saveRequestToCollection } from '../../api/api';
 import { HttpMethod } from '../../components/http-method/http-method';
-import { RequestsMetadataContext } from '../../context/requests-context';
+import { JsonToOpenapi } from '../../lib/generateOpenapi';
 import {
   JsonObject,
   JsonSchema,
@@ -29,44 +23,34 @@ import {
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
 } from '../../lib/jsonSchema';
-import { JsonToOpenapi } from '../../lib/generateOpenapi';
-import styles from './requestCard.module.scss';
+import { OpenAPIDocument } from '../../lib/openapi.interface';
 import {
   InterceptedRequest,
   Invocation,
   SnifferConfig,
 } from '../../types/types';
-import { OpenAPIDocument } from '../../lib/openapi.interface';
+import styles from './requestCard.module.scss';
+import { useSnackbar } from '../../hooks/useSnackbar';
 
-export const RequestPage: React.FC = () => {
-  const { id, serviceId } = useParams();
+interface IRequestPageProps {
+  service: SnifferConfig;
+  request: InterceptedRequest;
+}
+
+export const RequestPage: React.FC<IRequestPageProps> = ({
+  request,
+  service,
+}) => {
   const [typescript, setTypescript] = useState<string | undefined>(undefined);
   const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
     undefined,
   );
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
-  const [request, setRequest] = useState<InterceptedRequest | undefined>(
-    undefined,
-  );
   const [tab, setTab] = useState(0);
-  const {
-    loadData,
-    requestsData: requests,
-    servicesData: services,
-  } = useContext(RequestsMetadataContext);
-  const service = services?.find((service) => service.id === serviceId);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
-    loadData?.();
-  }, []);
-
-  useEffect(() => {
-    console.log(requests);
-    const request: any = requests?.find((request) => {
-      return request.id === id;
-    });
-
     if (request) {
       const schema = generateJsonSchema(
         request.invocations[0].body as JsonObject,
@@ -76,22 +60,35 @@ export const RequestPage: React.FC = () => {
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, 'body'));
       setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, '1.0.0'));
-      setRequest(request);
     }
-  }, [id, requests]);
+  }, [request]);
 
   const handleTabChanged = (_event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
+  const handleSaveClicked = () => {
+    saveRequestToCollection('3af7ab0e-d769-4a9f-8f96-a3e54ac9145a', request)
+      .then(() => {
+        showSnackbar('successfully saved', 'success');
+      })
+      .catch(() => {
+        showSnackbar('failed to save', 'error');
+      });
+  };
+
   return (
     <div className={styles.requestPageContainer}>
+      {snackBar}
       {request === undefined && 'No request found'}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Request</Typography>
+              <Button onClick={handleSaveClicked}>
+                <Save />
+              </Button>
             </div>
             <HttpMethod method={request.method} />
             {request.url}

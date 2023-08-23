@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { Invocation, Sniffer, SnifferCreateConfig } from '../types/types';
+import {
+  Collection,
+  InterceptedRequest,
+  Invocation,
+  Sniffer,
+  SnifferCreateConfig,
+} from '../types/types';
 
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post('/sharkio/sniffer', JSON.stringify(config), {
@@ -152,4 +158,19 @@ export const createCollection = (name: string) => {
       'Content-Type': 'application/json',
     },
   });
+};
+
+export const saveRequestToCollection = (
+  id: Collection['id'],
+  request: InterceptedRequest,
+) => {
+  return axios.post(
+    `/sharkio/collection/${id}/request`,
+    JSON.stringify({ request }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
 };

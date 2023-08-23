@@ -62,4 +62,5 @@ export type ServiceMock = {
 export type Collection = {
   id: string;
   name: string;
+  requests: InterceptedRequest[];
 };

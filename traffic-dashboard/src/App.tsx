@@ -5,15 +5,15 @@ import { PageTemplate } from './components/page-template/page-template';
 import { routes } from './constants/routes';
 import { RequestMetadataProvider } from './context/requests-context';
 import AuthUI from './pages/auth/Auth';
+import { Collections } from './pages/collections/collections';
 import { Config } from './pages/config/config';
 import { GenOpenAPI } from './pages/gen-openapi/gen-openapi';
 import { Home } from './pages/home/Home';
 import { default as Mocks, default as MocksPage } from './pages/mocks/mocks';
 import { NewRequest } from './pages/new-request/new-request';
-import { RequestPage } from './pages/request/request';
 import { Requests } from './pages/requests/requests';
 import { Service } from './pages/service/service';
-import { Collections } from './pages/collections/collections';
+import { ServiceRequest } from './pages/service-request/service-request';
 
 function App(): React.JSX.Element {
   const theme = createTheme({
@@ -31,7 +31,7 @@ function App(): React.JSX.Element {
               <Routes>
                 <Route path={routes.HOME} element={<Home />} />
                 <Route path="/new-request" element={<NewRequest />} />
-                <Route path={routes.REQUEST} element={<RequestPage />} />
+                <Route path={routes.REQUEST} element={<ServiceRequest />} />
                 <Route path={routes.CONFIG} element={<Config />} />
                 <Route path={routes.REQUESTS} element={<Requests />} />
                 <Route path={routes.MOCKS} element={<MocksPage />} />

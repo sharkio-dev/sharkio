@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": "5555",
+    "name": "sharkio",
+    "downstreamUrl": "https://localhost",
+    "port": 5555,
+    "isStarted": true
+  }
+]
