@@ -11,3 +11,4 @@ sharkio-0.1.0.tgz
 .vit.config.ts.timestamp*
 sniffers-setup.json
 .env
+.DS_Store
