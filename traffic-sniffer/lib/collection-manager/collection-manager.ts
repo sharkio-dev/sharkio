@@ -1,17 +1,17 @@
 import { v4 } from "uuid";
+import { InterceptedRequest } from "../intercepted-request";
 import {
   Collection,
   CreateCollectionBody,
   UpdateCollectionBody,
 } from "./collection.types";
-import { Invocation } from "../../types";
-import { InterceptedRequest } from "../intercepted-request";
+import { ICollectionPersistency } from "./collection-storage.interface";
 
 export class CollectionManager {
   private collections: Map<Collection["id"], Collection>;
 
-  constructor() {
-    this.collections = new Map();
+  constructor(private readonly collectionPersistency: ICollectionPersistency) {
+    this.collections = this.collectionPersistency.load();
   }
 
   get(id: Collection["id"]) {
@@ -22,7 +22,7 @@ export class CollectionManager {
     return Array.from(this.collections.values());
   }
 
-  create(collectionCreateBody: CreateCollectionBody) {
+  async create(collectionCreateBody: CreateCollectionBody) {
     const newCollection = {
       id: v4(),
       requests: [],
@@ -30,9 +30,10 @@ export class CollectionManager {
     };
 
     this.collections.set(newCollection.id, newCollection);
+    await this.collectionPersistency.persist(this.collections);
   }
 
-  update(collectionUpdateBody: UpdateCollectionBody) {
+  async update(collectionUpdateBody: UpdateCollectionBody) {
     const collection = this.collections.get(collectionUpdateBody.id);
 
     if (!collection) {
@@ -44,18 +45,21 @@ export class CollectionManager {
     };
 
     this.collections.set(collectionUpdateBody.id, newCollection);
+    await this.collectionPersistency.persist(this.collections);
   }
 
-  remove(id: Collection["id"]) {
+  async remove(id: Collection["id"]) {
     this.collections.delete(id);
+    await this.collectionPersistency.persist(this.collections);
   }
 
-  addRequest(id: Collection["id"], request: InterceptedRequest) {
+  async addRequest(id: Collection["id"], request: InterceptedRequest) {
     const collection = this.collections.get(id);
     if (collection === undefined) {
       throw new Error("collection not found");
     }
     collection?.requests?.push(request);
     this.collections.set(id, collection);
+    await this.collectionPersistency.persist(this.collections);
   }
 }

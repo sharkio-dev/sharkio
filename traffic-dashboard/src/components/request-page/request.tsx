@@ -25,12 +25,14 @@ import {
 } from '../../lib/jsonSchema';
 import { OpenAPIDocument } from '../../lib/openapi.interface';
 import {
+  Collection,
   InterceptedRequest,
   Invocation,
   SnifferConfig,
 } from '../../types/types';
 import styles from './requestCard.module.scss';
 import { useSnackbar } from '../../hooks/useSnackbar';
+import { CollectionPickerModal } from '../collections-picker-modal/collection-picker-modal';
 
 interface IRequestPageProps {
   service: SnifferConfig;
@@ -41,6 +43,8 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
   request,
   service,
 }) => {
+  const [selectCollectionDialogOpen, setSelectCollectionDialogOpen] =
+    useState(false);
   const [typescript, setTypescript] = useState<string | undefined>(undefined);
   const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
     undefined,
@@ -67,8 +71,8 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
     setTab(newValue);
   };
 
-  const handleSaveClicked = () => {
-    saveRequestToCollection('3af7ab0e-d769-4a9f-8f96-a3e54ac9145a', request)
+  const handleSaveClicked = (collectionId: Collection['id']) => {
+    saveRequestToCollection(collectionId, request)
       .then(() => {
         showSnackbar('successfully saved', 'success');
       })
@@ -79,6 +83,16 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
 
   return (
     <div className={styles.requestPageContainer}>
+      <CollectionPickerModal
+        open={selectCollectionDialogOpen}
+        onClose={() => {
+          setSelectCollectionDialogOpen(false);
+        }}
+        onChoose={function (collectionId: string): void {
+          handleSaveClicked(collectionId);
+          setSelectCollectionDialogOpen(false);
+        }}
+      />
       {snackBar}
       {request === undefined && 'No request found'}
       {request && (
@@ -86,7 +100,11 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
           <Card className={styles.requestCardContainer}>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Request</Typography>
-              <Button onClick={handleSaveClicked}>
+              <Button
+                onClick={() => {
+                  setSelectCollectionDialogOpen(true);
+                }}
+              >
                 <Save />
               </Button>
             </div>

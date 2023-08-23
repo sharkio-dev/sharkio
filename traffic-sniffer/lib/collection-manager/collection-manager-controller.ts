@@ -120,7 +120,7 @@ export class CollectionManagerController {
         try {
           const { request } = req.body;
           const { id } = req.params;
-          this.collectionManager.addRequest(id, request);
+          await this.collectionManager.addRequest(id, request);
           res.sendStatus(201);
         } catch (e) {
           log.error("An unexpected error occured", {
