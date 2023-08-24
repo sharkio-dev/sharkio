@@ -1,7 +1,5 @@
 import { Box, Chip, ListItemButton } from '@mui/material';
 import React, { useContext } from 'react';
-import { generatePath, useNavigate } from 'react-router-dom';
-import { routes } from '../../constants/routes';
 import { RequestsMetadataContext } from '../../context/requests-context';
 import { InterceptedRequest, SnifferConfig } from '../../types/types';
 import { HttpMethod } from '../http-method/http-method';
@@ -10,24 +8,22 @@ import styles from './request-row.module.scss';
 interface IRequestRowProps {
   request: InterceptedRequest;
   serviceId: SnifferConfig['id'];
+  onRequestClicked: (requestId: InterceptedRequest['id']) => void;
 }
 
 export const RequestRow: React.FC<IRequestRowProps> = ({
   request,
   serviceId,
+  onRequestClicked,
 }) => {
-  const navigate = useNavigate();
   const { servicesData } = useContext(RequestsMetadataContext);
-
   const service = servicesData?.find((service) => service.id == serviceId);
 
   return (
     <>
       <ListItemButton
         key={request.id}
-        onClick={() => {
-          navigate(generatePath(routes.REQUEST, { id: request.id, serviceId }));
-        }}
+        onClick={() => onRequestClicked(request.id)}
       >
         <Box
           sx={{

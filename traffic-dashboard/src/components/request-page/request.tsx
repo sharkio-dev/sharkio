@@ -230,11 +230,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
         <TableCell>
           <Button
             onClick={() => {
-              handleExecuteClicked(
-                'http://localhost:' + `${service?.port}` + `${request.url}`,
-                request.method,
-                invocation,
-              );
+              handleExecuteClicked(request.url, request.method, invocation);
             }}
           >
             {executeLoading ? (

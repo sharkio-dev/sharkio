@@ -1,4 +1,4 @@
-import { AddBox, Construction } from '@mui/icons-material';
+import { AddBox } from '@mui/icons-material';
 import {
   Button,
   Card,
@@ -11,16 +11,19 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { createCollection, getCollections } from '../../api/api';
-import { Collection } from '../../types/types';
-import styles from './collections.module.scss';
 import { RequestRow } from '../../components/request-row/request-row';
+import { Collection, InterceptedRequest } from '../../types/types';
+import styles from './collections.module.scss';
+import { request } from 'express';
+import { useNavigate, generatePath } from 'react-router-dom';
+import { routes } from '../../constants/routes';
 
 export const Collections: React.FC = () => {
-  const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<Collection>();
   const [newCollectionName, setNewCollectionName] = useState<string>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
+  const [collections, setCollections] = useState<Collection[]>([]);
 
   const loadCollections = () => {
     getCollections().then((res) => {
@@ -55,6 +58,21 @@ export const Collections: React.FC = () => {
       });
   };
 
+  const navigate = useNavigate();
+
+  const handleRequestClicked = (requestId: InterceptedRequest['id']) => {
+    if (!selectedCollection) {
+      return;
+    }
+
+    navigate(
+      generatePath(routes.COLLECTION_REQUEST, {
+        requestId: requestId,
+        collectionId: selectedCollection.id,
+      }),
+    );
+  };
+
   return (
     <div className={styles.pageContainer}>
       <div className={styles.header}>
@@ -87,6 +105,7 @@ export const Collections: React.FC = () => {
                     key={request.id}
                     request={request}
                     serviceId={request.serviceId}
+                    onRequestClicked={handleRequestClicked}
                   />
                 ),
             )}

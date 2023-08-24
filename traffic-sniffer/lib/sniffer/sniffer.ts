@@ -88,7 +88,7 @@ export class Sniffer {
 
   execute(url: string, method: string, invocation: Invocation) {
     return this.interceptedRequests.execute(
-      url,
+      `http://localhost://${this.getPort()}/${url}`,
       method,
       invocation,
       this.config.name,

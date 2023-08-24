@@ -19,7 +19,8 @@ export class CollectionManager {
   }
 
   getAll() {
-    return Array.from(this.collections.values());
+    const collections = Array.from(this.collections.values());
+    return collections;
   }
 
   async create(collectionCreateBody: CreateCollectionBody) {

@@ -14,6 +14,7 @@ import { NewRequest } from './pages/new-request/new-request';
 import { Requests } from './pages/requests/requests';
 import { Service } from './pages/service/service';
 import { ServiceRequest } from './pages/service-request/service-request';
+import { CollectionRequest } from './pages/collection-request/collection-request';
 
 function App(): React.JSX.Element {
   const theme = createTheme({
@@ -31,7 +32,14 @@ function App(): React.JSX.Element {
               <Routes>
                 <Route path={routes.HOME} element={<Home />} />
                 <Route path="/new-request" element={<NewRequest />} />
-                <Route path={routes.REQUEST} element={<ServiceRequest />} />
+                <Route
+                  path={routes.SERVICE_REQUEST}
+                  element={<ServiceRequest />}
+                />
+                <Route
+                  path={routes.COLLECTION_REQUEST}
+                  element={<CollectionRequest />}
+                />
                 <Route path={routes.CONFIG} element={<Config />} />
                 <Route path={routes.REQUESTS} element={<Requests />} />
                 <Route path={routes.MOCKS} element={<MocksPage />} />

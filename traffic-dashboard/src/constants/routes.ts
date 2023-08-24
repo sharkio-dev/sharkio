@@ -1,5 +1,6 @@
 export const routes = {
-  REQUEST: '/service/:serviceId/request/:id',
+  SERVICE_REQUEST: '/service/:serviceId/request/:id',
+  COLLECTION_REQUEST: '/collection/:collectionId/request/:requestId',
   REQUESTS: '/requests',
   HOME: '/home',
   CONFIG: '/config',

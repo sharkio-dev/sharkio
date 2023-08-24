@@ -56,8 +56,8 @@ export const executeRequest = (
   invocation: Invocation,
 ) => {
   return axios.post(
-    `http://localhost:5173/sharkio/sniffer/${port}/actions/execute`,
-    { url, method, invocation },
+    `/sharkio/sniffer/${port}/actions/execute`,
+    JSON.stringify({ url, method, invocation }),
     {
       headers: {
         'Content-Type': 'application/json',
