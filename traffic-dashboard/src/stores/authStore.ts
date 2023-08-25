@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { User } from '../models/userModel';
+import { create } from "zustand";
+import { User } from "../models/userModel";
 
 interface authState {
   user: User | null;

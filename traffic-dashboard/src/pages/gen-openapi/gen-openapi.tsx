@@ -1,5 +1,5 @@
-import { FileDownload } from '@mui/icons-material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { FileDownload } from "@mui/icons-material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   Autocomplete,
   Button,
@@ -7,32 +7,32 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from '@mui/material';
-import copy from 'copy-to-clipboard';
-import saveAs from 'file-saver';
-import React, { useContext, useEffect, useState } from 'react';
-import SwaggerUI from 'swagger-ui-react';
-import 'swagger-ui-react/swagger-ui.css';
-import { RequestsMetadataContext } from '../../context/requests-context';
-import { useSnackbar } from '../../hooks/useSnackbar';
-import { JsonToOpenapi } from '../../lib/generateOpenapi';
-import { OpenAPIDocument } from '../../lib/openapi.interface';
-import { InterceptedRequest, SnifferConfig } from '../../types/types';
-import styles from './gen-openapi.module.scss';
+} from "@mui/material";
+import copy from "copy-to-clipboard";
+import saveAs from "file-saver";
+import React, { useContext, useEffect, useState } from "react";
+import SwaggerUI from "swagger-ui-react";
+import "swagger-ui-react/swagger-ui.css";
+import { RequestsMetadataContext } from "../../context/requests-context";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
+import { OpenAPIDocument } from "../../lib/openapi.interface";
+import { InterceptedRequest, SnifferConfig } from "../../types/types";
+import styles from "./gen-openapi.module.scss";
 
 export const GenOpenAPI: React.FC = () => {
+  const snackBar = useSnackbar();
   const {
     requestsData: requests,
     servicesData: services,
     loadData,
   } = useContext(RequestsMetadataContext);
 
-  const [service, setService] = useState<string | undefined>(undefined);
   const [openApiDoc, setOpenApiDoc] = useState<OpenAPIDocument>();
 
-  const onSubmit = () => {
+  const onSubmit = (serviceId: string) => {
     const filteredRequests: InterceptedRequest[] =
-      requests?.filter((req) => req.serviceId === service) || [];
+      requests?.filter((req) => req.serviceId === serviceId) || [];
 
     setOpenApiDoc(
       JsonToOpenapi(filteredRequests, undefined, undefined, undefined),
@@ -43,19 +43,19 @@ export const GenOpenAPI: React.FC = () => {
     loadData?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const snackBar = useSnackbar();
+
   const handleExportClicked = () => {
     const file = new Blob([JSON.stringify(openApiDoc, null, 2)], {
-      type: 'text/plain;charset=utf-8',
+      type: "text/plain;charset=utf-8",
     });
-    saveAs(file, 'config.json');
+    saveAs(file, "config.json");
   };
   const handleCopyClicked = () => {
     try {
       copy(JSON.stringify(openApiDoc, null, 2));
-      snackBar.show('Copied to clipboard!', 'success');
+      snackBar.show("Copied to clipboard!", "success");
     } catch (e) {
-      snackBar.show('Failed to copy clipboard!', 'success');
+      snackBar.show("Failed to copy clipboard!", "success");
     }
   };
 
@@ -67,19 +67,15 @@ export const GenOpenAPI: React.FC = () => {
           freeSolo
           disablePortal
           getOptionLabel={(option: SnifferConfig | string) => {
-            return typeof option === 'object' ? option.name : option;
+            return typeof option === "object" ? option.name : option;
           }}
           options={services ?? []}
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Service" />}
           onChange={(_, value: string | SnifferConfig | null) => {
-            if (value === null) {
-              setService(undefined);
-            }
             const newValue =
-              typeof value === 'object' ? value && value.id : value;
-            newValue && setService(newValue);
-            onSubmit();
+              typeof value === "object" ? value && value.id : value;
+            newValue && onSubmit(newValue);
           }}
         />
       </Card>
@@ -89,11 +85,11 @@ export const GenOpenAPI: React.FC = () => {
           <div>
             <div className={styles.resultHeader}>
               <Typography>Result</Typography>
-              <Tooltip title={'export'}>
+              <Tooltip title={"export"}>
                 <Button onClick={handleExportClicked}>
                   <FileDownload />
                 </Button>
-              </Tooltip>{' '}
+              </Tooltip>{" "}
               <Button onClick={handleCopyClicked}>
                 <ContentCopyIcon />
               </Button>
@@ -103,7 +99,7 @@ export const GenOpenAPI: React.FC = () => {
               fullWidth
               minRows={8}
               maxRows={8}
-              value={JSON.stringify(openApiDoc, null, 2) ?? 'Empty'}
+              value={JSON.stringify(openApiDoc, null, 2) ?? "Empty"}
               disabled
             />
           </div>

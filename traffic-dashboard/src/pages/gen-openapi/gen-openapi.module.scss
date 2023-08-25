@@ -14,21 +14,24 @@
   max-height: 100%;
   overflow: auto;
 }
+
 .resultCard > div > *:first-child {
   margin-bottom: 15px;
 }
+
 .resultCard > div > *:last-child {
   resize: vertical;
 }
+
 .resultHeader {
   display: flex;
   align-items: center;
   column-gap: 15px;
 }
+
 .swaggerContainer {
   margin-top: 15px;
   background-color: white;
-  height: 250px;
   overflow: scroll;
   resize: vertical;
 }

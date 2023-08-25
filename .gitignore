@@ -11,6 +11,8 @@ sharkio-0.1.0.tgz
 .vit.config.ts.timestamp*
 sniffers-setup.json
 .env
+*yarn.lock
+collections.json
 .DS_Store
 
 # Ignore Yarn related files and folders

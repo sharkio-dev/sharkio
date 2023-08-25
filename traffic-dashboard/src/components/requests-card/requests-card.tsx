@@ -5,12 +5,15 @@ import {
   CircularProgress,
   List,
   Typography,
-} from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
-import { RequestsMetadataContext } from '../../context/requests-context';
-import { FilterBar } from '../filter-bar/filter-bar';
-import { RequestRow } from '../request-row/request-row';
-import styles from './requests-card.module.scss';
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { RequestsMetadataContext } from "../../context/requests-context";
+import { FilterBar } from "../filter-bar/filter-bar";
+import { RequestRow } from "../request-row/request-row";
+import styles from "./requests-card.module.scss";
+import { generatePath, useNavigate } from "react-router-dom";
+import { routes } from "../../constants/routes";
+import { InterceptedRequest, SnifferConfig } from "../../types/types";
 
 interface IRequestCardProps {
   className?: string;
@@ -51,7 +54,19 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
           undefined
         : true),
   );
+  const navigate = useNavigate();
 
+  const handleRequestClicked = (
+    requestId: InterceptedRequest["id"],
+    serviceId: SnifferConfig["id"],
+  ) => {
+    navigate(
+      generatePath(routes.SERVICE_REQUEST, {
+        id: requestId,
+        serviceId: serviceId,
+      }),
+    );
+  };
   return (
     <>
       {withControls && (
@@ -71,9 +86,9 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
           {loading ? (
             <Box
               sx={{
-                display: 'flex',
-                padding: '20px',
-                justifyContent: 'center',
+                display: "flex",
+                padding: "20px",
+                justifyContent: "center",
               }}
             >
               <CircularProgress />
@@ -87,6 +102,9 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
                       request={req}
                       key={req.id}
                       serviceId={req.serviceId}
+                      onRequestClicked={() => {
+                        handleRequestClicked(req.id, req.serviceId);
+                      }}
                     />
                   ))}
               </List>

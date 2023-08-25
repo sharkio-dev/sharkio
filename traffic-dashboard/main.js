@@ -1,3 +1,3 @@
-import { startDashboard } from '.';
+import { startDashboard } from ".";
 
 startDashboard();
