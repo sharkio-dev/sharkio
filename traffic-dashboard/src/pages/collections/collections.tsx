@@ -1,4 +1,4 @@
-import { AddBox } from "@mui/icons-material";
+import { AddBox, FolderCopyOutlined } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -24,12 +24,18 @@ export const Collections: React.FC = () => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [requests, setRequests] = useState<InterceptedRequest[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loadCollections = () => {
-    getCollections().then((res) => {
-      setCollections(res.data);
-      setSelectedCollection(res.data[0]);
-    });
+    setIsLoading(true);
+    getCollections()
+      .then((res) => {
+        setCollections(res.data);
+        setSelectedCollection(res.data[0]);
+        setRequests([...res.data[0].requests]);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -42,6 +48,7 @@ export const Collections: React.FC = () => {
 
   const handleCollectionClicked = (collection: Collection) => {
     setSelectedCollection(collection);
+    setRequests([...collection.requests]);
   };
 
   const handleAddCollection = () => {
@@ -86,10 +93,11 @@ export const Collections: React.FC = () => {
           <List>
             {collections.map((collection: Collection) => (
               <ListItemButton
-                className={styles.collectionListItem}
                 onClick={() => handleCollectionClicked(collection)}
+                className={styles.collectionListItem}
                 key={collection.id}
               >
+                <FolderCopyOutlined />
                 {collection.name}
               </ListItemButton>
             ))}
@@ -98,16 +106,20 @@ export const Collections: React.FC = () => {
         <Card className={styles.collectionRequestsCard}>
           <div>{selectedCollection?.name}</div>
           <div>
-            {selectedCollection?.requests.map(
-              (request) =>
-                request && (
-                  <RequestRow
-                    key={request.id}
-                    request={request}
-                    serviceId={request.serviceId}
-                    onRequestClicked={handleRequestClicked}
-                  />
-                ),
+            {isLoading === true ? (
+              <CircularProgress />
+            ) : (
+              requests.map(
+                (request, index) =>
+                  request && (
+                    <RequestRow
+                      key={`${request.id}${index}`}
+                      request={request}
+                      serviceId={request.serviceId}
+                      onRequestClicked={handleRequestClicked}
+                    />
+                  ),
+              )
             )}
           </div>
         </Card>
