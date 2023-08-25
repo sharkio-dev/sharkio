@@ -1,13 +1,14 @@
-import { Avatar, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import React, { useEffect, useState } from 'react';
-import styles from './login-component.module.scss';
-import { supabaseClient } from '../../utils/supabase-auth';
+import { Avatar, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import React, { useEffect, useState } from "react";
+import styles from "./login-component.module.scss";
+import { supabaseClient } from "../../utils/supabase-auth";
+import { useAuthStore } from "../../stores/authStore";
 
 const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
-
-  const settings = ['Logout'];
+  const { user, signOut } = useAuthStore();
+  const settings = ["Logout"];
 
   const handleOpenUserMenu = () => {
     setAnchorElUser(!anchorElUser);
@@ -15,8 +16,9 @@ const LoginComponent: React.FC = () => {
 
   const handleCloseUserMenu = async (setting: string) => {
     setAnchorElUser(!anchorElUser);
-    if (setting === 'Logout') {
+    if (setting === "Logout") {
       const { error } = await supabaseClient.auth.signOut();
+      signOut();
     }
   };
 
@@ -34,20 +36,24 @@ const LoginComponent: React.FC = () => {
         <div onClick={handleOpenUserMenu} className={styles.my_box}>
           <Tooltip title="Open settings">
             <IconButton sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" sx={{ width: 34, height: 34 }} />
+              {user ? (
+                <Avatar src={user.profileImg} sx={{ width: 34, height: 34 }} />
+              ) : (
+                <Avatar alt="Remy Sharp" sx={{ width: 34, height: 34 }} />
+              )}
             </IconButton>
           </Tooltip>
           <Menu
-            sx={{ mt: '55px' }}
+            sx={{ mt: "55px" }}
             id="menu-appbar"
             anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: "top",
+              horizontal: "right",
             }}
             keepMounted
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: "top",
+              horizontal: "right",
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}

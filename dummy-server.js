@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 
 /**
@@ -15,12 +15,12 @@ let config = {
  * Access this API via http://localhost:5432 through postman
  */
 
-app.get('*', async (_req, res) => {
+app.get("*", async (_req, res) => {
   try {
-    res.json({ messaage: 'Checkout Sniffer, API logs would be made' });
+    res.json({ messaage: "Checkout Sniffer, API logs would be made" });
   } catch (error) {
     console.error(error.message);
-    res.json({ messaage: 'API call failed' });
+    res.json({ messaage: "API call failed" });
   }
 });
 
@@ -33,8 +33,8 @@ init = (port) => {
 // Attempt to start the server on the default port
 init(config.defaultPort);
 
-app.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
+app.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
     const alternativePort = defaultPort + 1;
     console.log(
       `Port ${defaultPort} is already in use. Trying port ${alternativePort} to initialize dummy test-server...`,

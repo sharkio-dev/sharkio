@@ -1,4 +1,4 @@
-import { PlayArrow } from '@mui/icons-material';
+import { FolderCopyOutlined, PlayArrow } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -11,62 +11,50 @@ import {
   TableRow,
   Tabs,
   Typography,
-} from '@mui/material';
-import React, {
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { useParams } from 'react-router-dom';
-import { executeRequest } from '../../api/api';
-import { HttpMethod } from '../../components/http-method/http-method';
-import { RequestsMetadataContext } from '../../context/requests-context';
+} from "@mui/material";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { executeRequest, saveRequestToCollection } from "../../api/api";
+import { HttpMethod } from "../../components/http-method/http-method";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import {
   JsonObject,
   JsonSchema,
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
-} from '../../lib/jsonSchema';
-import { JsonToOpenapi } from '../../lib/generateOpenapi';
-import styles from './requestCard.module.scss';
+} from "../../lib/jsonSchema";
+import { OpenAPIDocument } from "../../lib/openapi.interface";
 import {
+  Collection,
   InterceptedRequest,
   Invocation,
   SnifferConfig,
-} from '../../types/types';
-import { OpenAPIDocument } from '../../lib/openapi.interface';
+} from "../../types/types";
+import { CollectionPickerModal } from "../collections-picker-modal/collection-picker-modal";
+import styles from "./requestCard.module.scss";
 
-export const RequestPage: React.FC = () => {
-  const { id, serviceId } = useParams();
+interface IRequestPageProps {
+  service: SnifferConfig;
+  request: InterceptedRequest;
+}
+
+export const RequestPage: React.FC<IRequestPageProps> = ({
+  request,
+  service,
+}) => {
+  const [selectCollectionDialogOpen, setSelectCollectionDialogOpen] =
+    useState(false);
   const [typescript, setTypescript] = useState<string | undefined>(undefined);
   const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
     undefined,
   );
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
-  const [request, setRequest] = useState<InterceptedRequest | undefined>(
-    undefined,
-  );
   const [tab, setTab] = useState(0);
-  const {
-    loadData,
-    requestsData: requests,
-    servicesData: services,
-  } = useContext(RequestsMetadataContext);
-  const service = services?.find((service) => service.id === serviceId);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
-    loadData?.();
-  }, []);
-
-  useEffect(() => {
-    console.log(requests);
-    const request = requests?.find((request) => {
-      return request.id === id;
-    });
-
     if (request) {
       const schema = generateJsonSchema(
         request.invocations[0].body as JsonObject,
@@ -74,24 +62,51 @@ export const RequestPage: React.FC = () => {
       setSchema(schema);
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
-      setTypescript(jsonSchemaToTypescriptInterface(schema, 'body'));
-      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, '1.0.0'));
-      setRequest(request);
+      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
+      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, "1.0.0"));
     }
-  }, [id, requests]);
+  }, [request]);
 
   const handleTabChanged = (_event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
+  const handleSaveClicked = (collectionId: Collection["id"]) => {
+    saveRequestToCollection(collectionId, request)
+      .then(() => {
+        showSnackbar("successfully saved", "success");
+      })
+      .catch(() => {
+        showSnackbar("failed to save", "error");
+      });
+  };
+
   return (
     <div className={styles.requestPageContainer}>
-      {request === undefined && 'No request found'}
+      <CollectionPickerModal
+        open={selectCollectionDialogOpen}
+        onClose={() => {
+          setSelectCollectionDialogOpen(false);
+        }}
+        onChoose={function (collectionId: string): void {
+          handleSaveClicked(collectionId);
+          setSelectCollectionDialogOpen(false);
+        }}
+      />
+      {snackBar}
+      {request === undefined && "No request found"}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
             <div className={styles.cardTitle}>
               <Typography variant="h6">Request</Typography>
+              <Button
+                onClick={() => {
+                  setSelectCollectionDialogOpen(true);
+                }}
+              >
+                <FolderCopyOutlined />
+              </Button>
             </div>
             <HttpMethod method={request.method} />
             {request.url}
@@ -153,7 +168,7 @@ export const RequestPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {' '}
+                {" "}
                 {request.invocations.map((invocation) => {
                   return (
                     <InvocationRow
@@ -200,7 +215,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
     invocation: Invocation,
   ) => {
     if (!service?.port) {
-      console.error('service was not found for requests');
+      console.error("service was not found for requests");
       return;
     }
     setExecuteLoading(true);
@@ -215,11 +230,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
         <TableCell>
           <Button
             onClick={() => {
-              handleExecuteClicked(
-                'http://localhost:' + `${service?.port}` + `${request.url}`,
-                request.method,
-                invocation,
-              );
+              handleExecuteClicked(request.url, request.method, invocation);
             }}
           >
             {executeLoading ? (
@@ -229,7 +240,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
             )}
           </Button>
         </TableCell>
-        <TableCell>{service?.name ?? ''}</TableCell>
+        <TableCell>{service?.name ?? ""}</TableCell>
         <TableCell>{invocation.id}</TableCell>
         <TableCell>{invocation.timestamp}</TableCell>
         <TableCell>{JSON.stringify(invocation.body)}</TableCell>

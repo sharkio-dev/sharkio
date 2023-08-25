@@ -1,29 +1,41 @@
-import { AddBox, Construction } from '@mui/icons-material';
+import { AddBox, FolderCopyOutlined } from "@mui/icons-material";
 import {
   Button,
   Card,
   CircularProgress,
   Dialog,
   List,
-  ListItem,
   ListItemButton,
   TextField,
   Typography,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { createCollection, getCollections } from '../../api/api';
-import { Collection } from '../../types/types';
-import styles from './collections.module.scss';
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { createCollection, getCollections } from "../../api/api";
+import { RequestRow } from "../../components/request-row/request-row";
+import { Collection, InterceptedRequest } from "../../types/types";
+import styles from "./collections.module.scss";
+import { request } from "express";
+import { useNavigate, generatePath } from "react-router-dom";
+import { routes } from "../../constants/routes";
 
 export const Collections: React.FC = () => {
-  const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<Collection>();
   const [newCollectionName, setNewCollectionName] = useState<string>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [requests, setRequests] = useState<InterceptedRequest[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loadCollections = () => {
-    getCollections().then((res) => setCollections(res.data));
+    setIsLoading(true);
+    getCollections()
+      .then((res) => {
+        setCollections(res.data);
+        setSelectedCollection(res.data[0]);
+        setRequests([...res.data[0].requests]);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -36,10 +48,11 @@ export const Collections: React.FC = () => {
 
   const handleCollectionClicked = (collection: Collection) => {
     setSelectedCollection(collection);
+    setRequests([...collection.requests]);
   };
 
   const handleAddCollection = () => {
-    if (!newCollectionName || newCollectionName === '') {
+    if (!newCollectionName || newCollectionName === "") {
       return;
     }
     createCollection(newCollectionName)
@@ -48,8 +61,23 @@ export const Collections: React.FC = () => {
       })
       .finally(() => {
         setIsAddDialogOpen(false);
-        setNewCollectionName('');
+        setNewCollectionName("");
       });
+  };
+
+  const navigate = useNavigate();
+
+  const handleRequestClicked = (requestId: InterceptedRequest["id"]) => {
+    if (!selectedCollection) {
+      return;
+    }
+
+    navigate(
+      generatePath(routes.COLLECTION_REQUEST, {
+        requestId: requestId,
+        collectionId: selectedCollection.id,
+      }),
+    );
   };
 
   return (
@@ -65,23 +93,34 @@ export const Collections: React.FC = () => {
           <List>
             {collections.map((collection: Collection) => (
               <ListItemButton
-                className={styles.collectionListItem}
                 onClick={() => handleCollectionClicked(collection)}
+                className={styles.collectionListItem}
                 key={collection.id}
               >
+                <FolderCopyOutlined />
                 {collection.name}
               </ListItemButton>
             ))}
           </List>
         </Card>
         <Card className={styles.collectionRequestsCard}>
-          {selectedCollection?.name}
-
-          <div className={styles.construction}>
-            <div>
-              <Construction className={styles.constructionIcon} />
-            </div>
-            <div>This part is still under construction</div>
+          <div>{selectedCollection?.name}</div>
+          <div>
+            {isLoading === true ? (
+              <CircularProgress />
+            ) : (
+              requests.map(
+                (request, index) =>
+                  request && (
+                    <RequestRow
+                      key={`${request.id}${index}`}
+                      request={request}
+                      serviceId={request.serviceId}
+                      onRequestClicked={handleRequestClicked}
+                    />
+                  ),
+              )
+            )}
           </div>
         </Card>
       </div>

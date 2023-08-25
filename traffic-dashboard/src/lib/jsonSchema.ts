@@ -1,4 +1,4 @@
-import { InterceptedRequest } from '../types/types';
+import { InterceptedRequest } from "../types/types";
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
@@ -10,18 +10,18 @@ export type JsonArray = Array<JsonValue>;
 export interface JsonSchema {
   $schema?: string;
   type:
-    | 'object'
-    | 'array'
-    | 'string'
-    | 'number'
-    | 'integer'
-    | 'boolean'
-    | 'null'
-    | 'function'
-    | 'undefined'
-    | 'null'
-    | 'symbol'
-    | 'bigint';
+    | "object"
+    | "array"
+    | "string"
+    | "number"
+    | "integer"
+    | "boolean"
+    | "null"
+    | "function"
+    | "undefined"
+    | "null"
+    | "symbol"
+    | "bigint";
   properties?: { [key: string]: JsonSchema };
   items?: JsonSchema;
   required?: string[];
@@ -29,8 +29,8 @@ export interface JsonSchema {
 
 export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
   const schema: JsonSchema = {
-    $schema: 'http://json-schema.org/draft-07/schema#',
-    type: 'object',
+    $schema: "http://json-schema.org/draft-07/schema#",
+    type: "object",
     properties: {},
     required: [],
   };
@@ -46,18 +46,18 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
     if (currentObject !== null) {
       for (const [key, value] of Object.entries(currentObject)) {
         if (value === null) {
-          currentSchema.properties![key] = { type: 'null' };
+          currentSchema.properties![key] = { type: "null" };
         } else if (Array.isArray(value)) {
           const itemSchema: JsonSchema = {
-            type: 'object',
+            type: "object",
             properties: {},
             required: [],
           };
-          currentSchema.properties![key] = { type: 'array', items: itemSchema };
+          currentSchema.properties![key] = { type: "array", items: itemSchema };
           stack.push([itemSchema, value[0] ?? {}]);
-        } else if (typeof value === 'object') {
+        } else if (typeof value === "object") {
           const nestedSchema: JsonSchema = {
-            type: 'object',
+            type: "object",
             properties: {},
             required: [],
           };
@@ -75,12 +75,12 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
 
 export function jsonSchemaToTypescriptInterface(
   schema: JsonSchema,
-  interfaceName = '',
+  interfaceName = "",
   isNested = false,
 ): string {
-  let output = isNested ? '' : `type${' ' + interfaceName + ' '} = {\n`;
+  let output = isNested ? "" : `type${" " + interfaceName + " "} = {\n`;
 
-  if (schema.type === 'object' && schema.properties) {
+  if (schema.type === "object" && schema.properties) {
     for (const [key, value] of Object.entries(schema.properties)) {
       output += `  ${key}: ${jsonSchemaToTypescriptInterface(
         value,
@@ -88,21 +88,21 @@ export function jsonSchemaToTypescriptInterface(
         true,
       )}`;
     }
-  } else if (schema.type === 'array' && schema.items) {
+  } else if (schema.type === "array" && schema.items) {
     output += `  ${jsonSchemaToTypescriptInterface(
       schema.items,
-      '',
+      "",
       true,
     )}[];\n`;
-  } else if (schema.type === 'string') {
-    output += 'string;\n';
-  } else if (schema.type === 'number') {
-    output += 'number;\n';
-  } else if (schema.type === 'boolean') {
-    output += 'boolean;\n';
+  } else if (schema.type === "string") {
+    output += "string;\n";
+  } else if (schema.type === "number") {
+    output += "number;\n";
+  } else if (schema.type === "boolean") {
+    output += "boolean;\n";
   }
 
-  output += isNested ? '' : '}';
+  output += isNested ? "" : "}";
   return output;
 }
 
@@ -112,7 +112,7 @@ export function generateCurlCommand(req: InterceptedRequest): string {
 
   // Add request headers
   for (const [key, value] of Object.entries(req.invocations[0].headers)) {
-    if (key === 'host' || key.includes('sec-ch-ua')) {
+    if (key === "host" || key.includes("sec-ch-ua")) {
       continue;
     }
     curlCommand += `\t-H "${key}: ${value}" \\\n`;

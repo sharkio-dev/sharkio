@@ -1,8 +1,8 @@
-import React from 'react';
-import { Chip } from '@mui/material';
+import React from "react";
+import { Chip } from "@mui/material";
 
 interface IHttpMethodProps {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | string;
 }
 
 export const HttpMethod: React.FC<IHttpMethodProps> = ({ method }) => {
@@ -12,19 +12,19 @@ export const HttpMethod: React.FC<IHttpMethodProps> = ({ method }) => {
 
 function methodColor(method: string) {
   switch (method) {
-    case 'GET': {
-      return 'success';
+    case "GET": {
+      return "success";
     }
-    case 'PATCH': {
-      return 'info';
+    case "PATCH": {
+      return "info";
     }
-    case 'POST': {
-      return 'warning';
+    case "POST": {
+      return "warning";
     }
-    case 'DELETE': {
-      return 'error';
+    case "DELETE": {
+      return "error";
     }
     default:
-      return 'default';
+      return "default";
   }
 }

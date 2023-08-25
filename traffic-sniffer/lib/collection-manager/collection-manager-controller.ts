@@ -114,6 +114,49 @@ export class CollectionManagerController {
      *       500:
      *         description: Server error
      */
+    router.post(
+      `/collection/:id/request`,
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const { request } = req.body;
+          const { id } = req.params;
+          await this.collectionManager.addRequest(id, request);
+          res.sendStatus(201);
+        } catch (e) {
+          log.error("An unexpected error occured", {
+            method: "POST",
+            path: `${this.baseUrl}/collection/invocation`,
+            error: e,
+          });
+          res.sendStatus(500);
+        }
+      },
+    );
+
+    /**
+     * @openapi
+     * /sharkio/collection:
+     *   post:
+     *     tags:
+     *       - collection
+     *     description: Create a collection
+     *     requestBody:
+     *            description: Create a new mock
+     *            content:
+     *              application/json:
+     *                schema:
+     *                  type: object
+     *                  properties:
+     *                    name:
+     *                      type: string
+     *                      description: Collection name
+     *                      example: My collection
+     *     responses:
+     *       201:
+     *         description: Collection created
+     *       500:
+     *         description: Server error
+     */
     router.delete(
       "/collection",
       async (req: Request, res: Response, next: NextFunction) => {

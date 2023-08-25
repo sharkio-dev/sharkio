@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Card, Input, Typography } from '@mui/material';
-import styles from './new-request.module.scss';
+import React from "react";
+import { Button, Card, Input, Typography } from "@mui/material";
+import styles from "./new-request.module.scss";
 
 export const NewRequest: React.FC = () => {
   return (

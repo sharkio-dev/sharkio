@@ -11,8 +11,8 @@
   ],
   "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "dev2": "vite -c vite.production.config.ts --host",
+    "dev": "vite --host",
+    "dev2": "vite -c vite.production.config.ts",
     "start": "node ./main.js",
     "build": "tsc && vite build",
     "docker:build": "docker build . -t sharkio-traffic-dashboard",
@@ -40,7 +40,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
-    "swagger-ui-react": "^5.2.0"
+    "swagger-ui-react": "^5.2.0",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
@@ -50,6 +51,8 @@
     "@types/swagger-ui-react": "^4.18.0",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-react": "^4.0.0-beta.0",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",

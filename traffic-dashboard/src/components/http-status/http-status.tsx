@@ -1,5 +1,5 @@
-import React from 'react';
-import { Chip } from '@mui/material';
+import React from "react";
+import { Chip } from "@mui/material";
 
 interface IHttpMethodProps {
   status: 200 | 201 | 404 | 500 | number;
@@ -14,15 +14,15 @@ function statusColor(status: number) {
   switch (status) {
     case 201:
     case 200: {
-      return 'success';
+      return "success";
     }
     case 404: {
-      return 'warning';
+      return "warning";
     }
     case 500: {
-      return 'error';
+      return "error";
     }
     default:
-      return 'default';
+      return "default";
   }
 }

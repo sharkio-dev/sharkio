@@ -1,15 +1,17 @@
 import { v4 } from "uuid";
+import { InterceptedRequest } from "../intercepted-request";
 import {
   Collection,
   CreateCollectionBody,
   UpdateCollectionBody,
 } from "./collection.types";
+import { ICollectionPersistency } from "./collection-storage.interface";
 
 export class CollectionManager {
   private collections: Map<Collection["id"], Collection>;
 
-  constructor() {
-    this.collections = new Map();
+  constructor(private readonly collectionPersistency: ICollectionPersistency) {
+    this.collections = this.collectionPersistency.load();
   }
 
   get(id: Collection["id"]) {
@@ -17,19 +19,22 @@ export class CollectionManager {
   }
 
   getAll() {
-    return Array.from(this.collections.values());
+    const collections = Array.from(this.collections.values());
+    return collections;
   }
 
-  create(collectionCreateBody: CreateCollectionBody) {
+  async create(collectionCreateBody: CreateCollectionBody) {
     const newCollection = {
       id: v4(),
+      requests: [],
       ...collectionCreateBody,
     };
 
     this.collections.set(newCollection.id, newCollection);
+    await this.collectionPersistency.persist(this.collections);
   }
 
-  update(collectionUpdateBody: UpdateCollectionBody) {
+  async update(collectionUpdateBody: UpdateCollectionBody) {
     const collection = this.collections.get(collectionUpdateBody.id);
 
     if (!collection) {
@@ -41,9 +46,21 @@ export class CollectionManager {
     };
 
     this.collections.set(collectionUpdateBody.id, newCollection);
+    await this.collectionPersistency.persist(this.collections);
   }
 
-  remove(id: Collection["id"]) {
+  async remove(id: Collection["id"]) {
     this.collections.delete(id);
+    await this.collectionPersistency.persist(this.collections);
+  }
+
+  async addRequest(id: Collection["id"], request: InterceptedRequest) {
+    const collection = this.collections.get(id);
+    if (collection === undefined) {
+      throw new Error("collection not found");
+    }
+    collection?.requests?.push(request);
+    this.collections.set(id, collection);
+    await this.collectionPersistency.persist(this.collections);
   }
 }

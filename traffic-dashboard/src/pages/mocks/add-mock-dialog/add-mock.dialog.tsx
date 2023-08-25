@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   Card,
@@ -6,10 +6,10 @@ import {
   Typography,
   Button,
   CircularProgress,
-} from '@mui/material';
-import styles from './add-mock-dialog.module.scss';
-import { useState } from 'react';
-import { createMock } from '../../../api/api';
+} from "@mui/material";
+import styles from "./add-mock-dialog.module.scss";
+import { useState } from "react";
+import { createMock } from "../../../api/api";
 
 type AddMockDialogProps = { open: boolean; close: () => void };
 
@@ -18,10 +18,10 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
   close,
 }) => {
   const [port, setPort] = useState<number>();
-  const [method, setMethod] = useState<string>('GET');
-  const [endpoint, setEndpoint] = useState<string>('');
+  const [method, setMethod] = useState<string>("GET");
+  const [endpoint, setEndpoint] = useState<string>("");
   const [status, setStatus] = useState<number>(200);
-  const [data, setData] = useState<unknown>('{ }');
+  const [data, setData] = useState<unknown>("{ }");
   const [isLoading, setIsLoading] = useState<boolean>();
 
   const handleAddMock = () => {

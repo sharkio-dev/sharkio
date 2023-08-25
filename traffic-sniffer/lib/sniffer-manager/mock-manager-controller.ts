@@ -230,7 +230,6 @@ export class MockManagerController {
      *                  description: An HTTP status code
      *                  example: 200
      */
-
     router.put(
       "/:port/mock",
       requestValidator({

@@ -1,4 +1,5 @@
 import { Invocation } from "../../types";
+import { InterceptedRequest } from "../intercepted-request";
 
 export type CreateCollectionBody = {
   name: string;
@@ -12,5 +13,5 @@ export type UpdateCollectionBody = {
 export type Collection = {
   id: string;
   name: string;
-  invocations?: Invocation[];
+  requests?: InterceptedRequest[];
 };

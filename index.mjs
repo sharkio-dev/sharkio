@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-import axios from 'axios';
-import { spawn } from 'child_process';
-import kill from 'kill-port';
-import net from 'net';
-import open from 'open';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
+import axios from "axios";
+import { spawn } from "child_process";
+import kill from "kill-port";
+import net from "net";
+import open from "open";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 
-const snifferManagerAxios = axios.create({ baseURL: 'http://localhost:5012' });
+const snifferManagerAxios = axios.create({ baseURL: "http://localhost:5012" });
 
 function checkAdminPort(port = 5012) {
   return new Promise((resolve) => {
@@ -16,7 +16,7 @@ function checkAdminPort(port = 5012) {
       resolve(true);
     });
 
-    tester.on('error', () => {
+    tester.on("error", () => {
       resolve(false);
     });
   });
@@ -24,34 +24,34 @@ function checkAdminPort(port = 5012) {
 
 async function startAdmin() {
   const isAdminPortAvailable = await checkAdminPort();
-  console.log('Admin port available: ' + isAdminPortAvailable);
+  console.log("Admin port available: " + isAdminPortAvailable);
 
   if (isAdminPortAvailable) {
-    console.log('Port 5012 is already taken');
+    console.log("Port 5012 is already taken");
     return;
   }
 
-  const childProcess = spawn('npm', ['run', 'sniffer'], {
+  const childProcess = spawn("npm", ["run", "sniffer"], {
     detached: true,
-    stdio: 'ignore',
+    stdio: "ignore",
   });
 
   childProcess.unref();
 }
 
 async function killAdmin(port = 5012) {
-  kill(port, 'tcp')
-    .then(() => console.log('Admin is killed'))
+  kill(port, "tcp")
+    .then(() => console.log("Admin is killed"))
     .catch((e) => {
-      console.log('Failed to kill admin');
+      console.log("Failed to kill admin");
       console.error(e.message);
     });
 }
 
 function startDashboard() {
-  const childProcess = spawn('node', ['dashboard-main.mjs'], {
+  const childProcess = spawn("node", ["dashboard-main.mjs"], {
     detached: true,
-    stdio: 'ignore',
+    stdio: "ignore",
   });
 
   childProcess.unref();
@@ -62,10 +62,10 @@ function openDashboard(port = 3000) {
 }
 
 async function killDashboard(port = 3000) {
-  kill(port, 'tcp')
-    .then(() => console.log('Dashboard is killed'))
+  kill(port, "tcp")
+    .then(() => console.log("Dashboard is killed"))
     .catch((e) => {
-      console.log('Failed to kill the dashboard');
+      console.log("Failed to kill the dashboard");
       console.error(e.message);
     });
 }
@@ -73,7 +73,7 @@ async function killDashboard(port = 3000) {
 async function createSniffer(port, downstreamUrl, name) {
   const sniffers = await snifferManagerAxios
     .post(
-      '/sharkio/sniffer',
+      "/sharkio/sniffer",
       {
         name,
         port,
@@ -81,7 +81,7 @@ async function createSniffer(port, downstreamUrl, name) {
       },
       {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       },
     )
@@ -91,7 +91,7 @@ async function createSniffer(port, downstreamUrl, name) {
 }
 
 async function listSniffers() {
-  await snifferManagerAxios.get('/sharkio/sniffer').then((res) => {
+  await snifferManagerAxios.get("/sharkio/sniffer").then((res) => {
     console.log(JSON.stringify(res.data));
   });
 }
@@ -103,7 +103,7 @@ async function startSniffer(port) {
       console.log(JSON.stringify(res.data));
     })
     .catch((e) => {
-      console.error('Failed to start sniffer');
+      console.error("Failed to start sniffer");
     });
 }
 
@@ -114,7 +114,7 @@ async function stopSniffer(port) {
       console.log(JSON.stringify(res.data));
     })
     .catch((e) => {
-      console.error('Failed to stop sniffer');
+      console.error("Failed to stop sniffer");
     });
 }
 
@@ -125,16 +125,16 @@ async function removeSniffer(port) {
       console.log(JSON.stringify(res.data));
     })
     .catch((e) => {
-      console.error('Failed to remove sniffer');
+      console.error("Failed to remove sniffer");
     });
 }
 
 yargs(hideBin(process.argv))
   .demandCommand()
-  .scriptName('')
+  .scriptName("")
   .command(
-    'start',
-    'Start dashboard and proxy manager',
+    "start",
+    "Start dashboard and proxy manager",
     (yargs) => {
       return yargs;
     },
@@ -144,71 +144,71 @@ yargs(hideBin(process.argv))
       await openDashboard();
     },
   )
-  .command('dashboard [command]', 'Dashboard server', (yargs) => {
+  .command("dashboard [command]", "Dashboard server", (yargs) => {
     return yargs
       .command(
-        'start',
-        'Starting dashboard server',
+        "start",
+        "Starting dashboard server",
         (yargs) => {
           return yargs;
         },
         () => {
-          console.log('Starting dashboard server');
+          console.log("Starting dashboard server");
           startDashboard();
         },
       )
       .command(
-        'open',
-        'Open the dashboard',
+        "open",
+        "Open the dashboard",
         (yargs) => {
           return yargs;
         },
         () => {
-          console.log('Opening dashboard server');
+          console.log("Opening dashboard server");
           openDashboard();
         },
       )
       .command(
-        'kill',
-        'Kill the dashboard server',
+        "kill",
+        "Kill the dashboard server",
         (yargs) => {
           return yargs;
         },
         (argv) => {
-          console.log('Killing the dashboard server');
+          console.log("Killing the dashboard server");
           killDashboard();
         },
       )
       .demandCommand();
   })
-  .command('admin [command]', 'Proxy admin server', (yargs) => {
+  .command("admin [command]", "Proxy admin server", (yargs) => {
     return yargs
       .command(
-        'sniffer [command]',
-        'Proxy manager commands',
+        "sniffer [command]",
+        "Proxy manager commands",
         (yargs) => {
           return yargs
             .command(
-              'create [port] [downstreamUrl] [name]',
-              'Create a new sniffer',
+              "create [port] [downstreamUrl] [name]",
+              "Create a new sniffer",
               (yargs) => {
                 return yargs
-                  .option('port')
-                  .option('downstreamUrl')
-                  .option('name')
-                  .demandOption('port')
-                  .demandOption('downstreamUrl')
-                  .demandOption('name');
+                  .option("port")
+                  .option("downstreamUrl")
+                  .option("name")
+                  .demandOption("port")
+                  .demandOption("downstreamUrl")
+                  .demandOption("name");
               },
               async (argv) => {
-                console.log('Creating a new sniffer');
+                console.log("Creating a new sniffer");
 
                 await createSniffer(argv.port, argv.downstreamUrl, argv.name);
               },
             )
             .command(
-              'list',
-              'List sniffers',
+              "list",
+              "List sniffers",
               (yargs) => {
                 return yargs;
               },
@@ -217,30 +217,30 @@ yargs(hideBin(process.argv))
               },
             )
             .command(
-              'start [port]',
-              'Start a sniffer',
+              "start [port]",
+              "Start a sniffer",
               (yargs) => {
-                return yargs.option('port').demandOption('port');
+                return yargs.option("port").demandOption("port");
               },
               async (argv) => {
                 await startSniffer(argv.port);
               },
             )
             .command(
-              'stop [port]',
-              'Stop a sniffer',
+              "stop [port]",
+              "Stop a sniffer",
               (yargs) => {
-                return yargs.option('port').demandOption('port');
+                return yargs.option("port").demandOption("port");
               },
               async (argv) => {
                 await stopSniffer(argv.port);
               },
             )
             .command(
-              'remove [port]',
-              'Stop a sniffer',
+              "remove [port]",
+              "Stop a sniffer",
               (yargs) => {
-                return yargs.option('port').demandOption('port');
+                return yargs.option("port").demandOption("port");
               },
               async (argv) => {
                 await removeSniffer(argv.port);
@@ -250,24 +250,24 @@ yargs(hideBin(process.argv))
         (argv) => {},
       )
       .command(
-        'start',
-        'Start admin server',
+        "start",
+        "Start admin server",
         (yargs) => {
           return yargs;
         },
         () => {
-          console.log('Starting admin servers');
+          console.log("Starting admin servers");
           startAdmin();
         },
       )
       .command(
-        'kill',
-        'Kill the admin server',
+        "kill",
+        "Kill the admin server",
         (yargs) => {
           return yargs;
         },
         (argv) => {
-          console.log('Killing the admin server');
+          console.log("Killing the admin server");
           killAdmin();
         },
       )
