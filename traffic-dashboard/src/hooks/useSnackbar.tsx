@@ -1,6 +1,6 @@
-import React from 'react';
-import { Snackbar, Alert, AlertColor } from '@mui/material';
-import { useState } from 'react';
+import React from "react";
+import { Snackbar, Alert, AlertColor } from "@mui/material";
+import { useState } from "react";
 
 type useSnackbarType = () => {
   component: React.JSX.Element; // any
@@ -18,7 +18,7 @@ export const useSnackbar: useSnackbarType = () => {
       open={open}
       autoHideDuration={6000}
       onClose={() => setOpen(false)}
-      anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+      anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
     >
       <Alert onClose={() => setOpen(false)} severity={severity}>
         {content}

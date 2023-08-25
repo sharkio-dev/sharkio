@@ -405,7 +405,7 @@ export class SnifferManagerController {
             log.info(req.body);
             await sniffer.execute(url, method, invocation).catch((e) =>
               log.error("Error while executing", {
-                method: "POST",
+                method: method,
                 path: `${this.baseUrl}/:port/actions/execute`,
                 error: e,
               }),

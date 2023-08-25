@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useContext, useEffect } from 'react';
-import { RequestsMetadataContext } from '../../context/requests-context';
-import { RequestPage } from '../../components/request-page/request';
-import { useParams } from 'react-router-dom';
-import { getCollections } from '../../api/api';
-import { Collection } from '../../types/types';
+import React, { useState } from "react";
+import { useContext, useEffect } from "react";
+import { RequestsMetadataContext } from "../../context/requests-context";
+import { RequestPage } from "../../components/request-page/request";
+import { useParams } from "react-router-dom";
+import { getCollections } from "../../api/api";
+import { Collection } from "../../types/types";
 
 export const CollectionRequest = () => {
   const { collectionId, requestId } = useParams();
@@ -38,6 +38,6 @@ export const CollectionRequest = () => {
   return service && request ? (
     <RequestPage service={service} request={request} />
   ) : (
-    'not found'
+    "not found"
   );
 };

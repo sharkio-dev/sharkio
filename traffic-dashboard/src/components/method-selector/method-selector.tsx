@@ -1,12 +1,12 @@
-import { Autocomplete, Chip, TextField } from '@mui/material';
-import React from 'react';
+import { Autocomplete, Chip, TextField } from "@mui/material";
+import React from "react";
 
 interface IMethodSelectProps {
   onChange: (value: string[]) => void;
 }
 
 export const MethodSelector: React.FC<IMethodSelectProps> = ({ onChange }) => {
-  const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'];
+  const methods = ["GET", "POST", "PATCH", "PUT", "DELETE"];
   return (
     <Autocomplete
       freeSolo

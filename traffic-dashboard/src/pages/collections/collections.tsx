@@ -1,4 +1,4 @@
-import { AddBox } from '@mui/icons-material';
+import { AddBox } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -8,15 +8,15 @@ import {
   ListItemButton,
   TextField,
   Typography,
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { createCollection, getCollections } from '../../api/api';
-import { RequestRow } from '../../components/request-row/request-row';
-import { Collection, InterceptedRequest } from '../../types/types';
-import styles from './collections.module.scss';
-import { request } from 'express';
-import { useNavigate, generatePath } from 'react-router-dom';
-import { routes } from '../../constants/routes';
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { createCollection, getCollections } from "../../api/api";
+import { RequestRow } from "../../components/request-row/request-row";
+import { Collection, InterceptedRequest } from "../../types/types";
+import styles from "./collections.module.scss";
+import { request } from "express";
+import { useNavigate, generatePath } from "react-router-dom";
+import { routes } from "../../constants/routes";
 
 export const Collections: React.FC = () => {
   const [selectedCollection, setSelectedCollection] = useState<Collection>();
@@ -45,7 +45,7 @@ export const Collections: React.FC = () => {
   };
 
   const handleAddCollection = () => {
-    if (!newCollectionName || newCollectionName === '') {
+    if (!newCollectionName || newCollectionName === "") {
       return;
     }
     createCollection(newCollectionName)
@@ -54,13 +54,13 @@ export const Collections: React.FC = () => {
       })
       .finally(() => {
         setIsAddDialogOpen(false);
-        setNewCollectionName('');
+        setNewCollectionName("");
       });
   };
 
   const navigate = useNavigate();
 
-  const handleRequestClicked = (requestId: InterceptedRequest['id']) => {
+  const handleRequestClicked = (requestId: InterceptedRequest["id"]) => {
     if (!selectedCollection) {
       return;
     }

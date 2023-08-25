@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 import {
   ChevronLeft,
   ChevronRight,
   FolderCopyOutlined,
   Home,
   SwapHoriz,
-} from '@mui/icons-material';
-import ApiIcon from '@mui/icons-material/Api';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
+} from "@mui/icons-material";
+import ApiIcon from "@mui/icons-material/Api";
+import DataObjectIcon from "@mui/icons-material/DataObject";
+import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import {
   IconButton,
   List,
@@ -16,12 +16,12 @@ import {
   ListItemButton,
   Paper,
   Typography,
-} from '@mui/material';
-import c from 'classnames';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './sidebar.module.scss';
-import { routes } from '../../constants/routes';
+} from "@mui/material";
+import c from "classnames";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./sidebar.module.scss";
+import { routes } from "../../constants/routes";
 
 export const SideBar: React.FC = () => {
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ export const SideBar: React.FC = () => {
           </ListItem>
           <ListItemButton
             onClick={() => {
-              navigate('/home');
+              navigate("/home");
             }}
             className={c({
               [styles.listItem]: true,
@@ -83,7 +83,7 @@ export const SideBar: React.FC = () => {
               [styles.listItemMinimized]: minimized,
             })}
             onClick={() => {
-              navigate('/config');
+              navigate("/config");
             }}
           >
             <SettingsInputComponentIcon />
@@ -95,7 +95,7 @@ export const SideBar: React.FC = () => {
               [styles.listItemMinimized]: minimized,
             })}
             onClick={() => {
-              navigate('/requests');
+              navigate("/requests");
             }}
           >
             <SwapHoriz />
@@ -107,7 +107,7 @@ export const SideBar: React.FC = () => {
               [styles.listItemMinimized]: minimized,
             })}
             onClick={() => {
-              navigate('/mocks');
+              navigate("/mocks");
             }}
           >
             <DataObjectIcon />
@@ -119,7 +119,7 @@ export const SideBar: React.FC = () => {
               [styles.listItemMinimized]: minimized,
             })}
             onClick={() => {
-              navigate('/gen-openapi');
+              navigate("/gen-openapi");
             }}
           >
             <ApiIcon />

@@ -1,11 +1,11 @@
-import { Typography } from '@mui/material';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { Session } from '@supabase/supabase-js';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { useAuthStore } from '../../stores/authStore';
-import { supabaseClient } from '../../utils/supabase-auth';
-import styles from './auth.module.scss';
+import { Typography } from "@mui/material";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { Session } from "@supabase/supabase-js";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { useAuthStore } from "../../stores/authStore";
+import { supabaseClient } from "../../utils/supabase-auth";
+import styles from "./auth.module.scss";
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
@@ -43,7 +43,7 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
             supabaseClient={supabaseClient}
             theme="dark"
             appearance={{ theme: ThemeSupa }}
-            providers={['github', 'google']}
+            providers={["github", "google"]}
             view="sign_in"
             redirectTo={window.location.origin}
           />

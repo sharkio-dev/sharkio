@@ -1,18 +1,18 @@
-import { InterceptedRequest, Invocation } from '../types/types';
+import { InterceptedRequest, Invocation } from "../types/types";
 import {
   OpenAPIDocument,
   OpenAPIOperation,
   OpenAPIRequestBody,
-} from './openapi.interface';
+} from "./openapi.interface";
 
 export function JsonToOpenapi(
   requests: InterceptedRequest[],
-  apiName = '',
-  apiVersion = '',
-  description = '',
+  apiName = "",
+  apiVersion = "",
+  description = "",
 ) {
   const openApiDocument: OpenAPIDocument = {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
       title: apiName,
       version: apiVersion,
@@ -47,10 +47,10 @@ function createOperation(method: string, invocations: Invocation[]) {
   const operation: OpenAPIOperation = {
     summary: `Endpoint for ${method}`,
     responses: {
-      '200': { description: 'Successful operation' },
+      "200": { description: "Successful operation" },
     },
   };
-  if (method !== 'GET') {
+  if (method !== "GET") {
     operation.requestBody = createBody(invocations[0].body!);
   }
   return operation;
@@ -60,9 +60,9 @@ function createBody(invocation: Record<string, string>) {
   const arr = parseRequestBodyItems(invocation);
   const requestBody: OpenAPIRequestBody = {
     content: {
-      'application/json': {
+      "application/json": {
         schema: {
-          type: 'object',
+          type: "object",
           properties: arr,
         },
       },

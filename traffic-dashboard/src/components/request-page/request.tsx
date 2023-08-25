@@ -1,4 +1,4 @@
-import { FolderCopyOutlined, PlayArrow } from '@mui/icons-material';
+import { FolderCopyOutlined, PlayArrow } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -11,28 +11,28 @@ import {
   TableRow,
   Tabs,
   Typography,
-} from '@mui/material';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { executeRequest, saveRequestToCollection } from '../../api/api';
-import { HttpMethod } from '../../components/http-method/http-method';
-import { useSnackbar } from '../../hooks/useSnackbar';
-import { JsonToOpenapi } from '../../lib/generateOpenapi';
+} from "@mui/material";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { executeRequest, saveRequestToCollection } from "../../api/api";
+import { HttpMethod } from "../../components/http-method/http-method";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import {
   JsonObject,
   JsonSchema,
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
-} from '../../lib/jsonSchema';
-import { OpenAPIDocument } from '../../lib/openapi.interface';
+} from "../../lib/jsonSchema";
+import { OpenAPIDocument } from "../../lib/openapi.interface";
 import {
   Collection,
   InterceptedRequest,
   Invocation,
   SnifferConfig,
-} from '../../types/types';
-import { CollectionPickerModal } from '../collections-picker-modal/collection-picker-modal';
-import styles from './requestCard.module.scss';
+} from "../../types/types";
+import { CollectionPickerModal } from "../collections-picker-modal/collection-picker-modal";
+import styles from "./requestCard.module.scss";
 
 interface IRequestPageProps {
   service: SnifferConfig;
@@ -62,8 +62,8 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
       setSchema(schema);
       const curlCommand = generateCurlCommand(request);
       setCurl(curlCommand);
-      setTypescript(jsonSchemaToTypescriptInterface(schema, 'body'));
-      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, '1.0.0'));
+      setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
+      setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, "1.0.0"));
     }
   }, [request]);
 
@@ -71,13 +71,13 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
     setTab(newValue);
   };
 
-  const handleSaveClicked = (collectionId: Collection['id']) => {
+  const handleSaveClicked = (collectionId: Collection["id"]) => {
     saveRequestToCollection(collectionId, request)
       .then(() => {
-        showSnackbar('successfully saved', 'success');
+        showSnackbar("successfully saved", "success");
       })
       .catch(() => {
-        showSnackbar('failed to save', 'error');
+        showSnackbar("failed to save", "error");
       });
   };
 
@@ -94,7 +94,7 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
         }}
       />
       {snackBar}
-      {request === undefined && 'No request found'}
+      {request === undefined && "No request found"}
       {request && (
         <>
           <Card className={styles.requestCardContainer}>
@@ -168,7 +168,7 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {' '}
+                {" "}
                 {request.invocations.map((invocation) => {
                   return (
                     <InvocationRow
@@ -215,7 +215,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
     invocation: Invocation,
   ) => {
     if (!service?.port) {
-      console.error('service was not found for requests');
+      console.error("service was not found for requests");
       return;
     }
     setExecuteLoading(true);
@@ -240,7 +240,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
             )}
           </Button>
         </TableCell>
-        <TableCell>{service?.name ?? ''}</TableCell>
+        <TableCell>{service?.name ?? ""}</TableCell>
         <TableCell>{invocation.id}</TableCell>
         <TableCell>{invocation.timestamp}</TableCell>
         <TableCell>{JSON.stringify(invocation.body)}</TableCell>

@@ -1,25 +1,25 @@
-import { ThemeProvider, createTheme } from '@mui/material';
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { PageTemplate } from './components/page-template/page-template';
-import { routes } from './constants/routes';
-import { RequestMetadataProvider } from './context/requests-context';
-import AuthUI from './pages/auth/Auth';
-import { Collections } from './pages/collections/collections';
-import { Config } from './pages/config/config';
-import { GenOpenAPI } from './pages/gen-openapi/gen-openapi';
-import { Home } from './pages/home/Home';
-import { default as Mocks, default as MocksPage } from './pages/mocks/mocks';
-import { NewRequest } from './pages/new-request/new-request';
-import { Requests } from './pages/requests/requests';
-import { Service } from './pages/service/service';
-import { ServiceRequest } from './pages/service-request/service-request';
-import { CollectionRequest } from './pages/collection-request/collection-request';
+import { ThemeProvider, createTheme } from "@mui/material";
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { PageTemplate } from "./components/page-template/page-template";
+import { routes } from "./constants/routes";
+import { RequestMetadataProvider } from "./context/requests-context";
+import AuthUI from "./pages/auth/Auth";
+import { Collections } from "./pages/collections/collections";
+import { Config } from "./pages/config/config";
+import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
+import { Home } from "./pages/home/Home";
+import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
+import { NewRequest } from "./pages/new-request/new-request";
+import { Requests } from "./pages/requests/requests";
+import { Service } from "./pages/service/service";
+import { ServiceRequest } from "./pages/service-request/service-request";
+import { CollectionRequest } from "./pages/collection-request/collection-request";
 
 function App(): React.JSX.Element {
   const theme = createTheme({
     palette: {
-      mode: 'dark',
+      mode: "dark",
     },
   });
 
@@ -47,7 +47,7 @@ function App(): React.JSX.Element {
                 <Route path={routes.MOCKS} element={<Mocks />} />
                 <Route path={routes.OPENAPI} element={<GenOpenAPI />} />
                 <Route path={routes.COLLECTION} element={<Collections />} />
-                <Route path={'*'} element={<AuthUI />} />
+                <Route path={"*"} element={<AuthUI />} />
               </Routes>
             </PageTemplate>
           </RequestMetadataProvider>

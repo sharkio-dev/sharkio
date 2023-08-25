@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -7,15 +7,15 @@ import {
   ListItemButton,
   Modal,
   Typography,
-} from '@mui/material';
-import { Collection } from '../../types/types';
-import { getCollections } from '../../api/api';
-import styles from './collection-picker-modal.module.scss';
+} from "@mui/material";
+import { Collection } from "../../types/types";
+import { getCollections } from "../../api/api";
+import styles from "./collection-picker-modal.module.scss";
 
 interface ICollectionPickerModalProps {
   open: boolean;
   onClose: () => void;
-  onChoose: (collectionId: Collection['id']) => void;
+  onChoose: (collectionId: Collection["id"]) => void;
 }
 
 export const CollectionPickerModal: React.FC<ICollectionPickerModalProps> = ({

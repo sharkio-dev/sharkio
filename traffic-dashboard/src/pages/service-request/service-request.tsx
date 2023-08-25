@@ -1,8 +1,8 @@
-import React from 'react';
-import { useContext, useEffect } from 'react';
-import { RequestsMetadataContext } from '../../context/requests-context';
-import { RequestPage } from '../../components/request-page/request';
-import { useParams } from 'react-router-dom';
+import React from "react";
+import { useContext, useEffect } from "react";
+import { RequestsMetadataContext } from "../../context/requests-context";
+import { RequestPage } from "../../components/request-page/request";
+import { useParams } from "react-router-dom";
 
 export const ServiceRequest = () => {
   const { id, serviceId } = useParams();
@@ -24,6 +24,6 @@ export const ServiceRequest = () => {
   return service && request ? (
     <RequestPage service={service} request={request} />
   ) : (
-    'not found'
+    "not found"
   );
 };
