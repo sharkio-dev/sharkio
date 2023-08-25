@@ -15,6 +15,7 @@ sniffers-setup.json
 collections.json
 .DS_Store
 
+yarn.lock
 # Ignore Yarn related files and folders
 .yarn/*
 .yarnrc
