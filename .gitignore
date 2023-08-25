@@ -13,3 +13,10 @@ sniffers-setup.json
 .env
 *yarn.lock
 collections.json
+.DS_Store
+
+# Ignore Yarn related files and folders
+.yarn/*
+.yarnrc
+yarn.lock
+yarn-error.log
