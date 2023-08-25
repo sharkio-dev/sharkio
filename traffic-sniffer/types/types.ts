@@ -1,4 +1,9 @@
-import { SnifferConfig } from "../../traffic-sniffer/lib/sniffer/sniffer";
+export type SnifferConfig = {
+  name: string;
+  port: number;
+  downstreamUrl: string;
+  id: string;
+};
 
 export type Invocation = {
   id: string;

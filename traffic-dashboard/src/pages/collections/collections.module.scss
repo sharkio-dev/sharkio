@@ -1,0 +1,58 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.listContainer {
+  width: 200px;
+  overflow: auto !important;
+  height: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  padding: 15px;
+  min-width: 500px;
+}
+
+.construction {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.constructionIcon {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+.collectionRequestsCard {
+  padding: 15px;
+  width: 100%;
+}
+
+.splitView {
+  display: flex;
+  gap: 30px;
+  height: 100%;
+}
+
+.collectionListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px !important;
+}

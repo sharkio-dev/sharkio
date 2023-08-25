@@ -5,17 +5,17 @@ import {
   Dialog,
   TextField,
   Typography,
-} from '@mui/material';
-import React, { useState } from 'react';
-import { editMock } from '../../../api/api';
-import { Mock } from '../../../types/types';
-import styles from './edit-mock-dialog.module.scss';
+} from "@mui/material";
+import React, { useState } from "react";
+import { editMock } from "../../../api/api";
+import { Mock } from "../../../types/types";
+import styles from "./edit-mock-dialog.module.scss";
 
 type EditMockDialogProps = {
   open: boolean;
   close: () => void;
-  mock: Omit<Mock, 'active'> & { port: number };
-  onDataChange: (data: Omit<Mock, 'active'> & { port: number }) => void;
+  mock: Omit<Mock, "active"> & { port: number };
+  onDataChange: (data: Omit<Mock, "active"> & { port: number }) => void;
 };
 
 export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {

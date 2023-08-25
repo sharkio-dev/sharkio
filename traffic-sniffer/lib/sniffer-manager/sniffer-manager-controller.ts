@@ -379,7 +379,7 @@ export class SnifferManagerController {
           port: portValidator,
         }),
         body: z.object({
-          url: z.string().url(),
+          url: z.string(),
           method: z
             .string()
             .toLowerCase()
@@ -396,7 +396,7 @@ export class SnifferManagerController {
       }),
       async (req: Request, res: Response) => {
         try {
-          log.info("executingggg request");
+          log.info("executing request");
           const { port } = req.params;
           const { url, method, invocation } = req.body;
           const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
@@ -405,7 +405,7 @@ export class SnifferManagerController {
             log.info(req.body);
             await sniffer.execute(url, method, invocation).catch((e) =>
               log.error("Error while executing", {
-                method: "POST",
+                method: method,
                 path: `${this.baseUrl}/:port/actions/execute`,
                 error: e,
               }),

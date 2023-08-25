@@ -1,14 +1,14 @@
-import { Avatar, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import React, { useEffect, useState } from 'react';
-import styles from './login-component.module.scss';
-import { supabaseClient } from '../../utils/supabase-auth';
-import { useAuthStore } from '../../stores/authStore';
+import { Avatar, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import React, { useEffect, useState } from "react";
+import styles from "./login-component.module.scss";
+import { supabaseClient } from "../../utils/supabase-auth";
+import { useAuthStore } from "../../stores/authStore";
 
 const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
   const { user, signOut } = useAuthStore();
-  const settings = ['Logout'];
+  const settings = ["Logout"];
 
   const handleOpenUserMenu = () => {
     setAnchorElUser(!anchorElUser);
@@ -16,7 +16,7 @@ const LoginComponent: React.FC = () => {
 
   const handleCloseUserMenu = async (setting: string) => {
     setAnchorElUser(!anchorElUser);
-    if (setting === 'Logout') {
+    if (setting === "Logout") {
       const { error } = await supabaseClient.auth.signOut();
       signOut();
     }
@@ -44,16 +44,16 @@ const LoginComponent: React.FC = () => {
             </IconButton>
           </Tooltip>
           <Menu
-            sx={{ mt: '55px' }}
+            sx={{ mt: "55px" }}
             id="menu-appbar"
             anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: "top",
+              horizontal: "right",
             }}
             keepMounted
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: "top",
+              horizontal: "right",
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}

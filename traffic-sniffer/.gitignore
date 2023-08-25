@@ -10,3 +10,9 @@ sharkio-0.1.0.tgz
 .idea
 
 sniffers-setup.json
+
+# Ignore Yarn related files and folders
+.yarn/*
+.yarnrc
+yarn.lock
+yarn-error.log

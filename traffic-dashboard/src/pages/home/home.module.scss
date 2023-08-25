@@ -2,8 +2,9 @@
   height: 100%;
 }
 .container > *:first-child {
-  height: 250px;
+  height: 300px;
   margin-bottom: 30px;
+  overflow: auto;
 }
 
 .container > *:last-child {

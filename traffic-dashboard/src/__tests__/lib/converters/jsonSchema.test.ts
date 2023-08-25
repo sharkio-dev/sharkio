@@ -2,46 +2,46 @@ import {
   JsonSchema,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
-} from '../../../lib/jsonSchema';
+} from "../../../lib/jsonSchema";
 
-describe('generateJsonSchema', () => {
-  it('should return schema correctly', () => {
+describe("generateJsonSchema", () => {
+  it("should return schema correctly", () => {
     const object = {
-      hello: 'world',
+      hello: "world",
     };
 
     const res = generateJsonSchema(object);
 
     expect(res).toEqual({
-      $schema: 'http://json-schema.org/draft-07/schema#',
+      $schema: "http://json-schema.org/draft-07/schema#",
       properties: {
         hello: {
-          type: 'string',
+          type: "string",
         },
       },
       required: [],
-      type: 'object',
+      type: "object",
     });
   });
 
-  it('should return schema correctly for nested object', () => {
+  it("should return schema correctly for nested object", () => {
     const object = {
       hello: {
-        this: 'world',
+        this: "world",
       },
     };
 
     const res = generateJsonSchema(object);
 
     expect(res).toEqual({
-      $schema: 'http://json-schema.org/draft-07/schema#',
-      type: 'object',
+      $schema: "http://json-schema.org/draft-07/schema#",
+      type: "object",
       properties: {
         hello: {
-          type: 'object',
+          type: "object",
           properties: {
             this: {
-              type: 'string',
+              type: "string",
             },
           },
           required: [],
@@ -52,22 +52,22 @@ describe('generateJsonSchema', () => {
   });
 });
 
-describe('generateTypescriptType', () => {
-  it('generate from JsonSchema', () => {
+describe("generateTypescriptType", () => {
+  it("generate from JsonSchema", () => {
     const schema: JsonSchema = {
-      $schema: 'http://json-schema.org/draft-07/schema#',
+      $schema: "http://json-schema.org/draft-07/schema#",
       properties: {
         hello: {
-          type: 'string',
+          type: "string",
         },
       },
       required: [],
-      type: 'object',
+      type: "object",
     };
 
-    const res = jsonSchemaToTypescriptInterface(schema, 'ISchema');
+    const res = jsonSchemaToTypescriptInterface(schema, "ISchema");
 
     expect(res).toBeDefined();
-    expect(res).toEqual('type ISchema = {  hello: string;}');
+    expect(res).toEqual("type ISchema = {  hello: string;}");
   });
 });

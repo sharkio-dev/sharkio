@@ -1,12 +1,12 @@
-import { AddBox } from '@mui/icons-material';
-import { Button, Card } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { deleteMock, getAllMocks } from '../../api/api';
-import MockRow from '../../components/mock/mock-row';
-import { useSnackbar } from '../../hooks/useSnackbar';
-import { Mock, ServiceMock } from '../../types/types';
-import { AddMockDialog } from './add-mock-dialog/add-mock.dialog';
-import { EditMockDialog } from './edit-mock-dialog/edit-mock-dialog';
+import { AddBox } from "@mui/icons-material";
+import { Button, Card } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { deleteMock, getAllMocks } from "../../api/api";
+import MockRow from "../../components/mock/mock-row";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { Mock, ServiceMock } from "../../types/types";
+import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
+import { EditMockDialog } from "./edit-mock-dialog/edit-mock-dialog";
 
 const MocksPage: React.FC = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
@@ -14,7 +14,7 @@ const MocksPage: React.FC = () => {
   const [editOpen, setEditOpen] = useState<boolean>(false);
 
   const [editMock, setEditMock] = useState<
-    (Omit<Mock, 'active'> & { port: number }) | null
+    (Omit<Mock, "active"> & { port: number }) | null
   >(null);
 
   const { show: showSnackbar, component: snackBar } = useSnackbar();
@@ -45,17 +45,19 @@ const MocksPage: React.FC = () => {
 
   const handleDeleteClicked = (id: string, port: number) => {
     deleteMock(id, port).then(() => {
-      showSnackbar('Mock removed successfully', 'info');
+      showSnackbar("Mock removed successfully", "info");
       loadData();
     });
   };
 
   return (
     <>
-      <Button onClick={handleAddClicked}>
-        <AddBox />
-        &nbsp;&nbsp;add
-      </Button>
+      <div>
+        Mocks
+        <Button onClick={handleAddClicked}>
+          <AddBox />
+        </Button>
+      </div>
       <Card>
         {mocks.flatMap((serviceMock: ServiceMock) => {
           return serviceMock.mocks.map((mock: Mock) => {

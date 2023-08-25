@@ -1,9 +1,9 @@
-import React from 'react';
-import { Autocomplete, Chip, Input, TextField } from '@mui/material';
-import { ChangeEventHandler } from 'react';
-import { MethodSelector } from '../method-selector/method-selector';
-import styles from './filter-bar.module.scss';
-import { SnifferConfig } from '../../types/types';
+import React from "react";
+import { Autocomplete, Chip, Input, TextField } from "@mui/material";
+import { ChangeEventHandler } from "react";
+import { MethodSelector } from "../method-selector/method-selector";
+import styles from "./filter-bar.module.scss";
+import { SnifferConfig } from "../../types/types";
 
 interface IFilterBarProps {
   services: SnifferConfig[];

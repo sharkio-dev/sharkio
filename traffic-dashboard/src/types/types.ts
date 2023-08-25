@@ -58,3 +58,9 @@ export type ServiceMock = {
   service: Service;
   mocks: Mock[];
 };
+
+export type Collection = {
+  id: string;
+  name: string;
+  requests: InterceptedRequest[];
+};
