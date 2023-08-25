@@ -12,3 +12,9 @@ sharkio-0.1.0.tgz
 sniffers-setup.json
 .env
 .DS_Store
+
+# Ignore Yarn related files and folders
+.yarn/*
+.yarnrc
+yarn.lock
+yarn-error.log
