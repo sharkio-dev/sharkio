@@ -1,7 +1,7 @@
 import { input } from "@inquirer/prompts";
 import select from "@inquirer/select";
 import { v4 } from "uuid";
-import { executeAction, getReqlistAction } from "./actions/actions";
+import { executeAction, getReqlistAction, getEndPoints, getMethods } from "./actions/actions";
 import { showTitleAndBanner } from "./utils/logger.util";
 const { green } = require("kleur/colors");
 
@@ -21,7 +21,7 @@ const listOfCommands = [
 
 export type Config = {
   url: string;
-  sniffer_port: number;
+//  sniffer_port: number;
   method: string;
   invocation: Object;
 };
@@ -46,18 +46,22 @@ const main = async () => {
         break;
       }
       case ProviderValue.execute: {
-        const act_url = await input({
-          message: "Please enter url",
-          default: "http://localhost:5012",
+      //  await getReqlistAction();
+       const endPoints = getEndPoints();
+        let act_url = await select({
+          message: "Please select an end-point",
+          choices: endPoints,
         });
-        const act_method = await input({
-          message: "Please enter request method",
-          default: "GET",
+        // get methods according to the url
+        const methods = getMethods(act_url as string)
+        const act_method = await select({
+          message: "Please select request method",
+          choices: methods,
         });
-        const act_sniffer_port = await input({
+     /*   const act_sniffer_port = await input({
           message: "Please enter sniffer port",
           default: "5551",
-        });
+        });*/
         const body = await input({
           message: "Please enter request body:",
           default: "",
@@ -74,7 +78,7 @@ const main = async () => {
           message: "Please enter request params:",
           default: "",
         });
-        const act_sniffer_port_num = +act_sniffer_port;
+        //const act_sniffer_port_num = +act_sniffer_port;
         const timestamp = new Date();
         const act_id = v4();
         const act_invocation = {
@@ -86,10 +90,10 @@ const main = async () => {
           params: params,
         };
         const input_config: Config = {
-          url: act_url,
+          url: "act_url",
           //sniffer_mame: act_sniffer_mame,
-          sniffer_port: act_sniffer_port_num,
-          method: act_method,
+          //sniffer_port: act_sniffer_port_num,
+          method: act_method as string,
           invocation: act_invocation,
         };
         await executeAction(input_config);
