@@ -1,4 +1,4 @@
-import { ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
@@ -15,17 +15,20 @@ import { Requests } from "./pages/requests/requests";
 import { Service } from "./pages/service/service";
 import { ServiceRequest } from "./pages/service-request/service-request";
 import { CollectionRequest } from "./pages/collection-request/collection-request";
+import { useThemeStore } from "./stores/themeStore";
 
 function App(): React.JSX.Element {
+  const { mode } = useThemeStore();
+
   const theme = createTheme({
     palette: {
-      mode: "dark",
+      mode,
     },
   });
-
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <AuthUI>
           <RequestMetadataProvider>
             <PageTemplate>
