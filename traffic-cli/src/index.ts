@@ -70,7 +70,7 @@ const main = async () => {
               message: "Please enter property " + propertyName + " value:",
               default: "",
             });
-            const obj = {propertyName: value};
+            const obj = {[propertyName]: value};
             body.push(obj);
             
           }
