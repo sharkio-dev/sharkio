@@ -1,7 +1,7 @@
 import { input } from "@inquirer/prompts";
 import select from "@inquirer/select";
 import { v4 } from "uuid";
-import { executeAction, getReqlistAction, getEndPoints, getMethods } from "./actions/actions";
+import { executeAction, getReqlistAction, getEndPoints, getMethods,getProperties,getServers } from "./actions/actions";
 import { showTitleAndBanner } from "./utils/logger.util";
 const { green } = require("kleur/colors");
 
@@ -53,19 +53,34 @@ const main = async () => {
           choices: endPoints,
         });
         // get methods according to the url
-        const methods = getMethods(act_url as string)
+        const act_url_str = act_url as string
+        const methods = getMethods(act_url_str);
+
         const act_method = await select({
           message: "Please select request method",
           choices: methods,
         });
-     /*   const act_sniffer_port = await input({
-          message: "Please enter sniffer port",
-          default: "5551",
-        });*/
-        const body = await input({
-          message: "Please enter request body:",
-          default: "",
-        });
+        let body = new Array();
+        const act_method_str =  act_method as string;
+        const properties = getProperties(act_url_str, act_method_str);
+        if (Array.isArray(properties)){
+
+          for (const propertyName of properties) {	
+            const value = await input({
+              message: "Please enter property " + propertyName + " value:",
+              default: "",
+            });
+            const obj = {propertyName: value};
+            body.push(obj);
+            
+          }
+       }
+       console.log(body);
+       const servers = getServers();
+       const server = await select({
+        message: "Please choose a server:",
+        choices: servers,
+      });
         const headers = await input({
           message: "Please enter request headers:",
           default: "",

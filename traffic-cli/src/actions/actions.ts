@@ -33,8 +33,6 @@ export function getEndPoints(){
 		const obj = {name: key, value:key } 
 		endPoints.push(obj)
 	}
-	console.log(endPoints)
-
 	  
 	return endPoints
 }
@@ -53,6 +51,38 @@ export function getMethods(endPoints: string){
 
 	return methods_obj
 }
+export function getProperties(endPoint: string, method: string){
+	//const methods = new Array()
+	const fileData = fsSync.readFileSync("src/openapi.json", "utf8");
+	const parsedData = JSON.parse(fileData);
+	// Go through the open-api file
+	const arr = parsedData.paths;
+	try {
+		const properties = Object.keys(arr[endPoint][method]["requestBody"]["content"]["application/json"]["schema"]["properties"]);
+		return properties
+	} catch (error) {
+		console.log("No properties needed for this method");
+		return
+		
+	}
+}
+	export function getServers(){
+		const servers_arr = new Array()
+		const fileData = fsSync.readFileSync("src/openapi.json", "utf8");
+		const parsedData = JSON.parse(fileData);
+		// Go through the open-api file
+		const servers = parsedData.servers;
+		for (const value of servers) {	
+			const value_obj = Object(value);
+			const server_string = Object.values(value_obj)[0]
+			const obj = {name: server_string, value:server_string } 
+			servers_arr.push(obj)
+		}
+		return servers_arr
+	}
+
+
+
 /* export async function addReqAction(request: Request){
 	invocations.push({
 	id: v4(),
