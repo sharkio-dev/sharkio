@@ -25,7 +25,7 @@ function App(): React.JSX.Element {
       mode,
     },
   });
-  
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

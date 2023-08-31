@@ -114,7 +114,11 @@ export const Collections: React.FC = () => {
                   request && (
                     <RequestRow
                       key={`${request.id}${index}`}
-                      request={request}
+                      url={request.url}
+                      id={request.id}
+                      method={request.method}
+                      timestamp={request.lastInvocationDate}
+                      hitCount={request.hitCount}
                       serviceId={request.serviceId}
                       onRequestClicked={handleRequestClicked}
                     />
