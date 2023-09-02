@@ -54,7 +54,6 @@ function App(): React.JSX.Element {
   };
 
   return (
-    // <div id="app">
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -81,7 +80,6 @@ function App(): React.JSX.Element {
         </RequestMetadataProvider>
       </ThemeProvider>
     </BrowserRouter>
-    // </div>
   );
 }
 
