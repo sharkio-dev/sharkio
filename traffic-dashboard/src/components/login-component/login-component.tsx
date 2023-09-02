@@ -17,16 +17,14 @@ const LoginComponent: React.FC = () => {
   const handleCloseUserMenu = async (setting: string) => {
     setAnchorElUser(!anchorElUser);
     if (setting === "Logout") {
-      const { error } = await supabaseClient.auth.signOut();
+      await supabaseClient.auth.signOut();
       signOut();
     }
   };
 
   useEffect(() => {
     (async () => {
-      const {
-        data: { user },
-      } = await supabaseClient.auth.getUser();
+      await supabaseClient.auth.getUser();
     })();
   }, []);
 
