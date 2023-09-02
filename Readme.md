@@ -35,9 +35,9 @@ Request mocking.
 | Microservice support  |      ✅       |
 |     Request mocks     |      ✅       |
 |  Open api generator   |      ✅       |
+|     Save requests     |      ✅       |
+|      Collections      |      ✅       |
 |  ChatGPT integration  |               |
-|     Save requests     |               |
-|      Collections      |               |
 |    Share requests     |               |
 
 ## 🛠️ How to use
