@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
 import { RequestMetadataProvider } from "./context/requests-context";
-import { About } from "./pages/about/about";
 import AuthUI from "./pages/auth/Auth";
 import { CollectionRequest } from "./pages/collection-request/collection-request";
 import { Collections } from "./pages/collections/collections";
@@ -16,6 +15,7 @@ import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
 import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
+import { About } from "./pages/about/about";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
