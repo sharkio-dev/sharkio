@@ -139,51 +139,133 @@ export function generateApiRequestSnippet(
 
   url = url + jsonToQueryString(queryParams);
 
-  if (language === "javascript") {
-    snippet += `fetch('${url}', {
-      method: '${method}',
-      headers: {
-        ${Object.entries(headers)
-          .map(([key, value]) => `'${key}': '${value}'`)
-          .join(",\n        ")}
-      },
-      ${requestBody ? `body: ${JSON.stringify(requestBody)},` : ""}
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error(error);
-    });`;
-  } else if (language === "python") {
-    snippet += `import requests
+  switch (language) {
+    case "javascript":
+      snippet = generateJsSnippet(snippet, url, method, headers, requestBody);
+      break;
+    case "python":
+      snippet = generatePythonSnippet(
+        snippet,
+        url,
+        headers,
+        method,
+        requestBody,
+      );
+      break;
+    case "java":
+      snippet = generateJavaOkHttpSnippet(
+        snippet,
+        url,
+        method,
+        headers,
+        requestBody,
+      );
+      break;
+    case "golang":
+      snippet = generateGoLangSnippet(
+        snippet,
+        url,
+        method,
+        headers,
+        requestBody,
+      );
+      break;
+    case "php":
+      snippet = generatePhpGuzzle(snippet, url, headers, requestBody, method);
+      break;
+    default:
+      snippet = "Unsupported language";
+  }
 
-url = '${url}'
-headers = {
-    ${Object.entries(headers)
-      .map(([key, value]) => `'${key}': '${value}'`)
-      .join(",\n    ")}
+  return snippet;
 }
 
-response = requests.${method.toLowerCase()}(url, headers=headers`;
+const jsonToQueryString = (json: JsonObject): String => {
+  if (!json) {
+    return "";
+  }
+  return Object.keys(json)
+    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(json[key]))
+    .join("&");
+};
+const generateGoLangSnippet = (
+  snippet: string,
+  url: String,
+  method: String,
+  headers: any,
+  requestBody: any,
+) => {
+  snippet += `package main
 
-    if (requestBody) {
-      snippet += `,
-json=${JSON.stringify(requestBody)}`;
-    }
+import (
+	"bytes"
+	"fmt"
+	"net/http"
+	"io/ioutil"
+)
 
-    snippet += `)
+func main() {
+	url := "${url}"
+	method := "${method}"
+`;
 
-if response.status_code == 200:
-    data = response.json()
-    # Handle the API response data here
-    print(data)
-else:
-    # Handle errors here
-    print(f"Error: {response.status_code}")`;
-  } else if (language === "java") {
-    snippet += `import okhttp3.OkHttpClient;
+  // Add headers
+  for (const [key, value] of Object.entries(headers)) {
+    snippet += `
+	headers := map[string]string{
+		"${key}": "${value}",
+	}`;
+  }
+
+  // Add request body if provided
+  if (requestBody) {
+    snippet += `
+	requestBody := []byte(\`${JSON.stringify(requestBody)}\`)`;
+  } else {
+    snippet += `
+	var requestBody []byte`;
+  }
+
+  snippet += `
+  
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return
+	}
+  
+	// Set headers
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error making request:", err)
+		return
+	}
+	defer resp.Body.Close()
+  
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return
+	}
+  
+	fmt.Println("Response:", string(body))
+}`;
+  return snippet;
+};
+
+const generateJavaOkHttpSnippet = (
+  snippet: string,
+  url: String,
+  method: String,
+  headers: any,
+  requestBody: any,
+) => {
+  snippet += `import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.MediaType;
@@ -199,23 +281,23 @@ public class Main {
       .url(url)
       .${method.toLowerCase()}();`;
 
-    // Add headers
-    for (const [key, value] of Object.entries(headers)) {
-      snippet += `
+  // Add headers
+  for (const [key, value] of Object.entries(headers)) {
+    snippet += `
     requestBuilder.addHeader("${key}", "${value}");`;
-    }
+  }
 
-    // Add request body if provided
-    if (requestBody) {
-      snippet += `
+  // Add request body if provided
+  if (requestBody) {
+    snippet += `
     MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
     RequestBody body = RequestBody.create(mediaType, "${JSON.stringify(
       requestBody,
     )}");
     requestBuilder.method("${method}", body);`;
-    }
+  }
 
-    snippet += `
+  snippet += `
     
     Request request = requestBuilder.build();
 
@@ -231,16 +313,127 @@ public class Main {
     }
   }
 }`;
-  } else {
-    // Unsupported language
-    snippet = "Unsupported language";
-  }
-
   return snippet;
+};
+
+const generatePythonSnippet = (
+  snippet: string,
+  url: String,
+  headers: any,
+  method: String,
+  requestBody: any,
+) => {
+  snippet += `import requests
+
+url = '${url}'
+headers = {
+    ${Object.entries(headers)
+      .map(([key, value]) => `'${key}': '${value}'`)
+      .join(",\n    ")}
 }
 
-const jsonToQueryString = (json: JsonObject) => {
-  return Object.keys(json)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(json[key]))
-    .join("&");
+response = requests.${method.toLowerCase()}(url, headers=headers`;
+
+  if (requestBody) {
+    snippet += `,
+json=${JSON.stringify(requestBody)}`;
+  }
+
+  snippet += `)
+
+if response.status_code == 200:
+    data = response.json()
+    # Handle the API response data here
+    print(data)
+else:
+    # Handle errors here
+    print(f"Error: {response.status_code}")`;
+  return snippet;
+};
+
+const generateJsSnippet = (
+  snippet: string,
+  url: String,
+  method: String,
+  headers: any,
+  requestBody: any,
+) => {
+  snippet += `fetch('${url}', {
+      method: '${method}',
+      headers: {
+        ${Object.entries(headers)
+          .map(([key, value]) => `'${key}': '${value}'`)
+          .join(",\n        ")}
+      },
+      ${requestBody ? `body: ${JSON.stringify(requestBody)},` : ""}
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error(error);
+    });`;
+  return snippet;
+};
+
+const generatePhpGuzzle = (
+  snippet: string,
+  url: String,
+  headers: any,
+  requestBody: any,
+  method: String,
+) => {
+  snippet += `<?php
+      use GuzzleHttp\Client;
+      use GuzzleHttp\RequestOptions;
+      
+      $url = '${url}';
+      $headers = [`;
+
+  // Add headers
+  for (const [key, value] of Object.entries(headers)) {
+    snippet += `
+        '${key}' => '${value}',`;
+  }
+
+  // Add request body if provided
+  if (requestBody) {
+    snippet += `
+      ];
+      $body = ${JSON.stringify(requestBody)};
+      $client = new Client();
+      $response = $client->request('${method}', $url, [
+        'headers' => $headers,
+        RequestOptions::JSON => $body,
+      ]);
+      
+      if ($response->getStatusCode() == 200) {
+        $data = json_decode($response->getBody(), true);
+        // Handle the API response data here
+        print_r($data);
+      } else {
+        // Handle errors here
+        echo "Error: " . $response->getStatusCode();
+      }
+?>`;
+  } else {
+    snippet += `
+      ];
+      $client = new Client();
+      $response = $client->request('${method}', $url, [
+        'headers' => $headers,
+      ]);
+      
+      if ($response->getStatusCode() == 200) {
+        $data = json_decode($response->getBody(), true);
+        // Handle the API response data here
+        print_r($data);
+      } else {
+        // Handle errors here
+        echo "Error: " . $response->getStatusCode();
+      }
+?>`;
+  }
+  return snippet;
 };

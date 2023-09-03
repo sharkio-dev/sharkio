@@ -52,10 +52,12 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
   );
 
   const [jsFetch, setJsfetch] = useState<string | undefined>(undefined);
+  const [phpGuzzle, setPhpGuzzle] = useState<string | undefined>(undefined);
   const [pythonRequest, setPythonRequest] = useState<string | undefined>(
     undefined,
   );
   const [javaOkHttp, setJavaOkHttp] = useState<string | undefined>(undefined);
+  const [golang, setGolang] = useState<string | undefined>(undefined);
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
   const [tab, setTab] = useState(0);
@@ -88,6 +90,16 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
       );
       setJsfetch(javascriptSnippet);
 
+      const phpScript = generateApiRequestSnippet(
+        "php",
+        request.method,
+        url,
+        headers,
+        request.invocations[0].body,
+        request.invocations[0].params,
+      );
+      setPhpGuzzle(phpScript);
+
       const pythonScript = generateApiRequestSnippet(
         "python",
         request.method,
@@ -107,6 +119,16 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
         request.invocations[0].params,
       );
       setJavaOkHttp(javaSnippet);
+
+      const goLangSnippet = generateApiRequestSnippet(
+        "golang",
+        request.method,
+        url,
+        headers,
+        request.invocations[0].body,
+        request.invocations[0].params,
+      );
+      setGolang(goLangSnippet);
 
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
@@ -172,6 +194,8 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
               <Tab label="javascript" value={5}></Tab>
               <Tab label="python" value={6}></Tab>
               <Tab label="java" value={7}></Tab>
+              <Tab label="golang" value={8}></Tab>
+              <Tab label="php" value={9}></Tab>
             </Tabs>
             <TabContent index={0} tabValue={tab}>
               <div className={styles.cardTitle}>
@@ -213,6 +237,16 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
             <TabContent index={7} tabValue={tab}>
               <div className={styles.cardTitle}>
                 <pre>{javaOkHttp}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={8} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{golang}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={9} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{phpGuzzle}</pre>
               </div>
             </TabContent>
           </Card>
