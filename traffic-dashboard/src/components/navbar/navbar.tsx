@@ -1,18 +1,42 @@
-import { AppBar } from "@mui/material";
+import { AppBar, Button } from "@mui/material";
 import React from "react";
 import styles from "./navbar.module.scss";
 import LoginComponent from "../login-component/login-component";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import ThemeToggleMode from "../ThemeToggleMode";
 import { useThemeStore } from "../../stores/themeStore";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar: React.FC = () => {
   const { mode, toggleColorMode } = useThemeStore();
+  const navigate = useNavigate();
 
   return (
     <AppBar position="relative">
       <div className={styles.navbar}>
-        <div className={styles.navbar_left} />
+        <div className={styles.navbar_left}>
+          <Button
+            onClick={() => {
+              navigate("/about");
+            }}
+          >
+            About
+          </Button>
+          <Button
+            onClick={() => {
+              navigate("/pricing");
+            }}
+          >
+            Pricing
+          </Button>
+          <Button
+            onClick={() => {
+              navigate("/getting-started");
+            }}
+          >
+            Getting started
+          </Button>
+        </div>
         <div className={styles.navbar_right}>
           <ThemeToggleMode
             toggleColorMode={toggleColorMode}

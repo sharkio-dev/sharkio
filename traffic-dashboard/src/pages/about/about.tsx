@@ -80,7 +80,7 @@ export const About = () => {
                 Choose a port for the proxy. <br />
                 Paste the address of the server into the downstream field.
                 <br />
-                Give the proxy a name (For example "Backend")
+                Give the proxy a name (For example &quot;Backend&quot;)
                 <br />
                 Save and than start the proxy using the green play button
               </>

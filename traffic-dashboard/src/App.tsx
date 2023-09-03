@@ -69,10 +69,38 @@ function App(): React.JSX.Element {
               }
             />
             <Route
-              path={"/home"}
+              path={"/about"}
+              element={
+                <AuthUI>
+                  <PageTemplate>about</PageTemplate>
+                </AuthUI>
+              }
+            />
+            <Route
+              path={"/getting-started"}
               element={
                 <PageTemplate>
                   <About />
+                </PageTemplate>
+              }
+            />
+            <Route
+              path={"/pricing"}
+              element={<PageTemplate>pricing</PageTemplate>}
+            />
+            <Route
+              path={"/login"}
+              element={
+                <PageTemplate>
+                  <AuthUI />
+                </PageTemplate>
+              }
+            />
+            <Route
+              path={"/signup"}
+              element={
+                <PageTemplate>
+                  <AuthUI />
                 </PageTemplate>
               }
             />

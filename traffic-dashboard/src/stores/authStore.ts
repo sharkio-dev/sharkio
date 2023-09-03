@@ -9,6 +9,6 @@ interface authState {
 
 export const useAuthStore = create<authState>((set) => ({
   user: null,
-  signIn: (userData) => set({ user: userData }),
+  signIn: (userData) => set({ user: { ...userData } }),
   signOut: () => set({ user: null }),
 }));

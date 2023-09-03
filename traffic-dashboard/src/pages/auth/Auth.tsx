@@ -22,13 +22,13 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
       });
     });
 
-    const {
-      data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    // const {
+    //   data: { subscription },
+    // } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+    //   setSession(session);
+    // });
 
-    return () => subscription.unsubscribe();
+    // return () => subscription.unsubscribe();
   }, []);
 
   if (!session) {
@@ -44,8 +44,8 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
             theme="dark"
             appearance={{ theme: ThemeSupa }}
             providers={["github", "google"]}
-            view="sign_in"
-            redirectTo={window.location.origin}
+            view="sign_up"
+            redirectTo={window.location.pathname}
           />
         </div>
       </div>
