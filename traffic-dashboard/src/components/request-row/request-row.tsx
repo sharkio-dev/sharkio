@@ -6,25 +6,30 @@ import { HttpMethod } from "../http-method/http-method";
 import { ServiceName } from "../service-name/service-name";
 import styles from "./request-row.module.scss";
 interface IRequestRowProps {
-  request: InterceptedRequest;
   serviceId: SnifferConfig["id"];
   onRequestClicked: (requestId: InterceptedRequest["id"]) => void;
+  id: InterceptedRequest["id"];
+  method: InterceptedRequest["method"];
+  url: InterceptedRequest["url"];
+  timestamp: InterceptedRequest["lastInvocationDate"];
+  hitCount?: InterceptedRequest["hitCount"];
 }
 
 export const RequestRow: React.FC<IRequestRowProps> = ({
-  request,
   serviceId,
   onRequestClicked,
+  id,
+  method,
+  url,
+  timestamp,
+  hitCount,
 }) => {
   const { servicesData } = useContext(RequestsMetadataContext);
   const service = servicesData?.find((service) => service.id == serviceId);
 
   return (
     <>
-      <ListItemButton
-        key={request.id}
-        onClick={() => onRequestClicked(request.id)}
-      >
+      <ListItemButton key={id} onClick={() => onRequestClicked(id)}>
         <Box
           sx={{
             width: "100%",
@@ -37,9 +42,9 @@ export const RequestRow: React.FC<IRequestRowProps> = ({
               <ServiceName service={service?.name ?? ""} />
             </div>
             <div className={styles.methodContainer}>
-              <HttpMethod method={request.method} />
+              <HttpMethod method={method} />
             </div>
-            <span className={styles.url}>{request.url}</span>
+            <span className={styles.url}>{url}</span>
           </div>
 
           <div>
@@ -62,9 +67,9 @@ export const RequestRow: React.FC<IRequestRowProps> = ({
                   },
                 }}
               >
-                <div>{request.lastInvocationDate}</div>
+                <div>{timestamp}</div>
               </Box>
-              <Chip label={request.hitCount}></Chip>
+              {hitCount && <Chip label={hitCount}></Chip>}
             </Box>
           </div>
         </Box>
