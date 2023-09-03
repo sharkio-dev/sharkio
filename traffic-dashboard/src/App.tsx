@@ -12,11 +12,11 @@ import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
 import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
 import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
 import { NewRequest } from "./pages/new-request/new-request";
+import { Pricing } from "./pages/pricing/pricing";
 import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
 import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
-import { Pricing } from "./pages/pricing/pricing";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
