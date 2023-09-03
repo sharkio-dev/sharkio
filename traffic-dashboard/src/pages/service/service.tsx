@@ -190,9 +190,10 @@ export const Service: React.FC = () => {
                   (request: InterceptedRequest) => {
                     return (
                       <RequestRow
+                        timestamp={request.lastInvocationDate}
+                        {...request}
                         key={request.id}
-                        request={request}
-                        serviceId={request.serviceId}
+                        onRequestClicked={() => {}}
                       />
                     );
                   },
