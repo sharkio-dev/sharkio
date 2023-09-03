@@ -23,6 +23,7 @@ import {
   generateCurlCommand,
   generateJsonSchema,
   jsonSchemaToTypescriptInterface,
+  generateApiRequestSnippet,
 } from "../../lib/jsonSchema";
 import { OpenAPIDocument } from "../../lib/openapi.interface";
 import {
@@ -49,6 +50,12 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
   const [openapi, setOpenapi] = useState<OpenAPIDocument | undefined>(
     undefined,
   );
+
+  const [jsFetch, setJsfetch] = useState<string | undefined>(undefined);
+  const [pythonRequest, setPythonRequest] = useState<string | undefined>(
+    undefined,
+  );
+  const [javaOkHttp, setJavaOkHttp] = useState<string | undefined>(undefined);
   const [curl, setCurl] = useState<string | undefined>(undefined);
   const [schema, setSchema] = useState<JsonSchema | undefined>(undefined);
   const [tab, setTab] = useState(0);
@@ -61,6 +68,46 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
       );
       setSchema(schema);
       const curlCommand = generateCurlCommand(request);
+
+      let headers: JsonObject = {
+        authorization: request.invocations[0].headers.authorization,
+        accept: request.invocations[0].headers.accept,
+        "cache-control": request.invocations[0].headers["cache-control"],
+        connection: request.invocations[0].headers["connection"],
+      };
+      headers = removeNullUndefinedFromObject(headers);
+      let url = `http://${request.invocations[0].headers.host}${request.url}`;
+
+      const javascriptSnippet = generateApiRequestSnippet(
+        "javascript",
+        request.method,
+        url,
+        headers,
+        request.invocations[0].body,
+        request.invocations[0].params,
+      );
+      setJsfetch(javascriptSnippet);
+
+      const pythonScript = generateApiRequestSnippet(
+        "python",
+        request.method,
+        url,
+        headers,
+        request.invocations[0].body,
+        request.invocations[0].params,
+      );
+      setPythonRequest(pythonScript);
+
+      const javaSnippet = generateApiRequestSnippet(
+        "java",
+        request.method,
+        url,
+        headers,
+        request.invocations[0].body,
+        request.invocations[0].params,
+      );
+      setJavaOkHttp(javaSnippet);
+
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));
       setOpenapi(JsonToOpenapi(new Array(request), request.serviceId, "1.0.0"));
@@ -122,6 +169,9 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
               <Tab label="JSON Schema" value={2}></Tab>
               <Tab label="RAW" value={3}></Tab>
               <Tab label="openAPI" value={4}></Tab>
+              <Tab label="javascript" value={5}></Tab>
+              <Tab label="python" value={6}></Tab>
+              <Tab label="java" value={7}></Tab>
             </Tabs>
             <TabContent index={0} tabValue={tab}>
               <div className={styles.cardTitle}>
@@ -148,6 +198,21 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
             <TabContent index={4} tabValue={tab}>
               <div className={styles.cardTitle}>
                 <pre>{JSON.stringify(openapi, null, 2)}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={5} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{jsFetch}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={6} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{pythonRequest}</pre>
+              </div>
+            </TabContent>
+            <TabContent index={7} tabValue={tab}>
+              <div className={styles.cardTitle}>
+                <pre>{javaOkHttp}</pre>
               </div>
             </TabContent>
           </Card>
@@ -249,4 +314,13 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
       </TableRow>
     </>
   );
+};
+
+const removeNullUndefinedFromObject = (obj: JsonObject) => {
+  return Object.keys(obj)
+    .filter((key) => obj[key] !== null && obj[key] !== undefined)
+    .reduce((result: any, key: any) => {
+      result[key] = obj[key];
+      return result;
+    }, {});
 };

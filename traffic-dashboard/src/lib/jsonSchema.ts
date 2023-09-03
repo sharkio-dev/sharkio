@@ -28,6 +28,7 @@ export interface JsonSchema {
 }
 
 export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
+  console.log(jsonObject);
   const schema: JsonSchema = {
     $schema: "http://json-schema.org/draft-07/schema#",
     type: "object",
@@ -125,3 +126,121 @@ export function generateCurlCommand(req: InterceptedRequest): string {
 
   return curlCommand.slice(0, -2);
 }
+
+export function generateApiRequestSnippet(
+  language: String,
+  method: String,
+  url: String,
+  headers: any,
+  requestBody: any = null,
+  queryParams: any = null,
+) {
+  let snippet = "";
+
+  url = url + jsonToQueryString(queryParams);
+
+  if (language === "javascript") {
+    snippet += `fetch('${url}', {
+      method: '${method}',
+      headers: {
+        ${Object.entries(headers)
+          .map(([key, value]) => `'${key}': '${value}'`)
+          .join(",\n        ")}
+      },
+      ${requestBody ? `body: ${JSON.stringify(requestBody)},` : ""}
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error(error);
+    });`;
+  } else if (language === "python") {
+    snippet += `import requests
+
+url = '${url}'
+headers = {
+    ${Object.entries(headers)
+      .map(([key, value]) => `'${key}': '${value}'`)
+      .join(",\n    ")}
+}
+
+response = requests.${method.toLowerCase()}(url, headers=headers`;
+
+    if (requestBody) {
+      snippet += `,
+json=${JSON.stringify(requestBody)}`;
+    }
+
+    snippet += `)
+
+if response.status_code == 200:
+    data = response.json()
+    # Handle the API response data here
+    print(data)
+else:
+    # Handle errors here
+    print(f"Error: {response.status_code}")`;
+  } else if (language === "java") {
+    snippet += `import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+
+public class Main {
+  public static void main(String[] args) throws Exception {
+    OkHttpClient client = new OkHttpClient();
+
+    String url = "${url}";
+    
+    Request.Builder requestBuilder = new Request.Builder()
+      .url(url)
+      .${method.toLowerCase()}();`;
+
+    // Add headers
+    for (const [key, value] of Object.entries(headers)) {
+      snippet += `
+    requestBuilder.addHeader("${key}", "${value}");`;
+    }
+
+    // Add request body if provided
+    if (requestBody) {
+      snippet += `
+    MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+    RequestBody body = RequestBody.create(mediaType, "${JSON.stringify(
+      requestBody,
+    )}");
+    requestBuilder.method("${method}", body);`;
+    }
+
+    snippet += `
+    
+    Request request = requestBuilder.build();
+
+    try (Response response = client.newCall(request).execute()) {
+      if (response.isSuccessful()) {
+        String responseData = response.body().string();
+        // Handle the API response data here
+        System.out.println(responseData);
+      } else {
+        // Handle errors here
+        System.err.println("Error: " + response.code());
+      }
+    }
+  }
+}`;
+  } else {
+    // Unsupported language
+    snippet = "Unsupported language";
+  }
+
+  return snippet;
+}
+
+const jsonToQueryString = (json: JsonObject) => {
+  return Object.keys(json)
+    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(json[key]))
+    .join("&");
+};
