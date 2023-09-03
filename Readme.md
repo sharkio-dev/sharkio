@@ -1,4 +1,8 @@
-# Sharkio
+<p align="center">
+  <img align="center" width="10%" src="assets/sharkio-logo.webp" alt="logo"/>
+  <h2 align="center">Sharkio</h2>
+</p>
+
 
 ## 🐳 What is Sharkio
 
