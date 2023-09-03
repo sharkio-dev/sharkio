@@ -51,14 +51,35 @@ const GettingStartedCard: React.FC<IGettingStartedCardProps> = ({
   );
 };
 
-export const About = () => {
+export const GettingStarted = () => {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
-        <div className="font-bold text-xl mb-5">Getting started</div>
-        <div className="sm:flex sm:flex-col sm:gap-2 md:grid grid-rows-3 grid-cols-2 md:gap-3 sm:gap-2 grid-flow-col">
+        <div className="flex w-full content-center justify-center font-bold text-xl mb-5">
+          The best API development tool
+        </div>
+        <div className="flex w-full content-center justify-center font-bold text-l mb-10 text-center text-gray-400">
+          Sharkio is a simple to use API proxy. Packed with many features that
+          will change the way you develop API's. Sharkio records all the
+          requests that are sent to your API. It allows you to replay and debug
+          the requests easily. easily. Generate types, documentation, test
+          suites, And interact with your API using AI.
+          <br />
+        </div>
+        <div className="font-bold text-xl mb-5 flex w-full content-center justify-center">
+          Getting started
+        </div>
+        <div
+          className="
+          grid
+          grid-cols-1
+          gap-2
+          md:grid md:grid-rows-3 
+          md:grid-cols-2 md:gap-2
+          md:grid-flow-col"
+        >
           <GettingStartedCard
             title={"Start you server"}
             content={

@@ -9,13 +9,14 @@ import { CollectionRequest } from "./pages/collection-request/collection-request
 import { Collections } from "./pages/collections/collections";
 import { Config } from "./pages/config/config";
 import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
+import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
 import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
 import { NewRequest } from "./pages/new-request/new-request";
 import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
 import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
-import { About } from "./pages/about/about";
+import { Pricing } from "./pages/pricing/pricing";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -64,29 +65,26 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  <About />
+                  <GettingStarted />
+                  <AuthUI />
                 </PageTemplate>
-              }
-            />
-            <Route
-              path={"/about"}
-              element={
-                <AuthUI>
-                  <PageTemplate>about</PageTemplate>
-                </AuthUI>
               }
             />
             <Route
               path={"/getting-started"}
               element={
                 <PageTemplate>
-                  <About />
+                  <GettingStarted />
                 </PageTemplate>
               }
             />
             <Route
               path={"/pricing"}
-              element={<PageTemplate>pricing</PageTemplate>}
+              element={
+                <PageTemplate>
+                  <Pricing />
+                </PageTemplate>
+              }
             />
             <Route
               path={"/login"}

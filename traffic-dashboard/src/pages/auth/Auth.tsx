@@ -22,13 +22,13 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
       });
     });
 
-    // const {
-    //   data: { subscription },
-    // } = supabaseClient.auth.onAuthStateChange((_event, session) => {
-    //   setSession(session);
-    // });
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
 
-    // return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   if (!session) {

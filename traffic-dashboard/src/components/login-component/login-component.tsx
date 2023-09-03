@@ -33,7 +33,7 @@ const LoginComponent: React.FC = () => {
         supabaseClient.auth.signOut().then(() => {
           setLoading(false);
           signOut();
-          navigate("/about");
+          navigate("/");
         });
         break;
       }
