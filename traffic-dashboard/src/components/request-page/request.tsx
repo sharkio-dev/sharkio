@@ -199,29 +199,45 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
             </Tabs>
             <TabContent index={0} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>{curl}</pre>
+                <pre>
+                  <Typography variant="body2">{curl}</Typography>
+                </pre>
               </div>
             </TabContent>
             <TabContent index={1} tabValue={tab}>
               <div className={styles.cardTitle}>
                 <pre>
-                  <pre>{typescript}</pre>
+                  <pre>
+                    <Typography variant="body2">{typescript}</Typography>
+                  </pre>
                 </pre>
               </div>
             </TabContent>
             <TabContent index={2} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>{JSON.stringify(schema, null, 2)}</pre>
+                <pre>
+                  <Typography variant="body2">
+                    {JSON.stringify(schema, null, 2)}
+                  </Typography>
+                </pre>
               </div>
             </TabContent>
             <TabContent index={3} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>{JSON.stringify(request, null, 2)}</pre>
+                <pre>
+                  <Typography variant="body2">
+                    {JSON.stringify(request, null, 2)}
+                  </Typography>
+                </pre>
               </div>
             </TabContent>
             <TabContent index={4} tabValue={tab}>
               <div className={styles.cardTitle}>
-                <pre>{JSON.stringify(openapi, null, 2)}</pre>
+                <pre>
+                  <Typography variant="body2">
+                    {JSON.stringify(openapi, null, 2)}
+                  </Typography>
+                </pre>
               </div>
             </TabContent>
             <TabContent index={5} tabValue={tab}>

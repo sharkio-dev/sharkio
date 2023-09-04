@@ -3,7 +3,6 @@
   <h2 align="center">Sharkio</h2>
 </p>
 
-
 ## 🐳 What is Sharkio
 
 Sharkio is a development tool for api developers.
