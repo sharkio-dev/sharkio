@@ -25,6 +25,26 @@ Integration to Postman.
 Automatic CLI generation for your api with real data.
 Request mocking.
 
+
+## 🔖 Features
+
+|   **Feature Name**    | **Available** |
+| :-------------------: | :-----------: |
+|    Inspect traffic    |      ✅       |
+|        Search         |      ✅       |
+|        Filter         |      ✅       |
+|    Repeat request     |      ✅       |
+| Typescript generator  |      ✅       |
+| JSON schema generator |      ✅       |
+| Microservice support  |      ✅       |
+|     Request mocks     |      ✅       |
+|  Open api generator   |      ✅       |
+|     Save requests     |      ✅       |
+|      Collections      |      ✅       |
+|  ChatGPT integration  |               |
+|    Share requests     |               |
+
+
 ## 🛠 Tech Stack
 - **General:**
   - Node.js: Serves as the runtime environment for the backend services. It allows the Sharkio project to execute JavaScript server-side, enabling functionalities like proxying requests, data processing, and more.
@@ -67,23 +87,6 @@ Request mocking.
 
   - Zod: Validates and parses incoming data, ensuring that the backend processes only valid and expected data formats.
 
-## 🔖 Features
-
-|   **Feature Name**    | **Available** |
-| :-------------------: | :-----------: |
-|    Inspect traffic    |      ✅       |
-|        Search         |      ✅       |
-|        Filter         |      ✅       |
-|    Repeat request     |      ✅       |
-| Typescript generator  |      ✅       |
-| JSON schema generator |      ✅       |
-| Microservice support  |      ✅       |
-|     Request mocks     |      ✅       |
-|  Open api generator   |      ✅       |
-|     Save requests     |      ✅       |
-|      Collections      |      ✅       |
-|  ChatGPT integration  |               |
-|    Share requests     |               |
 
 ## 🛠️ How to use
 
