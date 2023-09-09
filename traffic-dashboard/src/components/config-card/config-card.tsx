@@ -319,46 +319,44 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
           </Typography>
         </div>
-        <Collapse orientation="vertical" in={sniffer.isCollapsed}>
-          <div className="flex flex-col gap-3">
-            <TextField
-              label={"Port"}
-              placeholder="1234"
-              defaultValue={sniffer.config.port}
-              disabled={sniffer.isEditing === false}
-              value={sniffer.config.port || ""}
-              onChange={(
-                e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-              ) => {
-                handlePortChanged(e, index);
-              }}
-            />
-            <TextField
-              label={"Downstream Url"}
-              placeholder="http://example.com"
-              defaultValue={sniffer.config.downstreamUrl}
-              value={sniffer.config.downstreamUrl || ""}
-              disabled={sniffer.isEditing === false}
-              onChange={(
-                e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-              ) => {
-                handleUrlChanged(e, index);
-              }}
-            />
-            <TextField
-              label={"Name"}
-              placeholder="name"
-              defaultValue={sniffer.config.name}
-              value={sniffer.config.name || ""}
-              disabled={sniffer.isEditing === false}
-              onChange={(
-                e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-              ) => {
-                handleNameChanged(e, index);
-              }}
-            />
-          </div>
-        </Collapse>
+        <div className="flex flex-col gap-3">
+          <TextField
+            label={"Port"}
+            placeholder="1234"
+            defaultValue={sniffer.config.port}
+            disabled={sniffer.isEditing === false}
+            value={sniffer.config.port || ""}
+            onChange={(
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+            ) => {
+              handlePortChanged(e, index);
+            }}
+          />
+          <TextField
+            label={"Downstream Url"}
+            placeholder="http://example.com"
+            defaultValue={sniffer.config.downstreamUrl}
+            value={sniffer.config.downstreamUrl || ""}
+            disabled={sniffer.isEditing === false}
+            onChange={(
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+            ) => {
+              handleUrlChanged(e, index);
+            }}
+          />
+          <TextField
+            label={"Name"}
+            placeholder="name"
+            defaultValue={sniffer.config.name}
+            value={sniffer.config.name || ""}
+            disabled={sniffer.isEditing === false}
+            onChange={(
+              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+            ) => {
+              handleNameChanged(e, index);
+            }}
+          />
+        </div>
       </>
     );
   };
