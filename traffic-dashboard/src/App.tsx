@@ -29,10 +29,9 @@ function App(): React.JSX.Element {
 
   const routesWithAuth = () => {
     const routesWithAuth = [
-      { path: "/new-request", element: <InvocationEditor /> },
       { path: routes.SERVICE_REQUEST, element: <ServiceRequest /> },
       { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
-      { path: routes.REQUEST_INVOCATION, element: <NewRequest /> },
+      { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
       { path: routes.CONFIG, element: <Config /> },
       { path: routes.REQUESTS, element: <Requests /> },
       { path: routes.MOCKS, element: <MocksPage /> },
