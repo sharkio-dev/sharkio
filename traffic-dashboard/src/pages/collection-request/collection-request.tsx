@@ -15,7 +15,7 @@ export const CollectionRequest = () => {
   };
 
   const { loadData, servicesData: services } = useContext(
-    RequestsMetadataContext,
+    RequestsMetadataContext
   );
 
   useEffect(() => {
@@ -24,19 +24,19 @@ export const CollectionRequest = () => {
   }, []);
 
   const collection = collections.find(
-    (collection) => collection.id === collectionId,
+    (collection) => collection.id === collectionId
   );
 
   const request = collection?.requests.find(
-    (request) => request.id === requestId,
+    (request) => request.id === requestId
   );
   const service = services?.find(
-    (service) => service.id === request?.serviceId,
+    (service) => service.id === request?.serviceId
   );
 
   return service && request ? (
     <RequestPage service={service} request={request} />
   ) : (
-    "not found"
+    <>not found</>
   );
 };
