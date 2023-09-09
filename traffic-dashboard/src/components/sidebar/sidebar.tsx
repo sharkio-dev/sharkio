@@ -51,20 +51,13 @@ export const SideBar: React.FC = () => {
           </div>
           {!minimized && <div className={styles.logoText}>𝐒𝐡𝐚𝐫𝐤𝐢𝐨</div>}
         </div>
-        <div className={styles.toggleMenu} onClick={handleMenuIconClicked}>
-          <IconButton>
-            {minimized ? <ChevronRight /> : <ChevronLeft />}
-          </IconButton>
-        </div>
+
         <List>
-          <ListItem
-            className={c({
-              [styles.listItem]: true,
-              [styles.listItemMinimized]: minimized,
-            })}
-          >
-            <Typography>Menu</Typography>
-          </ListItem>
+          <div className={styles.toggleMenu} onClick={handleMenuIconClicked}>
+            <IconButton>
+              {minimized ? <ChevronRight /> : <ChevronLeft />}
+            </IconButton>
+          </div>
           <ListItemButton
             onClick={() => {
               navigate("/home");
