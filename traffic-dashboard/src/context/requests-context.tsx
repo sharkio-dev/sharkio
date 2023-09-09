@@ -21,7 +21,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
     useState<RequestsMetadataContextType>({ requestsData: [] });
 
   const [servicesList, setServicesList] = useState<RequestsMetadataContextType>(
-    { servicesData: [] },
+    { servicesData: [] }
   );
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -31,7 +31,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
     }
 
     setLoading(true);
-    await Promise.all([
+    return await Promise.all([
       getRequests().then(handleRequests).catch(handleFailureRequests),
       getSniffers().then(handleServices).catch(handleFailureServices),
     ]).finally(() => setLoading(false));
