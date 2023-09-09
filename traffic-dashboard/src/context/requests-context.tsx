@@ -21,7 +21,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
     useState<RequestsMetadataContextType>({ requestsData: [] });
 
   const [servicesList, setServicesList] = useState<RequestsMetadataContextType>(
-    { servicesData: [] }
+    { servicesData: [] },
   );
   const [loading, setLoading] = useState<boolean>(false);
 

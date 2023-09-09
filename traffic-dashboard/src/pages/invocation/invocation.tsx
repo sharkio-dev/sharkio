@@ -21,10 +21,10 @@ export const InvocationEditor: React.FC = () => {
 
   useEffect(() => {
     const selectedReq = requestsData?.find(
-      (request) => request.id === requestId
+      (request) => request.id === requestId,
     );
     const selectedInvocation = selectedReq?.invocations.find(
-      (invocation) => invocation.id === invocationId
+      (invocation) => invocation.id === invocationId,
     );
 
     setReq(selectedReq);
@@ -39,11 +39,13 @@ export const InvocationEditor: React.FC = () => {
       return;
     }
 
-    executeRequest(+serviceId, req.url, req.method, invocation).then(
-      (response) => {
-        setResponse(response);
-      }
-    );
+    executeRequest(+serviceId, req.url, req.method, {
+      ...invocation,
+      body,
+      headers,
+    }).then((response) => {
+      setResponse(response);
+    });
   };
 
   return (

@@ -15,10 +15,10 @@ export const SnifferSelector: React.FC<ISnifferSelector> = ({
   onChange,
 }) => {
   const { servicesData: services, loadData } = useContext(
-    RequestsMetadataContext
+    RequestsMetadataContext,
   );
   const selectedSnifferName = services?.find(
-    (service) => service.port === +selectedSnifferPort
+    (service) => service.port === +selectedSnifferPort,
   );
 
   useEffect(() => {
