@@ -1,4 +1,8 @@
-import { FolderCopyOutlined, PlayArrow } from "@mui/icons-material";
+import {
+  ContentCopy,
+  FolderCopyOutlined,
+  PlayArrow,
+} from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -10,6 +14,7 @@ import {
   TableHead,
   TableRow,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import React, { PropsWithChildren, useEffect, useState } from "react";
@@ -34,6 +39,7 @@ import {
 } from "../../types/types";
 import { CollectionPickerModal } from "../collections-picker-modal/collection-picker-modal";
 import styles from "./requestCard.module.scss";
+import copy from "copy-to-clipboard";
 
 interface IRequestPageProps {
   service: SnifferConfig;
@@ -78,7 +84,7 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
         connection: request.invocations[0].headers["connection"],
       };
       headers = removeNullUndefinedFromObject(headers);
-      let url = `http://${request.invocations[0].headers.host}${request.url}`;
+      const url = `http://${request.invocations[0].headers.host}${request.url}`;
 
       const javascriptSnippet = generateApiRequestSnippet(
         "javascript",
@@ -149,6 +155,44 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
         showSnackbar("failed to save", "error");
       });
   };
+  const tabsContent = [
+    curl,
+    typescript,
+    JSON.stringify(schema, null, 2),
+    JSON.stringify(request, null, 2),
+    JSON.stringify(openapi, null, 2),
+    jsFetch,
+    pythonRequest,
+    javaOkHttp,
+    golang,
+    phpGuzzle,
+  ].map((content, index) => {
+    const handleCopyClicked = () => {
+      copy(content ?? "");
+    };
+
+    return (
+      <TabContent key={index} index={index} tabValue={tab}>
+        <div className="flex flex-col gap-5 pt-5">
+          <TextField
+            className={"w-full"}
+            label="Data"
+            placeholder="{}"
+            multiline
+            rows={10}
+            defaultValue={content}
+            disabled={true}
+          />
+          <Button onClick={handleCopyClicked}>
+            <div>
+              <ContentCopy />
+              copy
+            </div>
+          </Button>
+        </div>
+      </TabContent>
+    );
+  });
 
   return (
     <div className={styles.requestPageContainer}>
@@ -166,26 +210,38 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
       {request === undefined && "No request found"}
       {request && (
         <>
-          <Card className={styles.requestCardContainer}>
-            <div className={styles.cardTitle}>
-              <Typography variant="h6">Request</Typography>
+          <Card className={"flex flex-col p-10"}>
+            <div className={"flex flex-row justify-between pt-15px mb-4"}>
+              <Typography variant="h6" className="flex gap-3">
+                <HttpMethod method={request.method} />
+                {request.url}
+              </Typography>
               <Button
                 onClick={() => {
                   setSelectCollectionDialogOpen(true);
                 }}
               >
-                <FolderCopyOutlined />
+                <div className="flex gap-3">
+                  <FolderCopyOutlined />
+                  <Typography>save in collection</Typography>
+                </div>
               </Button>
             </div>
-            <HttpMethod method={request.method} />
-            {request.url}
-            <Typography>hit count: {request.hitCount}</Typography>
-            <Typography>
-              last invocation: {request.lastInvocationDate}
-            </Typography>
+            <div className="grid grid-cols-2 grid w-fit">
+              <Typography>hit count: </Typography>
+              <Typography>{request.hitCount}</Typography>
+              <Typography>last invocation:</Typography>
+              <Typography>{request.lastInvocationDate}</Typography>
+              <Typography>service:</Typography>
+              <Typography>{service.name}</Typography>
+            </div>
           </Card>
           <Card>
-            <Tabs value={tab} onChange={handleTabChanged}>
+            <Tabs
+              value={tab}
+              onChange={handleTabChanged}
+              visibleScrollbar={true}
+            >
               <Tab label="cUrl" value={0}></Tab>
               <Tab label="Typescript" value={1}></Tab>
               <Tab label="JSON Schema" value={2}></Tab>
@@ -197,74 +253,7 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
               <Tab label="golang" value={8}></Tab>
               <Tab label="php" value={9}></Tab>
             </Tabs>
-            <TabContent index={0} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>
-                  <Typography variant="body2">{curl}</Typography>
-                </pre>
-              </div>
-            </TabContent>
-            <TabContent index={1} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>
-                  <pre>
-                    <Typography variant="body2">{typescript}</Typography>
-                  </pre>
-                </pre>
-              </div>
-            </TabContent>
-            <TabContent index={2} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>
-                  <Typography variant="body2">
-                    {JSON.stringify(schema, null, 2)}
-                  </Typography>
-                </pre>
-              </div>
-            </TabContent>
-            <TabContent index={3} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>
-                  <Typography variant="body2">
-                    {JSON.stringify(request, null, 2)}
-                  </Typography>
-                </pre>
-              </div>
-            </TabContent>
-            <TabContent index={4} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>
-                  <Typography variant="body2">
-                    {JSON.stringify(openapi, null, 2)}
-                  </Typography>
-                </pre>
-              </div>
-            </TabContent>
-            <TabContent index={5} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>{jsFetch}</pre>
-              </div>
-            </TabContent>
-            <TabContent index={6} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>{pythonRequest}</pre>
-              </div>
-            </TabContent>
-            <TabContent index={7} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>{javaOkHttp}</pre>
-              </div>
-            </TabContent>
-            <TabContent index={8} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>{golang}</pre>
-              </div>
-            </TabContent>
-            <TabContent index={9} tabValue={tab}>
-              <div className={styles.cardTitle}>
-                <pre>{phpGuzzle}</pre>
-              </div>
-            </TabContent>
+            {tabsContent}
           </Card>
           <Card className={styles.invocationsCardContainer}>
             <div className={styles.cardTitle}>
