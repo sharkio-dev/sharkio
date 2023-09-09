@@ -1,13 +1,13 @@
 import fsSync from "fs";
 import fs from "fs/promises";
 import { ZodError } from "zod";
-import { SnifferConfig } from "../sniffer/sniffer";
+import { SnifferConfig } from "../../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 import {
   SnifferConfigSetup,
   sniffersConfigValidator,
 } from "./file-config.types";
-import { useLog } from "../log";
+import { useLog } from "../../log";
 
 const log = useLog({
   dirname: __dirname,
