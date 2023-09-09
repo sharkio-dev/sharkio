@@ -10,8 +10,8 @@ import { Collections } from "./pages/collections/collections";
 import { Config } from "./pages/config/config";
 import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
 import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
+import { InvocationEditor } from "./pages/invocation/invocation";
 import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
-import { NewRequest } from "./pages/new-request/new-request";
 import { Pricing } from "./pages/pricing/pricing";
 import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
@@ -29,9 +29,10 @@ function App(): React.JSX.Element {
 
   const routesWithAuth = () => {
     const routesWithAuth = [
-      { path: "/new-request", element: <NewRequest /> },
+      { path: "/new-request", element: <InvocationEditor /> },
       { path: routes.SERVICE_REQUEST, element: <ServiceRequest /> },
       { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
+      { path: routes.REQUEST_INVOCATION, element: <NewRequest /> },
       { path: routes.CONFIG, element: <Config /> },
       { path: routes.REQUESTS, element: <Requests /> },
       { path: routes.MOCKS, element: <MocksPage /> },

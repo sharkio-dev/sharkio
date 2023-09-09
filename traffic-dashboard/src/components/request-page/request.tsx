@@ -40,6 +40,8 @@ import {
 import { CollectionPickerModal } from "../collections-picker-modal/collection-picker-modal";
 import styles from "./requestCard.module.scss";
 import copy from "copy-to-clipboard";
+import { generatePath, useNavigate } from "react-router-dom";
+import { routes } from "../../constants/routes";
 
 interface IRequestPageProps {
   service: SnifferConfig;
@@ -263,8 +265,6 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
               <TableHead>
                 <TableRow>
                   <TableCell>execute</TableCell>
-                  <TableCell>service</TableCell>
-                  <TableCell>request id</TableCell>
                   <TableCell>timestamp</TableCell>
                   <TableCell>body</TableCell>
                   <TableCell>params</TableCell>
@@ -272,7 +272,6 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {" "}
                 {request.invocations.map((invocation) => {
                   return (
                     <InvocationRow
@@ -300,6 +299,7 @@ const TabContent: React.FC<
 > = ({ children, index, tabValue }) => {
   return <>{index === tabValue && children}</>;
 };
+
 interface InvocationRowProps {
   invocation: Invocation;
   service?: SnifferConfig;
@@ -311,6 +311,7 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
   service,
   request,
 }) => {
+  const navigate = useNavigate();
   const [executeLoading, setExecuteLoading] = useState(false);
 
   const handleExecuteClicked = (
@@ -330,7 +331,19 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
 
   return (
     <>
-      <TableRow key={invocation.id}>
+      <TableRow
+        key={invocation.id}
+        onClick={() => {
+          if (!service?.port) return;
+          navigate(
+            generatePath(routes.REQUEST_INVOCATION, {
+              serviceId: service?.port,
+              requestId: request.id,
+              invocationId: invocation.id,
+            }),
+          );
+        }}
+      >
         <TableCell>
           <Button
             onClick={() => {
@@ -344,8 +357,6 @@ const InvocationRow: React.FC<InvocationRowProps> = ({
             )}
           </Button>
         </TableCell>
-        <TableCell>{service?.name ?? ""}</TableCell>
-        <TableCell>{invocation.id}</TableCell>
         <TableCell>{invocation.timestamp}</TableCell>
         <TableCell>{JSON.stringify(invocation.body)}</TableCell>
         <TableCell>{JSON.stringify(invocation.params)}</TableCell>
