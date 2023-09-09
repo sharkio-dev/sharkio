@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { editMock } from "../../../api/api";
 import { Mock } from "../../../types/types";
 import styles from "./edit-mock-dialog.module.scss";
+import { SnifferSelector } from "../../../components/sniffer-selector/sniffer-selector";
 
 type EditMockDialogProps = {
   open: boolean;
@@ -52,13 +53,9 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
     <Dialog open={open} onClose={close} id="edit">
       <Card className={styles.card}>
         <Typography>Edit mock</Typography>
-        <TextField
-          label="Port"
-          name="port"
-          placeholder="1234"
-          type="number"
-          value={mock?.port}
-          onChange={(e) => onDataChange({ ...mock, port: +e.target.value })}
+        <SnifferSelector
+          onChange={(value) => onDataChange({ ...mock, port: +value })}
+          selectedSnifferPort={`${mock?.port}` ?? ""}
         />
         <TextField
           label="Method"

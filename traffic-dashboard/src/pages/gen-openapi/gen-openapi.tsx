@@ -19,6 +19,7 @@ import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import { OpenAPIDocument } from "../../lib/openapi.interface";
 import { InterceptedRequest, SnifferConfig } from "../../types/types";
 import styles from "./gen-openapi.module.scss";
+import { SnifferSelector } from "../../components/sniffer-selector/sniffer-selector";
 
 export const GenOpenAPI: React.FC = () => {
   const snackBar = useSnackbar();
