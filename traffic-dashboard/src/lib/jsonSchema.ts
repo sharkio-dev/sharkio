@@ -28,7 +28,6 @@ export interface JsonSchema {
 }
 
 export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
-  console.log(jsonObject);
   const schema: JsonSchema = {
     $schema: "http://json-schema.org/draft-07/schema#",
     type: "object",
@@ -128,9 +127,9 @@ export function generateCurlCommand(req: InterceptedRequest): string {
 }
 
 export function generateApiRequestSnippet(
-  language: String,
-  method: String,
-  url: String,
+  language: string,
+  method: string,
+  url: string,
   headers: any,
   requestBody: any = null,
   queryParams: any = null,
@@ -180,7 +179,7 @@ export function generateApiRequestSnippet(
   return snippet;
 }
 
-const jsonToQueryString = (json: JsonObject): String => {
+const jsonToQueryString = (json: JsonObject): string => {
   if (!json) {
     return "";
   }
@@ -190,8 +189,8 @@ const jsonToQueryString = (json: JsonObject): String => {
 };
 const generateGoLangSnippet = (
   snippet: string,
-  url: String,
-  method: String,
+  url: string,
+  method: string,
   headers: any,
   requestBody: any,
 ) => {
@@ -260,8 +259,8 @@ func main() {
 
 const generateJavaOkHttpSnippet = (
   snippet: string,
-  url: String,
-  method: String,
+  url: string,
+  method: string,
   headers: any,
   requestBody: any,
 ) => {
@@ -318,9 +317,9 @@ public class Main {
 
 const generatePythonSnippet = (
   snippet: string,
-  url: String,
+  url: string,
   headers: any,
-  method: String,
+  method: string,
   requestBody: any,
 ) => {
   snippet += `import requests
@@ -353,8 +352,8 @@ else:
 
 const generateJsSnippet = (
   snippet: string,
-  url: String,
-  method: String,
+  url: string,
+  method: string,
   headers: any,
   requestBody: any,
 ) => {
@@ -379,10 +378,10 @@ const generateJsSnippet = (
 
 const generatePhpGuzzle = (
   snippet: string,
-  url: String,
+  url: string,
   headers: any,
   requestBody: any,
-  method: String,
+  method: string,
 ) => {
   snippet += `<?php
       use GuzzleHttp\Client;
