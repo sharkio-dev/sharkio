@@ -10,13 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { generatePath, useNavigate } from "react-router-dom";
 import { createCollection, getCollections } from "../../api/api";
 import { RequestRow } from "../../components/request-row/request-row";
+import { routes } from "../../constants/routes";
 import { Collection, InterceptedRequest } from "../../types/types";
 import styles from "./collections.module.scss";
-import { request } from "express";
-import { useNavigate, generatePath } from "react-router-dom";
-import { routes } from "../../constants/routes";
 
 export const Collections: React.FC = () => {
   const [selectedCollection, setSelectedCollection] = useState<Collection>();
@@ -55,11 +54,13 @@ export const Collections: React.FC = () => {
     if (!newCollectionName || newCollectionName === "") {
       return;
     }
+    setIsSaving(true);
     createCollection(newCollectionName)
       .then(() => {
         loadCollections();
       })
       .finally(() => {
+        setIsSaving(false);
         setIsAddDialogOpen(false);
         setNewCollectionName("");
       });

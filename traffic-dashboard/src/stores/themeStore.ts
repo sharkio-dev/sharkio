@@ -8,7 +8,7 @@ interface themeStore {
 
 export const useThemeStore = create<themeStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       mode: "dark",
       toggleColorMode: () => {
         set((state) => ({

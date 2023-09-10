@@ -1,8 +1,7 @@
-import React from "react";
 import { useContext, useEffect } from "react";
-import { RequestsMetadataContext } from "../../context/requests-context";
-import { RequestPage } from "../../components/request-page/request";
 import { useParams } from "react-router-dom";
+import { RequestPage } from "../../components/request-page/request";
+import { RequestsMetadataContext } from "../../context/requests-context";
 
 export const ServiceRequest = () => {
   const { id, serviceId } = useParams();

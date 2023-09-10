@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
   Dialog,
   List,
   ListItemButton,
-  Modal,
   Typography,
 } from "@mui/material";
-import { Collection } from "../../types/types";
+import React, { useEffect, useState } from "react";
 import { getCollections } from "../../api/api";
+import { Collection } from "../../types/types";
 import styles from "./collection-picker-modal.module.scss";
 
 interface ICollectionPickerModalProps {

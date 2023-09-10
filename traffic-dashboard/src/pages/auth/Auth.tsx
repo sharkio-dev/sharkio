@@ -44,8 +44,8 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
             theme="dark"
             appearance={{ theme: ThemeSupa }}
             providers={["github", "google"]}
-            view="sign_in"
-            redirectTo={window.location.origin}
+            view="sign_up"
+            redirectTo={window.location.pathname}
           />
         </div>
       </div>
