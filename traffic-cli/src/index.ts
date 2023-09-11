@@ -21,9 +21,9 @@ const listOfCommands = [
 
 export type Config = {
   url: string;
-//  sniffer_port: number;
   method: string;
-  invocation: Object;
+  body: Object;
+  server: string;
 };
 
 const main = async () => {
@@ -38,6 +38,7 @@ const main = async () => {
 
     switch (answer) {
       case ProviderValue.listRequests: {
+        // prints the endpoints and methods given in the open-api file
         await getReqlistAction();
         break;
       }
@@ -46,13 +47,13 @@ const main = async () => {
         break;
       }
       case ProviderValue.execute: {
-      //  await getReqlistAction();
+        // select a request to execute given in the open-api file
        const endPoints = getEndPoints();
         let act_url = await select({
           message: "Please select an end-point",
           choices: endPoints,
         });
-        // get methods according to the url
+        // get methods according to the chosen url
         const act_url_str = act_url as string
         const methods = getMethods(act_url_str);
 
@@ -60,11 +61,11 @@ const main = async () => {
           message: "Please select request method",
           choices: methods,
         });
+        // get body parameters according to the chosen url,method
         let body = new Array();
         const act_method_str =  act_method as string;
         const properties = getProperties(act_url_str, act_method_str);
         if (Array.isArray(properties)){
-
           for (const propertyName of properties) {	
             const value = await input({
               message: "Please enter property " + propertyName + " value:",
@@ -75,43 +76,26 @@ const main = async () => {
             
           }
        }
-       console.log(body);
+       //console.log(body);
+       // Select a server given in the open-api file
        const servers = getServers();
        const server = await select({
         message: "Please choose a server:",
         choices: servers,
       });
-        const headers = await input({
-          message: "Please enter request headers:",
-          default: "",
-        });
-        const cookies = await input({
-          message: "Please enter request cookies:",
-          default: "",
-        });
-        const params = await input({
-          message: "Please enter request params:",
-          default: "",
-        });
-        //const act_sniffer_port_num = +act_sniffer_port;
-        const timestamp = new Date();
-        const act_id = v4();
-        const act_invocation = {
-          id: act_id,
-          timestamp: timestamp,
-          body: body,
-          headers: headers,
-          cookies: cookies,
-          params: params,
-        };
-        const input_config: Config = {
-          url: "act_url",
-          //sniffer_mame: act_sniffer_mame,
-          //sniffer_port: act_sniffer_port_num,
+      
+        //const timestamp = new Date();
+        //const act_id = v4();
+        const act_invocation: Config = {
+          //id: act_id,
+          //timestamp: timestamp,
+          url: act_url as string,
           method: act_method as string,
-          invocation: act_invocation,
+          body: body,
+          server: server as string,
         };
-        await executeAction(input_config);
+
+        await executeAction(act_invocation);
         break;
       }
       default: {

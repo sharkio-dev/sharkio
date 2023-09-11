@@ -4,7 +4,7 @@
   "description": "Micro service network monitoring and development tool",
   "main": "./lib/index.js",
   "bin": {
-    "traffic-cli": "./bin/traffic-cli.js"
+    "traffic-cli": "./src/index.ts"
   },
   "bundledDependencies": true,
   "scripts": {
