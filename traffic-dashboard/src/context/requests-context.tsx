@@ -31,7 +31,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
     }
 
     setLoading(true);
-    await Promise.all([
+    return await Promise.all([
       getRequests().then(handleRequests).catch(handleFailureRequests),
       getSniffers().then(handleServices).catch(handleFailureServices),
     ]).finally(() => setLoading(false));

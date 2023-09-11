@@ -1,12 +1,12 @@
 import express, { Express, json } from "express";
 import request from "supertest";
 import { SnifferManager, SnifferManagerController } from "../../../lib";
-import { ConfigLoader } from "../../../lib/setup-config/config-loader-interface";
-import { SnifferConfigSetup } from "../../../lib/setup-config/file-config.types";
 import { SnifferConfig } from "../../../lib/sniffer/sniffer";
-import { FileConfig } from "../../../lib/setup-config/file-config";
+import { ConfigLoader } from "../../../lib/model/setup-config/config-loader-interface";
+import { SnifferConfigSetup } from "../../../lib/model/setup-config/file-config.types";
+import { FileConfig } from "../../../lib/model/setup-config/file-config";
 
-jest.mock("../../../lib/setup-config/file-config", () => {
+jest.mock("../../../lib/model/setup-config/file-config", () => {
   class MockFileConfig implements ConfigLoader {
     configData: SnifferConfigSetup[];
 

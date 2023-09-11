@@ -2,6 +2,7 @@ declare namespace NodeJS {
   export interface ProcessEnv {
     VITE_SUPABASE_PROJECT_URL: string;
     VITE_SUPABASE_ANON: string;
+    VITE_DISABLE_SUPABASE: boolean;
     [key: string]: string | undefined;
   }
 }

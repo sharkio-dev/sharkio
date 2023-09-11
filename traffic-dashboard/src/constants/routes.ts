@@ -1,5 +1,7 @@
 export const routes = {
   SERVICE_REQUEST: "/service/:serviceId/request/:id",
+  REQUEST_INVOCATION:
+    "/service/:serviceId/request/:requestId/invocation/:invocationId",
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
   REQUESTS: "/requests",
   HOME: "/home",

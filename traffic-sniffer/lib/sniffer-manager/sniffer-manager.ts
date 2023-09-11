@@ -1,8 +1,7 @@
 import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { ConfigLoader } from "../setup-config/config-loader-interface";
-import { SnifferConfigSetup } from "../setup-config/file-config.types";
-
+import { SnifferConfigSetup } from "../model/setup-config/file-config.types";
+import { ConfigLoader } from "../model/setup-config/config-loader-interface";
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
 

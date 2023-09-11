@@ -1,15 +1,15 @@
-import React from "react";
 import {
-  Dialog,
+  Button,
   Card,
+  CircularProgress,
+  Dialog,
   TextField,
   Typography,
-  Button,
-  CircularProgress,
 } from "@mui/material";
-import styles from "./add-mock-dialog.module.scss";
-import { useState } from "react";
+import React, { useState } from "react";
 import { createMock } from "../../../api/api";
+import { SnifferSelector } from "../../../components/sniffer-selector/sniffer-selector";
+import styles from "./add-mock-dialog.module.scss";
 
 type AddMockDialogProps = { open: boolean; close: () => void };
 
@@ -42,12 +42,9 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
     <Dialog open={open} onClose={close}>
       <Card className={styles.card}>
         <Typography>Add mock</Typography>
-        <TextField
-          label="Port"
-          placeholder="1234"
-          type="number"
-          value={port}
-          onChange={(e) => setPort(+e.target.value)}
+        <SnifferSelector
+          onChange={(value) => setPort(+value)}
+          selectedSnifferPort={`${port}`}
         />
         <TextField
           label="Method"

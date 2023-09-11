@@ -10,6 +10,7 @@ import styles from "./auth.module.scss";
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
   const { signIn } = useAuthStore();
+  const disableSupabase = import.meta.env.VITE_DISABLE_SUPABASE;
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
@@ -30,6 +31,10 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  if (disableSupabase) {
+    return children;
+  }
 
   if (!session) {
     return (
