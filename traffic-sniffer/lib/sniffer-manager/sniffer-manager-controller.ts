@@ -73,7 +73,7 @@ export class SnifferManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port:
+     * /sharkio/sniffer/:id:
      *   get:
      *     tags:
      *      - sniffer
@@ -96,16 +96,16 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.get(
-      "/:port",
+      "/:id",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: portValidator,
         }),
       }),
       (req: Request, res: Response) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(+port);
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             return res.send(sniffer.stats()).status(200);
@@ -115,7 +115,7 @@ export class SnifferManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "GET",
-            path: `${this.baseUrl}/:port`,
+            path: `${this.baseUrl}/:id`,
             error: e,
           });
           return res.sendStatus(500);
@@ -173,17 +173,19 @@ export class SnifferManagerController {
           port: portValidator,
           downstreamUrl: z.string().nonempty(),
           id: z.string().nonempty(),
+          userId: z.string().uuid(),
         }),
       }),
-      (req: Request, res: Response) => {
+      async (req: Request, res: Response) => {
         try {
-          const config = req.body;
-          this.snifferManager.createSniffer(config);
+          const { userId, ...config } = req.body;
+
+          await this.snifferManager.createSniffer(userId, config);
           return res.sendStatus(201);
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port`,
+            path: `${this.baseUrl}/:id`,
             error: e,
           });
           return res.sendStatus(500);
@@ -193,7 +195,7 @@ export class SnifferManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/actions/stop:
+     * /sharkio/sniffer/:id/actions/stop:
      *   post:
      *     tags:
      *      - sniffer
@@ -216,20 +218,20 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/actions/stop",
+      "/:id/actions/stop",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
       }),
-      (req: Request, res: Response) => {
+      async (req: Request, res: Response) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             sniffer.stop();
-            this.snifferManager.setSnifferConfigToStarted(
+            await this.snifferManager.setSnifferConfigToStarted(
               sniffer.getId(),
               false,
             );
@@ -240,7 +242,7 @@ export class SnifferManagerController {
         } catch (e: any) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/actions/stop`,
+            path: `${this.baseUrl}/:id/actions/stop`,
             error: e,
           });
           return res.sendStatus(500);
@@ -250,7 +252,7 @@ export class SnifferManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/actions/start:
+     * /sharkio/sniffer/:id/actions/start:
      *   post:
      *     tags:
      *      - sniffer
@@ -273,20 +275,20 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/actions/start",
+      "/:id/actions/start",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer) {
             await sniffer.start();
-            this.snifferManager.setSnifferConfigToStarted(
+            await this.snifferManager.setSnifferConfigToStarted(
               sniffer.getId(),
               true,
             );
@@ -297,7 +299,7 @@ export class SnifferManagerController {
         } catch (e: any) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/actions/start`,
+            path: `${this.baseUrl}/:id/actions/start`,
             error: e,
           });
           return res.sendStatus(500);
@@ -307,7 +309,7 @@ export class SnifferManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/actions/execute:
+     * /sharkio/sniffer/:id/actions/execute:
      *   post:
      *     tags:
      *      - sniffer
@@ -373,10 +375,10 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/actions/execute",
+      "/:id/actions/execute",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
         body: z.object({
           url: z.string(),
@@ -397,16 +399,16 @@ export class SnifferManagerController {
       async (req: Request, res: Response) => {
         try {
           log.info("executing request");
-          const { port } = req.params;
+          const { id } = req.params;
           const { url, method, invocation } = req.body;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             log.info(req.body);
             await sniffer.execute(url, method, invocation).catch((e) =>
               log.error("Error while executing", {
                 method: method,
-                path: `${this.baseUrl}/:port/actions/execute`,
+                path: `${this.baseUrl}/:id/actions/execute`,
                 error: e,
               }),
             );
@@ -417,7 +419,7 @@ export class SnifferManagerController {
         } catch (e: any) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/actions/execute`,
+            path: `${this.baseUrl}/:id/actions/execute`,
             error: e,
           });
           return res.sendStatus(500);
@@ -427,7 +429,7 @@ export class SnifferManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port:
+     * /sharkio/sniffer/:id:
      *   delete:
      *     tags:
      *      - sniffer
@@ -450,19 +452,19 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.delete(
-      "/:port",
+      "/:id",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: portValidator,
         }),
       }),
       async (req: Request, res: Response) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
-            this.snifferManager.removeSniffer(Number.parseInt(port));
+            this.snifferManager.removeSniffer(id);
             return res.sendStatus(200);
           } else {
             return res.sendStatus(404);
@@ -470,7 +472,7 @@ export class SnifferManagerController {
         } catch (e: any) {
           log.error("An unexpected error occured", {
             method: "DELETE",
-            path: `${this.baseUrl}/:port`,
+            path: `${this.baseUrl}/:id`,
             error: e,
           });
           return res.sendStatus(500);
@@ -522,12 +524,14 @@ export class SnifferManagerController {
         }),
         body: z.object({
           port: portValidator,
+          userId: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response) => {
         try {
           const { existingId } = req.params;
-          const { port } = req.body;
+          const { userId, ...body } = req.body;
+          const port = body.port;
           const sniffer = this.snifferManager.getSnifferById(existingId);
 
           // verify that there is no sniffer with the port you want to change to.
@@ -539,7 +543,7 @@ export class SnifferManagerController {
             (sniffer !== undefined && !isPortAlreadyExists) ||
             port === +existingId
           ) {
-            await this.snifferManager.editSniffer(existingId, req.body);
+            await this.snifferManager.editSniffer(userId, existingId, body);
             return res.sendStatus(200);
           } else if (!sniffer) {
             return res.sendStatus(404);

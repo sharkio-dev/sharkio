@@ -157,8 +157,6 @@ export class Sniffer {
       await this.stop();
     }
     this.config = newConfig;
-    this.id = newConfig.port.toString();
-    this.config.id = newConfig.port.toString();
   }
 
   stats() {

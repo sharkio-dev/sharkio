@@ -62,9 +62,9 @@ export const Service: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleStopClicked = async (port: number) => {
+  const handleStopClicked = async (id: string) => {
     setStopLoading(true);
-    await stopSniffer(port)
+    await stopSniffer(id)
       .then(() => loadData())
       .catch(() => {
         showSnackbar("Failed to stop sniffer", "error");
@@ -72,9 +72,9 @@ export const Service: React.FC = () => {
       .finally(() => setStopLoading(false));
   };
 
-  const handleStartClicked = async (port: number) => {
+  const handleStartClicked = async (id: string) => {
     setStartLoading(true);
-    await startSniffer(port)
+    await startSniffer(id)
       .then(() => {
         loadData();
       })
@@ -109,7 +109,7 @@ export const Service: React.FC = () => {
                   <Tooltip title={"Start sniffing requests"}>
                     <Button
                       color="success"
-                      onClick={() => handleStartClicked(sniffer.config.port)}
+                      onClick={() => handleStartClicked(sniffer.config.id)}
                       disabled={sniffer.isStarted === true}
                     >
                       {startLoading === true ? (
@@ -123,7 +123,7 @@ export const Service: React.FC = () => {
                     <Button
                       color="error"
                       disabled={sniffer.isStarted === false}
-                      onClick={() => handleStopClicked(sniffer.config.port)}
+                      onClick={() => handleStopClicked(sniffer.config.id)}
                     >
                       {stopLoading === true ? <CircularProgress /> : <Stop />}
                     </Button>
@@ -193,7 +193,9 @@ export const Service: React.FC = () => {
                         timestamp={request.lastInvocationDate}
                         {...request}
                         key={request.id}
-                        onRequestClicked={() => {}}
+                        onRequestClicked={() => {
+                          console.log("request clicked is unimplemented");
+                        }}
                       />
                     );
                   },

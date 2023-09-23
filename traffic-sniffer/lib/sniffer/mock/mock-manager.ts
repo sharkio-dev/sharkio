@@ -1,14 +1,18 @@
 import { MockNotFoundError } from "./exceptions";
 import { ManagedMock, Mock } from "./mock.types";
+import { MockModel } from "../../model/mock";
 
 type mockId = string;
 
 export default class MockManager {
   private isActive: boolean = true;
+  private mockModel: MockModel;
 
-  constructor(private mocks: Map<mockId, ManagedMock> = new Map()) {}
+  constructor(private mocks: Map<mockId, ManagedMock> = new Map()) {
+    this.mockModel = new MockModel();
+  }
 
-  async addMock(mock: Mock): Promise<ManagedMock> {
+  async addMock(userId: string, mock: Mock): Promise<ManagedMock> {
     const managedMock: ManagedMock = {
       ...mock,
       active: true,
@@ -16,6 +20,8 @@ export default class MockManager {
     };
 
     this.mocks.set(managedMock.id, managedMock);
+
+    await this.mockModel.create(userId, managedMock);
 
     return managedMock;
   }

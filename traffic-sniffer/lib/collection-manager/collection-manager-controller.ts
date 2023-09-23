@@ -1,4 +1,6 @@
-import { Express, NextFunction, Request, Response, Router } from "express";
+import { Express, NextFunction, Request, Response } from "express";
+import Router from "express-promise-router";
+
 import { useLog } from "../log";
 import { CollectionManager } from "./collection-manager";
 

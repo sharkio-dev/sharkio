@@ -16,7 +16,13 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       const userDetails = session?.user.user_metadata;
+
+      // if (session?.user.id == null) {
+      //   return;
+      // }
+
       signIn({
+        id: session?.user.id ?? "",
         fullName: userDetails?.full_name,
         email: userDetails?.email,
         profileImg: userDetails?.avatar_url,
@@ -32,9 +38,9 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (disableSupabase) {
-    return children;
-  }
+  // if (disableSupabase) {
+  //   return <>{children}</>;
+  // }
 
   if (!session) {
     return (
@@ -56,7 +62,7 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
       </div>
     );
   } else {
-    return children;
+    return <>{children}</>;
   }
 };
 

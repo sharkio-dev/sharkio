@@ -7,8 +7,8 @@ import {
   SnifferCreateConfig,
 } from "../types/types";
 
-export const createSniffer = (config: SnifferCreateConfig) => {
-  return axios.post("/sharkio/sniffer", JSON.stringify(config), {
+export const createSniffer = (userId: string, config: SnifferCreateConfig) => {
+  return axios.post("/sharkio/sniffer", JSON.stringify({ userId, ...config }), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -23,20 +23,25 @@ export const getSniffer = (port: number) => {
   return axios.get(`/sharkio/sniffer/${port}`);
 };
 
-export const stopSniffer = (port: number) => {
-  return axios.post(`/sharkio/sniffer/${port}/actions/stop`);
+export const stopSniffer = (id: string) => {
+  return axios.post(`/sharkio/sniffer/${id}/actions/stop`);
 };
 
-export const startSniffer = async (port: number) => {
-  return await axios.post(`/sharkio/sniffer/${port}/actions/start`);
+export const startSniffer = async (id: string) => {
+  return await axios.post(`/sharkio/sniffer/${id}/actions/start`);
 };
+
 export const deleteSniffer = async (port: number) => {
   return await axios.delete(`/sharkio/sniffer/${port}`);
 };
-export const editSniffer = async (newConfig: SnifferCreateConfig) => {
+
+export const editSniffer = async (
+  userId: string,
+  newConfig: SnifferCreateConfig,
+) => {
   return axios.put(
     `/sharkio/sniffer/${newConfig.id}`,
-    JSON.stringify(newConfig),
+    JSON.stringify({ userId, ...newConfig }),
     {
       headers: {
         "Content-Type": "application/json",
@@ -66,20 +71,23 @@ export const executeRequest = (
   );
 };
 
-export const getAllMocks = () => {
-  return axios.get("/sharkio/sniffer/action/getMocks");
+export const getAllMocks = (userId: string) => {
+  return axios.get("/sharkio/sniffer/action/getMocks", {
+    headers: { "x-sharkio-user-id": userId },
+  });
 };
 
 export const createMock = (
-  port: number,
+  userId: string,
+  id: string,
   method: string,
   endpoint: string,
   status: number,
   data: any,
 ) => {
   return axios.post(
-    `/sharkio/sniffer/${port}/mock`,
-    JSON.stringify({ method, endpoint, data, status }),
+    `/sharkio/sniffer/${id}/mock`,
+    JSON.stringify({ method, endpoint, data, status, userId }),
     {
       headers: {
         "Content-Type": "application/json",

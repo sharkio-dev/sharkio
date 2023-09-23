@@ -23,7 +23,7 @@ export class FileConfig implements ConfigLoader {
     this.path = path;
   }
 
-  getConfig() {
+  async getUserConfig() {
     this.createFileIfNotExist(this.path);
     this.configData = this.readSetupFileData(this.path);
 
@@ -31,7 +31,20 @@ export class FileConfig implements ConfigLoader {
     return this.configData;
   }
 
-  update(existingId: string, newConfig: SnifferConfig, isStarted: boolean) {
+  async getAllUsersConfig() {
+    this.createFileIfNotExist(this.path);
+    this.configData = this.readSetupFileData(this.path);
+
+    console.info("Loaded config from file");
+    return this.configData;
+  }
+
+  async update(
+    userId: string,
+    existingId: string,
+    newConfig: SnifferConfig,
+    isStarted: boolean,
+  ) {
     const foundIndex = this.configData.findIndex(
       (item) => item.id === existingId,
     );
@@ -72,7 +85,7 @@ export class FileConfig implements ConfigLoader {
     }
   }
 
-  addSniffer(snifferConfig: SnifferConfig) {
+  async addSniffer(userId: string, snifferConfig: SnifferConfig) {
     const addedObj = this.createSnifferSetup(snifferConfig, false);
     const isListed = this.configData.findIndex(
       (item) => item.id === snifferConfig.id,
@@ -86,8 +99,8 @@ export class FileConfig implements ConfigLoader {
     this.writeToSetupFile();
   }
 
-  removeSniffer(port: number) {
-    const foundIndex = this.configData.findIndex((item) => item.port === port);
+  async removeSniffer(id: string) {
+    const foundIndex = this.configData.findIndex((item) => item.id === id);
     if (foundIndex === -1) {
       throw new Error("item was not found");
     }
@@ -95,7 +108,7 @@ export class FileConfig implements ConfigLoader {
     this.writeToSetupFile();
   }
 
-  setIsStarted(snifferId: string, isStarted: boolean) {
+  async setIsStarted(snifferId: string, isStarted: boolean) {
     const foundIndex = this.configData.findIndex(
       (item) => item.id === snifferId,
     );

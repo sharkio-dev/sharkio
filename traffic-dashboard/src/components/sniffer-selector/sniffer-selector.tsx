@@ -4,13 +4,13 @@ import { useContext, useEffect } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
 
 interface ISnifferSelector {
-  selectedSnifferPort: string;
+  selectedSnifferId: string;
   disabled?: boolean;
   onChange?: (value: string) => void;
 }
 
 export const SnifferSelector: React.FC<ISnifferSelector> = ({
-  selectedSnifferPort,
+  selectedSnifferId,
   disabled = false,
   onChange,
 }) => {
@@ -18,7 +18,7 @@ export const SnifferSelector: React.FC<ISnifferSelector> = ({
     RequestsMetadataContext,
   );
   const selectedSnifferName = services?.find(
-    (service) => service.port === +selectedSnifferPort,
+    (service) => service.id === selectedSnifferId,
   );
 
   useEffect(() => {

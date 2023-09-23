@@ -1,4 +1,5 @@
-import { Express, NextFunction, Request, Response, Router } from "express";
+import { Express, NextFunction, Request, Response } from "express";
+import Router from "express-promise-router";
 import { z } from "zod";
 import { useLog } from "../log";
 import { requestValidator } from "../request-validator";
@@ -52,7 +53,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock:
+     * /sharkio/sniffer/:id/mock:
      *   get:
      *     tags:
      *       - mock
@@ -75,16 +76,16 @@ export class MockManagerController {
      *         description: Server error
      */
     router.get(
-      "/:port/mock",
+      "/:id/mock",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
           if (sniffer !== undefined) {
             const mocks = sniffer.getMockManager().getAllMocks();
             return res.send(mocks).status(200);
@@ -94,7 +95,7 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "GET",
-            path: `${this.baseUrl}/:port/mock`,
+            path: `${this.baseUrl}/:id/mock`,
             error: e,
           });
           return res.sendStatus(500);
@@ -104,7 +105,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock:
+     * /sharkio/sniffer/:id/mock:
      *   post:
      *     tags:
      *       - mock
@@ -150,27 +151,28 @@ export class MockManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/mock",
+      "/:id/mock",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
         body: z.object({
           method: z.string().nonempty(),
           endpoint: z.string().nonempty(),
           data: z.any(),
           status: z.coerce.number().positive(),
+          userId: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
-          const mock = req.body;
+          const { id } = req.params;
+          const { userId, ...mock } = req.body;
 
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
-            const { id } = await sniffer.getMockManager().addMock(mock);
+            const { id } = await sniffer.getMockManager().addMock(userId, mock);
             return res.send(id).status(201);
           } else {
             return res.sendStatus(409);
@@ -178,7 +180,7 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/mock`,
+            path: `${this.baseUrl}/:id/mock`,
             error: e,
           });
           return res.sendStatus(500);
@@ -188,7 +190,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock:
+     * /sharkio/sniffer/:id/mock:
      *  put:
      *    tags:
      *      - mock
@@ -231,10 +233,10 @@ export class MockManagerController {
      *                  example: 200
      */
     router.put(
-      "/:port/mock",
+      "/:id/mock",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
         body: z.object({
           mockId: z.string().nonempty(),
@@ -246,10 +248,10 @@ export class MockManagerController {
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
+          const { id } = req.params;
           const { mockId, ...mock } = req.body;
 
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().updateMock(mockId, mock);
@@ -260,7 +262,7 @@ export class MockManagerController {
         } catch (e: any) {
           log.error("An unexpected error occured", {
             method: "PUT",
-            path: `${this.baseUrl}/:port/mock`,
+            path: `${this.baseUrl}/:id/mock`,
             error: e,
           });
           return res.sendStatus(500);
@@ -270,7 +272,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock:
+     * /sharkio/sniffer/:id/mock:
      *   delete:
      *     tags:
      *       - mock
@@ -304,10 +306,10 @@ export class MockManagerController {
      *         description: Server error
      */
     router.delete(
-      "/:port/mock",
+      "/:id/mock",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
         body: z.object({
           mockId: z.string().nonempty(),
@@ -315,10 +317,10 @@ export class MockManagerController {
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
+          const { id } = req.params;
           const { mockId } = req.body;
 
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const sniffer = this.snifferManager.getSniffer(id);
           if (sniffer !== undefined) {
             sniffer.getMockManager().removeMock(mockId);
             return res.sendStatus(200);
@@ -328,7 +330,7 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "DELETE",
-            path: `${this.baseUrl}/:port/mock`,
+            path: `${this.baseUrl}/:id/mock`,
             error: e,
           });
           return res.sendStatus(500);
@@ -338,7 +340,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock/manager/actions/activate:
+     * /sharkio/sniffer/:id/mock/manager/actions/activate:
      *   post:
      *     tags:
      *       - mock
@@ -361,16 +363,16 @@ export class MockManagerController {
      *          description: Server error
      */
     router.post(
-      "/:port/mock/manager/actions/activate",
+      "/:id/mock/manager/actions/activate",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().deactivateManager();
@@ -381,7 +383,7 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/mock/manager/actions/activate`,
+            path: `${this.baseUrl}/:id/mock/manager/actions/activate`,
             error: e,
           });
           return res.sendStatus(500);
@@ -391,7 +393,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock/manager/actions/deactivate:
+     * /sharkio/sniffer/:id/mock/manager/actions/deactivate:
      *   post:
      *     tags:
      *       - mock
@@ -414,16 +416,16 @@ export class MockManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/mock/manager/actions/deactivate",
+      "/:id/mock/manager/actions/deactivate",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const { id } = req.params;
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().deactivateManager();
@@ -434,7 +436,7 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/mock/manager/actions/deactivate`,
+            path: `${this.baseUrl}/:id/mock/manager/actions/deactivate`,
             error: e,
           });
           return res.sendStatus(500);
@@ -444,7 +446,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock/actions/activate:
+     * /sharkio/sniffer/:id/mock/actions/activate:
      *   post:
      *     tags:
      *       - mock
@@ -478,10 +480,10 @@ export class MockManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/mock/actions/activate",
+      "/:id/mock/actions/activate",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
         body: z.object({
           mockId: z.string().nonempty(),
@@ -489,9 +491,9 @@ export class MockManagerController {
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
+          const { id } = req.params;
           const { mockId } = req.body;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().activateMock(mockId);
@@ -507,7 +509,7 @@ export class MockManagerController {
             default: {
               log.error("An unexpected error occured", {
                 method: "POST",
-                path: `${this.baseUrl}/:port/mock/actions/activate`,
+                path: `${this.baseUrl}/:id/mock/actions/activate`,
                 error: e,
               });
               return res.sendStatus(500);
@@ -519,7 +521,7 @@ export class MockManagerController {
 
     /**
      * @openapi
-     * /sharkio/sniffer/:port/mock/actions/deactivate:
+     * /sharkio/sniffer/:id/mock/actions/deactivate:
      *   post:
      *     tags:
      *       - mock
@@ -553,10 +555,10 @@ export class MockManagerController {
      *         description: Server error
      */
     router.post(
-      "/:port/mock/actions/deactivate",
+      "/:id/mock/actions/deactivate",
       requestValidator({
         params: z.object({
-          port: portValidator,
+          id: z.string().uuid(),
         }),
         body: z.object({
           mockId: z.string().nonempty(),
@@ -564,9 +566,9 @@ export class MockManagerController {
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const { port } = req.params;
+          const { id } = req.params;
           const { mockId } = req.body;
-          const sniffer = this.snifferManager.getSniffer(Number.parseInt(port));
+          const sniffer = this.snifferManager.getSniffer(id);
 
           if (sniffer !== undefined) {
             sniffer.getMockManager().deactivateMock(mockId);
@@ -577,7 +579,7 @@ export class MockManagerController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}/:port/mock/actions/deactivate`,
+            path: `${this.baseUrl}/:id/mock/actions/deactivate`,
             error: e,
           });
           return res.sendStatus(500);

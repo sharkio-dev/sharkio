@@ -2,6 +2,7 @@ import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
 import { SnifferConfigSetup } from "../model/setup-config/file-config.types";
 import { ConfigLoader } from "../model/setup-config/config-loader-interface";
+
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
 
@@ -9,8 +10,8 @@ export class SnifferManager {
     this.sniffers = [];
   }
 
-  createSniffer(snifferConfig: SnifferConfig) {
-    const sniffer = this.getSniffer(+snifferConfig.port);
+  async createSniffer(userId: string, snifferConfig: SnifferConfig) {
+    const sniffer = this.getSniffer(snifferConfig.id);
 
     if (sniffer !== undefined) {
       throw new Error("Sniffer with the same port already exists");
@@ -19,13 +20,13 @@ export class SnifferManager {
     const newSniffer = new Sniffer(snifferConfig);
 
     this.sniffers.push(newSniffer);
-    this.configPersistency.addSniffer(snifferConfig);
+    await this.configPersistency.addSniffer(userId, snifferConfig);
     return newSniffer;
   }
 
-  getSniffer(port: number) {
+  getSniffer(id: string) {
     const res = this.sniffers.find((sniffer: Sniffer) => {
-      return sniffer.getPort() === port;
+      return sniffer.getId() === id;
     });
 
     return res;
@@ -45,17 +46,8 @@ export class SnifferManager {
     return this.sniffers;
   }
 
-  removeSniffer(port: number) {
-    const index = this.sniffers.findIndex((sniffer: Sniffer) => {
-      return sniffer.getPort() === port;
-    });
-
-    if (this.sniffers[index].getIsStarted() === true) {
-      throw new Error("Cannot remove an active sniffer");
-    }
-
-    this.sniffers.splice(index, 1);
-    this.configPersistency.removeSniffer(port);
+  async removeSniffer(id: string) {
+    await this.configPersistency.removeSniffer(id);
   }
 
   getSnifferById(id: string) {
@@ -66,7 +58,11 @@ export class SnifferManager {
     return res;
   }
 
-  async editSniffer(existingId: string, newConfig: SnifferConfig) {
+  async editSniffer(
+    userId: string,
+    existingId: string,
+    newConfig: SnifferConfig,
+  ) {
     const existingIndex = this.sniffers.findIndex((sniffer: Sniffer) => {
       return sniffer.getId() === existingId;
     });
@@ -77,27 +73,26 @@ export class SnifferManager {
     }
 
     await this.sniffers[existingIndex].editSniffer(newConfig);
-    this.configPersistency.update(
+    await this.configPersistency.update(
+      userId,
       existingId,
       newConfig,
       this.sniffers[existingIndex].getIsStarted(),
     );
   }
 
-  async loadSniffersFromConfig(configPersistency: SnifferConfigSetup[]) {
-    if (configPersistency.length !== 0) {
-      configPersistency.forEach(async (item) => {
-        const sniffer: Sniffer = this.createSniffer(item);
-
-        if (item.isStarted) {
-          await sniffer.start();
-        }
+  async loadSniffersFromConfig() {
+    const sniffers = await this.configPersistency.getAllUsersConfig();
+    if (sniffers.length !== 0) {
+      sniffers.forEach(async (item) => {
+        const sniffer = new Sniffer(item);
+        this.sniffers.push(sniffer);
       });
     }
   }
 
-  setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
-    this.configPersistency.setIsStarted(snifferId, isStarted);
+  async setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
+    await this.configPersistency.setIsStarted(snifferId, isStarted);
   }
 
   getAllMocks() {

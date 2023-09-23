@@ -38,10 +38,11 @@ import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
+import { useAuthStore } from "../../stores/authStore";
 
 export type SnifferConfigRow = {
   isNew: boolean;
-  config: Partial<SnifferConfig>;
+  config: SnifferConfig;
   isStarted: boolean;
   isEditing: boolean;
   isCollapsed: boolean;
@@ -56,21 +57,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const [startLoading, setStartLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const fileUploadInputRef = useRef<HTMLInputElement>(null);
-
-  const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
-    {
-      config: {
-        port: undefined,
-        downstreamUrl: undefined,
-        name: undefined,
-      },
-      isStarted: false,
-      isNew: true,
-      isEditing: false,
-      isCollapsed: true,
-    },
-  ]);
-
+  const { user } = useAuthStore();
+  const userId = user?.id;
+  const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
@@ -103,7 +92,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     setSniffers((prev) => {
       return prev.concat([
         {
-          config: { port: undefined, downstreamUrl: undefined },
+          config: {
+            isStarted: false,
+            name: "",
+            port: 0,
+            downstreamUrl: "",
+            id: "",
+          },
           isNew: true,
           isStarted: false,
           isEditing: true,
@@ -113,9 +108,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     });
   };
 
-  const handleStopClicked = async (port: number) => {
+  const handleStopClicked = async (id: string) => {
     setStopLoading(true);
-    await stopSniffer(port)
+    await stopSniffer(id)
       .then(() => loadData())
       .catch(() => {
         showSnackbar("Failed to stop sniffer", "error");
@@ -123,9 +118,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       .finally(() => setStopLoading(false));
   };
 
-  const handleStartClicked = async (port: number) => {
+  const handleStartClicked = async (id: string) => {
     setStartLoading(true);
-    await startSniffer(port)
+    await startSniffer(id)
       .then(() => {
         loadData();
       })
@@ -160,19 +155,28 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     }
   };
 
-  const handleSaveClicked = async (config: Partial<SnifferConfig>) => {
-    if (config.port === undefined || config.downstreamUrl === undefined) {
+  const handleSaveClicked = async (config: SnifferConfig) => {
+    if (
+      config.port === undefined ||
+      config.downstreamUrl === undefined ||
+      userId == null
+    ) {
+      console.error("port url and userId are required");
+      console.log({
+        port: config.port,
+        userId: userId,
+        downstreamUrl: config.downstreamUrl,
+      });
       return;
     }
     const saveConfig: SnifferCreateConfig = {
       name: config.name ?? "",
       port: config.port,
       downstreamUrl: config.downstreamUrl,
-      id: config.port.toString(),
+      id: config.id,
     };
 
-    setSaveLoading(true);
-    await createSniffer(saveConfig)
+    await createSniffer(userId, saveConfig)
       .then(() => {
         loadData();
         showSnackbar("Created sniffer", "info");
@@ -279,8 +283,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
       showSnackbar("Sniffer in edit mode", "info");
     } else {
+      if (userId == null) {
+        console.error("userId is required");
+        return;
+      }
+
       setLoading(true);
-      await editSniffer(newConfig)
+      await editSniffer(userId, newConfig)
         .then(() => {
           loadData();
           showSnackbar("Changes were saved", "info");
@@ -404,7 +413,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                           color="success"
                           onClick={() =>
                             sniffer.config.port !== undefined &&
-                            handleStartClicked(sniffer.config.port)
+                            handleStartClicked(sniffer.config.id)
                           }
                           disabled={
                             sniffer.isStarted === true ||
@@ -425,7 +434,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                           disabled={sniffer.isStarted === false}
                           onClick={() =>
                             sniffer.config.port !== undefined &&
-                            handleStopClicked(sniffer.config.port)
+                            handleStopClicked(sniffer.config.id)
                           }
                         >
                           {stopLoading === true ? (
