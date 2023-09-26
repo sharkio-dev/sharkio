@@ -61,8 +61,8 @@ export default class MockManager {
     return this.mocks.get(id);
   }
 
-  getAllMocks() {
-    return Array.from(this.mocks.values());
+  async getAllMocks(userId: string) {
+    return this.mockModel.findAll(userId);
   }
 
   activateMock(id: string) {

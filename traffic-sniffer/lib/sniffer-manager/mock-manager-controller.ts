@@ -38,7 +38,8 @@ export class MockManagerController {
       "/action/getMocks",
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const mocks = this.snifferManager.getAllMocks();
+          const userId = res.locals.auth.user.id;
+          const mocks = await this.snifferManager.getAllMocks(userId);
           res.json(mocks).status(200);
         } catch (e) {
           log.error("An unexpected error occured", {
@@ -86,8 +87,9 @@ export class MockManagerController {
         try {
           const { id } = req.params;
           const sniffer = this.snifferManager.getSniffer(id);
+          const userId = res.locals.auth.user.id;
           if (sniffer !== undefined) {
-            const mocks = sniffer.getMockManager().getAllMocks();
+            const mocks = sniffer.getMockManager().getAllMocks(userId);
             return res.send(mocks).status(200);
           } else {
             return res.sendStatus(404);

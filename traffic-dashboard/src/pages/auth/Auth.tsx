@@ -6,6 +6,7 @@ import React, { PropsWithChildren, useEffect, useState } from "react";
 import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./auth.module.scss";
+import { setAuthCookie } from "../../api/api";
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
@@ -17,10 +18,6 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
       setSession(session);
       const userDetails = session?.user.user_metadata;
 
-      // if (session?.user.id == null) {
-      //   return;
-      // }
-
       signIn({
         id: session?.user.id ?? "",
         fullName: userDetails?.full_name,
@@ -31,8 +28,15 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
 
     const {
       data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+    } = supabaseClient.auth.onAuthStateChange((event, session) => {
       setSession(session);
+
+      setAuthCookie(
+        session ? event : "SIGNED_OUT", // Sign the user out if the session is null (ignore other events)
+        session,
+      ).then((res) => {
+        if (!res.ok) return;
+      });
     });
 
     return () => subscription.unsubscribe();

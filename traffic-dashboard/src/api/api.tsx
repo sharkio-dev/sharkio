@@ -6,6 +6,19 @@ import {
   Sniffer,
   SnifferCreateConfig,
 } from "../types/types";
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+
+export const setAuthCookie = (
+  event: AuthChangeEvent,
+  session: Session | null,
+) => {
+  return fetch("/sharkio/api/auth", {
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+    credentials: "same-origin",
+    body: JSON.stringify({ event, session }),
+  });
+};
 
 export const createSniffer = (userId: string, config: SnifferCreateConfig) => {
   return axios.post("/sharkio/sniffer", JSON.stringify({ userId, ...config }), {
@@ -15,7 +28,7 @@ export const createSniffer = (userId: string, config: SnifferCreateConfig) => {
   });
 };
 
-export const getSniffers = () => {
+export const getSniffers = (userId: string) => {
   return axios.get<Sniffer[]>("/sharkio/sniffer");
 };
 
@@ -72,9 +85,7 @@ export const executeRequest = (
 };
 
 export const getAllMocks = (userId: string) => {
-  return axios.get("/sharkio/sniffer/action/getMocks", {
-    headers: { "x-sharkio-user-id": userId },
-  });
+  return axios.get("/sharkio/sniffer/action/getMocks");
 };
 
 export const createMock = (

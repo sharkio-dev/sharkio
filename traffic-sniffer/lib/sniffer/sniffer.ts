@@ -159,13 +159,13 @@ export class Sniffer {
     this.config = newConfig;
   }
 
-  stats() {
+  async stats(userId: string) {
     const { config, isStarted, id, interceptedRequests } = this;
     return {
       id,
       config,
       isStarted,
-      mocks: this.mockManager.getAllMocks(),
+      mocks: await this.mockManager.getAllMocks(userId),
       interceptedRequests: interceptedRequests.stats(),
     };
   }

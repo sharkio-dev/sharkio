@@ -2,7 +2,8 @@ import { json } from "body-parser";
 import express, { Response, Request, Express, NextFunction } from "express";
 import * as http from "http";
 import { useLog } from "../log";
-
+import { supabaseClient } from "../auth/supabaseClient";
+import cookieParser from "cookie-parser";
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
@@ -12,6 +13,8 @@ interface IController {
   setup(app: Express): void;
 }
 
+const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
+
 export class SnifferManagerServer {
   private readonly port: number = 5012;
   private app: Express;
@@ -20,24 +23,41 @@ export class SnifferManagerServer {
   constructor(controllers: IController[]) {
     this.app = express();
     this.app.use(json());
-    this.app.use(this.extractUserIdFromHeader);
+    this.app.use(cookieParser());
+    this.app.use(this.authMiddleware);
     controllers.forEach((controller) => {
       controller.setup(this.app);
     });
     this.app.use(this.clientErrorHandler);
   }
 
-  extractUserIdFromHeader(
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    const userId = req.headers["x-sharkio-user-id"];
+  async authMiddleware(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.path === "/sharkio/api/auth") {
+        return next();
+      }
+      const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
+      const { data: user, error } = await supabaseClient.auth.getUser(
+        access_token,
+      );
 
-    req.body.userId = userId;
-
-    next();
+      if (error || !user) {
+        res.setHeader(
+          "Set-Cookie",
+          `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
+        );
+        res.sendStatus(401);
+      } else {
+        res.locals.auth = user;
+        next();
+      }
+    } catch (err) {
+      // res.setHeader(
+      //   "Set-Cookie",
+      //   `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`
+      // );
+      res.sendStatus(401);
+    }
   }
 
   clientErrorHandler(

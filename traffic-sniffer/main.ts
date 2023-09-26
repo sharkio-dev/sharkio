@@ -10,6 +10,8 @@ import { CollectionFilePersistency } from "./lib/collection-manager/collection-f
 import { FileConfig } from "./lib/model/setup-config/file-config";
 import { DbConfig } from "./lib/model/setup-config/db-config";
 import { SnifferConfigSetup } from "./lib/model/setup-config/file-config.types";
+import { AuthController } from "./lib/auth/auth-controller";
+
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
@@ -27,7 +29,7 @@ async function main() {
   const collectionManagerController = new CollectionManagerController(
     collectionManager,
   );
-
+  const authController = new AuthController();
   await snifferManager.loadSniffersFromConfig();
 
   const snifferController = new SnifferManagerController(snifferManager);
@@ -37,6 +39,7 @@ async function main() {
     snifferController,
     mockManagerController,
     collectionManagerController,
+    authController,
     swaggerUi,
   ]);
 

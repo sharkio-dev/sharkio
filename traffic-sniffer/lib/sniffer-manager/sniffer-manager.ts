@@ -32,11 +32,12 @@ export class SnifferManager {
     return res;
   }
 
-  stats() {
+  stats(userId: string) {
     let stats: PathResponseData[] = [];
 
-    this.sniffers.forEach((sniffer: Sniffer) => {
-      stats.push(...sniffer.stats().interceptedRequests);
+    this.sniffers.forEach(async (sniffer: Sniffer) => {
+      const stat = await sniffer.stats(userId);
+      stats.push(...stat.interceptedRequests);
     });
 
     return stats;
@@ -95,15 +96,19 @@ export class SnifferManager {
     await this.configPersistency.setIsStarted(snifferId, isStarted);
   }
 
-  getAllMocks() {
-    return this.sniffers.map((sniffer: Sniffer) => {
-      return {
-        service: {
-          name: sniffer.getConfig().name,
-          port: sniffer.getConfig().port,
-        },
-        mocks: sniffer.getMockManager().getAllMocks(),
-      };
-    });
+  async getAllMocks(userId: string) {
+    const mocks = await Promise.all(
+      this.sniffers.map(async (sniffer: Sniffer) => {
+        return {
+          service: {
+            name: sniffer.getConfig().name,
+            port: sniffer.getConfig().port,
+          },
+          mocks: await sniffer.getMockManager().getAllMocks(userId),
+        };
+      }),
+    );
+
+    return mocks;
   }
 }

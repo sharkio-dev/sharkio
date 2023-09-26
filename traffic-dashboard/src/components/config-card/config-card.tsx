@@ -64,9 +64,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const loadData = useCallback(async () => {
+    if (userId == null) {
+      console.error("user is not logged in");
+      return;
+    }
     if (loading) return;
     setLoading(true);
-    await getSniffers()
+    await getSniffers(userId)
       .then((res) => {
         const configs: SnifferConfigRow[] = res.data.map((config) => ({
           ...config,

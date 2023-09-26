@@ -33,9 +33,12 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    router.get("/invocation", (req: Request, res: Response) => {
+    router.get("/invocation", async (req: Request, res: Response) => {
       try {
-        res.status(200).send(this.snifferManager.stats());
+        const userId = res.locals.auth.user.id;
+        const stats = await this.snifferManager.stats(userId);
+
+        res.status(200).send(stats);
       } catch (e) {
         log.error("An unexpected error occured", {
           method: "GET",
@@ -59,16 +62,18 @@ export class SnifferManagerController {
      *       500:
      *         description: Server error
      */
-    router.get("", (req: Request, res: Response) => {
-      return res.status(200).send(
-        this.snifferManager.getAllSniffers().map((sniffer: Sniffer) => {
-          const { config, isStarted } = sniffer.stats();
+    router.get("", async (req: Request, res: Response) => {
+      const userId = res.locals.auth.user.id;
+      const stats = await Promise.all(
+        this.snifferManager.getAllSniffers().map(async (sniffer: Sniffer) => {
+          const { config, isStarted } = await sniffer.stats(userId);
           return {
             config,
             isStarted,
           };
         }),
       );
+      return res.status(200).send(stats);
     });
 
     /**
@@ -106,9 +111,9 @@ export class SnifferManagerController {
         try {
           const { id } = req.params;
           const sniffer = this.snifferManager.getSniffer(id);
-
+          const userId = res.locals.auth.user.id;
           if (sniffer !== undefined) {
-            return res.send(sniffer.stats()).status(200);
+            return res.send(sniffer.stats(userId)).status(200);
           } else {
             return res.sendStatus(404);
           }
