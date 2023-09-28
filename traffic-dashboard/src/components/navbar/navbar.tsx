@@ -94,7 +94,7 @@ export const Navbar: React.FC = () => {
                 rel="noreferrer"
                 title="Github"
               >
-                <GitHubIcon fontSize="large" />
+                <GitHubIcon fontSize="medium" />
               </a>
               <LoginComponent />
             </>
