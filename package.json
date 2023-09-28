@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Micro service network monitoring and development tool",
   "main": "index.js",
-  "bundledDependencies": true,
   "bin": {
     "sharkio": "index.mjs"
   },
