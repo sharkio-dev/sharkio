@@ -3,6 +3,7 @@
   justify-content: center;
   image-rendering: crisp-edges;
 }
+
 .logo img {
   max-height: 50px;
   border-radius: 50%;
@@ -23,12 +24,19 @@
 }
 
 .logo_text {
+  display: flex;
+  align-items: center;
   font-size: 20px;
   font-weight: bold;
   font-family: "Brush Script MT", cursive;
   margin-left: 15px;
+  height: 100%;
 }
 .paper {
   padding: 10px;
   border-radius: 0px !important;
+}
+
+.account_circle_icon {
+  cursor: pointer;
 }

@@ -1,24 +1,39 @@
-import fs from "fs/promises";
 import fsSync from "fs";
+import fs from "fs/promises";
+import { ZodError } from "zod";
 import { SnifferConfig } from "../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
-import { SnifferConfigSetup, setupFilePath } from "./file-config.types";
+import {
+  SnifferConfigSetup,
+  sniffersConfigValidator,
+} from "./file-config.types";
+import { useLog } from "../log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export class FileConfig implements ConfigLoader {
   configData: SnifferConfigSetup[];
+  path: string;
 
-  constructor() {
-    this.validateSetupFileExists();
-    this.configData = this.readSetupFileData();
+  constructor(path: string) {
+    this.configData = [];
+    this.path = path;
   }
 
-  getSetup() {
+  getConfig() {
+    this.createFileIfNotExist(this.path);
+    this.configData = this.readSetupFileData(this.path);
+
+    console.info("Loaded config from file");
     return this.configData;
   }
 
   update(existingId: string, newConfig: SnifferConfig, isStarted: boolean) {
     const foundIndex = this.configData.findIndex(
-      (item) => item.id === existingId
+      (item) => item.id === existingId,
     );
     if (foundIndex === -1) {
       throw new Error("item was not found");
@@ -27,27 +42,32 @@ export class FileConfig implements ConfigLoader {
     this.writeToSetupFile();
   }
 
-  async validateSetupFileExists() {
-    if (!fsSync.existsSync(setupFilePath)) {
-      fsSync.writeFileSync(setupFilePath, JSON.stringify([]), { flag: "w" });
+  async createFileIfNotExist(path: string) {
+    if (!fsSync.existsSync(path)) {
+      fsSync.writeFileSync(path, JSON.stringify([]), { flag: "w" });
     }
   }
 
-  readSetupFileData(): SnifferConfigSetup[] {
+  readSetupFileData(path: string): SnifferConfigSetup[] {
     try {
-      const fileData = fsSync.readFileSync(setupFilePath, "utf8");
+      const fileData = fsSync.readFileSync(path, "utf8");
       const parsedData = JSON.parse(fileData);
+      sniffersConfigValidator.parse(parsedData);
 
-      if (
-        Array.isArray(parsedData) &&
-        parsedData.every((item: any) => typeof item === "object")
-      ) {
-        return parsedData as SnifferConfigSetup[];
+      return parsedData as SnifferConfigSetup[];
+    } catch (e) {
+      if (e instanceof ZodError) {
+        console.warn("Config file is not valid");
+        console.debug(e);
       } else {
-        return [];
+        console.warn("failed to load config file");
       }
-    } catch (error) {
-      console.error(`file was not in right format, overriding it`);
+
+      this.path = this.path.split(".json")[0] + "-temp" + ".json";
+      log.error(`Using a temporary config file`, {
+        path,
+      });
+
       return [];
     }
   }
@@ -55,11 +75,11 @@ export class FileConfig implements ConfigLoader {
   addSniffer(snifferConfig: SnifferConfig) {
     const addedObj = this.createSnifferSetup(snifferConfig, false);
     const isListed = this.configData.findIndex(
-      (item) => item.id === snifferConfig.id
+      (item) => item.id === snifferConfig.id,
     );
 
     if (isListed !== -1) {
-      console.log("sniffer already listed");
+      log.info("Sniffer already listed");
       return;
     }
     this.configData.push(addedObj);
@@ -77,7 +97,7 @@ export class FileConfig implements ConfigLoader {
 
   setIsStarted(snifferId: string, isStarted: boolean) {
     const foundIndex = this.configData.findIndex(
-      (item) => item.id === snifferId
+      (item) => item.id === snifferId,
     );
     if (foundIndex === -1) {
       throw new Error("item was not found");
@@ -89,12 +109,12 @@ export class FileConfig implements ConfigLoader {
   }
 
   async writeToSetupFile() {
-    await fs.writeFile(setupFilePath, JSON.stringify(this.configData, null, 2));
+    await fs.writeFile(this.path, JSON.stringify(this.configData, null, 2));
   }
 
   createSnifferSetup(
     snifferConfig: SnifferConfig,
-    isStarted: boolean
+    isStarted: boolean,
   ): SnifferConfigSetup {
     return {
       id: snifferConfig.id,

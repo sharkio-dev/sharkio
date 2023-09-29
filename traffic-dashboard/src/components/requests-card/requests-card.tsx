@@ -4,16 +4,16 @@ import {
   Card,
   CircularProgress,
   List,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { FilterBar } from "../filter-bar/filter-bar";
 import { RequestRow } from "../request-row/request-row";
 import styles from "./requests-card.module.scss";
 
 interface IRequestCardProps {
+  className?: string;
   withControls: boolean;
 }
 export const RequestsCard: React.FC<IRequestCardProps> = ({
@@ -28,7 +28,6 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadData?.();
@@ -62,12 +61,12 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
           setServicesFilter={setServicesFilter}
         />
       )}
-      <div className={styles.container}>
-        <Card className={styles.card}>
-          <div className={styles.titleContainer}>
-            <Typography variant="h6">Requests</Typography>
-            <Button onClick={() => loadData?.()}>refresh</Button>
-          </div>
+      <Card className={styles.card}>
+        <div className={styles.titleContainer}>
+          <Typography variant="h6">Requests</Typography>
+          <Button onClick={() => loadData?.()}>refresh</Button>
+        </div>
+        <div className={styles.requestsSection}>
           {loading ? (
             <Box
               sx={{
@@ -82,17 +81,17 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
             <>
               <List>
                 {filteredRequests &&
-                  filteredRequests.map((req: any) => (
-                    <RequestRow request={req} />
+                  filteredRequests.map((req) => (
+                    <RequestRow request={req} key={req.id} />
                   ))}
               </List>
             </>
           )}
-          <div className={styles.requestCardFooter}>
-            <div>items:{filteredRequests?.length}</div>
-          </div>
-        </Card>
-      </div>
+        </div>
+        <div className={styles.requestCardFooter}>
+          <div>items:{filteredRequests?.length}</div>
+        </div>
+      </Card>
     </>
   );
 };

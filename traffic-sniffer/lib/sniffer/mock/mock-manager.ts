@@ -25,6 +25,22 @@ export default class MockManager {
 
     if (managedMock !== undefined) {
       managedMock.data = data;
+
+      this.mocks.set(id, managedMock);
+    } else {
+      throw new MockNotFoundError();
+    }
+  }
+
+  updateMock(id: string, mock: Mock) {
+    let managedMock = this.mocks.get(id);
+
+    if (managedMock !== undefined) {
+      managedMock = {
+        ...managedMock,
+        ...mock,
+      };
+
       this.mocks.set(id, managedMock);
     } else {
       throw new MockNotFoundError();

@@ -1,3 +1,4 @@
+import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
@@ -12,7 +13,7 @@ import { RequestPage } from "./pages/request/request";
 import { Requests } from "./pages/requests/requests";
 import { Service } from "./pages/service/service";
 
-function App() {
+function App(): React.JSX.Element {
   const theme = createTheme({
     palette: {
       mode: "dark",

@@ -1,6 +1,5 @@
 import { PathResponseData } from "../../types";
 import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { FileConfig } from "../setup-config/file-config";
 import { ConfigLoader } from "../setup-config/config-loader-interface";
 import { SnifferConfigSetup } from "../setup-config/file-config.types";
 
@@ -33,10 +32,10 @@ export class SnifferManager {
     return res;
   }
 
-  stats() {
+  async stats() {
     let stats: PathResponseData[] = [];
 
-    this.sniffers.forEach((sniffer: Sniffer) => {
+    await this.sniffers.forEach((sniffer: Sniffer) => {
       stats.push(...sniffer.stats().interceptedRequests);
     });
 
@@ -82,7 +81,7 @@ export class SnifferManager {
     this.configPersistency.update(
       existingId,
       newConfig,
-      this.sniffers[existingIndex].getIsStarted()
+      this.sniffers[existingIndex].getIsStarted(),
     );
   }
 

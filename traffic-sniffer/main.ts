@@ -6,12 +6,17 @@ import { SnifferManager } from "./lib/sniffer-manager/sniffer-manager";
 import { SnifferManagerController } from "./lib/sniffer-manager/sniffer-manager-controller";
 import { SnifferManagerServer } from "./lib/sniffer-manager/sniffer-manager-server";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
+export const setupFilePath =
+  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const configPersistency = new FileConfig();
-  const snifferManager = new SnifferManager(configPersistency);
+  const fileConfig = new FileConfig(setupFilePath);
+  const config = fileConfig.getConfig();
+  console.debug(config);
 
-  const configData: SnifferConfigSetup[] = configPersistency.getSetup();
+  const snifferManager = new SnifferManager(fileConfig);
+
+  const configData: SnifferConfigSetup[] = fileConfig.getConfig();
   await snifferManager.loadSniffersFromConfig(configData);
 
   const snifferController = new SnifferManagerController(snifferManager);

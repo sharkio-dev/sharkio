@@ -3,11 +3,11 @@ import { SnifferConfigSetup } from "./file-config.types";
 
 export interface ConfigLoader {
   configData: SnifferConfigSetup[];
-  getSetup(): SnifferConfigSetup[];
+  getConfig(): SnifferConfigSetup[];
   update(
     existingId: string,
     newConfig: SnifferConfig,
-    isStarted: boolean
+    isStarted: boolean,
   ): void;
   addSniffer(snifferConfig: SnifferConfig): void;
   removeSniffer(port: number): void;

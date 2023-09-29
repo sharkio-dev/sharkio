@@ -35,7 +35,7 @@ export const editSniffer = async (newConfig: SnifferCreateConfig) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
@@ -46,7 +46,7 @@ export const getRequests = () => {
 export const executeRequest = (
   url: string,
   method: string,
-  invocation: any
+  invocation: any,
 ) => {
   return axios.post(
     "/sharkio/sniffer/5555/actions/execute",
@@ -55,19 +55,20 @@ export const executeRequest = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
 export const getAllMocks = () => {
   return axios.get("/sharkio/sniffer/action/getMocks");
 };
+
 export const createMock = (
   port: number,
   method: string,
   endpoint: string,
   status: number,
-  data: any
+  data: any,
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock`,
@@ -76,38 +77,66 @@ export const createMock = (
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };
 
-export const activateMock = (
+export const editMock = (
+  id: string,
   port: number,
   method: string,
-  endpoint: string
+  endpoint: string,
+  status: number,
+  data: any
 ) => {
-  return axios.post(
-    `/sharkio/sniffer/${port}/mock/actions/activate`,
-    JSON.stringify({ id: `${method} ${endpoint}` }),
+  return axios.put(
+    `/sharkio/sniffer/${port}/mock`,
+    JSON.stringify({ mockId: id, method, endpoint, data, status }),
     {
       headers: {
         "Content-Type": "application/json",
       },
     }
+  );
+};
+
+export const deleteMock = (id: string, port: number) => {
+  return axios.delete(`/sharkio/sniffer/${port}/mock`, {
+    data: { mockId: id },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const activateMock = (
+  port: number,
+  method: string,
+  endpoint: string,
+) => {
+  return axios.post(
+    `/sharkio/sniffer/${port}/mock/actions/activate`,
+    JSON.stringify({ mockId: `${method} ${endpoint}` }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
   );
 };
 
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string
+  endpoint: string,
 ) => {
   return axios.post(
     `/sharkio/sniffer/${port}/mock/actions/deactivate`,
-    JSON.stringify({ id: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 };

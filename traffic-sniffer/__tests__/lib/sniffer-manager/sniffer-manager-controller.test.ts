@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, json } from "express";
 import request from "supertest";
 import { SnifferManager, SnifferManagerController } from "../../../lib";
 import { ConfigLoader } from "../../../lib/setup-config/config-loader-interface";
@@ -20,7 +20,7 @@ jest.mock("../../../lib/setup-config/file-config", () => {
     update(
       existingId: string,
       newConfig: SnifferConfig,
-      isStarted: boolean
+      isStarted: boolean,
     ): void {}
     addSniffer(snifferConfig: SnifferConfig): void {}
     removeSniffer(port: number): void {}
@@ -29,7 +29,7 @@ jest.mock("../../../lib/setup-config/file-config", () => {
   return { FileConfig: MockFileConfig };
 });
 
-describe("sniffer-manager-controlelr", () => {
+describe("sniffer-manager-controller", () => {
   let app: Express;
   let configPersistency: ConfigLoader;
   let snifferManager: SnifferManager;
@@ -37,7 +37,8 @@ describe("sniffer-manager-controlelr", () => {
 
   beforeAll(() => {
     app = express();
-    configPersistency = new FileConfig();
+    app.use(json());
+    configPersistency = new FileConfig("");
     snifferManager = new SnifferManager(configPersistency);
     snifferManagerController = new SnifferManagerController(snifferManager);
     snifferManagerController.setup(app);
