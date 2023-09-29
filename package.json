@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Micro service network monitoring and development tool",
   "main": "index.js",
-  "bundledDependencies": true,
   "bin": {
     "sharkio": "index.mjs"
   },
@@ -33,6 +32,7 @@
     "kill-port": "^2.0.1",
     "nodemon": "^3.0.1",
     "open": "^9.1.0",
+    "ps-tree": "^1.2.0",
     "swagger-jsdoc": "^6.2.8",
     "traffic-dashboard": "file:traffic-dashboard",
     "traffic-sniffer": "file:traffic-sniffer",

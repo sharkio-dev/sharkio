@@ -37,6 +37,6 @@ export const CollectionRequest = () => {
   return service && request ? (
     <RequestPage service={service} request={request} />
   ) : (
-    "not found"
+    <>not found</>
   );
 };

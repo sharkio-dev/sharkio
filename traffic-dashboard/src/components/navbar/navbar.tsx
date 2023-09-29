@@ -1,19 +1,22 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { AppBar } from "@mui/material";
 import React from "react";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
 import { useThemeStore } from "../../stores/themeStore";
 import ThemeToggleMode from "../ThemeToggleMode";
 import LoginComponent from "../login-component/login-component";
 import styles from "./navbar.module.scss";
-import { useAuthStore } from "../../stores/authStore";
 
 export const Navbar: React.FC = () => {
   const { mode, toggleColorMode } = useThemeStore();
   const navigate = useNavigate();
   const { user } = useAuthStore();
+  const disablesupabase = import.meta.env.VITE_DISABLE_SUPABASE;
 
-  const isLoggedOut = user == null || user.email == null;
+  const isLoggedOut = disablesupabase
+    ? false
+    : user == null || user.email == null;
 
   return (
     <AppBar position="relative">
@@ -90,7 +93,7 @@ export const Navbar: React.FC = () => {
             <>
               <a
                 class="inline-flex items-center justify-center !leading-none text-center whitespace-nowrap rounded transition-[colors, opacity] duration-200 outline-none uppercase font-medium h-10 px-5 text-xs bg-transparent text-white border border-gray-5 hover:bg-gray-4 hover:border-gray-4 group pl-3"
-                href="https://github.com/novuhq/novu"
+                href="https://github.com/sharkio-dev/sharkio"
                 target="_blank"
                 rel="noopener noreferrer"
               >

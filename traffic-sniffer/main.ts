@@ -1,6 +1,4 @@
 require("dotenv/config");
-import { FileConfig } from "./lib/setup-config/file-config";
-import { SnifferConfigSetup } from "./lib/setup-config/file-config.types";
 import { MockManagerController } from "./lib/sniffer-manager/mock-manager-controller";
 import { SnifferManager } from "./lib/sniffer-manager/sniffer-manager";
 import { SnifferManagerController } from "./lib/sniffer-manager/sniffer-manager-controller";
@@ -9,6 +7,8 @@ import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import { CollectionManager } from "./lib/collection-manager/collection-manager";
 import { CollectionManagerController } from "./lib/collection-manager/collection-manager-controller";
 import { CollectionFilePersistency } from "./lib/collection-manager/collection-file-persistency";
+import { FileConfig } from "./lib/model/setup-config/file-config";
+import { SnifferConfigSetup } from "./lib/model/setup-config/file-config.types";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
