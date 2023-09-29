@@ -7,6 +7,7 @@ import { useThemeStore } from "../../stores/themeStore";
 import ThemeToggleMode from "../ThemeToggleMode";
 import LoginComponent from "../login-component/login-component";
 import styles from "./navbar.module.scss";
+import DiscordIcon from "../../assets/DiscordIcon";
 
 export const Navbar: React.FC = () => {
   const { mode, toggleColorMode } = useThemeStore();
@@ -79,12 +80,21 @@ export const Navbar: React.FC = () => {
                 isDarkMode={mode === "dark"}
               />
               <a
+                href="https://discord.gg/78KY7GW2WW"
+                className={styles.discord_icon}
+                target="_blank"
+                title="Discord"
+              >
+                <DiscordIcon fontSize="medium" />
+              </a>
+              <a
                 className={styles.github_link}
                 href="https://github.com/idodav/sharkio"
                 target="_blank"
                 rel="noreferrer"
+                title="Github"
               >
-                <GitHubIcon fontSize="large" />
+                <GitHubIcon fontSize="medium" />
               </a>
               <LoginComponent />
             </>
