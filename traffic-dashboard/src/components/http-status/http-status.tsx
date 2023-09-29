@@ -11,18 +11,16 @@ export const HttpStatus: React.FC<IHttpMethodProps> = ({ status }) => {
 };
 
 function statusColor(status: number) {
-  switch (status) {
-    case 201:
-    case 200: {
-      return "success";
-    }
-    case 404: {
-      return "warning";
-    }
-    case 500: {
-      return "error";
-    }
-    default:
-      return "default";
-  }
+  /* maps statuses numbers to color string e.g. 201 -> success */
+  const statusesMap = {
+    2: "success",
+    4: "warning",
+    5: "error",
+  } as any;
+  return statusesMap[status.toString().slice(0, 1)] || "default";
 }
+/*tests (TODO: add real ones)*/
+/* console.log(statusColor(100)) -> default*/
+/* console.log(statusColor(202)) -> success*/
+/* console.log(statusColor(402)) -> wiarning*/
+/* console.log(statusColor(502)) -> error*/
