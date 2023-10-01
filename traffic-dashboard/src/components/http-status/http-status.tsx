@@ -19,8 +19,3 @@ function statusColor(status: number) {
   } as any;
   return statusesMap[status.toString().slice(0, 1)] || "default";
 }
-/*tests (TODO: add real ones)*/
-/* console.log(statusColor(100)) -> default*/
-/* console.log(statusColor(202)) -> success*/
-/* console.log(statusColor(402)) -> wiarning*/
-/* console.log(statusColor(502)) -> error*/
