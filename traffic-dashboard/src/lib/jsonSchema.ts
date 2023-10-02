@@ -82,11 +82,7 @@ export function jsonSchemaToTypescriptInterface(
 
   if (schema.type === "object" && schema.properties) {
     for (const [key, value] of Object.entries(schema.properties)) {
-      output += `  ${key}: ${jsonSchemaToTypescriptInterface(
-        value,
-        key,
-        true,
-      )}`;
+      output += ` ${key}: ${jsonSchemaToTypescriptInterface(value, key, true)}`;
     }
   } else if (schema.type === "array" && schema.items) {
     output += `  ${jsonSchemaToTypescriptInterface(
@@ -184,7 +180,10 @@ const jsonToQueryString = (json: JsonObject): string => {
     return "";
   }
   return Object.keys(json)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(json[key]))
+    .map(
+      (key) =>
+        encodeURIComponent(key) + "=" + encodeURIComponent(json[key] as any),
+    )
     .join("&");
 };
 const generateGoLangSnippet = (
