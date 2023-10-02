@@ -54,7 +54,7 @@ export const InvocationEditor: React.FC = () => {
         <Typography variant="h6" gutterBottom>
           Invocation
         </Typography>
-        <SnifferSelector selectedSnifferPort={serviceId ?? ""} disabled />
+        <SnifferSelector selectedSnifferId={serviceId ?? ""} disabled />
         <TextField
           className={"w-full"}
           label="URL"
