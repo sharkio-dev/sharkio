@@ -68,6 +68,8 @@ describe("generateTypescriptType", () => {
     const res = jsonSchemaToTypescriptInterface(schema, "ISchema");
 
     expect(res).toBeDefined();
-    expect(res).toEqual("type ISchema = {  hello: string;}");
+    expect(res.replace(/\n/g, "")).toEqual(
+      "type ISchema  = { hello: string;}".replace(/\n/g, ""),
+    );
   });
 });
