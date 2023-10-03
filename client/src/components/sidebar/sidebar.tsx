@@ -62,6 +62,9 @@ export const SideBar: React.FC = () => {
             onClick={() => {
               navigate("/home");
             }}
+            selected={
+              "/home" === location.pathname || "/" === location.pathname
+            }
             className={c({
               [styles.listItem]: true,
               [styles.listItemMinimized]: minimized,
@@ -75,6 +78,7 @@ export const SideBar: React.FC = () => {
               [styles.listItem]: true,
               [styles.listItemMinimized]: minimized,
             })}
+            selected={"/config" === location.pathname}
             onClick={() => {
               navigate("/config");
             }}
@@ -83,49 +87,53 @@ export const SideBar: React.FC = () => {
             {!minimized && <>Services</>}
           </ListItemButton>
           <ListItemButton
+            onClick={() => {
+              navigate("/requests");
+            }}
+            selected={"/requests" === location.pathname}
             className={c({
               [styles.listItem]: true,
               [styles.listItemMinimized]: minimized,
             })}
-            onClick={() => {
-              navigate("/requests");
-            }}
           >
             <SwapHoriz />
             {!minimized && <>Requests</>}
           </ListItemButton>
           <ListItemButton
+            onClick={() => {
+              navigate("/mocks");
+            }}
+            selected={"/mocks" === location.pathname}
             className={c({
               [styles.listItem]: true,
               [styles.listItemMinimized]: minimized,
             })}
-            onClick={() => {
-              navigate("/mocks");
-            }}
           >
             <DataObjectIcon />
             {!minimized && <>Mocks</>}
           </ListItemButton>
           <ListItemButton
+            onClick={() => {
+              navigate("/gen-openapi");
+            }}
+            selected={"/gen-openapi" === location.pathname}
             className={c({
               [styles.listItem]: true,
               [styles.listItemMinimized]: minimized,
             })}
-            onClick={() => {
-              navigate("/gen-openapi");
-            }}
           >
             <ApiIcon />
             {!minimized && <>OpenAPI</>}
           </ListItemButton>
           <ListItemButton
+            onClick={() => {
+              navigate(routes.COLLECTION);
+            }}
+            selected={routes.COLLECTION === location.pathname}
             className={c({
               [styles.listItem]: true,
               [styles.listItemMinimized]: minimized,
             })}
-            onClick={() => {
-              navigate(routes.COLLECTION);
-            }}
           >
             <FolderCopyOutlined />
             {!minimized && <>Collections</>}
