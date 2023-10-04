@@ -1,18 +1,34 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { AppBar } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { useThemeStore } from "../../stores/themeStore";
 import ThemeToggleMode from "../ThemeToggleMode";
 import LoginComponent from "../login-component/login-component";
 import styles from "./navbar.module.scss";
+import axios from "axios";
 
 export const Navbar: React.FC = () => {
   const { mode, toggleColorMode } = useThemeStore();
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const disablesupabase = import.meta.env.VITE_DISABLE_SUPABASE;
+  const [starCount, setStarCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const repoUrl = "https://api.github.com/repos/sharkio-dev/sharkio";
+    axios
+      .get(repoUrl)
+      .then((response) => {
+        const data = response.data;
+        const stargazersCount = data.stargazers_count;
+        setStarCount(stargazersCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error.message);
+      });
+  }, []);
 
   const isLoggedOut = disablesupabase
     ? false
@@ -115,7 +131,7 @@ export const Navbar: React.FC = () => {
                   class="flex items-center before:mx-2.5 before:h-[18px] before:w-px before:bg-gray-4 before:transition-colors before:duration-200 group-hover:before:bg-gray-5"
                   aria-label="32 stars on Github"
                 >
-                  32
+                  {starCount ? starCount : null}
                 </span>
               </a>
             </>
