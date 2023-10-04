@@ -1,9 +1,9 @@
 node_modules
 .vscode
-traffic-sniffer/.env
-traffic-sniffer/node_modules/*
-traffic-dashboard/node_modules/*
-traffic-sniffer/node_modules/.bin/mime
+server/.env
+server/node_modules/*
+client/node_modules/*
+server/node_modules/.bin/mime
 dist
 sharkio-0.1.0.tgz
 *.tgz

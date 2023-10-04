@@ -58,13 +58,13 @@ Request mocking.
 
 For the backend
 
-- cd into traffic-sniffer.
+- cd into server.
 - npm install
 - npm run dev
 
 For the frontend
 
-- cd into traffic-dashboard.
+- cd into client.
 - npm install
 - npm run dev
 

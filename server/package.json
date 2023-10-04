@@ -1,5 +1,5 @@
 {
-  "name": "traffic-sniffer",
+  "name": "server",
   "version": "1.0.0",
   "description": "A nodejs proxy that reads all the traffic and makes sense of it",
   "main": "./dist/main.js",
@@ -10,8 +10,8 @@
     "start": "nodemon main.ts",
     "dev": "nodemon main.ts",
     "prod": "sharkio node main.js",
-    "docker:build": "docker build . -t sharkio-traffic-sniffer",
-    "docker:run": "docker run -p 5012:5012 --name sharkio-sniffer -d sharkio-traffic-sniffer",
+    "docker:build": "docker build . -t sharkio-server",
+    "docker:run": "docker run -p 5012:5012 --name sharkio-sniffer -d sharkio-server",
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",

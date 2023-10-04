@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { executeRequest, saveRequestToCollection } from "../../api/api";
-import { HttpMethod } from "../../components/http-method/http-method";
+import { HttpMethod } from "../http-method/http-method";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { JsonToOpenapi } from "../../lib/generateOpenapi";
 import {
