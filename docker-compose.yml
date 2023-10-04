@@ -1,7 +1,7 @@
 version: "3"
 services:
   backend:
-    build: ./traffic-sniffer
+    build: ./server
     ports:
       - 5012:5012
       - 5550:5550
@@ -19,7 +19,7 @@ services:
       - localhost:host-gateway
 
   frontend:
-    build: ./traffic-dashboard
+    build: ./client
     ports:
       - 8080:8080
       - 5173:5173
