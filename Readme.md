@@ -25,7 +25,6 @@ Integration to Postman.
 Automatic CLI generation for your api with real data.
 Request mocking.
 
-
 ## 🔖 Features
 
 |   **Feature Name**    | **Available** |
@@ -44,8 +43,8 @@ Request mocking.
 |  ChatGPT integration  |               |
 |    Share requests     |               |
 
-
 ## 🛠 Tech Stack
+
 - [Sharkio tech stack](https://github.com/sharkio-dev/sharkio/blob/main/stack.md)
 
 ## 🛠️ How to use
@@ -140,6 +139,7 @@ Run backend/frontend only:
 - Found a bug? 🐛 please open an issue.
 
 ## 🤝 Acknowledgement
+
 - [Readme generator - readme.so](https://readme.so)
 
 ## 🏆 Contributors
