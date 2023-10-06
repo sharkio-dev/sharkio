@@ -3,6 +3,7 @@ import { InterceptedRequest, RequestKey } from "../intercepted-request/";
 import { Invocation, PathResponseData } from "../../types/types";
 import { RequestsMap } from "./requests-map";
 import { SnifferConfig } from "../sniffer/sniffer";
+import { RequestModel } from "../model/request.model";
 
 export class InterceptedRequests {
   private requests: RequestsMap;
@@ -32,11 +33,11 @@ export class InterceptedRequests {
     url: string,
     method: string,
     invocation: Invocation,
-    service: string,
+    service: string
   ) {
     const interceptedRequest = this.ensureRequest(
       new RequestKey(method, url),
-      service,
+      service
     );
     return interceptedRequest.execute(invocation);
   }

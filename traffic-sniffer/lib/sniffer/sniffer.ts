@@ -13,6 +13,7 @@ import { InterceptedRequests } from "../intercepted-requests/intercepted-request
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
 import { useLog } from "../log";
+import { RequestModel } from "../model/request.model";
 
 const log = useLog({
   dirname: __dirname,
@@ -30,6 +31,7 @@ export class Sniffer {
   private id: string;
   private app: Express;
   private interceptedRequests: InterceptedRequests;
+  private requestModel: RequestModel;
   private config: SnifferConfig;
   private server?: http.Server;
   private proxyMiddleware: RequestHandler;
@@ -38,12 +40,13 @@ export class Sniffer {
   private mockMiddleware: MockMiddleware;
 
   constructor(config: SnifferConfig) {
-    this.interceptedRequests = new InterceptedRequests();
     this.config = config;
     this.app = express();
     this.id = config.id;
     this.isStarted = false;
     this.mockManager = new MockManager();
+    this.requestModel = new RequestModel();
+    this.interceptedRequests = new InterceptedRequests();
     this.mockMiddleware = new MockMiddleware(this.mockManager);
 
     this.proxyMiddleware = createProxyMiddleware({
@@ -57,13 +60,19 @@ export class Sniffer {
     this.setup();
   }
 
-  requestInterceptor(req: Request, res: Response, next: NextFunction) {
+  async requestInterceptor(req: Request, res: Response, next: NextFunction) {
     log.info("Request logged", {
       config: this.config,
       method: req.method,
       url: req.url,
     });
+    const userId = res.locals.auth.user.id;
+    /**
+     * TODO: split this logic and choose persistency strategy.
+     * Currently saving for both
+     */
     this.interceptedRequests.interceptRequest(req, this.config.id);
+    await this.requestModel.upsertRequest(req, this.config.id, userId);
     next();
   }
 
@@ -92,7 +101,7 @@ export class Sniffer {
       snifferUrl,
       method,
       invocation,
-      this.config.name,
+      this.config.name
     );
   }
 
