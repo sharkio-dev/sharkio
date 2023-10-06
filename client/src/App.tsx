@@ -17,6 +17,7 @@ import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
 import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
+import Footer from "./components/footer/footer";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -67,6 +68,7 @@ function App(): React.JSX.Element {
                 <PageTemplate>
                   <GettingStarted />
                   <AuthUI />
+                  <Footer />
                 </PageTemplate>
               }
             />
