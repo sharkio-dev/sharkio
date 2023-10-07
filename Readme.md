@@ -43,6 +43,10 @@ Request mocking.
 |  ChatGPT integration  |               |
 |    Share requests     |               |
 
+## 🛠 Tech Stack
+
+- [Sharkio tech stack](https://github.com/sharkio-dev/sharkio/blob/main/stack.md)
+
 ## 🛠️ How to use
 
 - npm install -g @idodav/sharkio@latest
@@ -58,13 +62,13 @@ Request mocking.
 
 For the backend
 
-- cd into traffic-sniffer.
+- cd into server.
 - npm install
 - npm run dev
 
 For the frontend
 
-- cd into traffic-dashboard.
+- cd into client.
 - npm install
 - npm run dev
 

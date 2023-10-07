@@ -1,5 +1,5 @@
 {
-  "name": "traffic-dashboard",
+  "name": "client",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -15,8 +15,8 @@
     "dev2": "vite -c vite.production.config.ts",
     "start": "node ./main.js",
     "build": "tsc && vite build",
-    "docker:build": "docker build . -t sharkio-traffic-dashboard",
-    "docker:run": "docker run -p 5173:5173 -p 8080:8080 --name sharkio-dashboard -d sharkio-traffic-dashboard",
+    "docker:build": "docker build . -t sharkio-client",
+    "docker:run": "docker run -p 5173:5173 -p 8080:8080 --name sharkio-dashboard -d sharkio-client",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "jest",

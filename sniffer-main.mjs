@@ -1,4 +1,4 @@
-import { SnifferManagerController } from "traffic-sniffer";
+import { SnifferManagerController } from "server";
 import dotenv from "dotenv";
 dotenv.config();
 
