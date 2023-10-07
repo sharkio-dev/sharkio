@@ -1,6 +1,7 @@
 ## 🛠 Tech Stack
 
 - **General:**
+
   - Node.js: Serves as the runtime environment for the backend services. It allows the Sharkio project to execute JavaScript server-side, enabling functionalities like proxying requests, data processing, and more.
 
   - TypeScript: Enhances the codebase with static typing. This ensures better code quality, easier debugging, and improved developer experience within the Sharkio project.
@@ -12,6 +13,7 @@
   - Nodemon: Used during development to automatically restart the server whenever code changes are detected. This speeds up the development process by providing instant feedback.
 
 - **Traffic Dashboard (Frontend):**
+
   - React: Powers the user interface of the Traffic Dashboard, allowing users to interactively view and analyze the traffic data captured by Sharkio.
 
   - Vite: Speeds up the development and build process for the frontend, ensuring fast reloads and optimized production builds.
@@ -29,6 +31,7 @@
   - Supabase: Might be used for user authentication and data storage for the dashboard, ensuring secure access and persistent data.
 
 - **Traffic Sniffer (Backend):**
+
   - Express: Serves as the backbone of the backend services, handling incoming requests, routing, and delivering responses.
 
   - CORS: Ensures that the backend services can securely handle requests from different origins, especially important for a tool like Sharkio that might be dealing with various APIs.
@@ -40,4 +43,3 @@
   - Winston: Provides logging capabilities, ensuring that all events, errors, and significant actions within the backend are properly recorded.
 
   - Zod: Validates and parses incoming data, ensuring that the backend processes only valid and expected data formats.
-
