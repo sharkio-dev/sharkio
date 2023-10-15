@@ -3,6 +3,7 @@ import { useLog } from "../../log";
 import { SnifferConfig } from "../../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 import { v4 } from "uuid";
+import { SnifferConfigSetup } from "./file-config.types";
 
 const log = useLog({
   dirname: __dirname,
@@ -19,11 +20,14 @@ export class DbConfig implements ConfigLoader {
   async getAllUsersConfig() {
     const sniffers = await this.prismaClient.sniffer.findMany({});
 
-    return sniffers.map((dbConfig) => ({
-      ...dbConfig,
-      downstreamUrl: dbConfig.downstream_url,
-      isStarted: dbConfig.is_started,
-    }));
+    return sniffers.map(
+      (dbConfig) =>
+        ({
+          ...dbConfig,
+          downstreamUrl: dbConfig.downstream_url,
+          isStarted: dbConfig.is_started,
+        }) as SnifferConfigSetup,
+    );
   }
 
   async getUserConfig(userId: string) {
@@ -31,11 +35,14 @@ export class DbConfig implements ConfigLoader {
       where: { user_id: userId },
     });
 
-    return sniffers.map((dbConfig) => ({
-      ...dbConfig,
-      downstreamUrl: dbConfig.downstream_url,
-      isStarted: dbConfig.is_started,
-    }));
+    return sniffers.map(
+      (dbConfig) =>
+        ({
+          ...dbConfig,
+          downstreamUrl: dbConfig.downstream_url,
+          isStarted: dbConfig.is_started,
+        }) as SnifferConfigSetup,
+    );
   }
 
   async update(

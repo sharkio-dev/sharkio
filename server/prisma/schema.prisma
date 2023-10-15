@@ -284,6 +284,18 @@ model collection {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model invocation {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  method     String?
+  body       Json?    @db.Json
+  headers    String?
+  params     String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model mock {
   method     String?   @db.VarChar
   endpoint   String?   @db.VarChar
@@ -301,42 +313,44 @@ model mock {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model sniffer {
-  name           String?   @db.VarChar
-  created_at     DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
-  port           Int?
-  downstream_url String?   @db.VarChar
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  is_started     Boolean?
-  user_id        String?   @db.Uuid
-  mock           mock[]
-
-  @@schema("public")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model invocation {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  method     String?
-  body       Json?    @db.Json
-  headers    String?
-  params     String?
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-
-  @@schema("public")
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model request {
-  id         String    @id
-  method     String?
-  path       String?
-  headers    String?
-  body       Json?     @db.Json
-  created_at DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  id               String             @id
+  method           String?
+  path             String?
+  headers          String?
+  body             Json?              @db.Json
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  sniffer_requests sniffer_requests[]
 
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model sniffer {
+  name             String?            @db.VarChar
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  port             Int?
+  downstream_url   String?            @db.VarChar
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  is_started       Boolean?
+  user_id          String?            @db.Uuid
+  mock             mock[]
+  sniffer_requests sniffer_requests[]
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model sniffer_requests {
+  sniffer_id String   @db.Uuid
+  request_id String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  request    request  @relation(fields: [request_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sniffer    sniffer  @relation(fields: [sniffer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([sniffer_id, request_id])
   @@schema("public")
 }
 

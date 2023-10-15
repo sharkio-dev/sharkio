@@ -14,7 +14,7 @@ export class RequestModel {
   upsertRequest(
     request: Request,
     service: SnifferConfig["id"],
-    userId: string
+    userId: string,
   ) {
     const { method, path } = request;
     const key = new RequestKey(method, path);
@@ -38,6 +38,5 @@ export class RequestModel {
         path,
       },
     });
-
   }
 }

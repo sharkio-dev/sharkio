@@ -33,11 +33,11 @@ export class InterceptedRequests {
     url: string,
     method: string,
     invocation: Invocation,
-    service: string
+    service: string,
   ) {
     const interceptedRequest = this.ensureRequest(
       new RequestKey(method, url),
-      service
+      service,
     );
     return interceptedRequest.execute(invocation);
   }

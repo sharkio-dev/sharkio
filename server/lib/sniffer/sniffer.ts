@@ -101,7 +101,7 @@ export class Sniffer {
       snifferUrl,
       method,
       invocation,
-      this.config.name
+      this.config.name,
     );
   }
 
