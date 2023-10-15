@@ -10,8 +10,8 @@ import { ICollectionPersistency } from "./collection-storage.interface";
 export class CollectionManager {
   private collections: Map<Collection["id"], Collection>;
 
-  constructor(private readonly collectionPersistency: ICollectionPersistency) {
-    this.collections = this.collectionPersistency.load();
+  constructor() {
+    this.collections = new Map();
   }
 
   get(id: Collection["id"]) {
@@ -31,7 +31,6 @@ export class CollectionManager {
     };
 
     this.collections.set(newCollection.id, newCollection);
-    await this.collectionPersistency.persist(this.collections);
   }
 
   async update(collectionUpdateBody: UpdateCollectionBody) {
@@ -46,12 +45,10 @@ export class CollectionManager {
     };
 
     this.collections.set(collectionUpdateBody.id, newCollection);
-    await this.collectionPersistency.persist(this.collections);
   }
 
   async remove(id: Collection["id"]) {
     this.collections.delete(id);
-    await this.collectionPersistency.persist(this.collections);
   }
 
   async addRequest(id: Collection["id"], request: InterceptedRequest) {
@@ -61,6 +58,5 @@ export class CollectionManager {
     }
     collection?.requests?.push(request);
     this.collections.set(id, collection);
-    await this.collectionPersistency.persist(this.collections);
   }
 }

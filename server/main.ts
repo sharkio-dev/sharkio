@@ -1,6 +1,5 @@
 require("dotenv/config");
 import { AuthController } from "./lib/auth/auth-controller";
-import { CollectionFilePersistency } from "./lib/collection-manager/collection-file-persistency";
 import { CollectionManager } from "./lib/collection-manager/collection-manager";
 import { CollectionManagerController } from "./lib/collection-manager/collection-manager-controller";
 import { DbConfig } from "./lib/model/setup-config/db-config";
@@ -14,12 +13,9 @@ export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const collectionFilePersistency = new CollectionFilePersistency(
-    "./collections.json",
-  );
   const dbConfig = new DbConfig();
   const snifferManager = new SnifferManager(dbConfig);
-  const collectionManager = new CollectionManager(collectionFilePersistency);
+  const collectionManager = new CollectionManager();
   const collectionManagerController = new CollectionManagerController(
     collectionManager,
   );
