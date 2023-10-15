@@ -13,6 +13,7 @@ import { InterceptedRequests } from "../intercepted-requests/intercepted-request
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
 import { useLog } from "../log";
+import cors from "cors";
 
 const log = useLog({
   dirname: __dirname,
@@ -77,6 +78,7 @@ export class Sniffer {
 
   setup() {
     this.app.use(json());
+    this.app.use(cors({ origin: "*" }));
     this.app.use(this.requestInterceptor.bind(this));
     this.app.use(this.mockMiddleware.mock.bind(this));
     this.app.use(this.proxyMiddleware);
