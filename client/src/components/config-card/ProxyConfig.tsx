@@ -2,11 +2,11 @@ import { TextField, Typography } from "@mui/material";
 import React from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
-import styles from "./config-card.module.scss";
-import { StartProxyButton } from "./StartProxyButton";
 import { DeleteProxyButton } from "./DeleteProxyButton";
-import { SnifferConfigRow } from "./config-card";
 import { EditProxyButton } from "./EditProxyButton";
+import { StartProxyButton } from "./StartProxyButton";
+import { SnifferConfigRow } from "./config-card";
+import styles from "./config-card.module.scss";
 
 type ProxyConfigProps = {
   sniffer: SnifferConfigRow;
@@ -112,7 +112,7 @@ export const ProxyConfig = ({
                   sniffer.config.downstreamUrl === undefined
                 : sniffer.isStarted === true
             }
-            canEdit={sniffer.isNew === false}
+            isEditing={sniffer.isNew === false && !sniffer.isEditing}
           />
 
           <StartProxyButton

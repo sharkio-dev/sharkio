@@ -1,21 +1,20 @@
 import { Edit, Save } from "@mui/icons-material";
-import { Button, Tooltip } from "@mui/material";
-import React from "react";
+import { Tooltip } from "@mui/material";
 
 export const EditProxyButton = ({
   onEdit,
   onSave,
   disabled,
-  canEdit,
+  isEditing,
 }: {
   onEdit: () => void;
   onSave: () => void;
   disabled: boolean;
-  canEdit: boolean;
+  isEditing: boolean;
 }) => {
   return (
     <>
-      {canEdit && (
+      {isEditing && (
         <Tooltip title={"Edit Proxy"}>
           <button
             onClick={onEdit}
@@ -26,7 +25,7 @@ export const EditProxyButton = ({
           </button>
         </Tooltip>
       )}
-      {!canEdit && (
+      {!isEditing && (
         <Tooltip title="Save Proxy">
           <button
             disabled={disabled}

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "4000",
+    "name": "space-server",
+    "downstreamUrl": "http://localhost:3001",
+    "port": 4000,
+    "isStarted": false
+  }
+]
