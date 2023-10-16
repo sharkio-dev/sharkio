@@ -27,7 +27,7 @@ const MocksPage: React.FC = () => {
       showSnackbar("You are not logged in", "error");
       return;
     }
-    getAllMocks(userId).then((res) => setMocks(res.data));
+    getAllMocks().then((res) => setMocks(res.data));
   };
 
   useEffect(() => {

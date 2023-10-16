@@ -11,7 +11,6 @@ import { setAuthCookie } from "../../api/api";
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState<Session | null>();
   const { signIn } = useAuthStore();
-  const disableSupabase = import.meta.env.VITE_DISABLE_SUPABASE;
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {

@@ -108,7 +108,7 @@ export const Navbar: React.FC = () => {
           {isLoggedOut && (
             <>
               <a
-                class="inline-flex items-center justify-center !leading-none text-center whitespace-nowrap rounded transition-[colors, opacity] duration-200 outline-none uppercase font-medium h-10 px-5 text-xs bg-transparent text-white border border-gray-5 hover:bg-gray-4 hover:border-gray-4 group pl-3"
+                className="inline-flex items-center justify-center !leading-none text-center whitespace-nowrap rounded transition-[colors, opacity] duration-200 outline-none uppercase font-medium h-10 px-5 text-xs bg-transparent text-white border border-gray-5 hover:bg-gray-4 hover:border-gray-4 group pl-3"
                 href="https://github.com/sharkio-dev/sharkio"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 26 26"
-                  class="mr-2 h-[26px] w-[26px]"
+                  className="mr-2 h-[26px] w-[26px]"
                 >
                   <path
                     fill="#fff"
@@ -128,7 +128,7 @@ export const Navbar: React.FC = () => {
                 </svg>
                 <span>Star us</span>
                 <span
-                  class="flex items-center before:mx-2.5 before:h-[18px] before:w-px before:bg-gray-4 before:transition-colors before:duration-200 group-hover:before:bg-gray-5"
+                  className="flex items-center before:mx-2.5 before:h-[18px] before:w-px before:bg-gray-4 before:transition-colors before:duration-200 group-hover:before:bg-gray-5"
                   aria-label="32 stars on Github"
                 >
                   {starCount ? starCount : null}

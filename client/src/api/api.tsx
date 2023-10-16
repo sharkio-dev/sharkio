@@ -28,7 +28,7 @@ export const createSniffer = (userId: string, config: SnifferCreateConfig) => {
   });
 };
 
-export const getSniffers = (userId: string) => {
+export const getSniffers = () => {
   return axios.get<Sniffer[]>("/sharkio/sniffer");
 };
 
@@ -84,7 +84,7 @@ export const executeRequest = (
   );
 };
 
-export const getAllMocks = (userId: string) => {
+export const getAllMocks = () => {
   return axios.get("/sharkio/sniffer/action/getMocks");
 };
 
