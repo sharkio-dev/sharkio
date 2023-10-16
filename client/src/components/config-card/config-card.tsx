@@ -1,27 +1,7 @@
-import {
-  Add,
-  Delete,
-  Edit,
-  FileDownload,
-  FileUpload,
-  Info,
-  PlayArrow,
-  Save,
-  Stop,
-} from "@mui/icons-material";
-import {
-  Button,
-  Card,
-  CircularProgress,
-  Paper,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Button, Card, Paper, Typography } from "@mui/material";
 import c from "classnames";
-import { saveAs } from "file-saver";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { generatePath, useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   createSniffer,
   deleteSniffer,
@@ -30,10 +10,10 @@ import {
   startSniffer,
   stopSniffer,
 } from "../../api/api";
-import { routes } from "../../constants/routes";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
+import { ProxyConfig } from "./ProxyConfig";
 
 export type SnifferConfigRow = {
   isNew: boolean;
@@ -48,11 +28,6 @@ export type IConfigCardProps = {
 };
 
 export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
-  const [stopLoading, setStopLoading] = useState<boolean>(false);
-  const [startLoading, setStartLoading] = useState<boolean>(false);
-  const [saveLoading, setSaveLoading] = useState<boolean>(false);
-  const fileUploadInputRef = useRef<HTMLInputElement>(null);
-
   const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
     {
       config: {
@@ -110,26 +85,20 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   };
 
   const handleStopClicked = async (port: number) => {
-    setStopLoading(true);
     await stopSniffer(port)
       .then(() => loadData())
       .catch(() => {
         showSnackbar("Failed to stop sniffer", "error");
-      })
-      .finally(() => setStopLoading(false));
+      });
   };
 
   const handleStartClicked = async (port: number) => {
-    setStartLoading(true);
     await startSniffer(port)
       .then(() => {
         loadData();
       })
       .catch(() => {
         showSnackbar("Failed to start sniffer", "error");
-      })
-      .finally(() => {
-        setStartLoading(false);
       });
   };
 
@@ -167,7 +136,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       id: config.port.toString(),
     };
 
-    setSaveLoading(true);
     await createSniffer(saveConfig)
       .then(() => {
         loadData();
@@ -175,89 +143,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       })
       .catch(() => {
         showSnackbar("Failed to create proxy", "error");
-      })
-      .finally(() => {
-        setSaveLoading(false);
       });
-  };
-
-  const handleImportClicked = () => {
-    fileUploadInputRef.current?.click();
-  };
-
-  const handleExportClicked = () => {
-    const file = new Blob(
-      [
-        JSON.stringify(
-          sniffers.map((sniffer) => sniffer.config),
-          null,
-          2,
-        ),
-      ],
-      { type: "text/plain;charset=utf-8" },
-    );
-    saveAs(file, "config.json");
-  };
-
-  const handlePortChanged = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number,
-  ) => {
-    setSniffers((prev) => {
-      const sniffers = [...prev];
-      sniffers[index].config.port = +e.target.value;
-
-      return sniffers;
-    });
-  };
-
-  const handleUrlChanged = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number,
-  ) => {
-    setSniffers((prev) => {
-      const sniffers = [...prev];
-      sniffers[index].config.downstreamUrl = e.target.value;
-
-      return sniffers;
-    });
-  };
-
-  const handleNameChanged = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    index: number,
-  ) => {
-    setSniffers((prev) => {
-      const sniffers = [...prev];
-      sniffers[index].config.name = e.target.value;
-
-      return sniffers;
-    });
-  };
-
-  const handleConfigUploaded = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.files &&
-      e.target.files[0]
-        .text()
-        .then((res) => {
-          const config = JSON.parse(res);
-          setSniffers(
-            config.map((sniffer: any) => {
-              const configRow: SnifferConfigRow = {
-                config: sniffer,
-                isNew: true,
-                isStarted: true,
-                isEditing: false,
-                isCollapsed: false,
-              };
-              return configRow;
-            }),
-          );
-          showSnackbar("Successfully set the config file", "info");
-        })
-        .catch(() => {
-          showSnackbar("Failed to import config", "error");
-        });
   };
 
   const handleEditClicked = async (
@@ -288,101 +174,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     }
   };
 
-  const handleShowFieldsClicked = (index: number) => {
-    setSniffers((prevSniffers: SnifferConfigRow[]) => {
-      return prevSniffers.map((sniffer: SnifferConfigRow, idx: number) => {
-        if (index === idx) {
-          sniffer.isCollapsed = !sniffer.isCollapsed;
-        }
-        return sniffer;
-      });
-    });
-  };
-
-  const navigate = useNavigate();
-  const snifferConfigForm = (sniffer: SnifferConfigRow, index: number) => {
-    const navigateToSniffer = () => {
-      navigate(
-        generatePath(routes.SERVICE, {
-          port: sniffer.config.port,
-        }),
-      );
-    };
-    return (
-      <>
-        <div className={styles.snifferTitle}>
-          <Typography variant="body1" onClick={navigateToSniffer}>
-            {sniffer.config.name == "" ? "No Name" : sniffer.config.name}
-          </Typography>
-        </div>
-        <div className="flex flex-col gap-3">
-          <TextField
-            label={"Port"}
-            placeholder="1234"
-            defaultValue={sniffer.config.port}
-            disabled={sniffer.isEditing === false}
-            value={sniffer.config.port || ""}
-            onChange={(
-              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-            ) => {
-              handlePortChanged(e, index);
-            }}
-          />
-          <TextField
-            label={"Downstream Url"}
-            placeholder="http://example.com"
-            defaultValue={sniffer.config.downstreamUrl}
-            value={sniffer.config.downstreamUrl || ""}
-            disabled={sniffer.isEditing === false}
-            onChange={(
-              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-            ) => {
-              handleUrlChanged(e, index);
-            }}
-          />
-          <TextField
-            label={"Name"}
-            placeholder="name"
-            defaultValue={sniffer.config.name}
-            value={sniffer.config.name || ""}
-            disabled={sniffer.isEditing === false}
-            onChange={(
-              e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-            ) => {
-              handleNameChanged(e, index);
-            }}
-          />
-        </div>
-      </>
-    );
-  };
-
   return (
     <>
       <Card className={c(className, styles.container)}>
         <div className={styles.titleBar}>
           <Typography variant="h6" gutterBottom>
-            Config
+            Create Your Proxy
           </Typography>
-          <div>
-            <Tooltip title={"export"}>
-              <Button size="small" onClick={handleExportClicked}>
-                <FileDownload />
-              </Button>
-            </Tooltip>
-            <Tooltip title={"import"}>
-              <Button onClick={handleImportClicked}>
-                <FileUpload />
-                <input
-                  ref={fileUploadInputRef}
-                  type="file"
-                  accept="application/JSON"
-                  hidden
-                  onChange={handleConfigUploaded}
-                />
-              </Button>
-            </Tooltip>
-          </div>
         </div>
         <div
           className={"grid sm:grid-cols1 md:grid-cols-2 lg:grid-cols-4 gap-3"}
@@ -391,111 +189,34 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             return (
               <Paper elevation={10} className="p-3" key={`config-row-${index}`}>
                 <div key={`config-row-${index}`} className={styles.inputs}>
-                  {snifferConfigForm(sniffer, index)}
-                  {sniffer.isNew === false && (
-                    <>
-                      <Tooltip title={"Start sniffing requests"}>
-                        <Button
-                          size="small"
-                          color="success"
-                          onClick={() =>
-                            sniffer.config.port !== undefined &&
-                            handleStartClicked(sniffer.config.port)
-                          }
-                          disabled={
-                            sniffer.isStarted === true ||
-                            sniffer.isEditing === true
-                          }
-                        >
-                          {startLoading === true ? (
-                            <CircularProgress />
-                          ) : (
-                            <PlayArrow />
-                          )}
-                        </Button>
-                      </Tooltip>
-                      <Tooltip title={"Stop sniffing requests"}>
-                        <Button
-                          size="large"
-                          color="warning"
-                          disabled={sniffer.isStarted === false}
-                          onClick={() =>
-                            sniffer.config.port !== undefined &&
-                            handleStopClicked(sniffer.config.port)
-                          }
-                        >
-                          {stopLoading === true ? (
-                            <CircularProgress />
-                          ) : (
-                            <Stop></Stop>
-                          )}
-                        </Button>
-                      </Tooltip>
-                      <Tooltip
-                        title={
-                          sniffer.isEditing
-                            ? "Save changes"
-                            : "Edit the sniffer"
-                        }
-                      >
-                        <Button
-                          color="info"
-                          onClick={() => {
-                            handleEditClicked(
-                              index,
-                              sniffer.config as SnifferCreateConfig,
-                            );
-                          }}
-                          disabled={sniffer.isStarted === true}
-                        >
-                          {sniffer.isEditing ? <Save /> : <Edit />}
-                        </Button>
-                      </Tooltip>
-                    </>
-                  )}
-                  {sniffer.isNew === true && (
-                    <>
-                      <Tooltip title="Save new sniffer">
-                        <Button
-                          color="info"
-                          disabled={
-                            sniffer.config.port === undefined ||
-                            sniffer.config.downstreamUrl === undefined
-                          }
-                          onClick={() => {
-                            handleSaveClicked(sniffer.config);
-                          }}
-                        >
-                          {saveLoading === true ? (
-                            <CircularProgress />
-                          ) : (
-                            <Save />
-                          )}
-                        </Button>
-                      </Tooltip>
-                    </>
-                  )}
-                  <Tooltip title="Remove the sniffer">
-                    <Button
-                      color="error"
-                      onClick={() => {
-                        handleDeleteClicked(index);
-                      }}
-                      disabled={sniffer.isStarted === true}
-                    >
-                      <Delete></Delete>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip title="Show fields">
-                    <Button
-                      color="info"
-                      onClick={() => {
-                        handleShowFieldsClicked(index);
-                      }}
-                    >
-                      {!sniffer.isCollapsed ? <Info /> : <Info />}
-                    </Button>
-                  </Tooltip>
+                  <ProxyConfig
+                    sniffer={sniffer}
+                    handleSnifferChanged={(s) => {
+                      const newSniffers = [...sniffers];
+                      newSniffers[index] = s;
+                      setSniffers(newSniffers);
+                    }}
+                    handleDeleteClicked={() => {
+                      handleDeleteClicked(index);
+                    }}
+                    onStart={() =>
+                      sniffer.config.port !== undefined &&
+                      handleStartClicked(sniffer.config.port)
+                    }
+                    onStop={() =>
+                      sniffer.config.port !== undefined &&
+                      handleStopClicked(sniffer.config.port)
+                    }
+                    onEdit={() => {
+                      handleEditClicked(
+                        index,
+                        sniffer.config as SnifferCreateConfig,
+                      );
+                    }}
+                    onSave={() => {
+                      handleSaveClicked(sniffer.config);
+                    }}
+                  />
                 </div>
               </Paper>
             );
