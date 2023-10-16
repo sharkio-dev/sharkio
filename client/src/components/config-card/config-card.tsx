@@ -1,4 +1,3 @@
-import React, { useCallback } from "react";
 import {
   Add,
   Delete,
@@ -10,13 +9,10 @@ import {
   Save,
   Stop,
 } from "@mui/icons-material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
   Button,
   Card,
   CircularProgress,
-  Collapse,
   Paper,
   TextField,
   Tooltip,
@@ -24,7 +20,8 @@ import {
 } from "@mui/material";
 import c from "classnames";
 import { saveAs } from "file-saver";
-import { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { generatePath, useNavigate } from "react-router-dom";
 import {
   createSniffer,
   deleteSniffer,
@@ -33,11 +30,10 @@ import {
   startSniffer,
   stopSniffer,
 } from "../../api/api";
+import { routes } from "../../constants/routes";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
-import { generatePath, useNavigate } from "react-router-dom";
-import { routes } from "../../constants/routes";
 
 export type SnifferConfigRow = {
   isNew: boolean;
