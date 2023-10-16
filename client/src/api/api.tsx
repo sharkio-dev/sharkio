@@ -7,8 +7,12 @@ import {
   SnifferCreateConfig,
 } from "../types/types";
 
+const serverUrl = import.meta.env.VITE_SERVER_URL ?? "";
+
+console.log(import.meta.env.VITE_SERVER_URL);
+console.log(import.meta.env);
 export const createSniffer = (config: SnifferCreateConfig) => {
-  return axios.post("/sharkio/sniffer", JSON.stringify(config), {
+  return axios.post(serverUrl + "/sharkio/sniffer", JSON.stringify(config), {
     headers: {
       "Content-Type": "application/json",
     },
@@ -16,22 +20,22 @@ export const createSniffer = (config: SnifferCreateConfig) => {
 };
 
 export const getSniffers = () => {
-  return axios.get<Sniffer[]>("/sharkio/sniffer");
+  return axios.get<Sniffer[]>(serverUrl + "/sharkio/sniffer");
 };
 
 export const getSniffer = (port: number) => {
-  return axios.get(`/sharkio/sniffer/${port}`);
+  return axios.get(serverUrl + `/sharkio/sniffer/${port}`);
 };
 
 export const stopSniffer = (port: number) => {
-  return axios.post(`/sharkio/sniffer/${port}/actions/stop`);
+  return axios.post(serverUrl + `/sharkio/sniffer/${port}/actions/stop`);
 };
 
 export const startSniffer = async (port: number) => {
-  return await axios.post(`/sharkio/sniffer/${port}/actions/start`);
+  return await axios.post(serverUrl + `/sharkio/sniffer/${port}/actions/start`);
 };
 export const deleteSniffer = async (port: number) => {
-  return await axios.delete(`/sharkio/sniffer/${port}`);
+  return await axios.delete(serverUrl + `/sharkio/sniffer/${port}`);
 };
 export const editSniffer = async (newConfig: SnifferCreateConfig) => {
   return axios.put(
