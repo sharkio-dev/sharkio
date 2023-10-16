@@ -39,7 +39,7 @@ export const deleteSniffer = async (port: number) => {
 };
 export const editSniffer = async (newConfig: SnifferCreateConfig) => {
   return axios.put(
-    `/sharkio/sniffer/${newConfig.id}`,
+    serverUrl + `/sharkio/sniffer/${newConfig.id}`,
     JSON.stringify(newConfig),
     {
       headers: {
@@ -50,7 +50,7 @@ export const editSniffer = async (newConfig: SnifferCreateConfig) => {
 };
 
 export const getRequests = () => {
-  return axios.get("/sharkio/sniffer/invocation");
+  return axios.get(serverUrl + "/sharkio/sniffer/invocation");
 };
 
 export const executeRequest = (
@@ -60,7 +60,7 @@ export const executeRequest = (
   invocation: Invocation,
 ) => {
   return axios.post(
-    `/sharkio/sniffer/${port}/actions/execute`,
+    serverUrl + `/sharkio/sniffer/${port}/actions/execute`,
     JSON.stringify({ url, method, invocation }),
     {
       headers: {
@@ -71,7 +71,7 @@ export const executeRequest = (
 };
 
 export const getAllMocks = () => {
-  return axios.get("/sharkio/sniffer/action/getMocks");
+  return axios.get(serverUrl + "/sharkio/sniffer/action/getMocks");
 };
 
 export const createMock = (
@@ -82,7 +82,7 @@ export const createMock = (
   data: any,
 ) => {
   return axios.post(
-    `/sharkio/sniffer/${port}/mock`,
+    serverUrl + `/sharkio/sniffer/${port}/mock`,
     JSON.stringify({ method, endpoint, data, status }),
     {
       headers: {
@@ -101,7 +101,7 @@ export const editMock = (
   data: any,
 ) => {
   return axios.put(
-    `/sharkio/sniffer/${port}/mock`,
+    serverUrl + `/sharkio/sniffer/${port}/mock`,
     JSON.stringify({ mockId: id, method, endpoint, data, status }),
     {
       headers: {
@@ -112,7 +112,7 @@ export const editMock = (
 };
 
 export const deleteMock = (id: string, port: number) => {
-  return axios.delete(`/sharkio/sniffer/${port}/mock`, {
+  return axios.delete(serverUrl + `/sharkio/sniffer/${port}/mock`, {
     data: { mockId: id },
     headers: {
       "Content-Type": "application/json",
@@ -126,7 +126,7 @@ export const activateMock = (
   endpoint: string,
 ) => {
   return axios.post(
-    `/sharkio/sniffer/${port}/mock/actions/activate`,
+    serverUrl + `/sharkio/sniffer/${port}/mock/actions/activate`,
     JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
@@ -142,7 +142,7 @@ export const deactivateMock = (
   endpoint: string,
 ) => {
   return axios.post(
-    `/sharkio/sniffer/${port}/mock/actions/deactivate`,
+    serverUrl + `/sharkio/sniffer/${port}/mock/actions/deactivate`,
     JSON.stringify({ mockId: `${method} ${endpoint}` }),
     {
       headers: {
@@ -153,15 +153,19 @@ export const deactivateMock = (
 };
 
 export const getCollections = () => {
-  return axios.get("/sharkio/collection");
+  return axios.get(serverUrl + "/sharkio/collection");
 };
 
 export const createCollection = (name: string) => {
-  return axios.post("/sharkio/collection", JSON.stringify({ name }), {
-    headers: {
-      "Content-Type": "application/json",
+  return axios.post(
+    serverUrl + "/sharkio/collection",
+    JSON.stringify({ name }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 };
 
 export const saveRequestToCollection = (
@@ -169,7 +173,7 @@ export const saveRequestToCollection = (
   request: InterceptedRequest,
 ) => {
   return axios.post(
-    `/sharkio/collection/${id}/request`,
+    serverUrl + `/sharkio/collection/${id}/request`,
     JSON.stringify({ request }),
     {
       headers: {
