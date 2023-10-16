@@ -2,7 +2,7 @@ import { json } from "body-parser";
 import express, { Express } from "express";
 import * as http from "http";
 import { useLog } from "../log";
-
+import cors from "cors";
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
@@ -19,6 +19,7 @@ export class SnifferManagerServer {
 
   constructor(controllers: IController[]) {
     this.app = express();
+    this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     controllers.forEach((controller) => {
       controller.setup(this.app);
