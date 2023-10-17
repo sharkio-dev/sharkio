@@ -41,14 +41,17 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       isCollapsed: true,
     },
   ]);
+  const [isLoadingStarted, setIsLoadingStarted] = useState<boolean>(false);
+  const [isLoadingEdit, setIsLoadingEdit] = useState<boolean>(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(() => {
     if (loading) return;
     setLoading(true);
-    await getSniffers()
+    return getSniffers()
       .then((res) => {
         const configs: SnifferConfigRow[] = res.data.map((config) => ({
           ...config,
@@ -84,22 +87,26 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     });
   };
 
-  const handleStopClicked = async (port: number) => {
-    await stopSniffer(port)
+  const handleStopClicked = (port: number) => {
+    setIsLoadingStarted(true);
+    return stopSniffer(port)
       .then(() => loadData())
       .catch(() => {
         showSnackbar("Failed to stop sniffer", "error");
-      });
+      })
+      .finally(() => setIsLoadingStarted(false));
   };
 
-  const handleStartClicked = async (port: number) => {
-    await startSniffer(port)
+  const handleStartClicked = (port: number) => {
+    setIsLoadingStarted(true);
+    return startSniffer(port)
       .then(() => {
         loadData();
       })
       .catch(() => {
         showSnackbar("Failed to start sniffer", "error");
-      });
+      })
+      .finally(() => setIsLoadingStarted(false));
   };
 
   const handleDeleteClicked = (index: number) => {
@@ -110,6 +117,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         return configs;
       });
     } else {
+      setIsLoadingDelete(true);
       const x = sniffers[index].config.port;
 
       if (x !== undefined) {
@@ -119,6 +127,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
             configs.splice(index, 1);
             return configs;
           });
+          setIsLoadingDelete(false);
           showSnackbar("Removed sniffer successfully", "info");
         });
       }
@@ -135,7 +144,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       downstreamUrl: config.downstreamUrl,
       id: config.port.toString(),
     };
-
+    setIsLoadingEdit(true);
     await createSniffer(saveConfig)
       .then(() => {
         loadData();
@@ -143,7 +152,8 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       })
       .catch(() => {
         showSnackbar("Failed to create proxy", "error");
-      });
+      })
+      .finally(() => setIsLoadingEdit(false));
   };
 
   const handleEditClicked = async (
@@ -161,7 +171,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
       showSnackbar("Sniffer in edit mode", "info");
     } else {
-      setLoading(true);
+      setIsLoadingEdit(true);
       await editSniffer(newConfig)
         .then(() => {
           loadData();
@@ -170,7 +180,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
         .catch(() => {
           showSnackbar("Failed to edit config", "error");
         })
-        .finally(() => setLoading(false));
+        .finally(() => setIsLoadingEdit(false));
     }
   };
 
@@ -216,6 +226,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                     onSave={() => {
                       handleSaveClicked(sniffer.config);
                     }}
+                    isLoadingStarted={isLoadingStarted}
+                    isLoadingEdit={isLoadingEdit}
+                    isLoadingDelete={isLoadingDelete}
                   />
                 </div>
               </Paper>

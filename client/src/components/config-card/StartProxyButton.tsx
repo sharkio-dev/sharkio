@@ -1,64 +1,48 @@
 import { PlayArrow, Stop } from "@mui/icons-material";
-import { CircularProgress, Tooltip } from "@mui/material";
-import { useState } from "react";
+import { ConfigButton } from "./ConfigButton";
 
 export const StartProxyButton = ({
   onStart,
   disabled,
   onStop,
+  isStarted,
+  isLoading,
 }: {
   onStart: () => void;
   disabled: boolean;
   onStop: () => void;
+  isStarted: boolean;
+  isLoading?: boolean;
 }) => {
-  const [isStarted, setIsStarted] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const onStartClick = async () => {
-    setIsLoading(true);
     onStart();
-    setIsStarted(true);
-    setIsLoading(false);
   };
 
   const onStopClick = async () => {
-    setIsLoading(true);
     onStop();
-    setIsStarted(false);
-    setIsLoading(false);
   };
 
   return (
     <>
       {!isStarted && (
-        <Tooltip title={"Start sniffing requests"}>
-          <button
-            onClick={onStartClick}
-            disabled={disabled}
-            className="px-1 cursor-pointer"
-          >
-            {isLoading ? (
-              <CircularProgress />
-            ) : (
-              <PlayArrow color={disabled ? "disabled" : "success"} />
-            )}
-          </button>
-        </Tooltip>
+        <ConfigButton
+          tooltip={"Start sniffing requests"}
+          onClick={onStartClick}
+          disabled={disabled}
+          isLoading={isLoading}
+        >
+          <PlayArrow color={disabled ? "disabled" : "success"} />
+        </ConfigButton>
       )}
       {isStarted && (
-        <Tooltip title={"Stop sniffing requests"}>
-          <button
-            disabled={disabled}
-            onClick={onStopClick}
-            className="px-1 cursor-pointer"
-          >
-            {isLoading ? (
-              <CircularProgress />
-            ) : (
-              <Stop color={disabled ? "disabled" : "warning"} />
-            )}
-          </button>
-        </Tooltip>
+        <ConfigButton
+          tooltip={"Stop sniffing requests"}
+          onClick={onStopClick}
+          disabled={disabled}
+          isLoading={isLoading}
+        >
+          <Stop color={disabled ? "disabled" : "error"} />
+        </ConfigButton>
       )}
     </>
   );

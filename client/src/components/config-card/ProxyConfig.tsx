@@ -2,11 +2,12 @@ import { TextField, Typography } from "@mui/material";
 import React from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
-import { DeleteProxyButton } from "./DeleteProxyButton";
 import { EditProxyButton } from "./EditProxyButton";
 import { StartProxyButton } from "./StartProxyButton";
 import { SnifferConfigRow } from "./config-card";
 import styles from "./config-card.module.scss";
+import { ConfigButton } from "./ConfigButton";
+import { Delete } from "@mui/icons-material";
 
 type ProxyConfigProps = {
   sniffer: SnifferConfigRow;
@@ -16,6 +17,9 @@ type ProxyConfigProps = {
   onStop: () => void;
   onEdit: () => void;
   onSave: () => void;
+  isLoadingStarted?: boolean;
+  isLoadingEdit?: boolean;
+  isLoadingDelete?: boolean;
 };
 export const ProxyConfig = ({
   sniffer,
@@ -25,6 +29,9 @@ export const ProxyConfig = ({
   onStop,
   onEdit,
   onSave,
+  isLoadingStarted,
+  isLoadingEdit,
+  isLoadingDelete,
 }: ProxyConfigProps) => {
   const navigate = useNavigate();
 
@@ -48,7 +55,6 @@ export const ProxyConfig = ({
   const handleUrlChanged = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    console.log(e.target.value);
     handleSnifferChanged({
       ...sniffer,
       config: { ...sniffer.config, downstreamUrl: e.target.value },
@@ -63,6 +69,7 @@ export const ProxyConfig = ({
       config: { ...sniffer.config, name: e.target.value },
     });
   };
+  console.log(sniffer);
 
   return (
     <>
@@ -98,27 +105,34 @@ export const ProxyConfig = ({
         />
       </div>
       <div className="flex flex-row-reverse justify-between">
-        <DeleteProxyButton
+        <ConfigButton
+          tooltip={"Remove the sniffer"}
           onClick={handleDeleteClicked}
           disabled={sniffer.isStarted === true}
-        />
+          isLoading={isLoadingDelete}
+        >
+          <Delete color={sniffer.isStarted === true ? "disabled" : "error"} />
+        </ConfigButton>
         <div className="flex flex-row-reverse justify-between">
           <EditProxyButton
             onEdit={onEdit}
-            onSave={onSave}
+            onSave={!sniffer.isNew ? onEdit : onSave}
             disabled={
               sniffer.isNew
                 ? sniffer.config.port === undefined ||
                   sniffer.config.downstreamUrl === undefined
                 : sniffer.isStarted === true
             }
-            isEditing={sniffer.isNew === false && !sniffer.isEditing}
+            isEditing={!sniffer.isNew && sniffer.isEditing}
+            isLoading={isLoadingEdit}
           />
 
           <StartProxyButton
             onStart={onStart}
             onStop={onStop}
             disabled={sniffer.isEditing === true}
+            isStarted={sniffer.isStarted === true}
+            isLoading={isLoadingStarted}
           />
         </div>
       </div>
