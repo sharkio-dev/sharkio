@@ -4,6 +4,8 @@ import * as http from "http";
 import { useLog } from "../log";
 import { supabaseClient } from "../auth/supabaseClient";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
@@ -22,6 +24,7 @@ export class SnifferManagerServer {
 
   constructor(controllers: IController[]) {
     this.app = express();
+    this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());
     this.app.use(this.authMiddleware);

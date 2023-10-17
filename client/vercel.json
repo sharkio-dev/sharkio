@@ -1,0 +1,8 @@
+{
+  "redirects": [
+    {
+      "source": "/sharkio",
+      "destination": "http://sharkio.dev:5012"
+    }
+  ]
+}
