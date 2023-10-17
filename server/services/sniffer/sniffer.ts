@@ -39,8 +39,9 @@ export class Sniffer {
   private isStarted: boolean;
   private mockManager: MockManager;
   private mockMiddleware: MockMiddleware;
+  private userId: string;
 
-  constructor(config: SnifferConfig) {
+  constructor(config: SnifferConfig, userId: string) {
     this.config = config;
     this.app = express();
     this.id = config.id;
@@ -49,6 +50,7 @@ export class Sniffer {
     this.requestModel = new RequestModel();
     this.interceptedRequests = new InterceptedRequests();
     this.mockMiddleware = new MockMiddleware(this.mockManager);
+    this.userId = userId;
 
     this.proxyMiddleware = createProxyMiddleware({
       target: config.downstreamUrl,
@@ -74,7 +76,7 @@ export class Sniffer {
      */
     this.interceptedRequests.interceptRequest(req, this.config.id);
     // TODO fix userId
-    await this.requestModel.upsertRequest(req, this.config.id, "unkown");
+    await this.requestModel.upsertRequest(req, this.config.id, this.userId);
     next();
   }
 

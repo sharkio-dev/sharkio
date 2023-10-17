@@ -16,7 +16,7 @@ export class SnifferManager {
       throw new Error("Sniffer with the same port already exists");
     }
 
-    const newSniffer = new Sniffer(snifferConfig);
+    const newSniffer = new Sniffer(snifferConfig, userId);
 
     this.sniffers.push(newSniffer);
     await this.configPersistency.addSniffer(userId, snifferConfig);
