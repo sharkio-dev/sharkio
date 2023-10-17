@@ -5,7 +5,6 @@ import {
   CreateCollectionBody,
   UpdateCollectionBody,
 } from "./collection.types";
-import { ICollectionPersistency } from "./collection-storage.interface";
 
 export class CollectionManager {
   private collections: Map<Collection["id"], Collection>;

@@ -1,4 +1,3 @@
-import { Invocation } from "../../types";
 import { InterceptedRequest } from "../intercepted-request";
 
 export type CreateCollectionBody = {

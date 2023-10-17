@@ -1,10 +1,11 @@
 import { Express, Request, Response, Router } from "express";
-import { Sniffer } from "../sniffer/sniffer";
-import { SnifferManager } from "./sniffer-manager";
+
 import { z } from "zod";
-import { requestValidator } from "../request-validator";
-import { portValidator } from "../request-validator/general-validators";
-import { useLog } from "../log";
+import { useLog } from "../lib/log";
+import { requestValidator } from "../lib/request-validator/request-validator";
+import { SnifferManager } from "../services/sniffer-manager/sniffer-manager";
+import { Sniffer } from "../lib/sniffer/sniffer";
+import { portValidator } from "../lib/request-validator/general-validators";
 
 const log = useLog({
   dirname: __dirname,
@@ -410,7 +411,7 @@ export class SnifferManagerController {
 
           if (sniffer !== undefined) {
             log.info(req.body);
-            await sniffer.execute(url, method, invocation).catch((e) =>
+            await sniffer.execute(url, method, invocation).catch((e: Error) =>
               log.error("Error while executing", {
                 method: method,
                 path: `${this.baseUrl}/:id/actions/execute`,

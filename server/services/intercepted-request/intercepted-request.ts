@@ -1,10 +1,14 @@
 import axios from "axios";
 import { Request } from "express";
 import { v4 } from "uuid";
-import { Invocation, PathMetadataConfig, PathResponseData } from "../../types";
 import { RequestKey } from "./request-key";
-import { SnifferConfig } from "../sniffer/sniffer";
-import { useLog } from "../log";
+import { useLog } from "../../lib/log";
+import {
+  PathMetadataConfig,
+  Invocation,
+  SnifferConfig,
+  PathResponseData,
+} from "../../types";
 
 const log = useLog({
   dirname: __dirname,

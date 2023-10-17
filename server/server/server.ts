@@ -1,8 +1,9 @@
+import env from "dotenv/config";
 import { json } from "body-parser";
 import express, { Response, Request, Express, NextFunction } from "express";
 import * as http from "http";
-import { useLog } from "../log";
-import { supabaseClient } from "../auth/supabaseClient";
+import { useLog } from "../lib/log";
+import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 

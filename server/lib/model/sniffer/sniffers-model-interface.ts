@@ -1,7 +1,7 @@
 import { SnifferConfig } from "../../sniffer/sniffer";
-import { SnifferConfigSetup } from "./file-config.types";
+import { SnifferConfigSetup } from "./sniffers-model.types";
 
-export interface ConfigLoader {
+export interface ISnifferModel {
   getUserSniffers(userId: string): Promise<SnifferConfigSetup[]>;
   getAllUsersSniffers(): Promise<SnifferConfigSetup[]>;
   update(

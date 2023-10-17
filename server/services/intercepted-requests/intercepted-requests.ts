@@ -1,9 +1,7 @@
 import { Request } from "express";
 import { InterceptedRequest, RequestKey } from "../intercepted-request";
-import { Invocation, PathResponseData } from "../../types/types";
 import { RequestsMap } from "./requests-map";
-import { SnifferConfig } from "../sniffer/sniffer";
-import { RequestModel } from "../model/request.model";
+import { SnifferConfig, Invocation, PathResponseData } from "../../types";
 
 export class InterceptedRequests {
   private requests: RequestsMap;

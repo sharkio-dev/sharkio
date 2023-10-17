@@ -1,12 +1,11 @@
-import { PathResponseData } from "../../types";
-import { Sniffer, SnifferConfig } from "../sniffer/sniffer";
-import { SnifferConfigSetup } from "../model/setup-config/file-config.types";
-import { ConfigLoader } from "../model/setup-config/config-loader-interface";
+import { ISnifferModel } from "../../lib/model/sniffer/sniffers-model-interface";
+import { Sniffer } from "../../lib/sniffer/sniffer";
+import { SnifferConfig, PathResponseData } from "../../types";
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
 
-  constructor(private readonly configPersistency: ConfigLoader) {
+  constructor(private readonly configPersistency: ISnifferModel) {
     this.sniffers = [];
   }
 
@@ -83,7 +82,7 @@ export class SnifferManager {
   }
 
   async loadSniffersFromConfig() {
-    const sniffers = await this.configPersistency.getAllUsersConfig();
+    const sniffers = await this.configPersistency.getAllUsersSniffers();
     if (sniffers.length !== 0) {
       sniffers.forEach(async (item) => {
         const sniffer = new Sniffer(item);

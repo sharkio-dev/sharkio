@@ -1,6 +1,6 @@
 import { Express, NextFunction, Request, Response } from "express";
 import Router from "express-promise-router";
-import { useLog } from "../log";
+import { useLog } from "../lib/log";
 
 const log = useLog({
   dirname: __dirname,

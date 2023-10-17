@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { ManagedMock } from "../sniffer/mock/mock.types";
+import { ManagedMock } from "../../sniffer/mock/mock.types";
 
 export class MockModel {
   private readonly prismaClient: PrismaClient;

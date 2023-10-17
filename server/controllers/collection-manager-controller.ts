@@ -1,8 +1,7 @@
 import { Express, NextFunction, Request, Response } from "express";
 import Router from "express-promise-router";
-
-import { useLog } from "../log";
-import { CollectionManager } from "./collection-manager";
+import { useLog } from "../lib/log";
+import { CollectionManager } from "../services/collection-manager/collection-manager";
 
 const log = useLog({
   dirname: __dirname,

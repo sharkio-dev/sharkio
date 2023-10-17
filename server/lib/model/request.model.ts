@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { SnifferConfig } from "../sniffer/sniffer";
-import { RequestKey } from "../intercepted-request/request-key";
 import { Request } from "express";
 import { v4 } from "uuid";
+import { RequestKey } from "../../services/intercepted-request";
 
 export class RequestModel {
   private readonly prismaClient: PrismaClient;

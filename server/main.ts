@@ -1,20 +1,20 @@
 require("dotenv/config");
-import { AuthController } from "./lib/auth/auth-controller";
-import { CollectionManager } from "./lib/collection-manager/collection-manager";
-import { CollectionManagerController } from "./lib/collection-manager/collection-manager-controller";
-import { DbConfig } from "./lib/model/setup-config/db-config";
-import { MockManagerController } from "./lib/sniffer-manager/mock-manager-controller";
-import { SnifferManager } from "./lib/sniffer-manager/sniffer-manager";
-import { SnifferManagerController } from "./lib/sniffer-manager/sniffer-manager-controller";
-import { Server } from "./lib/sniffer-manager/sniffer-manager-server";
+import { Server } from "./server/server";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
+import { SnifferModel } from "./lib/model/sniffer/sniffers.model";
+import { AuthController } from "./controllers/auth-controller";
+import { SnifferManagerController } from "./controllers/sniffer-manager-controller";
+import { MockManagerController } from "./controllers/mock-manager-controller";
+import { CollectionManagerController } from "./controllers/collection-manager-controller";
+import { SnifferManager } from "./services/sniffer-manager/sniffer-manager";
+import { CollectionManager } from "./services/collection-manager/collection-manager";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const dbConfig = new DbConfig();
-  const snifferManager = new SnifferManager(dbConfig);
+  const snifferModel = new SnifferModel();
+  const snifferManager = new SnifferManager(snifferModel);
   const collectionManager = new CollectionManager();
   const collectionManagerController = new CollectionManagerController(
     collectionManager,

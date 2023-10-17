@@ -9,12 +9,12 @@ import express, {
 import * as http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation } from "../../types";
-import { InterceptedRequests } from "../intercepted-requests/intercepted-requests";
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
 import { useLog } from "../log";
 import { RequestModel } from "../model/request.model";
 import cors from "cors";
+import { InterceptedRequests } from "../../services/intercepted-requests";
 
 const log = useLog({
   dirname: __dirname,

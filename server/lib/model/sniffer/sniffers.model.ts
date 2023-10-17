@@ -2,15 +2,15 @@ import { PrismaClient } from "@prisma/client";
 import { v4 } from "uuid";
 import { useLog } from "../../log";
 import { SnifferConfig } from "../../sniffer/sniffer";
-import { ConfigLoader } from "./config-loader-interface";
-import { SnifferConfigSetup } from "./file-config.types";
+import { ISnifferModel } from "./sniffers-model-interface";
+import { SnifferConfigSetup } from "./sniffers-model.types";
 
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
 });
 
-export class DbConfig implements ConfigLoader {
+export class SnifferModel implements ISnifferModel {
   private readonly prismaClient: PrismaClient;
 
   constructor() {
