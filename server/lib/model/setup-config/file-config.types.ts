@@ -1,3 +1,4 @@
+import { BlobOptions } from "buffer";
 import { SnifferConfig } from "../../sniffer/sniffer";
 import z from "zod";
 

@@ -3,7 +3,7 @@ import { useLog } from "../../log";
 import { SnifferConfig } from "../../sniffer/sniffer";
 import { ConfigLoader } from "./config-loader-interface";
 import { v4 } from "uuid";
-import { SnifferConfigSetup } from "./file-config.types";
+import { DbSnifferConfig, SnifferConfigSetup } from "./file-config.types";
 
 const log = useLog({
   dirname: __dirname,
@@ -17,7 +17,7 @@ export class DbConfig implements ConfigLoader {
     this.prismaClient = new PrismaClient();
   }
 
-  async getAllUsersConfig() {
+  async getAllUsersSniffers() {
     const sniffers = await this.prismaClient.sniffer.findMany({});
 
     return sniffers.map(
@@ -30,7 +30,7 @@ export class DbConfig implements ConfigLoader {
     );
   }
 
-  async getUserConfig(userId: string) {
+  async getUserSniffers(userId: string) {
     const sniffers = await this.prismaClient.sniffer.findMany({
       where: { user_id: userId },
     });
