@@ -14,11 +14,11 @@ export const StartProxyButton = ({
   isStarted: boolean;
   isLoading?: boolean;
 }) => {
-  const onStartClick = async () => {
+  const onStartClick = () => {
     onStart();
   };
 
-  const onStopClick = async () => {
+  const onStopClick = () => {
     onStop();
   };
 
