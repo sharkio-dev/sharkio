@@ -17,7 +17,7 @@ const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
   const { user, signOut } = useAuthStore();
   const [loading, setLoading] = useState(false);
-  const settings = user != null ? ["Logout"] : ["Login", "Signup"];
+  const settings = user != null ? ["Logout", "API keys"] : ["Login", "Signup"];
   const navigate = useNavigate();
 
   const handleOpenUserMenu = () => {
@@ -29,6 +29,11 @@ const LoginComponent: React.FC = () => {
     setAnchorElUser(!anchorElUser);
 
     switch (setting) {
+      case "API keys": {
+        setLoading(false);
+        navigate("/api-keys");
+        break;
+      }
       case "Logout": {
         supabaseClient.auth.signOut().then(() => {
           setLoading(false);

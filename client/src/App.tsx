@@ -18,6 +18,7 @@ import { ServiceRequest } from "./pages/service-request/service-request";
 import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
 import Footer from "./components/footer/footer";
+import APIKeys from "./pages/api-keys/api-keys";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -34,6 +35,7 @@ function App(): React.JSX.Element {
       { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
       { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
       { path: routes.CONFIG, element: <Config /> },
+      { path: routes.API_KEYS, element: <APIKeys /> },
       { path: routes.REQUESTS, element: <Requests /> },
       { path: routes.MOCKS, element: <MocksPage /> },
       { path: routes.SERVICE, element: <Service /> },

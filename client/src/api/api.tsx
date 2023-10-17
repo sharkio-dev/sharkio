@@ -8,6 +8,7 @@ import {
 } from "../types/types";
 
 const serverUrl = import.meta.env.VITE_SERVER_URL ?? "";
+console.log(serverUrl);
 
 console.log(import.meta.env.VITE_SERVER_URL);
 console.log(import.meta.env);

@@ -6,6 +6,7 @@ export const routes = {
   REQUESTS: "/requests",
   HOME: "/home",
   CONFIG: "/config",
+  API_KEYS: "/api-keys",
   MOCKS: "/mocks",
   SERVICE: "/service/:port",
   OPENAPI: "/gen-openapi",
