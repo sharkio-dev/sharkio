@@ -1,6 +1,6 @@
-import { ISnifferModel } from "../../lib/model/sniffer/sniffers-model-interface";
-import { Sniffer } from "../../lib/sniffer/sniffer";
 import { SnifferConfig, PathResponseData } from "../../types";
+import { Sniffer } from "../sniffer/sniffer";
+import { ISnifferModel } from "../../model/sniffer/sniffers-model-interface";
 
 export class SnifferManager {
   private readonly sniffers: Sniffer[];

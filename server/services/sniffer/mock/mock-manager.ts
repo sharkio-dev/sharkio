@@ -1,6 +1,6 @@
 import { MockNotFoundError } from "./exceptions";
 import { ManagedMock, Mock } from "./mock.types";
-import { MockModel } from "../../model/mock/mock.model";
+import { MockModel } from "../../../model/mock/mock.model";
 
 type mockId = string;
 

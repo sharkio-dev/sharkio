@@ -4,8 +4,8 @@ import { z } from "zod";
 import { useLog } from "../lib/log";
 import { requestValidator } from "../lib/request-validator/request-validator";
 import { SnifferManager } from "../services/sniffer-manager/sniffer-manager";
-import { Sniffer } from "../lib/sniffer/sniffer";
 import { portValidator } from "../lib/request-validator/general-validators";
+import { Sniffer } from "../services/sniffer/sniffer";
 
 const log = useLog({
   dirname: __dirname,

@@ -3,8 +3,8 @@ import Router from "express-promise-router";
 import { z } from "zod";
 import { useLog } from "../lib/log";
 import { SnifferManager } from "../services/sniffer-manager/sniffer-manager";
-import { MockNotFoundError } from "../lib/sniffer/mock/exceptions";
 import { requestValidator } from "../lib/request-validator/request-validator";
+import { MockNotFoundError } from "../services/sniffer/mock/exceptions";
 
 const log = useLog({
   dirname: __dirname,

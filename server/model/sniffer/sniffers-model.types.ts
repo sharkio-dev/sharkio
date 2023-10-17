@@ -1,5 +1,5 @@
 import z from "zod";
-import { SnifferConfig } from "../../sniffer/sniffer";
+import { SnifferConfig } from "../../types/types";
 
 export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
 

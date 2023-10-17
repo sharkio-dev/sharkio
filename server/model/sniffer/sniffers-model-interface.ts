@@ -1,4 +1,4 @@
-import { SnifferConfig } from "../../sniffer/sniffer";
+import { SnifferConfig } from "../../types/types";
 import { SnifferConfigSetup } from "./sniffers-model.types";
 
 export interface ISnifferModel {

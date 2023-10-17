@@ -11,10 +11,10 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import { Invocation } from "../../types";
 import MockManager from "./mock/mock-manager";
 import MockMiddleware from "./mock/mock-middleware";
-import { useLog } from "../log";
-import { RequestModel } from "../model/request.model";
 import cors from "cors";
 import { InterceptedRequests } from "../../services/intercepted-requests";
+import { useLog } from "../../lib/log";
+import { RequestModel } from "../../model/request.model";
 
 const log = useLog({
   dirname: __dirname,
@@ -67,13 +67,14 @@ export class Sniffer {
       method: req.method,
       url: req.url,
     });
-    const userId = res.locals.auth.user.id;
+    // const userId = res.locals.auth.user.id;
     /**
      * TODO: split this logic and choose persistency strategy.
      * Currently saving for both
      */
     this.interceptedRequests.interceptRequest(req, this.config.id);
-    await this.requestModel.upsertRequest(req, this.config.id, userId);
+    // TODO fix userId
+    await this.requestModel.upsertRequest(req, this.config.id, "unkown");
     next();
   }
 

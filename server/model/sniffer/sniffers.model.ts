@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 } from "uuid";
-import { useLog } from "../../log";
-import { SnifferConfig } from "../../sniffer/sniffer";
 import { ISnifferModel } from "./sniffers-model-interface";
 import { SnifferConfigSetup } from "./sniffers-model.types";
+import { useLog } from "../../lib/log";
+import { SnifferConfig } from "../../types";
 
 const log = useLog({
   dirname: __dirname,
