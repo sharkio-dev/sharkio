@@ -17,7 +17,7 @@ interface IController {
 
 const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
 
-export class SnifferManagerServer {
+export class Server {
   private readonly port: number = 5012;
   private app: Express;
   private server?: http.Server;

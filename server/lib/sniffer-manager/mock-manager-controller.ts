@@ -3,7 +3,6 @@ import Router from "express-promise-router";
 import { z } from "zod";
 import { useLog } from "../log";
 import { requestValidator } from "../request-validator";
-import { portValidator } from "../request-validator/general-validators";
 import { MockNotFoundError } from "../sniffer/mock/exceptions";
 import { SnifferManager } from "./sniffer-manager";
 
