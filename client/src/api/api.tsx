@@ -127,8 +127,8 @@ export const editMock = (
   );
 };
 
-export const deleteMock = (id: string, port: number) => {
-  return axios.delete(serverUrl + `/sharkio/sniffer/${port}/mock`, {
+export const deleteMock = (id: string, sniffer_id: string) => {
+  return axios.delete(serverUrl + `/sharkio/sniffer/${sniffer_id}/mock`, {
     data: { mockId: id },
     headers: {
       "Content-Type": "application/json",

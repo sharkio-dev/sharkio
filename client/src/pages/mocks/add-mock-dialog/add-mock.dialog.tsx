@@ -31,7 +31,7 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
       return;
     }
     setIsLoading(true);
-    createMock(user.id, snifferId, method, endpoint, status, data)
+    createMock(snifferId, method, endpoint, status, data)
       .then(() => {
         close();
       })

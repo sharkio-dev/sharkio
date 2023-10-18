@@ -4,8 +4,8 @@ import MockManager from "./mock-manager";
 export default class MockMiddleware {
   constructor(private readonly mockManager: MockManager) {}
 
-  mock(req: Request, res: Response, next: NextFunction) {
-    const mock = this.mockManager.getMock(`${req.method} ${req.url}`);
+  async mock(req: Request, res: Response, next: NextFunction) {
+    const mock = await this.mockManager.getMock(`${req.method} ${req.url}`);
 
     if (
       this.mockManager.getIsActive() &&

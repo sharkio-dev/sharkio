@@ -51,6 +51,7 @@ export type Mock = {
 
 export type Service = {
   name: string;
+  sniffer_id: string;
   port: number;
 };
 

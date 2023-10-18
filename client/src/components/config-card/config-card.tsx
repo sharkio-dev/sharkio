@@ -175,8 +175,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       downstreamUrl: config.downstreamUrl,
       id: config.id,
     };
-
-    await createSniffer(userId, saveConfig)
+    console.log(userId, saveConfig);
+    saveConfig["id"] = saveConfig["name"];
+    saveConfig["userId"] = userId;
+    await createSniffer(saveConfig)
       .then(() => {
         loadData();
         showSnackbar("Created sniffer", "info");

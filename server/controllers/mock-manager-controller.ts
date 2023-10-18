@@ -162,16 +162,15 @@ export class MockManagerController {
           endpoint: z.string().nonempty(),
           data: z.any(),
           status: z.coerce.number().positive(),
-          userId: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
           const { id } = req.params;
-          const { userId, ...mock } = req.body;
+          const { ...mock } = req.body;
+          const userId = res.locals.auth.user.id;
 
           const sniffer = this.snifferManager.getSniffer(id);
-
           if (sniffer !== undefined) {
             const { id } = await sniffer.getMockManager().addMock(userId, mock);
             return res.send(id).status(201);
@@ -323,7 +322,7 @@ export class MockManagerController {
 
           const sniffer = this.snifferManager.getSniffer(id);
           if (sniffer !== undefined) {
-            sniffer.getMockManager().removeMock(mockId);
+            await sniffer.getMockManager().removeMock(mockId);
             return res.sendStatus(200);
           } else {
             return res.sendStatus(404);

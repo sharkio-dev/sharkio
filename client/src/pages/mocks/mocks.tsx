@@ -50,8 +50,8 @@ const MocksPage: React.FC = () => {
     setEditMock({ ...mock, port });
   };
 
-  const handleDeleteClicked = (id: string, port: number) => {
-    deleteMock(id, port).then(() => {
+  const handleDeleteClicked = (id: string, sniffer_id: string) => {
+    deleteMock(id, sniffer_id).then(() => {
       showSnackbar("Mock removed successfully", "info");
       loadData();
     });
@@ -79,7 +79,7 @@ const MocksPage: React.FC = () => {
                   handleEditClicked(mock, serviceMock.service.port)
                 }
                 onDeleteClick={() =>
-                  handleDeleteClicked(mock.id, serviceMock.service.port)
+                  handleDeleteClicked(mock.id, serviceMock.service.sniffer_id)
                 }
               />
             );
