@@ -42,8 +42,8 @@ export class SnifferManager {
     return stats;
   }
 
-  getAllSniffers() {
-    return this.sniffers;
+  async getAllSniffers(userId: string) {
+    return this.snifferModel.getUserSniffers(userId);
   }
 
   async removeSniffer(id: string) {
