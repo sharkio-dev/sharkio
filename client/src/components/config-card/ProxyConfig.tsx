@@ -123,7 +123,7 @@ export const ProxyConfig = ({
                   sniffer.config.downstreamUrl === undefined
                 : sniffer.isStarted === true
             }
-            isEditing={!sniffer.isNew && sniffer.isEditing}
+            isEditing={sniffer.isNew || sniffer.isEditing}
             isLoading={isLoadingEdit}
           />
 
