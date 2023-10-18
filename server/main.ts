@@ -1,44 +1,40 @@
 require("dotenv/config");
-import { MockManagerController } from "./lib/sniffer-manager/mock-manager-controller";
-import { SnifferManager } from "./lib/sniffer-manager/sniffer-manager";
-import { SnifferManagerController } from "./lib/sniffer-manager/sniffer-manager-controller";
-import { SnifferManagerServer } from "./lib/sniffer-manager/sniffer-manager-server";
+import { Server } from "./server/server";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
-import { CollectionManager } from "./lib/collection-manager/collection-manager";
-import { CollectionManagerController } from "./lib/collection-manager/collection-manager-controller";
-import { CollectionFilePersistency } from "./lib/collection-manager/collection-file-persistency";
-import { FileConfig } from "./lib/model/setup-config/file-config";
-import { SnifferConfigSetup } from "./lib/model/setup-config/file-config.types";
+import { AuthController } from "./controllers/auth-controller";
+import { SnifferManagerController } from "./controllers/sniffer-manager-controller";
+import { MockManagerController } from "./controllers/mock-manager-controller";
+import { CollectionManagerController } from "./controllers/collection-manager-controller";
+import { SnifferManager } from "./services/sniffer-manager/sniffer-manager";
+import { CollectionManager } from "./services/collection-manager/collection-manager";
+import { SnifferModel } from "./model/sniffer/sniffers.model";
+import SettingsController from "./controllers/settings";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const fileConfig = new FileConfig(setupFilePath);
-  const config = fileConfig.getConfig();
-  console.debug(config);
-
-  const collectionFilePersistency = new CollectionFilePersistency(
-    "./collections.json",
-  );
-
-  const snifferManager = new SnifferManager(fileConfig);
-  const collectionManager = new CollectionManager(collectionFilePersistency);
+  const snifferModel = new SnifferModel();
+  const snifferManager = new SnifferManager(snifferModel);
+  const collectionManager = new CollectionManager();
   const collectionManagerController = new CollectionManagerController(
     collectionManager,
   );
-
-  const configData: SnifferConfigSetup[] = fileConfig.getConfig();
-  await snifferManager.loadSniffersFromConfig(configData);
+  const authController = new AuthController();
+  await snifferManager.loadSniffersFromConfig();
 
   const snifferController = new SnifferManagerController(snifferManager);
   const mockManagerController = new MockManagerController(snifferManager);
   const swaggerUi = new SwaggerUiController();
-  const snifferManagerServer = new SnifferManagerServer([
+  const settingsController = new SettingsController();
+
+  const snifferManagerServer = new Server([
     snifferController,
     mockManagerController,
     collectionManagerController,
+    authController,
     swaggerUi,
+    settingsController,
   ]);
 
   snifferManagerServer.start();

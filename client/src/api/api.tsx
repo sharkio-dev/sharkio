@@ -6,12 +6,23 @@ import {
   Sniffer,
   SnifferCreateConfig,
 } from "../types/types";
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+
+export const setAuthCookie = (
+  event: AuthChangeEvent,
+  session: Session | null,
+) => {
+  return fetch("/sharkio/api/auth", {
+    method: "POST",
+    headers: new Headers({ "Content-Type": "application/json" }),
+    credentials: "same-origin",
+    body: JSON.stringify({ event, session }),
+  });
+};
 
 const serverUrl = import.meta.env.VITE_SERVER_URL ?? "";
 console.log(serverUrl);
 
-console.log(import.meta.env.VITE_SERVER_URL);
-console.log(import.meta.env);
 export const createSniffer = (config: SnifferCreateConfig) => {
   return axios.post(serverUrl + "/sharkio/sniffer", JSON.stringify(config), {
     headers: {
@@ -28,17 +39,22 @@ export const getSniffer = (port: number) => {
   return axios.get(serverUrl + `/sharkio/sniffer/${port}`);
 };
 
-export const stopSniffer = (port: number) => {
-  return axios.post(serverUrl + `/sharkio/sniffer/${port}/actions/stop`);
+export const stopSniffer = (id: string) => {
+  return axios.post(serverUrl + `/sharkio/sniffer/${id}/actions/stop`);
 };
 
-export const startSniffer = async (port: number) => {
-  return await axios.post(serverUrl + `/sharkio/sniffer/${port}/actions/start`);
+export const startSniffer = async (id: string) => {
+  return await axios.post(serverUrl + `/sharkio/sniffer/${id}/actions/start`);
 };
-export const deleteSniffer = async (port: number) => {
-  return await axios.delete(serverUrl + `/sharkio/sniffer/${port}`);
+
+export const deleteSniffer = async (id: string) => {
+  return await axios.delete(serverUrl + `/sharkio/sniffer/${id}`);
 };
-export const editSniffer = async (newConfig: SnifferCreateConfig) => {
+
+export const editSniffer = async (
+  userId: string,
+  newConfig: SnifferCreateConfig,
+) => {
   return axios.put(
     serverUrl + `/sharkio/sniffer/${newConfig.id}`,
     JSON.stringify(newConfig),
@@ -76,14 +92,14 @@ export const getAllMocks = () => {
 };
 
 export const createMock = (
-  port: number,
+  id: string,
   method: string,
   endpoint: string,
   status: number,
   data: any,
 ) => {
   return axios.post(
-    serverUrl + `/sharkio/sniffer/${port}/mock`,
+    serverUrl + `/sharkio/sniffer/${id}/mock`,
     JSON.stringify({ method, endpoint, data, status }),
     {
       headers: {

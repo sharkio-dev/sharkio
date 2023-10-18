@@ -11,13 +11,15 @@ import {
   stopSniffer,
 } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useAuthStore } from "../../stores/authStore";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
 import { ProxyConfig } from "./ProxyConfig";
+import { useRef } from "react";
 
 export type SnifferConfigRow = {
   isNew: boolean;
-  config: Partial<SnifferConfig>;
+  config: SnifferConfig;
   isStarted: boolean;
   isEditing: boolean;
   isCollapsed: boolean;
@@ -28,27 +30,24 @@ export type IConfigCardProps = {
 };
 
 export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
-  const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([
-    {
-      config: {
-        port: undefined,
-        downstreamUrl: undefined,
-        name: undefined,
-      },
-      isStarted: false,
-      isNew: true,
-      isEditing: false,
-      isCollapsed: true,
-    },
-  ]);
+  const [stopLoading, setStopLoading] = useState<boolean>(false);
+  const [startLoading, setStartLoading] = useState<boolean>(false);
+  const [saveLoading, setSaveLoading] = useState<boolean>(false);
+  const fileUploadInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuthStore();
+  const userId = user?.id;
+  const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoadingStarted, setIsLoadingStarted] = useState<boolean>(false);
   const [isLoadingEdit, setIsLoadingEdit] = useState<boolean>(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
-
-  const loadData = useCallback(() => {
+  const loadData = useCallback(async () => {
+    if (userId == null) {
+      console.error("user is not logged in");
+      return;
+    }
     if (loading) return;
     setLoading(true);
     return getSniffers()
@@ -77,7 +76,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     setSniffers((prev) => {
       return prev.concat([
         {
-          config: { port: undefined, downstreamUrl: undefined },
+          config: {
+            isStarted: false,
+            name: "",
+            port: 0,
+            downstreamUrl: "",
+            id: "",
+          },
           isNew: true,
           isStarted: false,
           isEditing: true,
@@ -87,9 +92,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     });
   };
 
-  const handleStopClicked = (port: number) => {
+  const handleStopClicked = (id: string) => {
     setIsLoadingStarted(true);
-    return stopSniffer(port)
+    return stopSniffer(id)
       .then(() => loadData())
       .catch(() => {
         showSnackbar("Failed to stop sniffer", "error");
@@ -97,9 +102,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       .finally(() => setIsLoadingStarted(false));
   };
 
-  const handleStartClicked = (port: number) => {
+  const handleStartClicked = (id: string) => {
     setIsLoadingStarted(true);
-    return startSniffer(port)
+    return startSniffer(id)
       .then(() => {
         loadData();
       })
@@ -118,7 +123,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
     } else {
       setIsLoadingDelete(true);
-      const x = sniffers[index].config.port;
+      const x = sniffers[index].config.id;
 
       if (x !== undefined) {
         deleteSniffer(x).then(() => {
@@ -134,15 +139,25 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     }
   };
 
-  const handleSaveClicked = async (config: Partial<SnifferConfig>) => {
-    if (config.port === undefined || config.downstreamUrl === undefined) {
+  const handleSaveClicked = async (config: SnifferConfig) => {
+    if (
+      config.port === undefined ||
+      config.downstreamUrl === undefined ||
+      userId == null
+    ) {
+      console.error("port url and userId are required");
+      console.log({
+        port: config.port,
+        userId: userId,
+        downstreamUrl: config.downstreamUrl,
+      });
       return;
     }
     const saveConfig: SnifferCreateConfig = {
       name: config.name ?? "",
       port: config.port,
       downstreamUrl: config.downstreamUrl,
-      id: config.port.toString(),
+      id: config.id,
     };
     setIsLoadingEdit(true);
     await createSniffer(saveConfig)
@@ -171,8 +186,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
       showSnackbar("Sniffer in edit mode", "info");
     } else {
+      if (userId == null) {
+        console.error("userId is required");
+        return;
+      }
+
       setIsLoadingEdit(true);
-      await editSniffer(newConfig)
+      await editSniffer(userId, newConfig)
         .then(() => {
           loadData();
           showSnackbar("Changes were saved", "info");
@@ -211,11 +231,11 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
                     }}
                     onStart={() =>
                       sniffer.config.port !== undefined &&
-                      handleStartClicked(sniffer.config.port)
+                      handleStartClicked(sniffer.config.id)
                     }
                     onStop={() =>
                       sniffer.config.port !== undefined &&
-                      handleStopClicked(sniffer.config.port)
+                      handleStopClicked(sniffer.config.id)
                     }
                     onEdit={() => {
                       handleEditClicked(

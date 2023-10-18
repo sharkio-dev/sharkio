@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { createMock } from "../../../api/api";
 import { SnifferSelector } from "../../../components/sniffer-selector/sniffer-selector";
 import styles from "./add-mock-dialog.module.scss";
+import { useAuthStore } from "../../../stores/authStore";
 
 type AddMockDialogProps = { open: boolean; close: () => void };
 
@@ -17,19 +18,20 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
   open,
   close,
 }) => {
-  const [port, setPort] = useState<number>();
+  const [snifferId, setSnifferId] = useState<string>();
   const [method, setMethod] = useState<string>("GET");
   const [endpoint, setEndpoint] = useState<string>("");
   const [status, setStatus] = useState<number>(200);
   const [data, setData] = useState<unknown>("{ }");
   const [isLoading, setIsLoading] = useState<boolean>();
+  const { user } = useAuthStore();
 
   const handleAddMock = () => {
-    if (!port) {
+    if (snifferId == null || user?.id == null) {
       return;
     }
     setIsLoading(true);
-    createMock(port, method, endpoint, status, data)
+    createMock(user.id, snifferId, method, endpoint, status, data)
       .then(() => {
         close();
       })
@@ -43,8 +45,8 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
       <Card className={styles.card}>
         <Typography>Add mock</Typography>
         <SnifferSelector
-          onChange={(value) => setPort(+value)}
-          selectedSnifferPort={`${port}`}
+          onChange={(value) => setSnifferId(value)}
+          selectedSnifferId={`${snifferId}`}
         />
         <TextField
           label="Method"
