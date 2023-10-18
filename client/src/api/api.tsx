@@ -38,22 +38,19 @@ export const getSniffer = (port: number) => {
   return axios.get(serverUrl + `/sharkio/sniffer/${port}`);
 };
 
-export const stopSniffer = (port: number) => {
-  return axios.post(serverUrl + `/sharkio/sniffer/${port}/actions/stop`);
+export const stopSniffer = (id: string) => {
+  return axios.post(serverUrl + `/sharkio/sniffer/${id}/actions/stop`);
 };
 
-export const startSniffer = async (port: number) => {
-  return await axios.post(serverUrl + `/sharkio/sniffer/${port}/actions/start`);
+export const startSniffer = async (id: string) => {
+  return await axios.post(serverUrl + `/sharkio/sniffer/${id}/actions/start`);
 };
 
 export const deleteSniffer = async (port: number) => {
   return await axios.delete(serverUrl + `/sharkio/sniffer/${port}`);
 };
 
-export const editSniffer = async (
-  userId: string,
-  newConfig: SnifferCreateConfig,
-) => {
+export const editSniffer = async (newConfig: SnifferCreateConfig) => {
   return axios.put(
     serverUrl + `/sharkio/sniffer/${newConfig.id}`,
     JSON.stringify(newConfig),
