@@ -30,10 +30,6 @@ export type IConfigCardProps = {
 };
 
 export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
-  const [stopLoading, setStopLoading] = useState<boolean>(false);
-  const [startLoading, setStartLoading] = useState<boolean>(false);
-  const [saveLoading, setSaveLoading] = useState<boolean>(false);
-  const fileUploadInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
   const userId = user?.id;
   const [sniffers, setSniffers] = useState<SnifferConfigRow[]>([]);

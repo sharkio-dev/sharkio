@@ -10,13 +10,43 @@ const log = useLog({
 const router = express.Router();
 const apiKeysService = new APIKeysService();
 
-router.get("/sharkio/api/settings/api-keys", async (req, res) => {
-  await apiKeysService.getAll("userId");
+/**
+ * @openapi
+ * /sharkio/settings/api-keys:
+ *   get:
+ *     tags:
+ *      - Api Keys
+ *     description: Get all api keys
+ *     responses:
+ *       200:
+ *         description: Returns all api
+ *       500:
+ *         description: Server error
+ */
+router.get("/sharkio/settings/api-keys", async (req, res) => {
+  const keys = apiKeysService.getAll("userId");
+  return res.status(200).send(keys);
 });
 
-router.post("/sharkio/api/settings/api-keys", async (req, res) => {
-  // const { apiKey } = req.body;
-  apiKeysService.add("userId", "apiKey");
+router.post("/sharkio/settings/api-keys", (req, res) => {
+  const { name } = req.body;
+  const key = apiKeysService.add("userId", name);
+  console.log(key);
+  return res.status(200).send(key);
+});
+
+router.delete("/sharkio/settings/api-keys/:id", (req, res) => {
+  const { id } = req.params;
+  apiKeysService.remove("userId", id);
+  return res.sendStatus(200);
+});
+
+router.put("/sharkio/settings/api-keys/:id", (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  console.log(req.body);
+  apiKeysService.update("userId", id, name);
   return res.sendStatus(200);
 });
 

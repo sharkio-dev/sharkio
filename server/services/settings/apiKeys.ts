@@ -7,19 +7,19 @@ class APIKeysService {
     this.apiKeyDataLayer = new ApiKeyDataLayer();
   }
 
-  async getAll(userId: string) {
+  getAll(userId: string) {
     return this.apiKeyDataLayer.getAll(userId);
   }
 
-  async add(userId: string, apiKey: string) {
-    return this.apiKeyDataLayer.add(userId, apiKey);
+  add(userId: string, name: string) {
+    return this.apiKeyDataLayer.add(userId, name);
   }
 
-  async remove(userId: string, apiKey: string) {
+  remove(userId: string, apiKey: string) {
     return this.apiKeyDataLayer.remove(userId, apiKey);
   }
 
-  async update(userId: string, apiKey: string, name: string) {
+  update(userId: string, apiKey: string, name: string) {
     return this.apiKeyDataLayer.update(userId, apiKey, name);
   }
 }

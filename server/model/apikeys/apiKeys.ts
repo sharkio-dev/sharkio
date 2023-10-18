@@ -15,26 +15,33 @@ class ApiKeyDataLayer {
     ];
   }
 
-  async getAll(userId: string) {
+  getAll(userId: string) {
     return this.keys.filter((key) => key.userId === userId);
   }
 
-  async add(userId: string, name?: string) {
+  add(userId: string, name?: string) {
     this.keys.push({
       id: "3",
       key: "789",
       name: name || "test3",
       userId,
     });
+    return {
+      id: "3",
+      key: "789",
+      name: name || "test3",
+      userId,
+    };
+  }
+
+  remove(userId: string, apiKeyId: string) {
+    this.keys = this.keys.filter(
+      (key) => key.id !== apiKeyId || key.userId !== userId,
+    );
     return true;
   }
 
-  async remove(userId: string, apiKeyId: string) {
-    this.keys = this.keys.filter((key) => key.id !== apiKeyId);
-    return true;
-  }
-
-  async update(userId: string, apiKeyId: string, name: string) {
+  update(userId: string, apiKeyId: string, name: string) {
     this.keys = this.keys.map((key) => {
       if (key.id === apiKeyId) {
         return { ...key, name };

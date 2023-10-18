@@ -23,11 +23,12 @@ export class Server {
   private app: Express;
   private server?: http.Server;
 
-  constructor(controllers: IController[]) {
+  constructor(controllers: IController[], swaggerController: IController) {
     this.app = express();
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());
+    swaggerController.setup(this.app);
     // this.app.use(this.authMiddleware);
     controllers.forEach((controller) => {
       controller.setup(this.app);
@@ -37,7 +38,7 @@ export class Server {
 
   async authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
-      if (req.path === "/sharkio/api/auth") {
+      if (["/sharkio/api/auth"].includes(req.path)) {
         return next();
       }
       const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];

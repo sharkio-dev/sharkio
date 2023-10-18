@@ -10,9 +10,10 @@ const options = {
     },
   },
   apis: [
-    "./lib/sniffer-manager/mock-manager-controller.ts",
-    "./lib/sniffer-manager/sniffer-manager-controller.ts",
-    "./lib/collection-manager/collection-manager-controller.ts",
+    "./controllers/mock-manager-controller.ts",
+    "./controller/sniffer-manager-controller.ts",
+    "./controller/collection-manager-controller.ts",
+    "./controller/settings.ts",
   ],
 };
 

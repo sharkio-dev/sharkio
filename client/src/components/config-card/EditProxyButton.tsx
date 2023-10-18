@@ -10,7 +10,7 @@ export const EditProxyButton = ({
 }: {
   onEdit: () => void;
   onSave: () => void;
-  disabled: boolean;
+  disabled?: boolean;
   isEditing: boolean;
   isLoading?: boolean;
 }) => {
