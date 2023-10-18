@@ -140,15 +140,10 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
   };
 
   const handleSaveClicked = async (config: SnifferConfig) => {
-    if (
-      config.port === undefined ||
-      config.downstreamUrl === undefined ||
-      userId == null
-    ) {
+    if (config.port === undefined || config.downstreamUrl === undefined) {
       console.error("port url and userId are required");
       console.log({
         port: config.port,
-        userId: userId,
         downstreamUrl: config.downstreamUrl,
       });
       return;
@@ -192,7 +187,7 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       }
 
       setIsLoadingEdit(true);
-      await editSniffer(userId, newConfig)
+      await editSniffer(newConfig)
         .then(() => {
           loadData();
           showSnackbar("Changes were saved", "info");

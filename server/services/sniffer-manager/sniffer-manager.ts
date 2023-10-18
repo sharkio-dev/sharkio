@@ -5,7 +5,7 @@ import { ISnifferModel } from "../../model/sniffer/sniffers-model-interface";
 export class SnifferManager {
   private readonly sniffers: Sniffer[];
 
-  constructor(private readonly configPersistency: ISnifferModel) {
+  constructor(private readonly snifferModel: ISnifferModel) {
     this.sniffers = [];
   }
 
@@ -19,7 +19,7 @@ export class SnifferManager {
     const newSniffer = new Sniffer(snifferConfig, userId);
 
     this.sniffers.push(newSniffer);
-    await this.configPersistency.addSniffer(userId, snifferConfig);
+    await this.snifferModel.addSniffer(userId, snifferConfig);
     return newSniffer;
   }
 
@@ -47,7 +47,7 @@ export class SnifferManager {
   }
 
   async removeSniffer(id: string) {
-    await this.configPersistency.removeSniffer(id);
+    await this.snifferModel.removeSniffer(id);
   }
 
   getSnifferById(id: string) {
@@ -73,7 +73,7 @@ export class SnifferManager {
     }
 
     await this.sniffers[existingIndex].editSniffer(newConfig);
-    await this.configPersistency.update(
+    await this.snifferModel.update(
       userId,
       existingId,
       newConfig,
@@ -82,17 +82,17 @@ export class SnifferManager {
   }
 
   async loadSniffersFromConfig() {
-    const sniffers = await this.configPersistency.getAllUsersSniffers();
+    const sniffers = await this.snifferModel.getAllUsersSniffers();
     if (sniffers.length !== 0) {
       sniffers.forEach(async (item) => {
-        const sniffer = new Sniffer(item);
+        const sniffer = new Sniffer(item, item.userId);
         this.sniffers.push(sniffer);
       });
     }
   }
 
   async setSnifferConfigToStarted(snifferId: string, isStarted: boolean) {
-    await this.configPersistency.setIsStarted(snifferId, isStarted);
+    await this.snifferModel.setIsStarted(snifferId, isStarted);
   }
 
   async getAllMocks(userId: string) {

@@ -1,4 +1,5 @@
 export type SnifferConfig = {
+  userId: string;
   name: string;
   port: number;
   downstreamUrl: string;

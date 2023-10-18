@@ -530,7 +530,6 @@ export class SnifferManagerController {
         }),
         body: z.object({
           port: portValidator,
-          userId: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response) => {

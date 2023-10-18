@@ -51,10 +51,7 @@ export const deleteSniffer = async (id: string) => {
   return await axios.delete(serverUrl + `/sharkio/sniffer/${id}`);
 };
 
-export const editSniffer = async (
-  userId: string,
-  newConfig: SnifferCreateConfig,
-) => {
+export const editSniffer = async (newConfig: SnifferCreateConfig) => {
   return axios.put(
     serverUrl + `/sharkio/sniffer/${newConfig.id}`,
     JSON.stringify(newConfig),
