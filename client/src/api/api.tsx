@@ -91,15 +91,15 @@ export const getAllMocks = () => {
 };
 
 export const createMock = (
-  id: string,
+  snifferId: string,
   method: string,
   endpoint: string,
   status: number,
   data: any,
 ) => {
   return axios.post(
-    serverUrl + `/sharkio/sniffer/${id}/mock`,
-    JSON.stringify({ method, endpoint, data, status }),
+    serverUrl + `/sharkio/sniffer/${snifferId}/mock`,
+    JSON.stringify({ sniffer_id: snifferId, method, endpoint, data, status }),
     {
       headers: {
         "Content-Type": "application/json",

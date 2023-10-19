@@ -62,6 +62,9 @@ export default class MockManager {
   async getAllMocks(userId: string) {
     return this.mockModel.findAll(userId);
   }
+  async getMockBySnifferId(id: string) {
+    return await this.mockModel.findByQuery({ sniffer_id: id });
+  }
 
   activateMock(id: string) {
     const mock = this.mocks.get(id);

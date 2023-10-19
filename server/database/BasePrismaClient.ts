@@ -2,8 +2,6 @@
 import { IWrite } from "./interfaces/IWrite";
 import { IRead } from "./interfaces/IRead";
 
-// we imported all types from mongodb driver, to use in code
-
 import { PrismaClient } from "@prisma/client";
 
 const prismaClient: PrismaClient = new PrismaClient();
@@ -46,6 +44,12 @@ export abstract class BasePrismaClient<T> implements IWrite<T>, IRead<T> {
   async findAll(userId: string): Promise<T[]> {
     return await prismaClient[this.tableName].findMany({
       where: { user_id: userId },
+    });
+  }
+
+  async findByQuery(query: object): Promise<T[]> {
+    return await prismaClient[this.tableName].findMany({
+      where: query,
     });
   }
 
