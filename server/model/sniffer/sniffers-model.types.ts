@@ -8,6 +8,7 @@ const snifferConfigValidator = z.object({
   port: z.number().nullable().optional(),
   downstreamUrl: z.string().nullable().optional(),
   id: z.string(),
+  userId: z.string().uuid(),
   isStarted: z.boolean().nullable().optional(),
 });
 

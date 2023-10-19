@@ -66,13 +66,15 @@ export class SnifferManagerController {
     router.get("", async (req: Request, res: Response) => {
       const userId = res.locals.auth.user.id;
       const stats = await Promise.all(
-        this.snifferManager.getAllSniffers().map(async (sniffer: Sniffer) => {
-          const { config, isStarted } = await sniffer.stats(userId);
-          return {
-            config,
-            isStarted,
-          };
-        }),
+        (await this.snifferManager.getAllSniffers(userId)).map(
+          async (sniffer: Sniffer) => {
+            const { config, isStarted } = await sniffer.stats(userId);
+            return {
+              config,
+              isStarted,
+            };
+          },
+        ),
       );
       return res.status(200).send(stats);
     });
@@ -530,7 +532,6 @@ export class SnifferManagerController {
         }),
         body: z.object({
           port: portValidator,
-          userId: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response) => {

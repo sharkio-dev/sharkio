@@ -7,10 +7,9 @@ import styles from "./page-template.module.scss";
 export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
   const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
   const { user } = useAuthStore();
-  const disableSupabase = import.meta.env.VITE_DISABLE_SUPABASE;
 
   useEffect(() => {
-    if (disableSupabase ? true : user != null && user.email != null) {
+    if (user != null && user.email != null) {
       setSideMenuOpen(true);
     } else {
       setSideMenuOpen(false);

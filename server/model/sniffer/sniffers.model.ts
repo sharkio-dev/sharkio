@@ -26,6 +26,7 @@ export class SnifferModel implements ISnifferModel {
           ...dbConfig,
           downstreamUrl: dbConfig.downstream_url,
           isStarted: dbConfig.is_started,
+          userId: dbConfig.user_id,
         }) as SnifferConfigSetup,
     );
   }
@@ -41,6 +42,7 @@ export class SnifferModel implements ISnifferModel {
           ...dbConfig,
           downstreamUrl: dbConfig.downstream_url,
           isStarted: dbConfig.is_started,
+          userId: dbConfig.user_id,
         }) as SnifferConfigSetup,
     );
   }

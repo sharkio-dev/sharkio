@@ -26,13 +26,15 @@ async function main() {
   const mockManagerController = new MockManagerController(snifferManager);
   const swaggerUi = new SwaggerUiController();
 
-  const snifferManagerServer = new Server([
-    snifferController,
-    mockManagerController,
-    collectionManagerController,
-    authController,
+  const snifferManagerServer = new Server(
+    [
+      snifferController,
+      mockManagerController,
+      collectionManagerController,
+      authController,
+    ],
     swaggerUi,
-  ]);
+  );
 
   snifferManagerServer.start();
 }
