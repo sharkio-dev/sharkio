@@ -1,5 +1,5 @@
 import { AddBox } from "@mui/icons-material";
-import { Button, Card } from "@mui/material";
+import { Button, Card, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { deleteMock, getAllMocks } from "../../api/api";
 import MockRow from "../../components/mock/mock-row";
@@ -56,7 +56,12 @@ const MocksPage: React.FC = () => {
       loadData();
     });
   };
+  const [tab, setTab] = useState(0);
 
+  const handleTabChanged = (_event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
+  };
+  console.log(mocks);
   return (
     <>
       <div>
@@ -65,26 +70,33 @@ const MocksPage: React.FC = () => {
           <AddBox />
         </Button>
       </div>
+      <Tabs value={tab} onChange={handleTabChanged} visibleScrollbar={true}>
+        {mocks.map((serviceMock: ServiceMock, index: number) => {
+          return (
+            <Tab label={serviceMock.service.name} value={index} key={index} />
+          );
+        })}
+      </Tabs>
+
       <Card>
-        {mocks.flatMap((serviceMock: ServiceMock) => {
-          return serviceMock.mocks.map((mock: Mock) => {
+        {mocks.length > 0 &&
+          mocks[tab].mocks.map((mock: Mock) => {
             return (
               <MockRow
                 key={mock.id}
                 mock={mock}
-                service={serviceMock.service}
+                service={mocks[tab].service}
                 loadData={loadData}
                 editable={true}
                 onEditClick={() =>
-                  handleEditClicked(mock, serviceMock.service.port)
+                  handleEditClicked(mock, mocks[tab].service.port)
                 }
                 onDeleteClick={() =>
-                  handleDeleteClicked(mock.id, serviceMock.service.sniffer_id)
+                  handleDeleteClicked(mock.id, mocks[tab].service.sniffer_id)
                 }
               />
             );
-          });
-        })}
+          })}
       </Card>
       <AddMockDialog open={addOpen} close={handleCloseModal} />
       <EditMockDialog

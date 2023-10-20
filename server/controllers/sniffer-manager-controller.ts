@@ -64,19 +64,14 @@ export class SnifferManagerController {
      *         description: Server error
      */
     router.get("", async (req: Request, res: Response) => {
-      const userId = res.locals.auth.user.id;
-      const stats = await Promise.all(
-        (await this.snifferManager.getAllSniffers(userId)).map(
-          async (sniffer: Sniffer) => {
-            const { config, isStarted } = await sniffer.stats(userId);
-            return {
-              config,
-              isStarted,
-            };
-          },
-        ),
+      const userId: string = res.locals.auth.user.id as string;
+      const sniffers = (await this.snifferManager.getAllSniffers(userId)).map(
+        (sniffer: object) => {
+          return { isStarted: sniffer.isStarted, config: sniffer };
+        },
       );
-      return res.status(200).send(stats);
+
+      return res.status(200).send(sniffers);
     });
 
     /**

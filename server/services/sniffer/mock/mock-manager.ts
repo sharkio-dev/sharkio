@@ -36,16 +36,15 @@ export default class MockManager {
     }
   }
 
-  updateMock(id: string, mock: Mock) {
-    let managedMock = this.mocks.get(id);
+  async updateMock(id: string, mock: Mock) {
+    let managedMock = await this.mockModel.findById(id);
 
     if (managedMock !== undefined) {
       managedMock = {
         ...managedMock,
         ...mock,
       };
-
-      this.mocks.set(id, managedMock);
+      await this.mockModel.update(id, managedMock);
     } else {
       throw new MockNotFoundError();
     }

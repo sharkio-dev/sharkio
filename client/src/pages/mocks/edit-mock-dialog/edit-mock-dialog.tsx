@@ -54,7 +54,7 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
       <Card className={styles.card}>
         <Typography>Edit mock</Typography>
         <SnifferSelector
-          onChange={(value) => onDataChange({ ...mock, port: +value })}
+          onChange={(value) => onDataChange({ ...mock, port: value })}
           selectedSnifferId={`${mock?.port}` ?? ""}
         />
         <TextField
