@@ -173,7 +173,6 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
 
     await createSniffer(saveConfig);
     saveConfig["id"] = saveConfig["name"];
-    saveConfig["userId"] = userId;
     await createSniffer(saveConfig)
       .then(() => {
         loadData();
