@@ -19,8 +19,6 @@ export default class MockManager {
       id: `${mock.method} ${mock.endpoint}`,
     };
 
-    this.mocks.set(managedMock.id, managedMock);
-
     await this.mockModel.create(userId, managedMock);
 
     return managedMock;
@@ -53,16 +51,19 @@ export default class MockManager {
     }
   }
 
-  removeMock(id: string) {
-    this.mocks.delete(id);
+  async removeMock(id: string) {
+    await this.mockModel.delete(id);
   }
 
-  getMock(id: string) {
-    return this.mocks.get(id);
+  async getMock(id: string) {
+    return await this.mockModel.findById(id);
   }
 
   async getAllMocks(userId: string) {
     return this.mockModel.findAll(userId);
+  }
+  async getMockBySnifferId(id: string) {
+    return await this.mockModel.findByQuery({ sniffer_id: id });
   }
 
   activateMock(id: string) {

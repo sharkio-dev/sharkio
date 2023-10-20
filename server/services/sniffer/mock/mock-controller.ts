@@ -109,7 +109,7 @@ export default class MockController {
       async (req: Request, res: Response, next: NextFunction) => {
         try {
           const { id } = req.body;
-          this.mockManager.removeMock(id);
+          await this.mockManager.removeMock(id);
           return res.sendStatus(200);
         } catch (e) {
           log.error("An unexpected error occured", {

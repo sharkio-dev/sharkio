@@ -100,10 +100,13 @@ export class SnifferManager {
       this.sniffers.map(async (sniffer: Sniffer) => {
         return {
           service: {
+            sniffer_id: sniffer.getConfig().id,
             name: sniffer.getConfig().name,
             port: sniffer.getConfig().port,
           },
-          mocks: await sniffer.getMockManager().getAllMocks(userId),
+          mocks: await sniffer
+            .getMockManager()
+            .getMockBySnifferId(sniffer.getConfig().id),
         };
       }),
     );

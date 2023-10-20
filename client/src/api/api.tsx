@@ -88,15 +88,15 @@ export const getAllMocks = () => {
 };
 
 export const createMock = (
-  id: string,
+  snifferId: string,
   method: string,
   endpoint: string,
   status: number,
   data: any,
 ) => {
   return axios.post(
-    serverUrl + `/sharkio/sniffer/${id}/mock`,
-    JSON.stringify({ method, endpoint, data, status }),
+    serverUrl + `/sharkio/sniffer/${snifferId}/mock`,
+    JSON.stringify({ sniffer_id: snifferId, method, endpoint, data, status }),
     {
       headers: {
         "Content-Type": "application/json",
@@ -124,8 +124,8 @@ export const editMock = (
   );
 };
 
-export const deleteMock = (id: string, port: number) => {
-  return axios.delete(serverUrl + `/sharkio/sniffer/${port}/mock`, {
+export const deleteMock = (id: string, sniffer_id: string) => {
+  return axios.delete(serverUrl + `/sharkio/sniffer/${sniffer_id}/mock`, {
     data: { mockId: id },
     headers: {
       "Content-Type": "application/json",
