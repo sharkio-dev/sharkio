@@ -1,7 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { v4 } from "uuid";
-import { ISnifferModel } from "./sniffers-model-interface";
-import { SnifferConfigSetup } from "./sniffers-model.types";
+import { Entity, PrimaryColumn } from "typeorm";
 import { useLog } from "../../lib/log";
 import { SnifferConfig } from "../../types";
 
@@ -10,100 +7,19 @@ const log = useLog({
   filename: __filename,
 });
 
-export class SnifferModel implements ISnifferModel {
-  private readonly prismaClient: PrismaClient;
+export class SnifferRepository {
+  constructor() {}
 
-  constructor() {
-    this.prismaClient = new PrismaClient();
-  }
+  // async getAllUsersSniffers() {}
+  // async getUserSniffers() {}
+  // async update() {}
+  // async addSniffer() {}
+  // async removeSniffer() {}
+  // async setIsStarted() {}
+}
 
-  async getAllUsersSniffers() {
-    const sniffers = await this.prismaClient.sniffer.findMany({});
-
-    return sniffers.map(
-      (dbConfig) =>
-        ({
-          ...dbConfig,
-          downstreamUrl: dbConfig.downstream_url,
-          isStarted: dbConfig.is_started,
-          userId: dbConfig.user_id,
-        }) as SnifferConfigSetup,
-    );
-  }
-
-  async getUserSniffers(userId: string) {
-    const sniffers = await this.prismaClient.sniffer.findMany({
-      where: { user_id: userId },
-    });
-
-    return sniffers.map(
-      (dbConfig) =>
-        ({
-          ...dbConfig,
-          downstreamUrl: dbConfig.downstream_url,
-          isStarted: dbConfig.is_started,
-          userId: dbConfig.user_id,
-        }) as SnifferConfigSetup,
-    );
-  }
-
-  async update(
-    userId: string,
-    existingId: string,
-    newConfig: SnifferConfig,
-    isStarted: boolean,
-  ) {
-    try {
-      const { downstreamUrl, ...config } = newConfig;
-      await this.prismaClient.sniffer.update({
-        where: { id: existingId, user_id: userId },
-        data: {
-          port: newConfig.port,
-          name: newConfig.name,
-          downstream_url: newConfig.downstreamUrl,
-          is_started: isStarted,
-          user_id: userId,
-        },
-      });
-
-      log.info("Updated existing sniffer");
-    } catch (error) {
-      log.error("Failed to update existing sniffer", error);
-      throw error;
-    }
-  }
-
-  async addSniffer(userId: string, snifferConfig: SnifferConfig) {
-    try {
-      log.info("Adding new sniffer");
-      await this.prismaClient.sniffer.create({
-        data: {
-          user_id: userId,
-          name: snifferConfig.name,
-          port: snifferConfig.port,
-          id: v4(),
-          is_started: false,
-          downstream_url: snifferConfig.downstreamUrl,
-        },
-      });
-    } catch (error) {
-      log.error(error);
-      throw error;
-    }
-  }
-
-  async removeSniffer(id: string) {
-    await this.prismaClient.sniffer.deleteMany({
-      where: { id },
-    });
-  }
-
-  async setIsStarted(id: string, isStarted: boolean) {
-    log.info("-----------------------");
-    log.info({ id });
-    await this.prismaClient.sniffer.update({
-      where: { id },
-      data: { is_started: isStarted },
-    });
-  }
+@Entity()
+export class Sniffer {
+  @PrimaryColumn()
+  id: number;
 }

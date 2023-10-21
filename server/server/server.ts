@@ -6,6 +6,7 @@ import { useLog } from "../lib/log";
 import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import "reflect-metadata";
 
 const log = useLog({
   dirname: __dirname,
@@ -42,9 +43,8 @@ export class Server {
         return next();
       }
       const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
-      const { data: user, error } = await supabaseClient.auth.getUser(
-        access_token,
-      );
+      const { data: user, error } =
+        await supabaseClient.auth.getUser(access_token);
 
       if (error || !user) {
         res.setHeader(
