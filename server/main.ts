@@ -1,44 +1,43 @@
-require("dotenv/config");
-import { Server } from "./server/server";
-import { SwaggerUiController } from "./lib/swagger/swagger-controller";
+import env from "dotenv";
 import { AuthController } from "./controllers/auth-controller";
-import { SnifferManagerController } from "./controllers/sniffer-manager-controller";
-import { MockManagerController } from "./controllers/mock-manager-controller";
-import { CollectionManagerController } from "./controllers/collection-manager-controller";
+import { SnifferController } from "./controllers/sniffer.controller";
+import { SwaggerUiController } from "./lib/swagger/swagger-controller";
+import { Server } from "./server/server";
+import "reflect-metadata";
+import { DataSource } from "typeorm";
+import { Sniffer, SnifferRepository } from "./model/sniffer/sniffers.model";
 import { SnifferManager } from "./services/sniffer-manager/sniffer-manager";
-import { CollectionManager } from "./services/collection-manager/collection-manager";
-import { SnifferModel } from "./model/sniffer/sniffers.model";
-import SettingsController from "./controllers/settings";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  const snifferModel = new SnifferModel();
-  const snifferManager = new SnifferManager(snifferModel);
-  const collectionManager = new CollectionManager();
-  const collectionManagerController = new CollectionManagerController(
-    collectionManager,
-  );
-  const authController = new AuthController();
-  await snifferManager.loadSniffersFromConfig();
+  env.config({});
 
-  const snifferController = new SnifferManagerController(snifferManager);
-  const mockManagerController = new MockManagerController(snifferManager);
+  const appDataSource = new DataSource({
+    type: "postgres",
+    url: process.env.DATABASE_URL,
+    synchronize: false,
+    logging: true,
+    entities: [Sniffer],
+    subscribers: [],
+    migrations: [],
+  });
+
+  await appDataSource.initialize();
+
+  const snifferRepository = new SnifferRepository(appDataSource);
+
+  const snifferManager = new SnifferManager(snifferRepository);
+
+  const authController = new AuthController();
+  const snifferController = new SnifferController(snifferManager);
   const swaggerUi = new SwaggerUiController();
-  const settingsController = new SettingsController();
 
   const snifferManagerServer = new Server(
-    [
-      snifferController,
-      mockManagerController,
-      collectionManagerController,
-      authController,
-      settingsController,
-    ],
+    [snifferController.getRouter(), authController.getRouter()],
     swaggerUi,
   );
-
   snifferManagerServer.start();
 }
 

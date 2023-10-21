@@ -1,0 +1,42 @@
+import { NextFunction, Request, Response } from "express";
+import "reflect-metadata";
+import { supabaseClient } from "../../lib/supabase-client/supabase-client";
+
+const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
+
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (
+      [/\/sharkio\/api\/auth/, /\/api-docs\/.*/]
+        .map((regex) => regex.test(req.path))
+        .some((value) => value === true)
+    ) {
+      return next();
+    }
+    const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
+    const { data: user, error } = await supabaseClient.auth.getUser(
+      access_token,
+    );
+
+    if (error || !user) {
+      res.setHeader(
+        "Set-Cookie",
+        `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
+      );
+      res.sendStatus(401);
+    } else {
+      res.locals.auth = user;
+      next();
+    }
+  } catch (err) {
+    res.setHeader(
+      "Set-Cookie",
+      `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
+    );
+    res.sendStatus(401);
+  }
+};

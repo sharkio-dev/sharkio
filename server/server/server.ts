@@ -3,9 +3,11 @@ import { json } from "body-parser";
 import express, { Response, Request, Express, NextFunction } from "express";
 import * as http from "http";
 import { useLog } from "../lib/log";
-import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import "reflect-metadata";
+import { IRouterConfig } from "../controllers/router.interface";
+import { authMiddleware } from "./middlewares/authMiddleware";
 
 const log = useLog({
   dirname: __dirname,
@@ -16,53 +18,23 @@ interface IController {
   setup(app: Express): void;
 }
 
-const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
-
 export class Server {
   private readonly port: number = 5012;
   private app: Express;
   private server?: http.Server;
 
-  constructor(controllers: IController[], swaggerController: IController) {
+  constructor(routers: IRouterConfig[], swaggerController: IController) {
     this.app = express();
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
-    // this.app.use(this.authMiddleware);
-    controllers.forEach((controller) => {
-      controller.setup(this.app);
+
+    this.app.use(authMiddleware);
+    routers.forEach((router) => {
+      this.app.use(router.path, router.router);
     });
     this.app.use(this.clientErrorHandler);
-  }
-
-  async authMiddleware(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (["/sharkio/api/auth"].includes(req.path)) {
-        return next();
-      }
-      const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
-      const { data: user, error } = await supabaseClient.auth.getUser(
-        access_token,
-      );
-
-      if (error || !user) {
-        res.setHeader(
-          "Set-Cookie",
-          `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
-        );
-        res.sendStatus(401);
-      } else {
-        res.locals.auth = user;
-        next();
-      }
-    } catch (err) {
-      // res.setHeader(
-      //   "Set-Cookie",
-      //   `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`
-      // );
-      res.sendStatus(401);
-    }
   }
 
   clientErrorHandler(

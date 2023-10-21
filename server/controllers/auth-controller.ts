@@ -1,6 +1,8 @@
+import env from "dotenv/config";
 import { Express, NextFunction, Request, Response } from "express";
 import Router from "express-promise-router";
 import { useLog } from "../lib/log";
+import { IRouterConfig } from "./router.interface";
 
 const log = useLog({
   dirname: __dirname,
@@ -12,20 +14,35 @@ const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
 export class AuthController {
   constructor(private readonly baseUrl: string = "/api/auth") {}
 
-  setup(app: Express) {
+  getRouter(): IRouterConfig {
     const router = Router();
+
     /**
      * @openapi
-     * /api/auth:
-     *   get:
-     *     tags:
-     *       - auth
-     *     description: Handles cookies for the client
-     *     responses:
-     *       200:
-     *         description: Return a resopnse with the cookie
-     *       401:
-     *         description: Clear the cookie
+     *  /sharkio/api/auth:
+     *     post:
+     *       tags:
+     *         - auth
+     *       description: Handles cookies for the client
+     *       requestBody:
+     *         description: auth request body
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 event:
+     *                   type: string
+     *                 session:
+     *                   type: object
+     *                   properties:
+     *                     access_token:
+     *                       type: string
+     *       responses:
+     *         200:
+     *           description: Return a resopnse with the cookie
+     *         401:
+     *           description: Clear the cookie
      */
     router.post(
       "/sharkio/api/auth",
@@ -41,7 +58,7 @@ export class AuthController {
           switch (event) {
             case "SIGNED_IN": {
               // Set the JWT cookie
-              res.cookie(cookieKey, session.access_token, {
+              res.cookie("sharkio-token", session.access_token, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "lax",
@@ -72,6 +89,6 @@ export class AuthController {
       },
     );
 
-    app.use(router);
+    return { router, path: "" };
   }
 }

@@ -15,7 +15,6 @@ import { useAuthStore } from "../../stores/authStore";
 import { SnifferConfig, SnifferCreateConfig } from "../../types/types";
 import styles from "./config-card.module.scss";
 import { ProxyConfig } from "./ProxyConfig";
-import { useRef } from "react";
 
 export type SnifferConfigRow = {
   isNew: boolean;
@@ -151,6 +150,9 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       id: config.id,
     };
     setIsLoadingEdit(true);
+
+    await createSniffer(saveConfig);
+    saveConfig["id"] = saveConfig["name"];
     await createSniffer(saveConfig)
       .then(() => {
         loadData();
