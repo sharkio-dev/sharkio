@@ -1,26 +1,25 @@
-import ApiKeyDataLayer from "../../model/apikeys/apiKeys";
+import ApiKeyRepository from "../../model/apikeys/apiKeys.model";
 
 class APIKeysService {
-  private apiKeyDataLayer: ApiKeyDataLayer;
-
+  repository: ApiKeyRepository;
   constructor() {
-    this.apiKeyDataLayer = new ApiKeyDataLayer();
+    this.repository = new ApiKeyRepository();
   }
 
   getAll(userId: string) {
-    return this.apiKeyDataLayer.getAll(userId);
+    return this.repository.getAll(userId);
   }
 
   add(userId: string, name: string) {
-    return this.apiKeyDataLayer.add(userId, name);
+    return this.repository.add(userId, name);
   }
 
   remove(userId: string, apiKey: string) {
-    return this.apiKeyDataLayer.remove(userId, apiKey);
+    return this.repository.remove(userId, apiKey);
   }
 
   update(userId: string, apiKey: string, name: string) {
-    return this.apiKeyDataLayer.update(userId, apiKey, name);
+    return this.repository.update(userId, apiKey, name);
   }
 }
 
