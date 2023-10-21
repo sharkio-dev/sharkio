@@ -11,8 +11,9 @@ const options = {
   },
   apis: [
     "./controllers/mock-manager-controller.ts",
-    "./controller/sniffer-manager-controller.ts",
-    "./controller/collection-manager-controller.ts",
+    "./controllers/sniffer.controller.ts",
+    "./controllers/collection-manager-controller.ts",
+    "./controllers/auth-controller.ts",
   ],
 };
 

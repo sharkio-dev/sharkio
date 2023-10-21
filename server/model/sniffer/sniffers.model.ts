@@ -1,6 +1,6 @@
-import { Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, Repository } from "typeorm";
 import { useLog } from "../../lib/log";
-import { SnifferConfig } from "../../types";
+import { DataSource } from "typeorm";
 
 const log = useLog({
   dirname: __dirname,
@@ -8,18 +8,37 @@ const log = useLog({
 });
 
 export class SnifferRepository {
-  constructor() {}
+  repository: Repository<Sniffer>;
 
-  // async getAllUsersSniffers() {}
-  // async getUserSniffers() {}
-  // async update() {}
-  // async addSniffer() {}
-  // async removeSniffer() {}
-  // async setIsStarted() {}
+  constructor(private readonly appDataSource: DataSource) {
+    this.repository = appDataSource.manager.getRepository(Sniffer);
+  }
+
+  findByUserId(userId: string) {
+    return this.repository.findBy({ userId });
+  }
 }
 
 @Entity()
 export class Sniffer {
   @PrimaryColumn()
   id: number;
+
+  @Column()
+  name: string;
+
+  @Column({ name: "created_at" })
+  createdAt: Date;
+
+  @Column({ name: "updated_at" })
+  updatedAt: Date;
+
+  @Column()
+  port: number;
+
+  @Column({ name: "downstream_url" })
+  downstreamUrl: string;
+
+  @Column({ name: "user_id" })
+  userId: string;
 }
