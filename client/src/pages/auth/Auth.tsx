@@ -14,6 +14,9 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session == null) {
+        return;
+      }
       setSession(session);
       const userDetails = session?.user.user_metadata;
 
