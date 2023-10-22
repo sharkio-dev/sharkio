@@ -45,9 +45,11 @@ class ApiKeyRepository {
   }
 
   add(userId: string, name?: string) {
+    console.log("add", userId, name);
     const user = new ApiKey();
     user.name = name || "";
     user.userId = userId;
+    user.status = ApiKeyStatus.ACTIVE;
     user.key = crypto.randomBytes(32).toString("hex");
     return this.repository.save(user);
   }

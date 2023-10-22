@@ -3,19 +3,19 @@ import ApiKeyRepository from "../../model/apikeys/apiKeys.model";
 class APIKeysService {
   constructor(private readonly repository: ApiKeyRepository) {}
 
-  getAll(userId: string) {
+  async getAll(userId: string) {
     return this.repository.getAll(userId);
   }
 
-  add(userId: string, name: string) {
+  async add(userId: string, name: string) {
     return this.repository.add(userId, name);
   }
 
-  remove(userId: string, apiKey: string) {
+  async remove(userId: string, apiKey: string) {
     return this.repository.remove(userId, apiKey);
   }
 
-  update(userId: string, apiKey: string, name: string) {
+  async update(userId: string, apiKey: string, name: string) {
     return this.repository.update(userId, apiKey, name);
   }
 }

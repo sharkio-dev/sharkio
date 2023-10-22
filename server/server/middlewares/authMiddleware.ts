@@ -23,6 +23,7 @@ export const authMiddleware = async (
     );
 
     if (error || !user) {
+      console.error(error);
       res.setHeader(
         "Set-Cookie",
         `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
@@ -33,6 +34,7 @@ export const authMiddleware = async (
       next();
     }
   } catch (err) {
+    console.error(err);
     res.setHeader(
       "Set-Cookie",
       `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
