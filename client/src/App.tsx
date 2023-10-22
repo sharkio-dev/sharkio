@@ -1,5 +1,5 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
@@ -17,11 +17,43 @@ import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
 import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
-import Footer from "./components/footer/footer";
 import APIKeys from "./pages/api-keys/api-keys";
+import { useAuthStore } from "./stores/authStore";
+import { supabaseClient } from "./utils/supabase-auth";
+import { setAuthCookie } from "./api/api";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
+  const { signIn } = useAuthStore();
+
+  useEffect(() => {
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session == null) {
+        return;
+      }
+      const userDetails = session?.user.user_metadata;
+
+      signIn({
+        id: session?.user.id ?? "",
+        fullName: userDetails?.full_name,
+        email: userDetails?.email,
+        profileImg: userDetails?.avatar_url,
+      });
+    });
+
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      setAuthCookie(
+        session ? event : "SIGNED_OUT", // Sign the user out if the session is null (ignore other events)
+        session,
+      ).then((res) => {
+        if (!res.ok) return;
+      });
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const theme = createTheme({
     palette: {
@@ -69,8 +101,6 @@ function App(): React.JSX.Element {
               element={
                 <PageTemplate>
                   <GettingStarted />
-                  <AuthUI />
-                  <Footer />
                 </PageTemplate>
               }
             />

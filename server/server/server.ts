@@ -1,6 +1,5 @@
-import env from "dotenv/config";
 import { json } from "body-parser";
-import express, { Response, Request, Express, NextFunction } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
 import { useLog } from "../lib/log";
 import cookieParser from "cookie-parser";
@@ -8,6 +7,7 @@ import cors from "cors";
 import "reflect-metadata";
 import { IRouterConfig } from "../controllers/router.interface";
 import { authMiddleware } from "./middlewares/authMiddleware";
+import { logMiddleware } from "./middlewares/logMiddleware";
 
 const log = useLog({
   dirname: __dirname,
@@ -25,6 +25,7 @@ export class Server {
 
   constructor(routers: IRouterConfig[], swaggerController: IController) {
     this.app = express();
+    this.app.use(logMiddleware);
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());

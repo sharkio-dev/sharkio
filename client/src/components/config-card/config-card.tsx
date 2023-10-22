@@ -48,7 +48,8 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
     return getSniffers()
       .then((res) => {
         const configs: SnifferConfigRow[] = res.data.map((config) => ({
-          ...config,
+          config,
+          isStarted: false,
           isNew: false,
           isEditing: false,
           isCollapsed: true,
@@ -143,16 +144,13 @@ export const ConfigCard: React.FC<IConfigCardProps> = ({ className }) => {
       });
       return;
     }
-    const saveConfig: SnifferCreateConfig = {
+    const saveConfig: Omit<SnifferCreateConfig, "id"> = {
       name: config.name ?? "",
       port: config.port,
       downstreamUrl: config.downstreamUrl,
-      id: config.id,
     };
     setIsLoadingEdit(true);
 
-    await createSniffer(saveConfig);
-    saveConfig["id"] = saveConfig["name"];
     await createSniffer(saveConfig)
       .then(() => {
         loadData();

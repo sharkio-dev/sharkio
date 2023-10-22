@@ -13,7 +13,6 @@ export const Navbar: React.FC = () => {
   const { mode, toggleColorMode } = useThemeStore();
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const disablesupabase = import.meta.env.VITE_DISABLE_SUPABASE;
   const [starCount, setStarCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -30,9 +29,7 @@ export const Navbar: React.FC = () => {
       });
   }, []);
 
-  const isLoggedOut = disablesupabase
-    ? false
-    : user == null || user.email == null;
+  const isLoggedOut = user == null || user.email == null;
 
   return (
     <AppBar position="relative">

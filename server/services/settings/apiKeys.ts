@@ -1,10 +1,7 @@
 import ApiKeyRepository from "../../model/apikeys/apiKeys.model";
 
 class APIKeysService {
-  repository: ApiKeyRepository;
-  constructor() {
-    this.repository = new ApiKeyRepository();
-  }
+  constructor(private readonly repository: ApiKeyRepository) {}
 
   getAll(userId: string) {
     return this.repository.getAll(userId);

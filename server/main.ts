@@ -1,4 +1,4 @@
-import env from "dotenv";
+import "dotenv/config";
 import { AuthController } from "./controllers/auth-controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
@@ -8,19 +8,22 @@ import "reflect-metadata";
 import { SnifferRepository } from "./model/sniffer/sniffers.model";
 import { SnifferManager } from "./services/sniffer-manager/sniffer-manager";
 import { getAppDataSource } from "./server/AppDataSource";
+import ApiKeyRepository from "./model/apikeys/apiKeys.model";
+import APIKeysService from "./services/settings/apiKeys";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  env.config({});
   const appDataSource = await getAppDataSource();
 
   const snifferRepository = new SnifferRepository(appDataSource);
 
   const snifferManager = new SnifferManager(snifferRepository);
+  const apiKeyRepository = new ApiKeyRepository(appDataSource);
+  const apiKeyService = new APIKeysService(apiKeyRepository);
 
-  const settingsController = new SettingsController();
+  const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController();
   const snifferController = new SnifferController(snifferManager);
   const swaggerUi = new SwaggerUiController();

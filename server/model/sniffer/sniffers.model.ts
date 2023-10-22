@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryColumn, Repository } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  Repository,
+} from "typeorm";
 import { useLog } from "../../lib/log";
 import { DataSource } from "typeorm";
 
@@ -21,8 +27,8 @@ export class SnifferRepository {
 
 @Entity()
 export class Sniffer {
-  @PrimaryColumn()
-  id: number;
+  @PrimaryGeneratedColumn()
+  id: string;
 
   @Column()
   name: string;

@@ -1,51 +1,15 @@
 import { Typography } from "@mui/material";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { Session } from "@supabase/supabase-js";
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren } from "react";
 import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./auth.module.scss";
-import { setAuthCookie } from "../../api/api";
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>();
-  const { signIn } = useAuthStore();
+  const { user } = useAuthStore();
 
-  useEffect(() => {
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      const userDetails = session?.user.user_metadata;
-
-      signIn({
-        id: session?.user.id ?? "",
-        fullName: userDetails?.full_name,
-        email: userDetails?.email,
-        profileImg: userDetails?.avatar_url,
-      });
-    });
-
-    const {
-      data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-
-      setAuthCookie(
-        session ? event : "SIGNED_OUT", // Sign the user out if the session is null (ignore other events)
-        session,
-      ).then((res) => {
-        if (!res.ok) return;
-      });
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // if (disableSupabase) {
-  //   return <>{children}</>;
-  // }
-
-  if (!session) {
+  if (user?.email == null || user?.id == null) {
     return (
       <div className={styles.authContainer}>
         <div className={styles.authHeader}>

@@ -1,7 +1,4 @@
 import z from "zod";
-import { SnifferConfig } from "../types/types";
-
-export type SnifferConfigSetup = SnifferConfig & { isStarted: boolean };
 
 const snifferConfigValidator = z.object({
   name: z.string().nullable().optional(),

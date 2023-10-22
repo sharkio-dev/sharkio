@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryColumn, Repository } from "typeorm";
 import crypto from "crypto";
 import { getAppDataSource } from "../../server/AppDataSource";
+import { DataSource } from "typeorm/browser";
 
 enum ApiKeyStatus {
   ACTIVE = "ACTIVE",
@@ -27,11 +28,8 @@ export class ApiKey {
 
 class ApiKeyRepository {
   repository: Repository<ApiKey>;
-
-  constructor() {
-    getAppDataSource().then((dataSource) => {
-      this.repository = dataSource.getRepository(ApiKey);
-    });
+  constructor(private readonly appDataSource: DataSource) {
+    this.repository = appDataSource.manager.getRepository(ApiKey);
   }
 
   getAll(userId: string) {
