@@ -1,15 +1,13 @@
 import { Typography } from "@mui/material";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { Session } from "@supabase/supabase-js";
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren } from "react";
 import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./auth.module.scss";
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>();
-  const { signIn, user } = useAuthStore();
+  const { user } = useAuthStore();
 
   if (user?.email == null || user?.id == null) {
     return (
