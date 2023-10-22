@@ -54,7 +54,7 @@ export class AuthController {
           } = req.body;
 
           log.debug("Auth event fired");
-          log.debug(JSON.stringify({ event, session }));
+          log.debug(JSON.stringify({ event }));
           switch (event) {
             case "SIGNED_IN": {
               // Set the JWT cookie
@@ -74,6 +74,9 @@ export class AuthController {
               );
               res.sendStatus(200);
               return;
+            }
+            case "INITIAL_SESSION": {
+              res.sendStatus(200);
             }
             default:
               res.sendStatus(500);
