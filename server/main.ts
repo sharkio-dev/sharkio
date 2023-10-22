@@ -1,4 +1,4 @@
-import env from "dotenv";
+import "dotenv/config";
 import { AuthController } from "./controllers/auth-controller";
 // import { CollectionManagerController } from "./controllers/collection-manager-controller";
 // import { MockManagerController } from "./controllers/mock-manager-controller";
@@ -17,13 +17,11 @@ export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
-  env.config({});
-
   const appDataSource = new DataSource({
     type: "postgres",
     url: process.env.DATABASE_URL,
     synchronize: false,
-    logging: true,
+    logging: false,
     entities: [Sniffer],
     subscribers: [],
     migrations: [],

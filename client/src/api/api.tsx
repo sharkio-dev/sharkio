@@ -1,12 +1,12 @@
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import axios from "axios";
 import {
   Collection,
   InterceptedRequest,
   Invocation,
-  Sniffer,
+  SnifferConfig,
   SnifferCreateConfig,
 } from "../types/types";
-import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 export const setAuthCookie = (
   event: AuthChangeEvent,
@@ -22,7 +22,7 @@ export const setAuthCookie = (
 
 const serverUrl = import.meta.env.VITE_SERVER_URL ?? "";
 
-export const createSniffer = (config: SnifferCreateConfig) => {
+export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return axios.post(serverUrl + "/sharkio/sniffer", JSON.stringify(config), {
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export const createSniffer = (config: SnifferCreateConfig) => {
 };
 
 export const getSniffers = () => {
-  return axios.get<Sniffer[]>(serverUrl + "/sharkio/sniffer");
+  return axios.get<SnifferConfig[]>(serverUrl + "/sharkio/sniffer");
 };
 
 export const getSniffer = (port: number) => {
@@ -46,8 +46,8 @@ export const startSniffer = async (id: string) => {
   return await axios.post(serverUrl + `/sharkio/sniffer/${id}/actions/start`);
 };
 
-export const deleteSniffer = async (port: number) => {
-  return await axios.delete(serverUrl + `/sharkio/sniffer/${port}`);
+export const deleteSniffer = async (id: string) => {
+  return await axios.delete(serverUrl + `/sharkio/sniffer/${id}`);
 };
 
 export const editSniffer = async (newConfig: SnifferCreateConfig) => {
