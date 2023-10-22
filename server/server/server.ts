@@ -1,13 +1,11 @@
-import env from "dotenv/config";
 import { json } from "body-parser";
-import express, { Response, Request, Express, NextFunction } from "express";
-import * as http from "http";
-import { useLog } from "../lib/log";
-import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import express, { Express, NextFunction, Request, Response } from "express";
+import * as http from "http";
 import "reflect-metadata";
 import { IRouterConfig } from "../controllers/router.interface";
+import { useLog } from "../lib/log";
 import { authMiddleware } from "./middlewares/authMiddleware";
 import { logMiddleware } from "./middlewares/logMiddleware";
 

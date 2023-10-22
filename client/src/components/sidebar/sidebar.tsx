@@ -43,11 +43,13 @@ const Toggle: React.FC<{
     </div>
   );
 };
+
 interface IMenuItem {
   to: string;
   title: string;
   Icon: React.FC;
 }
+
 const menus: IMenuItem[] = [
   { to: routes.HOME, title: "Home", Icon: Home },
   { to: routes.CONFIG, title: "Sniffers", Icon: SettingsInputComponentIcon },
