@@ -19,7 +19,6 @@ export const EditTokenModal = ({
 }: EditTokenModalProps) => {
   const [newName, setNewName] = React.useState<string>(name);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  console.log(newName);
 
   const submit = useCallback(() => {
     editKey(keyId, newName)

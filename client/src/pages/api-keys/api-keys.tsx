@@ -22,7 +22,6 @@ function APIKeys() {
   const updateKeys = () => {
     getKeys()
       .then((res) => {
-        console.log(res.data);
         setKeys(res.data || []);
       })
       .catch((err) => {
@@ -38,7 +37,6 @@ function APIKeys() {
   const invokeKey = (id: string) => {
     deleteKey(id)
       .then(() => {
-        setKeys(keys.filter((key) => key.id !== id));
         showSnackbar("API key deleted successfully", "success");
         updateKeys();
       })

@@ -14,21 +14,21 @@ class SettingsController {
   getRouter() {
     const router = express.Router();
 
-    router.get("/sharkio/settings/api-keys", async (req, res) => {
+    router.get("", async (req, res) => {
       const user = res.locals.auth;
       console.log(user.user.id);
       const keys = await this.apiKeyService.getAll(user.user.id);
       return res.status(200).send(keys);
     });
 
-    router.post("/sharkio/settings/api-keys", async (req, res) => {
+    router.post("", async (req, res) => {
       const { name } = req.body;
       const user = res.locals.auth;
       const key = await this.apiKeyService.add(user.user.id, name);
       return res.status(200).send(key);
     });
 
-    router.delete("/sharkio/settings/api-keys/:id", async (req, res) => {
+    router.delete("/:id", async (req, res) => {
       const { id: apiKeyId } = req.params;
       const user = res.locals.auth;
 
@@ -36,7 +36,7 @@ class SettingsController {
       return res.sendStatus(200);
     });
 
-    router.put("/sharkio/settings/api-keys/:id", async (req, res) => {
+    router.put("/:id", async (req, res) => {
       const { id: apiKeyId } = req.params;
       const { name } = req.body;
       const user = res.locals.auth;
@@ -44,7 +44,7 @@ class SettingsController {
       await this.apiKeyService.update(user.user.id, apiKeyId, name);
       return res.sendStatus(200);
     });
-    return { router, path: "" };
+    return { router, path: "/sharkio/settings/api-keys" };
   }
 }
 

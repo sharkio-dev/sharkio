@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./login-component.module.scss";
+import { routes } from "../../constants/routes";
 
 const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
@@ -31,7 +32,7 @@ const LoginComponent: React.FC = () => {
     switch (setting) {
       case "API keys": {
         setLoading(false);
-        navigate("/api-keys");
+        navigate(routes.API_KEYS);
         break;
       }
       case "Logout": {
@@ -44,16 +45,17 @@ const LoginComponent: React.FC = () => {
       }
       case "Login": {
         setLoading(false);
-        navigate("/login");
+        navigate(routes.LOGIN);
         break;
       }
       case "Signup": {
         setLoading(false);
-        navigate("/signup");
+        navigate(routes.SIGNUP);
         break;
       }
       default: {
         setLoading(false);
+        break;
       }
     }
   };

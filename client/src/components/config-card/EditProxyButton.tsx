@@ -14,7 +14,6 @@ export const EditProxyButton = ({
   isEditing: boolean;
   isLoading?: boolean;
 }) => {
-  console.log(isEditing);
   return (
     <>
       {isEditing && (

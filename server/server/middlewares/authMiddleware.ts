@@ -1,8 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import "reflect-metadata";
 import { supabaseClient } from "../../lib/supabase-client/supabase-client";
+import { useLog } from "../../lib/log";
 
 const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export const authMiddleware = async (
   req: Request,
@@ -23,7 +28,7 @@ export const authMiddleware = async (
     );
 
     if (error || !user) {
-      console.error(error);
+      log.error(error);
       res.setHeader(
         "Set-Cookie",
         `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
@@ -34,7 +39,7 @@ export const authMiddleware = async (
       next();
     }
   } catch (err) {
-    console.error(err);
+    log.error(err);
     res.setHeader(
       "Set-Cookie",
       `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,

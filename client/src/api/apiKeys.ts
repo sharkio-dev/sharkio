@@ -1,17 +1,17 @@
-import axios from "axios";
+import { BackendAxios } from "./backendAxios";
 
 export const getKeys = () => {
-  return axios.get("/sharkio/settings/api-keys");
+  return BackendAxios.get("/settings/api-keys");
 };
 
 export const postKey = (name: string) => {
-  return axios.post("/sharkio/settings/api-keys", { name });
+  return BackendAxios.post("/settings/api-keys", { name });
 };
 
 export const deleteKey = (id: string) => {
-  return axios.delete(`/sharkio/settings/api-keys/${id}`);
+  return BackendAxios.delete(`/settings/api-keys/${id}`);
 };
 
 export const editKey = (id: string, name: string) => {
-  return axios.put(`/sharkio/settings/api-keys/${id}`, { name });
+  return BackendAxios.put(`/settings/api-keys/${id}`, { name });
 };

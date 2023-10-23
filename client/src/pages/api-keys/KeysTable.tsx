@@ -16,10 +16,7 @@ type KeysTableProps = {
 };
 export const KeysTable = ({ keys, invokeKey, onEditKey }: KeysTableProps) => {
   return (
-    <TableContainer
-      sx={{ width: "75%", alignSelf: "center" }}
-      className="s:w-3/4"
-    >
+    <TableContainer sx={{ width: "75%", alignSelf: "center" }}>
       <Table>
         <TableHead>
           <TableRow>

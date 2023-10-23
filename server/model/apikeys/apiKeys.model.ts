@@ -45,7 +45,6 @@ class ApiKeyRepository {
   }
 
   add(userId: string, name?: string) {
-    console.log("add", userId, name);
     const user = new ApiKey();
     user.name = name || "";
     user.userId = userId;
