@@ -63,6 +63,13 @@ class ApiKeyRepository {
   update(userId: string, apiKeyId: string, name: string) {
     return this.repository.update({ userId, id: apiKeyId }, { name });
   }
+
+  async validate(key: string, userId: string) {
+    const res = await this.repository.findOne({
+      where: { key, status: ApiKeyStatus.ACTIVE, userId },
+    });
+    return !!res;
+  }
 }
 
 export default ApiKeyRepository;

@@ -10,6 +10,7 @@ import { SnifferManager } from "./services/sniffer-manager/sniffer-manager";
 import { getAppDataSource } from "./server/AppDataSource";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import APIKeysService from "./services/settings/apiKeys";
+import CLIController from "./controllers/cli-controller";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -26,6 +27,7 @@ async function main() {
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController();
   const snifferController = new SnifferController(snifferManager);
+  const cliController = new CLIController(apiKeyService);
   const swaggerUi = new SwaggerUiController();
 
   const snifferManagerServer = new Server(
@@ -33,6 +35,7 @@ async function main() {
       authController.getRouter(),
       snifferController.getRouter(),
       settingsController.getRouter(),
+      cliController.getRouter(),
     ],
     swaggerUi,
   );

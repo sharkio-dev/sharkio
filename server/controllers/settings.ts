@@ -1,7 +1,6 @@
 import { useLog } from "../lib/log";
 import express from "express";
 import APIKeysService from "../services/settings/apiKeys";
-import ApiKeyRepository from "../model/apikeys/apiKeys.model";
 
 const log = useLog({
   dirname: __dirname,
