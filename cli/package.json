@@ -1,0 +1,31 @@
+{
+  "name": "sharkio-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "type": "module",
+  "bin": {
+    "sharkio": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup index.cjs --format cjs,esm --minify --clean --legacy-output --out-dir dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "npx changeset"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/inquirer": "^9.0.6",
+    "@types/yargs": "^17.0.29",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.26.2",
+    "axios": "^1.5.1",
+    "commander": "^11.1.0",
+    "inquirer": "^9.2.11",
+    "tsup": "^7.2.0"
+  }
+}
