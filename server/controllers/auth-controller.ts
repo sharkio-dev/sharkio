@@ -77,9 +77,12 @@ export class AuthController {
             }
             case "INITIAL_SESSION": {
               res.sendStatus(200);
+              return;
             }
-            default:
+            default: {
               res.sendStatus(500);
+              return;
+            }
           }
         } catch (e) {
           log.error("An unexpected error occured", {

@@ -10,7 +10,10 @@
 
 .snifferTitle {
   margin-bottom: 15px;
-  display: block;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 .inputs {
   .snifferTitle {

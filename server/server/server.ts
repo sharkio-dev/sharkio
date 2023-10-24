@@ -1,11 +1,11 @@
 import { json } from "body-parser";
-import cookieParser from "cookie-parser";
-import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
+import { useLog } from "../lib/log";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import "reflect-metadata";
 import { IRouterConfig } from "../controllers/router.interface";
-import { useLog } from "../lib/log";
 import { authMiddleware } from "./middlewares/authMiddleware";
 import { logMiddleware } from "./middlewares/logMiddleware";
 
@@ -30,6 +30,7 @@ export class Server {
     this.app.use(json());
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
+
     this.app.use(authMiddleware);
     routers.forEach((router) => {
       this.app.use(router.path, router.router);
