@@ -4,11 +4,12 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import ServerAxios from "./serverAxios.js";
+import chalk from "chalk";
 
-async function login() {
+async function login({ reset }) {
   let data = loadLoginFromFile();
 
-  if (!data?.email || !data?.token) {
+  if (reset || !data?.email || !data?.token) {
     data = await inquirer.prompt([
       {
         type: "input",
@@ -24,14 +25,22 @@ async function login() {
         validate: () => true,
       },
     ]);
-    const res = await ServerAxios.post("/login", data);
+    const res = await ServerAxios.post("/login", data).catch((err) => {
+      return err.response;
+    });
     if (res.status !== 200) {
-      console.log("Login failed");
+      const errorMessage = chalk.red.bold(
+        "\n🚫 Login failed. \n\nSomething seems fishy... 🐟\n",
+      );
+      console.log(errorMessage);
       return;
     }
 
     saveLoginToFile(data.email, data.token);
-    console.log("Login successful");
+    const message = chalk.green.bold(
+      "\n🎉 Login succeeded! \n\nWelcome aboard, Sharkio sailor! 🦈\n",
+    );
+    console.log(message);
   }
 }
 
