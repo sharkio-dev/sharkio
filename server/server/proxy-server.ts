@@ -28,11 +28,11 @@ export class ProxyServer {
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());
-    // this.app.use(
-    //   this.requestInterceptorMiddleware.intercept.bind(
-    //     this.requestInterceptorMiddleware
-    //   )
-    // );
+    this.app.use(
+      this.requestInterceptorMiddleware.intercept.bind(
+        this.requestInterceptorMiddleware,
+      ),
+    );
     this.app.use(this.proxyMiddleware.getMiddleware());
   }
 
