@@ -1,11 +1,16 @@
 import { loadLoginFromFile } from "./utils.js";
+import chalk from "chalk";
 
 const isLoggedInWrapper = (fn) => {
   return (...args) => {
     const data = loadLoginFromFile();
 
     if (!data) {
-      console.log("Please login first:\nsharkio login");
+      const promptMessage =
+        chalk.cyan.bold("\nReady to ride the Sharkio waves? 🌊") +
+        chalk.cyan("\nBefore you dive in, remember to:\n") +
+        chalk.whiteBright.bold("\n> sharkio login\n");
+      console.log(promptMessage);
       return;
     }
 

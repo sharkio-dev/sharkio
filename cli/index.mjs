@@ -20,8 +20,8 @@ const printGreetings = () => {
     chalk.blueBright.bold("make a splash! 🌊");
 
   const msgBox = boxen(greeting, boxenOptions);
+  console.log(description);
   console.log(msgBox);
-  console.log(description, "\n");
 };
 
 const main = async () => {
