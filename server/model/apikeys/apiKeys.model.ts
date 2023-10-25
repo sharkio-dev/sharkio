@@ -43,6 +43,12 @@ class ApiKeyRepository {
       });
   }
 
+  get(key: string) {
+    return this.repository.findOne({
+      where: { key, status: ApiKeyStatus.ACTIVE },
+    });
+  }
+
   add(userId: string, name?: string) {
     const user = new ApiKey();
     user.name = name || "";

@@ -15,6 +15,10 @@ class APIKeysService {
     return this.repository.add(userId, name);
   }
 
+  async get(key: string) {
+    return this.repository.get(key);
+  }
+
   async remove(userId: string, apiKey: string) {
     return this.repository.remove(userId, apiKey);
   }

@@ -19,6 +19,10 @@ class UserRepository {
     return this.repository.findOne({ where: { email } });
   }
 
+  getById(id: string) {
+    return this.repository.findOne({ where: { id } });
+  }
+
   upsert(id: string, email: string) {
     return this.repository.save({ id, email });
   }

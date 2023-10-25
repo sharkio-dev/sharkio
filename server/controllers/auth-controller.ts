@@ -1,5 +1,5 @@
 import env from "dotenv/config";
-import { Express, NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Router from "express-promise-router";
 import { useLog } from "../lib/log";
 import { IRouterConfig } from "./router.interface";

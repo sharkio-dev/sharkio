@@ -31,7 +31,7 @@ async function main() {
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const snifferController = new SnifferController(snifferManager);
-  const cliController = new CLIController(apiKeyService);
+  const cliController = new CLIController(apiKeyService, userService);
   const swaggerUi = new SwaggerUiController();
 
   const snifferManagerServer = new Server(
