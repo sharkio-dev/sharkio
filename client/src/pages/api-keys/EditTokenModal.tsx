@@ -22,7 +22,7 @@ export const EditTokenModal = ({
 
   const submit = useCallback(() => {
     editKey(keyId, newName)
-      .then((res) => {
+      .then(() => {
         onSubmit();
         showSnackbar("API key edited successfully", "success");
         setNewName("");

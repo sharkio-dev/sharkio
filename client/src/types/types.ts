@@ -49,14 +49,8 @@ export type Mock = {
   status: number;
 };
 
-export type Service = {
-  name: string;
-  sniffer_id: string;
-  port: number;
-};
-
 export type ServiceMock = {
-  service: Service;
+  service: SnifferConfig;
   mocks: Mock[];
 };
 

@@ -79,7 +79,7 @@ const MocksPage: React.FC = () => {
                   handleEditClicked(mock, serviceMock.service.port)
                 }
                 onDeleteClick={() =>
-                  handleDeleteClicked(mock.id, serviceMock.service.sniffer_id)
+                  handleDeleteClicked(mock.id, serviceMock.service.id)
                 }
               />
             );
