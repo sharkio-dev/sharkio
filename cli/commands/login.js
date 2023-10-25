@@ -24,11 +24,15 @@ async function login() {
         validate: () => true,
       },
     ]);
-  }
-  const res = await ServerAxios.post("/login", data);
-  console.log({ ...res });
+    const res = await ServerAxios.post("/login", data);
+    if (res.status !== 200) {
+      console.log("Login failed");
+      return;
+    }
 
-  saveLoginToFile(res.email, res.token);
+    saveLoginToFile(data.email, data.token);
+    console.log("Login successful");
+  }
 }
 
 export default login;

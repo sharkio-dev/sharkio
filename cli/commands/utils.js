@@ -5,7 +5,7 @@ import ServerAxios from "./serverAxios.js";
 
 const saveLoginToFile = (email, token) => {
   const homeDirectory = os.homedir();
-  const configDirectory = path.join(homeDirectory, "sharkio");
+  const configDirectory = path.join(homeDirectory, ".sharkio");
   const configPath = path.join(configDirectory, "config.json");
 
   const configData = {
@@ -25,7 +25,7 @@ const saveLoginToFile = (email, token) => {
 
 const loadLoginFromFile = () => {
   const homeDirectory = os.homedir();
-  const configDirectory = path.join(homeDirectory, "sharkio");
+  const configDirectory = path.join(homeDirectory, ".sharkio");
   const configPath = path.join(configDirectory, "config.json");
 
   if (!fs.existsSync(configPath)) {

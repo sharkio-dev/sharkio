@@ -11,6 +11,8 @@ import { getAppDataSource } from "./server/AppDataSource";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import APIKeysService from "./services/settings/apiKeys";
 import CLIController from "./controllers/cli-controller";
+import UserRepository from "./model/user/user.model";
+import UserService from "./services/user/user";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -22,10 +24,12 @@ async function main() {
 
   const snifferManager = new SnifferManager(snifferRepository);
   const apiKeyRepository = new ApiKeyRepository(appDataSource);
-  const apiKeyService = new APIKeysService(apiKeyRepository);
+  const userRepository = new UserRepository(appDataSource);
+  const userService = new UserService(userRepository);
+  const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
 
   const settingsController = new SettingsController(apiKeyService);
-  const authController = new AuthController();
+  const authController = new AuthController(userService);
   const snifferController = new SnifferController(snifferManager);
   const cliController = new CLIController(apiKeyService);
   const swaggerUi = new SwaggerUiController();

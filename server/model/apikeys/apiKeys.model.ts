@@ -1,6 +1,5 @@
 import { Column, Entity, PrimaryColumn, Repository } from "typeorm";
 import crypto from "crypto";
-import { getAppDataSource } from "../../server/AppDataSource";
 import { DataSource } from "typeorm/browser";
 
 enum ApiKeyStatus {

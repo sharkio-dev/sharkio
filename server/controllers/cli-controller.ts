@@ -17,8 +17,9 @@ class CLIController {
       const { email, token } = req.body;
 
       const result = await this.apiKeyService.validate(token, email);
-      console.log({ result });
-
+      if (!result) {
+        return res.status(401).send({ message: "unauthorized" });
+      }
       return res.status(200).send({ message: "login" });
     });
 

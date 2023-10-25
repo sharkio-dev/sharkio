@@ -1,8 +1,11 @@
-import { supabaseClient } from "../../lib/supabase-client/supabase-client";
 import ApiKeyRepository from "../../model/apikeys/apiKeys.model";
+import UserRepository from "../../model/user/user.model";
 
 class APIKeysService {
-  constructor(private readonly repository: ApiKeyRepository) {}
+  constructor(
+    private readonly repository: ApiKeyRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async getAll(userId: string) {
     return this.repository.getAll(userId);
@@ -21,8 +24,11 @@ class APIKeysService {
   }
 
   async validate(key: string, email: string) {
-    // const res = await supabaseClient.auth.getUser(email);
-    console.log({ key, email });
+    const user = await this.userRepository.getByEmail(email);
+    if (!user) {
+      return false;
+    }
+    return await this.repository.validate(key, user.id);
   }
 }
 
