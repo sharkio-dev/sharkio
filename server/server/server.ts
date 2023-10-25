@@ -1,13 +1,13 @@
 import { json } from "body-parser";
-import express, { Express, NextFunction, Request, Response } from "express";
-import * as http from "http";
-import { useLog } from "../lib/log";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import express, { Express, NextFunction, Request, Response } from "express";
+import * as http from "http";
 import "reflect-metadata";
 import { IRouterConfig } from "../controllers/router.interface";
-import { authMiddleware } from "./middlewares/authMiddleware";
-import { logMiddleware } from "./middlewares/logMiddleware";
+import { useLog } from "../lib/log";
+import { authMiddleware } from "./middlewares/auth.middleware";
+import { logMiddleware } from "./middlewares/log.middleware";
 
 const log = useLog({
   dirname: __dirname,
@@ -30,7 +30,6 @@ export class Server {
     this.app.use(json());
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
-
     this.app.use(authMiddleware);
     routers.forEach((router) => {
       this.app.use(router.path, router.router);

@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { Sniffer } from "../model/sniffer/sniffers.model";
 import { ApiKey } from "../model/apikeys/apiKeys.model";
+import { InterceptedRequest } from "../model/request/request.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -10,8 +11,8 @@ export const getAppDataSource = async () => {
       type: "postgres",
       url: process.env.DATABASE_URL,
       synchronize: false,
-      logging: true,
-      entities: [Sniffer, ApiKey],
+      logging: false,
+      entities: [Sniffer, ApiKey, InterceptedRequest],
       subscribers: [],
       migrations: [],
     });

@@ -1,6 +1,6 @@
 import { useLog } from "../lib/log";
 import express from "express";
-import APIKeysService from "../services/settings/apiKeys";
+import APIKeysService from "../services/settings/api-keys";
 import ApiKeyRepository from "../model/apikeys/apiKeys.model";
 
 const log = useLog({
