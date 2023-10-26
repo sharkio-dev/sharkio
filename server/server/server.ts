@@ -30,6 +30,7 @@ export class Server {
     this.app.use(json());
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
+
     this.app.use(authMiddleware);
     routers.forEach((router) => {
       this.app.use(router.path, router.router);
