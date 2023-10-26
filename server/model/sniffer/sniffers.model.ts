@@ -1,12 +1,11 @@
 import {
   Column,
+  DataSource,
   Entity,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
 import { useLog } from "../../lib/log";
-import { DataSource } from "typeorm";
 
 const log = useLog({
   dirname: __dirname,
@@ -23,6 +22,10 @@ export class SnifferRepository {
   findByUserId(userId: string) {
     return this.repository.findBy({ userId });
   }
+  findBySubdomain(subdomain: string) {
+    //TODO change this to subdomain field
+    return this.repository.findOneBy({ name: subdomain });
+  }
 }
 
 @Entity()
@@ -38,9 +41,6 @@ export class Sniffer {
 
   @Column({ name: "updated_at" })
   updatedAt: Date;
-
-  @Column()
-  port: number;
 
   @Column({ name: "downstream_url" })
   downstreamUrl: string;

@@ -1,7 +1,7 @@
 import { Express, IRouter, Request, Response, Router } from "express";
 import { useLog } from "../lib/log";
 import { requestValidator } from "../lib/request-validator/request-validator";
-import { SnifferManager } from "../services/sniffer-manager/sniffer-manager";
+import { SnifferService } from "../services/sniffer/sniffer.service";
 import { portValidator } from "../lib/request-validator/general-validators";
 import { IRouterConfig } from "./router.interface";
 import PromiseRouter from "express-promise-router";
@@ -16,7 +16,7 @@ const log = useLog({
 
 export class SnifferController {
   constructor(
-    private readonly snifferManager: SnifferManager,
+    private readonly snifferManager: SnifferService,
     private readonly baseUrl: string = "/sharkio/sniffer",
   ) {}
 
