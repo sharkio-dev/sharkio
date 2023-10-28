@@ -53,7 +53,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
         ? methodsFilter.find((method) => method === req.method) !== undefined
         : true) &&
       (servicesFilter.length > 0
-        ? servicesFilter.find((service) => service === req.serviceId) !==
+        ? servicesFilter.find((service) => service === req.snifferId) !==
           undefined
         : true),
   );
@@ -143,20 +143,23 @@ const RequestCardGrouped: React.FC<RequestCardGroupedProps> = ({
           <>
             <List>
               {requests &&
-                requests.map((req) => (
-                  <RequestRow
-                    key={req.id}
-                    serviceId={req.serviceId}
-                    onRequestClicked={() => {
-                      onRequestClicked(req.id, req.serviceId);
-                    }}
-                    id={req.id}
-                    method={req.method}
-                    url={req.url}
-                    timestamp={req.lastInvocationDate}
-                    hitCount={req.hitCount}
-                  />
-                ))}
+                requests.map((req) => {
+                  debugger;
+                  return (
+                    <RequestRow
+                      key={req.id}
+                      snifferId={req.snifferId}
+                      onRequestClicked={() => {
+                        onRequestClicked(req.id, req.snifferId);
+                      }}
+                      id={req.id}
+                      method={req.method}
+                      url={req.url}
+                      timestamp={req.lastInvocationDate}
+                      hitCount={req.hitCount}
+                    />
+                  );
+                })}
             </List>
           </>
         )}
@@ -176,7 +179,7 @@ type Invocation = {
   timestamp: string;
   method: string;
   url: string;
-  serviceId: string;
+  snifferId: string;
   id: string;
 };
 
@@ -198,7 +201,7 @@ const RequestCardLive: React.FC<RequestCardLiveProps> = ({ requests }) => {
           timestamp: inv.timestamp,
           method: req.method,
           url: req.url,
-          serviceId: req.serviceId,
+          snifferId: req.snifferId,
           id: inv.id,
         });
       });
@@ -217,7 +220,7 @@ const RequestCardLive: React.FC<RequestCardLiveProps> = ({ requests }) => {
         {invocations.map((inv) => (
           <RequestRow
             key={inv.id}
-            serviceId={inv.serviceId}
+            snifferId={inv.snifferId}
             onRequestClicked={() => {
               // TODO: Add click handler
               console.log("clicked");

@@ -207,6 +207,36 @@ export class SnifferController {
             return res.sendStatus(500);
           }
         },
+      )
+      .get(
+        /**
+         * @openapi
+         * /sharkio/sniffer/:id:
+         *   get:
+         *     tags:
+         *      - sniffer
+         *     description: Get all sniffers for user
+         *     responses:
+         *       200:
+         *         description: Returns all sniffers
+         *       500:
+         *         description: Server error
+         */
+        requestValidator({
+          params: z.object({
+            id: z.string().uuid(),
+          }),
+        }),
+        async (req: Request, res: Response) => {
+          const snifferId = req.params.snifferId;
+          const userId = res.locals.auth.user.id;
+          const sniffer = await this.snifferManager.getSniffer(
+            userId,
+            snifferId,
+          );
+
+          res.json(sniffer);
+        },
       );
 
     return {

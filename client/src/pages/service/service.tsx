@@ -37,17 +37,17 @@ export const Service: React.FC = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const params = useParams();
 
-  const { port } = params;
+  const { id } = params;
 
   const [sniffer, setSniffer] = useState<Sniffer>();
 
   const loadData = useCallback(async () => {
     if (loading) return;
-    if (!port) return;
+    if (!id) return;
 
     setLoading(true);
 
-    await getSniffer(+port)
+    await getSniffer(+id)
       .then((res) => {
         setSniffer(res.data);
       })
@@ -55,7 +55,7 @@ export const Service: React.FC = () => {
         showSnackbar("Failed to get sniffer", "error");
       })
       .finally(() => setLoading(false));
-  }, [loading, port, showSnackbar]);
+  }, [loading, id, showSnackbar]);
 
   useEffect(() => {
     loadData();
@@ -170,7 +170,7 @@ export const Service: React.FC = () => {
                       editable={true}
                       loadData={loadData}
                       onEditClick={() => {
-                        setEditMock({ ...mock, port: +(port ?? 0) });
+                        setEditMock({ ...mock, port: +(id ?? 0) });
                         setEditOpen(true);
                       }}
                     />
