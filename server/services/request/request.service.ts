@@ -1,6 +1,13 @@
 import { RequestRepository } from "../../model/request/request.model";
 import { Request as ExpressRequest } from "express";
 
+type TreeNodeKey = string;
+interface RequestTreeNode {
+  name: TreeNodeKey;
+  callCount: number;
+  next?: Record<TreeNodeKey, RequestTreeNode>;
+}
+
 export class RequestService {
   constructor(private readonly repository: RequestRepository) {}
 
@@ -12,10 +19,62 @@ export class RequestService {
     });
   }
 
+  async getAll(snifferId: string) {
+    const requests = await this.repository.repository.find({
+      where: {
+        snifferId,
+      },
+    });
+
+    return requests;
+  }
+
+  async getRequestsTree(snifferId: string) {
+    const requests = await this.getAll(snifferId);
+    console.log("requests", requests);
+
+    const result = {
+      name: "/",
+      callCount: 0,
+    } as RequestTreeNode;
+
+    for (const request of requests) {
+      const url = new URL(request.url);
+      const pathParts = url.pathname.split("/");
+
+      // Ensure the URL path is mapped to the current leaf
+      let currentLevel = result;
+      for (const part of pathParts) {
+        // Ignore the main part of the URL because it represents root
+        if (part === "") {
+          continue;
+        }
+
+        if (currentLevel.next === undefined) {
+          currentLevel.next = {};
+        }
+
+        if (currentLevel.next[part] === undefined) {
+          currentLevel.next[part] = {
+            name: part,
+            callCount: 0,
+          };
+        }
+
+        currentLevel = currentLevel.next[part];
+      }
+
+      // Update the corresponding endpoint
+      ++currentLevel.callCount;
+    }
+
+    return result;
+  }
+
   async add(req: ExpressRequest, snifferId?: string, userId?: string) {
     const fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
 
-    const newRequest = await this.repository.repository.create({
+    const newRequest = this.repository.repository.create({
       url: fullUrl,
       body: req.body,
       headers: req.headers,
