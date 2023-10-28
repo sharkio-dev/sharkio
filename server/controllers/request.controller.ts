@@ -39,6 +39,14 @@ export class RequestController {
       },
     );
 
+    router.route("/:snifferId/requests-tree").get(async (req, res) => {
+      const result = await this.requestService.getRequestsTree(
+        req.params.snifferId,
+      );
+
+      res.status(200).send(result);
+    });
+
     return { router, path: this.baseUrl };
   }
 }

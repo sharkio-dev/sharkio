@@ -4,6 +4,7 @@ import { Request as ExpressRequest } from "express";
 type TreeNodeKey = string;
 interface RequestTreeNode {
   name: TreeNodeKey;
+  callCount: number;
   next?: Record<TreeNodeKey, RequestTreeNode>;
 }
 
@@ -30,9 +31,11 @@ export class RequestService {
 
   async getRequestsTree(snifferId: string) {
     const requests = await this.getAll(snifferId);
+    console.log("requests", requests);
 
     const result = {
       name: "/",
+      callCount: 0,
     } as RequestTreeNode;
 
     for (const request of requests) {
@@ -51,14 +54,18 @@ export class RequestService {
           currentLevel.next = {};
         }
 
-        if (currentLevel.next[part] !== undefined) {
+        if (currentLevel.next[part] === undefined) {
           currentLevel.next[part] = {
             name: part,
+            callCount: 0,
           };
         }
 
         currentLevel = currentLevel.next[part];
       }
+
+      // Update the corresponding endpoint
+      ++currentLevel.callCount;
     }
 
     return result;
