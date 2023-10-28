@@ -38,7 +38,7 @@ export const ProxyConfig = ({
   const navigateToSniffer = () => {
     navigate(
       generatePath(routes.SERVICE, {
-        port: sniffer.config.port,
+        id: sniffer.config.id,
       }),
     );
   };

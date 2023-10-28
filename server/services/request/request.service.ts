@@ -7,8 +7,16 @@ interface RequestTreeNode {
   next?: Record<TreeNodeKey, RequestTreeNode>;
 }
 
-class RequestService {
+export class RequestService {
   constructor(private readonly repository: RequestRepository) {}
+
+  async getByUser(userId: string) {
+    return this.repository.repository.find({
+      where: {
+        userId,
+      },
+    });
+  }
 
   async getAll(snifferId: string) {
     const requests = await this.repository.repository.find({

@@ -14,6 +14,7 @@ const options = {
     "./controllers/sniffer.controller.ts",
     "./controllers/collection-manager-controller.ts",
     "./controllers/auth-controller.ts",
+    "./controllers/request.controller.ts",
   ],
 };
 
