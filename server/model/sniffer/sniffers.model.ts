@@ -26,6 +26,10 @@ export class SnifferRepository {
     //TODO change this to subdomain field
     return this.repository.findOneBy({ name: subdomain });
   }
+
+  findByName(userId: string, name: string) {
+    return this.repository.findOne({ where: { userId, name } });
+  }
 }
 
 @Entity()

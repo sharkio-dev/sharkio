@@ -29,6 +29,8 @@ export class SnifferService {
       .where("id = :id AND userId = :userId", {
         id: newConfig.id,
         userId: newConfig.userId,
+        name: newConfig.name,
+        downstreamUrl: newConfig.downstreamUrl,
       })
       .execute();
   }
@@ -43,6 +45,9 @@ export class SnifferService {
 
   async findBySubdomain(subdomain: string) {
     return this.snifferRepository.findBySubdomain(subdomain);
+  }
+  async findByName(userId: string, name: string) {
+    return this.snifferRepository.findByName(userId, name);
   }
 
   async startSniffer(userId: string, id: string) {}

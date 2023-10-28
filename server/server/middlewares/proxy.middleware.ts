@@ -13,7 +13,7 @@ export class ProxyMiddleware {
 
   constructor(private readonly snifferService: SnifferService) {
     this.proxyMiddleware = createProxyMiddleware({
-      router: this.chooseRoute,
+      router: this.chooseRoute.bind(this),
       secure: false,
       logLevel: "debug",
       autoRewrite: true,

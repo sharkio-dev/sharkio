@@ -5,6 +5,10 @@ import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
+import APIKeysService from "./services/settings/apiKeys";
+import CLIController from "./controllers/cli-controller";
+import UserRepository from "./model/user/user.model";
+import UserService from "./services/user/user";
 import { RequestRepository } from "./model/request/request.model";
 import { SnifferRepository } from "./model/sniffer/sniffers.model";
 import { getAppDataSource } from "./server/app-data-source";
@@ -13,7 +17,6 @@ import { RequestInterceptorMiddleware } from "./server/middlewares/request-inter
 import { ProxyServer } from "./server/proxy-server";
 import { Server } from "./server/server";
 import RequestService from "./services/request/request.service";
-import APIKeysService from "./services/settings/api-keys";
 import { SnifferService } from "./services/sniffer/sniffer.service";
 import { RequestController } from "./controllers/request.controller";
 
@@ -24,14 +27,23 @@ async function main() {
   const appDataSource = await getAppDataSource();
   const snifferRepository = new SnifferRepository(appDataSource);
   const apiKeyRepository = new ApiKeyRepository(appDataSource);
+  const userRepository = new UserRepository(appDataSource);
+  const userService = new UserService(userRepository);
+  const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
+
+  const settingsController = new SettingsController(apiKeyService);
+  const authController = new AuthController(userService);
+
   const requestRepository = new RequestRepository(appDataSource);
 
   const snifferService = new SnifferService(snifferRepository);
-  const apiKeyService = new APIKeysService(apiKeyRepository);
   const requestService = new RequestService(requestRepository);
+  const cliController = new CLIController(
+    apiKeyService,
+    userService,
+    snifferService,
+  );
 
-  const settingsController = new SettingsController(apiKeyService);
-  const authController = new AuthController();
   const snifferController = new SnifferController(snifferService);
   const requestController = new RequestController(requestService);
   const swaggerUi = new SwaggerUiController();
@@ -52,6 +64,7 @@ async function main() {
       authController.getRouter(),
       snifferController.getRouter(),
       settingsController.getRouter(),
+      cliController.getRouter(),
       requestController.getRouter(),
     ],
     swaggerUi,
