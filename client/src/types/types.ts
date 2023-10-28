@@ -23,7 +23,7 @@ export type Invocation = {
 
 export type InterceptedRequest = {
   id: string;
-  serviceId: string;
+  snifferId: string;
   url: string;
   method: string;
   hitCount: number;

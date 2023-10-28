@@ -6,7 +6,7 @@ import { HttpMethod } from "../http-method/http-method";
 import { ServiceName } from "../service-name/service-name";
 import styles from "./request-row.module.scss";
 interface IRequestRowProps {
-  serviceId: SnifferConfig["id"];
+  snifferId: SnifferConfig["id"];
   onRequestClicked: (requestId: InterceptedRequest["id"]) => void;
   id: InterceptedRequest["id"];
   method: InterceptedRequest["method"];
@@ -16,7 +16,7 @@ interface IRequestRowProps {
 }
 
 export const RequestRow: React.FC<IRequestRowProps> = ({
-  serviceId,
+  snifferId,
   onRequestClicked,
   id,
   method,
@@ -25,7 +25,7 @@ export const RequestRow: React.FC<IRequestRowProps> = ({
   hitCount,
 }) => {
   const { servicesData } = useContext(RequestsMetadataContext);
-  const service = servicesData?.find((service) => service.id == serviceId);
+  const service = servicesData?.find((service) => service.id == snifferId);
 
   return (
     <>

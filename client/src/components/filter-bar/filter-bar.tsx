@@ -14,17 +14,15 @@ interface IFilterBarProps {
   setServicesFilter: (values: string[]) => void;
 }
 
-export const FilterBar: React.FC<IFilterBarProps> = (
-  {
-    // services,
-    // handleFilterChanged,
-    // setMethodsFilter,
-    // setServicesFilter,
-  },
-) => {
+export const FilterBar: React.FC<IFilterBarProps> = ({
+  services,
+  handleFilterChanged,
+  setMethodsFilter,
+  setServicesFilter,
+}) => {
   return (
     <div className={styles.container}>
-      {/* <Autocomplete
+      <Autocomplete
         freeSolo
         disablePortal
         multiple
@@ -52,7 +50,7 @@ export const FilterBar: React.FC<IFilterBarProps> = (
           setMethodsFilter(values);
         }}
       />
-      <Input onChange={handleFilterChanged} placeholder="Endpoint..." /> */}
+      <Input onChange={handleFilterChanged} placeholder="Endpoint..." />
     </div>
   );
 };
