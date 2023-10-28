@@ -22,12 +22,13 @@ const printGreetings = () => {
     chalk.blueBright.bold("make a splash! 🌊");
 
   const msgBox = boxen(greeting, boxenOptions);
-  console.log(description);
-  console.log(msgBox);
+  return msgBox + "\n\n" + description;
 };
 
 const main = async () => {
   loadLoginFromFile();
+
+  program.name("Sharkio-cli").usage(printGreetings());
 
   program
     .command("login")
