@@ -3,11 +3,15 @@ import express from "express";
 import APIKeysService from "../services/settings/apiKeys";
 import UserService from "../services/user/user";
 import { SnifferService } from "../services/sniffer/sniffer.service";
+import { supabaseClient } from "../lib/supabase-client/supabase-client";
+import jwt from "jsonwebtoken";
 
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
 });
+
+const SECRET_KEY = "sharkio";
 
 class CLIController {
   constructor(
@@ -22,8 +26,6 @@ class CLIController {
     try {
       const authHeader = req.headers["authorization"] as string;
 
-      log.error("auth header" + JSON.stringify(req.headers));
-
       if (!authHeader) {
         log.error("no auth header");
         return res.status(401).send({ message: "unauthorized" });
@@ -37,21 +39,12 @@ class CLIController {
         log.error("no token");
         return res.status(401).send({ message: "unauthorized" });
       }
-      console.log("token", this);
-      const apiKey = await this.apiKeyService.get(token);
-      if (!apiKey) {
-        log.error("no api key");
-        return res.status(401).send({ message: "unauthorized" });
-      }
-      const userId = apiKey.userId;
-      if (!userId) {
-        log.error("no user id");
-        return res.status(401).send({ message: "unauthorized" });
-      }
-      const user = await this.userService.getById(userId);
+      const decodedToken: any = await jwt.verify(token, SECRET_KEY);
+      const user = await this.userService.getById(decodedToken.userId);
       if (!user) {
         return res.status(401).send({ message: "unauthorized" });
       }
+
       res.locals.user = user;
       next();
     } catch (error) {
@@ -67,10 +60,16 @@ class CLIController {
       const { email, token } = req.body;
 
       const result = await this.apiKeyService.validate(token, email);
+      const user = await this.userService.getByEmail(email);
+      if (!user) {
+        return res.status(401).send({ message: "unauthorized" });
+      }
+      const jwtToken = jwt.sign({ userId: user.id, email, token }, SECRET_KEY);
+
       if (!result) {
         return res.status(401).send({ message: "unauthorized" });
       }
-      return res.status(200).send({ message: "login" });
+      return res.status(200).send({ message: "login", jwt: jwtToken });
     });
 
     router.patch("/sniffers", this.authMiddleware, async (req, res) => {
@@ -78,7 +77,6 @@ class CLIController {
         const userId = res.locals.user.id;
         const { downstreamUrl, port, name } = req.body;
 
-        console.log("downstreamUrl", downstreamUrl);
         const sniffer = await this.snifferService.findByName(userId, name);
         if (!sniffer) {
           return res.status(404).send({ message: "sniffer not found" });

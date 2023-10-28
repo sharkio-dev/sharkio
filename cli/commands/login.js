@@ -25,22 +25,24 @@ async function login({ reset }) {
         validate: () => true,
       },
     ]);
-    const res = await ServerAxios.post("/login", data).catch((err) => {
-      return err.response;
-    });
-    if (res.status !== 200) {
+
+    try {
+      const res = await ServerAxios.post("/login", data);
+      if (!res?.data?.jwt) {
+        throw new Error("No token received");
+      }
+      saveLoginToFile(res.data.jwt);
+      const message = chalk.green.bold(
+        "\n🎉 Login succeeded! \n\nWelcome aboard, Sharkio sailor! 🦈\n",
+      );
+      console.log(message);
+    } catch (err) {
       const errorMessage = chalk.red.bold(
         "\n🚫 Login failed. \n\nSomething seems fishy... 🐟\n",
       );
       console.log(errorMessage);
       return;
     }
-
-    saveLoginToFile(data.email, data.token);
-    const message = chalk.green.bold(
-      "\n🎉 Login succeeded! \n\nWelcome aboard, Sharkio sailor! 🦈\n",
-    );
-    console.log(message);
   }
 }
 

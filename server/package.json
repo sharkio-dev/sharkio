@@ -37,6 +37,7 @@
     "express-http-proxy": "^1.6.3",
     "express-promise-router": "^4.1.1",
     "http-proxy-middleware": "^2.0.6",
+    "jsonwebtoken": "^9.0.2",
     "node-json-db": "^2.1.4",
     "npm": "^9.6.5",
     "pg": "^8.11.3",

@@ -8,30 +8,41 @@ const startSniffer = async (params) => {
 
   const url = await ngrok.connect(port);
 
-  await ServerAxios.patch(`/sniffers`, {
-    downstreamUrl: url,
-    name,
-    port,
-  }).catch((err) => {
+  try {
+    await ServerAxios.patch(`/sniffers`, {
+      downstreamUrl: url,
+      name,
+      port,
+    });
+
+    const snifferName = name;
+    const downstreamUrl = url;
+    const localServer = `http://localhost:${port}`;
+    const snifferUrl = `http://${snifferName}.localhost.sharkio.dev`;
+
+    console.log(
+      chalk.green(`\n🦈 Sniffer ${chalk.bold(snifferName)} is running!`),
+    );
+    console.log(
+      chalk.greenBright(`\n${chalk.underline("Tunnel:")} ${downstreamUrl}`),
+    );
+    console.log(
+      chalk.greenBright(`\n${chalk.underline("Local server:")} ${localServer}`),
+    );
+    console.log(
+      chalk.greenBright(`\n${chalk.underline("Sniffer URL:")} ${snifferUrl}\n`),
+    );
+  } catch (err) {
+    console.log(err);
     const errorMessage =
-      chalk.bgBlue.white.bold(" 🌊 Ocean Warning! \n") +
+      chalk.bgBlue.white.bold("\n🌊 Ocean Warning! \n") +
       chalk.blue(
-        "The waters are choppy! Couldn't run a sniffer. \nTry casting your net again later.",
+        "The waters are choppy! Couldn't run a sniffer. \nTry casting your net again later.\n",
       );
 
     console.log(errorMessage);
-  });
-
-  const snifferName = name;
-  const downstreamUrl = url;
-  const localServer = `http://localhost:${port}`;
-
-  const snifferMessage = [
-    chalk.greenBright(`\n🦈 Sniffer ${chalk.bold(snifferName)} is running!`),
-    chalk.greenBright(`\n${downstreamUrl} ${chalk.bold("-->")} ${localServer}`),
-  ].join("");
-
-  console.log(snifferMessage);
+    ngrok.kill();
+  }
 };
 
 export default startSniffer;
