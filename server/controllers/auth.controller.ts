@@ -58,10 +58,6 @@ export class AuthController {
           log.debug(JSON.stringify({ event }));
           switch (event) {
             case "SIGNED_IN": {
-              const userId = session.user.id;
-              const email = session.user.email;
-              await this.userService.upsert(userId, email);
-
               // Set the JWT cookie
               res.cookie("sharkio-token", session.access_token, {
                 httpOnly: true,

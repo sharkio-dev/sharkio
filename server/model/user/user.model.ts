@@ -1,6 +1,13 @@
 import { Column, DataSource, Entity, PrimaryColumn, Repository } from "typeorm";
 
-@Entity()
+import { useLog } from "../../lib/log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
+
+@Entity({ name: "users", schema: "auth" })
 export class User {
   @PrimaryColumn("uuid")
   id: string;
@@ -21,10 +28,6 @@ class UserRepository {
 
   getById(id: string) {
     return this.repository.findOne({ where: { id } });
-  }
-
-  upsert(id: string, email: string) {
-    return this.repository.save({ id, email });
   }
 }
 

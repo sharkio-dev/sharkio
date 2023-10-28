@@ -33,11 +33,16 @@ async function main() {
 
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
-  const cliController = new CLIController(apiKeyService, userService);
+
   const requestRepository = new RequestRepository(appDataSource);
 
   const snifferService = new SnifferService(snifferRepository);
   const requestService = new RequestService(requestRepository);
+  const cliController = new CLIController(
+    apiKeyService,
+    userService,
+    snifferService,
+  );
 
   const snifferController = new SnifferController(snifferService);
   const swaggerUi = new SwaggerUiController();

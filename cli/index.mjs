@@ -1,9 +1,11 @@
 import { program } from "commander";
 import login from "./commands/login.js";
-import createSniffer from "./commands/createSniffer.js";
 import { loadLoginFromFile } from "./commands/utils.js";
+import startSniffer from "./commands/startSniffer.js";
 import chalk from "chalk";
 import boxen from "boxen";
+import getSniffers from "./commands/getSniffers.js";
+import AuthWrapper from "./commands/authWrapper.js";
 
 const printGreetings = () => {
   const greeting = chalk.white.bold("Welcome to Sharkio CLI! 🦈");
@@ -27,8 +29,6 @@ const printGreetings = () => {
 const main = async () => {
   loadLoginFromFile();
 
-  program.name("sharkio-cli").description(printGreetings());
-
   program
     .command("login")
     .description("🦈 Login to Sharkio")
@@ -36,27 +36,19 @@ const main = async () => {
     .option("-r, --reset", "Reset login");
 
   program
-    .command("create")
-    .description("🦈 Create entities")
-    .command("sniffer")
-    .action(createSniffer)
-    .description("🦈 Create a sniffer")
-    .option("-n, --name <name>", "Name of the sniffer")
-    .option("-p, --port <port>", "Port of the sniffer");
-
-  program
     .command("list")
     .description("🦈 List entities")
     .command("sniffers")
-    .action(() => {});
+    .action(AuthWrapper(getSniffers));
 
   program
     .command("start")
     .description("🦈 Start a sniffer")
     .command("sniffer")
     .description("🦈 Start a sniffer")
-    .option("-n, --name <name>", "Name of the sniffer")
-    .action(() => {});
+    .requiredOption("-n, --name <name>", "Name of the sniffer")
+    .requiredOption("-p, --port <name>", "Local port to forward to")
+    .action(AuthWrapper(startSniffer));
 
   program.parse();
 };

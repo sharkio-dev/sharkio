@@ -1,7 +1,7 @@
 import { loadLoginFromFile } from "./utils.js";
 import chalk from "chalk";
 
-const isLoggedInWrapper = (fn) => {
+const AuthWrapper = (fn) => {
   return (...args) => {
     const data = loadLoginFromFile();
 
@@ -18,4 +18,4 @@ const isLoggedInWrapper = (fn) => {
   };
 };
 
-export default isLoggedInWrapper;
+export default AuthWrapper;

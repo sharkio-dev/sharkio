@@ -10,10 +10,6 @@ class UserService {
   async getById(id: string) {
     return this.repository.getById(id);
   }
-
-  async upsert(id: string, email: string) {
-    return this.repository.upsert(id, email);
-  }
 }
 
 export default UserService;

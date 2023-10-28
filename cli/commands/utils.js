@@ -35,6 +35,9 @@ const loadLoginFromFile = () => {
   const configData = fs.readFileSync(configPath, "utf-8");
 
   const data = JSON.parse(configData);
+  if (!data.token) {
+    return null;
+  }
   ServerAxios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
   return data;
 };

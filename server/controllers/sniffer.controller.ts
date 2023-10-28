@@ -1,8 +1,7 @@
-import { Express, IRouter, Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { useLog } from "../lib/log";
 import { requestValidator } from "../lib/request-validator/request-validator";
 import { SnifferService } from "../services/sniffer/sniffer.service";
-import { portValidator } from "../lib/request-validator/general-validators";
 import { IRouterConfig } from "./router.interface";
 import PromiseRouter from "express-promise-router";
 import { CreateSnifferValidator } from "../dto/in/create-sniffer.dto";
