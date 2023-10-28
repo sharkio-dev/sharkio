@@ -10,7 +10,7 @@ export const routes = {
   CONFIG: "/config",
   API_KEYS: "/api-keys",
   MOCKS: "/mocks",
-  SERVICE: "/service/:port",
+  SERVICE: "/service/:id",
   OPENAPI: "/gen-openapi",
   COLLECTION: "/collections",
 };

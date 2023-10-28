@@ -52,7 +52,7 @@ export const editSniffer = async (newConfig: SnifferCreateConfig) => {
 };
 
 export const getRequests = () => {
-  return BackendAxios.get("/sniffer/invocation");
+  return BackendAxios.get("/request");
 };
 
 export const executeRequest = (

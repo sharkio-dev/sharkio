@@ -15,13 +15,13 @@ import { Server } from "./server/server";
 import RequestService from "./services/request/request.service";
 import APIKeysService from "./services/settings/api-keys";
 import { SnifferService } from "./services/sniffer/sniffer.service";
+import { RequestController } from "./controllers/request.controller";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
   const appDataSource = await getAppDataSource();
-
   const snifferRepository = new SnifferRepository(appDataSource);
   const apiKeyRepository = new ApiKeyRepository(appDataSource);
   const requestRepository = new RequestRepository(appDataSource);
@@ -33,13 +33,14 @@ async function main() {
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController();
   const snifferController = new SnifferController(snifferService);
+  const requestController = new RequestController(requestService);
   const swaggerUi = new SwaggerUiController();
-  const proxyMiddleware = new ProxyMiddleware(snifferService);
 
   const requestInterceptorMiddleware = new RequestInterceptorMiddleware(
     snifferService,
     requestService,
   );
+  const proxyMiddleware = new ProxyMiddleware(snifferService);
 
   const proxyServer = new ProxyServer(
     proxyMiddleware,
@@ -51,6 +52,7 @@ async function main() {
       authController.getRouter(),
       snifferController.getRouter(),
       settingsController.getRouter(),
+      requestController.getRouter(),
     ],
     swaggerUi,
   );
