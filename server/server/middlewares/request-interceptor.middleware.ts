@@ -20,18 +20,17 @@ export class RequestInterceptorMiddleware {
     // TODO separate in the future in order to not slow down network requests
     const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
-    if (sniffer != null) {
-      await this.requestService
-        .findOrCreate(req, sniffer.id, sniffer.userId)
-        .catch((err) => {
-          logger.error("failed to intercept request" + req.method + req.url, {
-            err,
-          });
-        });
-
-      next();
-    } else {
-      res.sendStatus(404);
+    if (sniffer === null) {
+      return res.sendStatus(404);
     }
+
+    const request = await this.requestService.findOrCreate(
+      req,
+      sniffer.id,
+      sniffer.userId,
+    );
+    await this.requestService.addInvocation(request);
+
+    next();
   }
 }

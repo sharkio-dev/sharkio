@@ -19,6 +19,7 @@ import { Server } from "./server/server";
 import RequestService from "./services/request/request.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
 import { RequestController } from "./controllers/request.controller";
+import { InvocationRepository } from "./model/invocation/invocation.model";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -35,9 +36,13 @@ async function main() {
   const authController = new AuthController(userService);
 
   const requestRepository = new RequestRepository(appDataSource);
+  const invocationRepository = new InvocationRepository(appDataSource);
 
   const snifferService = new SnifferService(snifferRepository);
-  const requestService = new RequestService(requestRepository);
+  const requestService = new RequestService(
+    requestRepository,
+    invocationRepository,
+  );
   const cliController = new CLIController(
     apiKeyService,
     userService,

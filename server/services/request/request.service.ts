@@ -1,4 +1,8 @@
-import { RequestRepository } from "../../model/request/request.model";
+import {
+  InterceptedRequest,
+  RequestRepository,
+} from "../../model/request/request.model";
+import { InvocationRepository } from "../../model/invocation/invocation.model";
 import { Request as ExpressRequest } from "express";
 
 type TreeNodeKey = string;
@@ -14,7 +18,10 @@ interface RequestMetadata {
 }
 
 export class RequestService {
-  constructor(private readonly repository: RequestRepository) {}
+  constructor(
+    private readonly repository: RequestRepository,
+    private readonly invocationRepository: InvocationRepository,
+  ) {}
 
   async getByUser(userId: string) {
     return this.repository.repository.find({
@@ -84,15 +91,13 @@ export class RequestService {
   }
 
   async create(req: ExpressRequest, snifferId: string, userId: string) {
-    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
-
     const newRequest = this.repository.repository.create({
-      url: fullUrl,
-      body: req.body,
-      headers: req.headers,
-      method: req.method,
       snifferId,
       userId,
+      url: req.path,
+      method: req.method,
+      headers: req.headers,
+      body: req.body,
     });
     return this.repository.repository.save(newRequest);
   }
@@ -102,6 +107,8 @@ export class RequestService {
       where: {
         snifferId,
         userId,
+        url: req.path,
+        method: req.method,
       },
     });
 
@@ -110,6 +117,20 @@ export class RequestService {
     }
 
     return this.create(req, snifferId, userId);
+  }
+
+  async addInvocation(request: InterceptedRequest) {
+    const theInvocation = this.invocationRepository.repository.create({
+      requestId: request.id,
+      snifferId: request.snifferId,
+      userId: request.userId,
+      method: request.method,
+      body: request.body,
+      headers: request.headers,
+      url: request.url,
+    });
+
+    return this.invocationRepository.repository.save(theInvocation);
   }
 }
 
