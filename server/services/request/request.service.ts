@@ -83,8 +83,8 @@ export class RequestService {
     return result;
   }
 
-  async add(req: ExpressRequest, snifferId?: string, userId?: string) {
-    const fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+  async create(req: ExpressRequest, snifferId: string, userId: string) {
+    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
     const newRequest = this.repository.repository.create({
       url: fullUrl,
@@ -94,7 +94,22 @@ export class RequestService {
       snifferId,
       userId,
     });
-    await this.repository.repository.save(newRequest);
+    return this.repository.repository.save(newRequest);
+  }
+
+  async findOrCreate(req: ExpressRequest, snifferId: string, userId: string) {
+    const request = await this.repository.repository.findOne({
+      where: {
+        snifferId,
+        userId,
+      },
+    });
+
+    if (request !== null) {
+      return request;
+    }
+
+    return this.create(req, snifferId, userId);
   }
 }
 
