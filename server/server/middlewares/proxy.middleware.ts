@@ -25,8 +25,9 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain,
+    );
 
     if (selectedSniffer != null) {
       return selectedSniffer.downstreamUrl;

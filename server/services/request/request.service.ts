@@ -96,10 +96,6 @@ export class RequestService {
     });
     await this.repository.repository.save(newRequest);
   }
-
-  async remove() {}
-
-  async update() {}
 }
 
 export default RequestService;
