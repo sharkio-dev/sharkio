@@ -58,6 +58,7 @@ async function main() {
   );
   snifferManagerServer.start();
   proxyServer.start();
+  //lg demo
 }
 
 main();

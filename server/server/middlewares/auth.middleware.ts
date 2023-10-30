@@ -23,9 +23,8 @@ export const authMiddleware = async (
       return next();
     }
     const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
-    const { data: user, error } = await supabaseClient.auth.getUser(
-      access_token,
-    );
+    const { data: user, error } =
+      await supabaseClient.auth.getUser(access_token);
 
     if (error || !user) {
       log.error(error);
