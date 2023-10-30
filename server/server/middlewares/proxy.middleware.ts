@@ -27,7 +27,7 @@ export class ProxyMiddleware {
     const snifferRoutes = await this.snifferService.getAllSniffers();
 
     const selectedSniffer = snifferRoutes.find(
-      (sniffer) => host?.includes(sniffer.name),
+      (sniffer) => host?.includes(sniffer.subdomain),
     );
 
     if (selectedSniffer != null) {

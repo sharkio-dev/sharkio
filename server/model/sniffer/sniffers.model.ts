@@ -51,4 +51,7 @@ export class Sniffer {
 
   @Column({ name: "user_id" })
   userId: string;
+
+  @Column()
+  subdomain: string;
 }
