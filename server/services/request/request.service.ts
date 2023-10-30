@@ -5,7 +5,12 @@ type TreeNodeKey = string;
 interface RequestTreeNode {
   name: TreeNodeKey;
   callCount: number;
+  metadata: RequestMetadata;
   next?: Record<TreeNodeKey, RequestTreeNode>;
+}
+
+interface RequestMetadata {
+  suspectedPath: boolean;
 }
 
 export class RequestService {
@@ -35,6 +40,9 @@ export class RequestService {
 
     const result = {
       name: "/",
+      metadata: {
+        suspectedPath: true,
+      },
       callCount: 0,
     } as RequestTreeNode;
 
@@ -42,7 +50,7 @@ export class RequestService {
       const url = new URL(request.url);
       const pathParts = url.pathname.split("/");
 
-      // Ensure the URL path is mapped to the current leaf
+      // Ensure the URL path is mapped to the current root
       let currentLevel = result;
       for (const part of pathParts) {
         // Ignore the main part of the URL because it represents root
@@ -57,6 +65,9 @@ export class RequestService {
         if (currentLevel.next[part] === undefined) {
           currentLevel.next[part] = {
             name: part,
+            metadata: {
+              suspectedPath: true,
+            },
             callCount: 0,
           };
         }
@@ -66,6 +77,7 @@ export class RequestService {
 
       // Update the corresponding endpoint
       ++currentLevel.callCount;
+      currentLevel.metadata.suspectedPath = false;
     }
 
     return result;
