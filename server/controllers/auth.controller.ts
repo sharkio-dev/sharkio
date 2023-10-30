@@ -1,8 +1,9 @@
 import env from "dotenv/config";
-import { Express, NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Router from "express-promise-router";
 import { useLog } from "../lib/log";
 import { IRouterConfig } from "./router.interface";
+import UserService from "../services/user/user";
 
 const log = useLog({
   dirname: __dirname,
@@ -12,7 +13,7 @@ const log = useLog({
 const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
 
 export class AuthController {
-  constructor(private readonly baseUrl: string = "/api/auth") {}
+  constructor(private readonly userService: UserService) {}
 
   getRouter(): IRouterConfig {
     const router = Router();
@@ -87,7 +88,7 @@ export class AuthController {
         } catch (e) {
           log.error("An unexpected error occured", {
             method: "POST",
-            path: `${this.baseUrl}`,
+            path: `/sharkio/api/auth`,
             error: e,
           });
           res.sendStatus(500);

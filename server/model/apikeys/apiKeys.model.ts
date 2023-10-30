@@ -43,6 +43,12 @@ class ApiKeyRepository {
       });
   }
 
+  get(key: string) {
+    return this.repository.findOne({
+      where: { key, status: ApiKeyStatus.ACTIVE },
+    });
+  }
+
   add(userId: string, name?: string) {
     const user = new ApiKey();
     user.name = name || "";
@@ -61,6 +67,13 @@ class ApiKeyRepository {
 
   update(userId: string, apiKeyId: string, name: string) {
     return this.repository.update({ userId, id: apiKeyId }, { name });
+  }
+
+  async validate(key: string, userId: string) {
+    const res = await this.repository.findOne({
+      where: { key, status: ApiKeyStatus.ACTIVE, userId },
+    });
+    return !!res;
   }
 }
 

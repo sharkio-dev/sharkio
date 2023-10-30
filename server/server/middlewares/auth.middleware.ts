@@ -16,7 +16,7 @@ export const authMiddleware = async (
 ) => {
   try {
     if (
-      [/\/sharkio\/api\/auth/, /\/api-docs\/.*/]
+      [/\/sharkio\/api\/auth/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
         .map((regex) => regex.test(req.path))
         .some((value) => value === true)
     ) {

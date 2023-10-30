@@ -24,7 +24,11 @@ export class SnifferRepository {
   }
   findBySubdomain(subdomain: string) {
     //TODO change this to subdomain field
-    return this.repository.findOneBy({ name: subdomain });
+    return this.repository.findOneBy({ subdomain });
+  }
+
+  findByName(userId: string, name: string) {
+    return this.repository.findOne({ where: { userId, name } });
   }
 }
 
@@ -47,4 +51,7 @@ export class Sniffer {
 
   @Column({ name: "user_id" })
   userId: string;
+
+  @Column()
+  subdomain: string;
 }

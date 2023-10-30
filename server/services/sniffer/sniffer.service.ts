@@ -14,7 +14,7 @@ export class SnifferService {
   }
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
     const snifferEntity =
-      await this.snifferRepository.repository.create(snifferConfig);
+      this.snifferRepository.repository.create(snifferConfig);
     const newSniffer =
       await this.snifferRepository.repository.save(snifferEntity);
     return newSniffer;
@@ -27,6 +27,8 @@ export class SnifferService {
       .where("id = :id AND userId = :userId", {
         id: newConfig.id,
         userId: newConfig.userId,
+        name: newConfig.name,
+        downstreamUrl: newConfig.downstreamUrl,
       })
       .execute();
   }
@@ -41,6 +43,9 @@ export class SnifferService {
 
   async findBySubdomain(subdomain: string) {
     return this.snifferRepository.findBySubdomain(subdomain);
+  }
+  async findByName(userId: string, name: string) {
+    return this.snifferRepository.findByName(userId, name);
   }
 
   async startSniffer(userId: string, id: string) {}
