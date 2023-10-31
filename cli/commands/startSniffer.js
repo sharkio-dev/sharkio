@@ -8,19 +8,40 @@ import cookieParser from "cookie-parser";
 import { urlencoded } from "express";
 import inquirer from "inquirer";
 import { getSniffers, patchSniffer } from "./api.js";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const getLocalUrl = (port) => `http://localhost:${port}`;
-const getSnifferUrl = (name) => `https://${name}.localhost.sharkio.dev`;
+const getSnifferUrl = (name) => `https://${name}.sniffer.sharkio.dev`;
 
 class ProxyServer {
   app;
+  proxyMiddleware;
   constructor() {
     this.app = express();
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());
     this.app.use(urlencoded({ extended: true }));
-    // Add proxy middleware
+    this.app.use((err, req, res, next) => {
+      console.log(req.headers, req.url);
+      console.log(err);
+    });
+    this.proxyMiddleware = createProxyMiddleware({
+      router: this.chooseRoute.bind(this),
+      secure: false,
+      autoRewrite: true,
+      changeOrigin: true,
+      followRedirects: true,
+    });
+    this.app.use(this.proxyMiddleware);
+  }
+
+  chooseRoute(req) {
+    const port = req.headers["x-sharkio-port"];
+    if (!port) {
+      throw new Error("Port not found");
+    }
+    return getLocalUrl(port);
   }
 
   async start(port) {
@@ -68,7 +89,7 @@ const startSniffer = async () => {
     selectedSniffers.forEach(async (sniffer) => {
       const { name, port } = sniffer;
       await patchSniffer({
-        downstreamUrl: url,
+        url,
         name,
         port,
       });
@@ -86,7 +107,6 @@ const startSniffer = async () => {
       );
     });
   } catch (err) {
-    console.log(err);
     const errorMessage =
       chalk.bgBlue.white.bold("\n🌊 Ocean Warning! \n") +
       chalk.blue(

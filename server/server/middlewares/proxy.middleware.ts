@@ -28,6 +28,7 @@ export class ProxyMiddleware {
     const selectedSniffer = await this.snifferService.findBySubdomain(
       subdomain,
     );
+    req.headers["x-sharkio-port"] = selectedSniffer?.port.toString();
 
     if (selectedSniffer != null) {
       return selectedSniffer.downstreamUrl;
