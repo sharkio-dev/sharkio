@@ -9,6 +9,6 @@ export type CreateSnifferDTO = {
 
 export const CreateSnifferValidator = z.object({
   name: z.string(),
-  // subdomain: z.string(),
   downstreamUrl: z.string().url(),
+  port: z.number().optional(),
 });

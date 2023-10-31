@@ -33,7 +33,7 @@ export const EditSnifferModal = ({
       return;
     }
     setIsLoading(true);
-    editSniffer({ name, downstreamUrl, port: sniffer.port, id: sniffer.id })
+    editSniffer({ name, downstreamUrl, port, id: sniffer.id })
       .then(() => {
         setName("");
         setDownstreamUrl("");
@@ -78,7 +78,6 @@ export const EditSnifferModal = ({
               placeholder="Port"
               value={port}
               type="number"
-              disabled={true}
               onChange={(event) => setPort(Number(event.target.value))}
             />
           </div>

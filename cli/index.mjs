@@ -4,7 +4,7 @@ import { loadLoginFromFile } from "./commands/utils.js";
 import startSniffer from "./commands/startSniffer.js";
 import chalk from "chalk";
 import boxen from "boxen";
-import getSniffers from "./commands/getSniffers.js";
+import listSniffers from "./commands/getSniffers.js";
 import AuthWrapper from "./commands/authWrapper.js";
 
 const printGreetings = () => {
@@ -40,15 +40,13 @@ const main = async () => {
     .command("list")
     .description("🦈 List entities")
     .command("sniffers")
-    .action(AuthWrapper(getSniffers));
+    .action(AuthWrapper(listSniffers));
 
   program
     .command("start")
     .description("🦈 Start a sniffer")
     .command("sniffer")
     .description("🦈 Start a sniffer")
-    .requiredOption("-n, --name <name>", "Name of the sniffer")
-    .requiredOption("-p, --port <name>", "Local port to forward to")
     .action(AuthWrapper(startSniffer));
 
   program.parse();
