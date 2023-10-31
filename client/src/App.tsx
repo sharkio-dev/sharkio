@@ -5,21 +5,17 @@ import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
 import { RequestMetadataProvider } from "./context/requests-context";
 import AuthUI from "./pages/auth/Auth";
-import { CollectionRequest } from "./pages/collection-request/collection-request";
-import { Collections } from "./pages/collections/collections";
-import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
 import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
 import { InvocationEditor } from "./pages/invocation/invocation";
-import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
 import { Pricing } from "./pages/pricing/pricing";
 import { Requests } from "./pages/requests/requests";
 import { ServiceRequest } from "./pages/service-request/service-request";
-import { Service } from "./pages/service/service";
 import { useThemeStore } from "./stores/themeStore";
 import APIKeys from "./pages/api-keys/api-keys";
 import { useAuthStore } from "./stores/authStore";
 import { supabaseClient } from "./utils/supabase-auth";
 import { setAuthCookie } from "./api/api";
+import SniffersPage from "./pages/sniffers/SniffersPage";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -67,6 +63,7 @@ function App(): React.JSX.Element {
       { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
       { path: routes.REQUESTS, element: <Requests /> },
+      { path: routes.CONFIG, element: <SniffersPage /> },
       // { path: routes.MOCKS, element: <MocksPage /> },
       // { path: routes.SERVICE, element: <Service /> },
       // { path: routes.MOCKS, element: <Mocks /> },

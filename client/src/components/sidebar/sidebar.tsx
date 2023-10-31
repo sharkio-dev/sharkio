@@ -14,7 +14,6 @@ interface IMenuItem {
 
 const menus: IMenuItem[] = [
   { to: routes.CONFIG, title: "Sniffers", Icon: SettingsInputComponentIcon },
-  { to: routes.REQUESTS, title: "Requests", Icon: SwapHoriz },
 ];
 
 export const SideBar: React.FC = () => {

@@ -3,7 +3,7 @@ import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { deleteSniffer } from "../../api/api";
 import { CircularProgress } from "@mui/material";
-import { Sniffer } from "./page-template";
+import { Sniffer } from "../../components/page-template/page-template";
 
 type DeleteSnifferModalProps = {
   isOpen: boolean;
