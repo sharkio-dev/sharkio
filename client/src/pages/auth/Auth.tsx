@@ -11,20 +11,26 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
 
   if (user?.email == null || user?.id == null) {
     return (
-      <div className={styles.authContainer}>
-        <div className={styles.authHeader}>
-          <img className={styles.sharkioLogo} src="shark-logo.png" alt="Logo" />
-          <Typography variant="h3">Welcome to sharkio!</Typography>
-        </div>
-        <div className={styles.auth}>
-          <Auth
-            supabaseClient={supabaseClient}
-            theme="dark"
-            appearance={{ theme: ThemeSupa }}
-            providers={["github", "google"]}
-            view="sign_up"
-            redirectTo={window.location.pathname}
-          />
+      <div className="flex flex-col bg-[#232323] justify-center p-4">
+        <div className="flex flex-col w-3/4 mx-auto">
+          <div className={styles.authHeader}>
+            <img
+              className={styles.sharkioLogo}
+              src="shark-logo.png"
+              alt="Logo"
+            />
+            <Typography variant="h3">Welcome to sharkio!</Typography>
+          </div>
+          <div className={styles.auth}>
+            <Auth
+              supabaseClient={supabaseClient}
+              theme="dark"
+              appearance={{ theme: ThemeSupa }}
+              providers={["github", "google"]}
+              view="sign_up"
+              redirectTo={window.location.pathname}
+            />
+          </div>
         </div>
       </div>
     );
