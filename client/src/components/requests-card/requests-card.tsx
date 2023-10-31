@@ -144,7 +144,6 @@ const RequestCardGrouped: React.FC<RequestCardGroupedProps> = ({
             <List>
               {requests &&
                 requests.map((req) => {
-                  debugger;
                   return (
                     <RequestRow
                       key={req.id}

@@ -1,15 +1,27 @@
-import { RequestRepository } from "../../model/request/request.model";
+import {
+  InterceptedRequest,
+  RequestRepository,
+} from "../../model/request/request.model";
+import { InvocationRepository } from "../../model/invocation/invocation.model";
 import { Request as ExpressRequest } from "express";
 
 type TreeNodeKey = string;
 interface RequestTreeNode {
   name: TreeNodeKey;
   callCount: number;
+  metadata: RequestMetadata;
   next?: Record<TreeNodeKey, RequestTreeNode>;
 }
 
+interface RequestMetadata {
+  suspectedPath: boolean;
+}
+
 export class RequestService {
-  constructor(private readonly repository: RequestRepository) {}
+  constructor(
+    private readonly repository: RequestRepository,
+    private readonly invocationRepository: InvocationRepository,
+  ) {}
 
   async getByUser(userId: string) {
     return this.repository.repository.find({
@@ -35,6 +47,9 @@ export class RequestService {
 
     const result = {
       name: "/",
+      metadata: {
+        suspectedPath: true,
+      },
       callCount: 0,
     } as RequestTreeNode;
 
@@ -42,7 +57,7 @@ export class RequestService {
       const url = new URL(request.url);
       const pathParts = url.pathname.split("/");
 
-      // Ensure the URL path is mapped to the current leaf
+      // Ensure the URL path is mapped to the current root
       let currentLevel = result;
       for (const part of pathParts) {
         // Ignore the main part of the URL because it represents root
@@ -57,6 +72,9 @@ export class RequestService {
         if (currentLevel.next[part] === undefined) {
           currentLevel.next[part] = {
             name: part,
+            metadata: {
+              suspectedPath: true,
+            },
             callCount: 0,
           };
         }
@@ -66,28 +84,66 @@ export class RequestService {
 
       // Update the corresponding endpoint
       ++currentLevel.callCount;
+      currentLevel.metadata.suspectedPath = false;
     }
 
     return result;
   }
 
-  async add(req: ExpressRequest, snifferId?: string, userId?: string) {
-    const fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-
+  async create(req: ExpressRequest, snifferId: string, userId: string) {
     const newRequest = this.repository.repository.create({
-      url: fullUrl,
-      body: req.body,
-      headers: req.headers,
-      method: req.method,
       snifferId,
       userId,
+      url: req.path,
+      method: req.method,
+      headers: req.headers,
+      body: req.body,
     });
-    await this.repository.repository.save(newRequest);
+    return this.repository.repository.save(newRequest);
   }
 
-  async remove() {}
+  async findOrCreate(req: ExpressRequest, snifferId: string, userId: string) {
+    const request = await this.repository.repository.findOne({
+      where: {
+        snifferId,
+        userId,
+        url: req.path,
+        method: req.method,
+      },
+    });
 
-  async update() {}
+    if (request !== null) {
+      return request;
+    }
+
+    return this.create(req, snifferId, userId);
+  }
+
+  async addInvocation(request: InterceptedRequest) {
+    const theInvocation = this.invocationRepository.repository.create({
+      requestId: request.id,
+      snifferId: request.snifferId,
+      userId: request.userId,
+      method: request.method,
+      body: request.body,
+      headers: request.headers,
+      url: request.url,
+    });
+
+    return this.invocationRepository.repository.save(theInvocation);
+  }
+
+  async getInvocations(request: InterceptedRequest) {
+    return this.invocationRepository.repository.find({
+      where: {
+        requestId: request.id,
+        snifferId: request.snifferId,
+        userId: request.userId,
+        method: request.method,
+        url: request.url,
+      },
+    });
+  }
 }
 
 export default RequestService;

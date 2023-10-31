@@ -17,19 +17,20 @@ export class RequestInterceptorMiddleware {
   async intercept(req: Request, res: Response, next: NextFunction) {
     // TODO make more robust subdomain detection
     const subdomain = req.hostname.split(".")[0];
+    // TODO separate in the future in order to not slow down network requests
     const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
-    // TODO separate in the future in order to not slow down network requests
-    await this.requestService
-      .add(req, sniffer?.id, sniffer?.userId)
-      .catch((e) => {
-        logger.error("failed to intercept request" + req.method + req.url);
-      });
-
-    if (sniffer != null) {
-      next();
-    } else {
-      res.sendStatus(201);
+    if (sniffer === null) {
+      return res.sendStatus(404);
     }
+
+    const request = await this.requestService.findOrCreate(
+      req,
+      sniffer.id,
+      sniffer.userId,
+    );
+    await this.requestService.addInvocation(request);
+
+    next();
   }
 }
