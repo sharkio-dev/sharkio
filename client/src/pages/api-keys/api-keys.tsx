@@ -57,7 +57,7 @@ function APIKeys() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full p-4">
       {snackBar}
       <GenerateTokenModal
         isOpen={isModalOpen}
