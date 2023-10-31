@@ -61,7 +61,7 @@ const LoginComponent: React.FC = () => {
   };
 
   return (
-    <div className={styles.login_component_container}>
+    <div>
       <div>
         <div onClick={handleOpenUserMenu} className={styles.my_box}>
           <Tooltip title="Open settings">
