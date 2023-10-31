@@ -132,6 +132,18 @@ export class RequestService {
 
     return this.invocationRepository.repository.save(theInvocation);
   }
+
+  async getInvocations(request: InterceptedRequest) {
+    return this.invocationRepository.repository.find({
+      where: {
+        requestId: request.id,
+        snifferId: request.snifferId,
+        userId: request.userId,
+        method: request.method,
+        url: request.url,
+      },
+    });
+  }
 }
 
 export default RequestService;
