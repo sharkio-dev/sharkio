@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { createSniffer } from "../../api/api";
@@ -11,6 +11,7 @@ type AddSnifferModalProps = {
 export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const [name, setName] = useState<string>("");
   const [downstreamUrl, setDownstreamUrl] = useState<string>("");
+  const [port, setPort] = useState<number>();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -23,9 +24,9 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
       showSnackbar("Downstream Url cannot be empty", "error");
       return;
     }
+
     setIsLoading(true);
-    // TODO: port should not be required
-    createSniffer({ name, downstreamUrl, port: 0 })
+    createSniffer({ name, downstreamUrl, port: Number(port) })
       .then(() => {
         setName("");
         setDownstreamUrl("");
@@ -33,7 +34,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
       })
       .catch((err) => {
         console.log(err);
-        showSnackbar("Error creating sniffer", "error");
+        showSnackbar("Error updating sniffer", "error");
       })
       .finally(() => {
         setIsLoading(false);
@@ -54,7 +55,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
           <div className="flex flex-col space-y-2">
             <TextField
               label={"Name"}
-              placeholder="name"
+              placeholder="Name"
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
@@ -63,6 +64,13 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
               placeholder="http://example.com"
               value={downstreamUrl}
               onChange={(event) => setDownstreamUrl(event.target.value)}
+            />
+            <TextField
+              label={"Port"}
+              placeholder="Port"
+              value={port}
+              type="number"
+              onChange={(event) => setPort(parseInt(event.target.value))}
             />
           </div>
 

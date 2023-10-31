@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { editSniffer } from "../../api/api";
@@ -19,6 +19,7 @@ export const EditSnifferModal = ({
   const [downstreamUrl, setDownstreamUrl] = useState<string>(
     sniffer.downstreamUrl,
   );
+  const [port, setPort] = useState<number | undefined>(sniffer.port);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -36,6 +37,7 @@ export const EditSnifferModal = ({
       .then(() => {
         setName("");
         setDownstreamUrl("");
+        setPort(undefined);
         onClose();
       })
       .catch((err) => {
@@ -45,7 +47,7 @@ export const EditSnifferModal = ({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
+  }, [name, downstreamUrl, sniffer, showSnackbar, onClose, port]);
 
   return (
     <>
@@ -70,6 +72,14 @@ export const EditSnifferModal = ({
               placeholder="http://example.com"
               value={downstreamUrl}
               onChange={(event) => setDownstreamUrl(event.target.value)}
+            />
+            <TextField
+              label={"Port"}
+              placeholder="Port"
+              value={port}
+              type="number"
+              disabled={true}
+              onChange={(event) => setPort(Number(event.target.value))}
             />
           </div>
 
