@@ -7,7 +7,6 @@ import { RequestMetadataProvider } from "./context/requests-context";
 import AuthUI from "./pages/auth/Auth";
 import { CollectionRequest } from "./pages/collection-request/collection-request";
 import { Collections } from "./pages/collections/collections";
-import { Config } from "./pages/config/config";
 import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
 import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
 import { InvocationEditor } from "./pages/invocation/invocation";
@@ -64,16 +63,15 @@ function App(): React.JSX.Element {
   const routesWithAuth = () => {
     const routesWithAuth = [
       { path: routes.SERVICE_REQUEST, element: <ServiceRequest /> },
-      { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
+      // { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
       { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
-      { path: routes.CONFIG, element: <Config /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
       { path: routes.REQUESTS, element: <Requests /> },
-      { path: routes.MOCKS, element: <MocksPage /> },
-      { path: routes.SERVICE, element: <Service /> },
-      { path: routes.MOCKS, element: <Mocks /> },
-      { path: routes.OPENAPI, element: <GenOpenAPI /> },
-      { path: routes.COLLECTION, element: <Collections /> },
+      // { path: routes.MOCKS, element: <MocksPage /> },
+      // { path: routes.SERVICE, element: <Service /> },
+      // { path: routes.MOCKS, element: <Mocks /> },
+      // { path: routes.OPENAPI, element: <GenOpenAPI /> },
+      // { path: routes.COLLECTION, element: <Collections /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

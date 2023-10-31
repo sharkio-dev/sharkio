@@ -71,7 +71,7 @@ export const RequestsCard: React.FC<IRequestCardProps> = ({
     );
   };
   return (
-    <div style={{ flex: 1 }}>
+    <div style={{ flex: 1, padding: 16 }}>
       {withControls && (
         <div
           style={{
