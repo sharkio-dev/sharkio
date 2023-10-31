@@ -51,13 +51,7 @@ export const Navbar: React.FC = () => {
               >
                 Getting started
               </div>
-              <div
-                onClick={() => {
-                  navigate("/pricing");
-                }}
-              >
-                Pricing
-              </div>
+
               <Link
                 to="https://dev.to/sharkio"
                 target="_blank"

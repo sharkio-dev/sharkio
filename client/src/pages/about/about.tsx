@@ -6,7 +6,7 @@ import { routes } from "../../constants/routes";
 
 const Number: React.FC<{ number: number }> = ({ number }) => {
   return (
-    <div className="flex-2 flex flex-col p-5 justify-center">
+    <div className="flex-2 flex flex-col justify-center p-4">
       <div className="w-8 h-8 font-bold text-gray-700 rounded-full bg-white flex items-center justify-center font-mono">
         {number}
       </div>
@@ -55,7 +55,7 @@ export const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-[#232323]">
       <div className="flex flex-col">
         <div className="font-bold text-xl mb-5">Getting started</div>
         <div className="sm:flex sm:flex-col sm:gap-2 md:grid grid-rows-3 grid-cols-2 md:gap-3 sm:gap-2 grid-flow-col">

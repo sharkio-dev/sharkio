@@ -1,6 +1,5 @@
 export const routes = {
   LOGIN: "/login",
-  SIGNUP: "/signup",
   SERVICE_REQUEST: "/service/:serviceId/request/:id",
   REQUEST_INVOCATION:
     "/service/:serviceId/request/:requestId/invocation/:invocationId",

@@ -28,26 +28,24 @@ const GettingStartedCard: React.FC<IGettingStartedCardProps> = ({
   action,
 }) => {
   return (
-    <>
-      <Card className="h-full">
-        <div className="py-2 flex h-full">
-          <Number number={number} />
-          <div className="">
-            <div className="font-bold text-l mb-2">{title}</div>
-            <p className="text-gray-400 text-base text-sm">{content}</p>
-          </div>
-          <div className="flex-1 flex flex-col px-5 justify-center w-full items-end">
-            {action && (
-              <div>
-                <IconButton onClick={action}>
-                  <ArrowRight />
-                </IconButton>
-              </div>
-            )}
-          </div>
+    <div className="h-full bg-[#1d1d1d] shadow-lg rounded-lg">
+      <div className="py-2 flex h-full">
+        <Number number={number} />
+        <div className="">
+          <div className="font-bold text-l mb-2">{title}</div>
+          <p className="text-gray-400 text-base text-sm">{content}</p>
         </div>
-      </Card>
-    </>
+        <div className="flex-1 flex flex-col px-5 justify-center w-full items-end">
+          {action && (
+            <div>
+              <IconButton onClick={action}>
+                <ArrowRight />
+              </IconButton>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -55,7 +53,7 @@ export const GettingStarted = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-[#232323] p-4 flex-1">
       <div className="flex flex-col">
         <div className="flex w-full content-center justify-center font-bold text-xl mb-5">
           The best API development tool

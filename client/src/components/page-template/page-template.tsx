@@ -32,23 +32,19 @@ export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
           {children}
         </div>
       </div>
-      <BottomBar />
+      {user && <BottomBar />}
     </div>
   );
 };
 
 const BottomBar: React.FC = () => {
-  const { user } = useAuthStore();
-
   return (
     <div className="sticky bottom-0 flex-row w-full bg-[#1d1d1d] h-10 border-t-[0.1px] border-[#3a3a3a]">
       <div className="flex flex-row w-full h-full items-center justify-between px-4">
         <div className="text-[#fff]">© 2023 Sharkio</div>
-        {user !== null && (
-          <div className="flex flex-row items-center">
-            <BiTerminal className="text-[#fff] text-2xl hover:bg-[#3a3a3a] rounded-md hover:cursor-pointer active:scale-110" />
-          </div>
-        )}
+        <div className="flex flex-row items-center">
+          <BiTerminal className="text-[#fff] text-2xl hover:bg-[#3a3a3a] rounded-md hover:cursor-pointer active:scale-110" />
+        </div>
       </div>
     </div>
   );

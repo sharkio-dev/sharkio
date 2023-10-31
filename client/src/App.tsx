@@ -108,23 +108,7 @@ function App(): React.JSX.Element {
               }
             />
             <Route
-              path={"/pricing"}
-              element={
-                <PageTemplate>
-                  <Pricing />
-                </PageTemplate>
-              }
-            />
-            <Route
               path={"/login"}
-              element={
-                <PageTemplate>
-                  <AuthUI />
-                </PageTemplate>
-              }
-            />
-            <Route
-              path={"/signup"}
               element={
                 <PageTemplate>
                   <AuthUI />
