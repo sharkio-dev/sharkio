@@ -108,7 +108,7 @@ export const GettingStarted = () => {
             }
             number={2}
             action={() => {
-              navigate(routes.CONFIG);
+              navigate(routes.SNIFFERS);
             }}
           />
           <GettingStartedCard

@@ -63,7 +63,7 @@ function App(): React.JSX.Element {
       { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
       { path: routes.REQUESTS, element: <Requests /> },
-      { path: routes.CONFIG, element: <SniffersPage /> },
+      { path: routes.SNIFFERS, element: <SniffersPage /> },
       // { path: routes.MOCKS, element: <MocksPage /> },
       // { path: routes.SERVICE, element: <Service /> },
       // { path: routes.MOCKS, element: <Mocks /> },

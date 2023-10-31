@@ -7,7 +7,7 @@ export const routes = {
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
   REQUESTS: "/requests",
   HOME: "/home",
-  CONFIG: "/config",
+  SNIFFERS: "/sniffers",
   API_KEYS: "/api-keys",
   MOCKS: "/mocks",
   SERVICE: "/service/:id",

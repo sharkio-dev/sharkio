@@ -13,7 +13,7 @@ interface IMenuItem {
 }
 
 const menus: IMenuItem[] = [
-  { to: routes.CONFIG, title: "Sniffers", Icon: SettingsInputComponentIcon },
+  { to: routes.SNIFFERS, title: "Sniffers", Icon: SettingsInputComponentIcon },
 ];
 
 export const SideBar: React.FC = () => {
