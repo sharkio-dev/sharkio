@@ -31,7 +31,7 @@ export class RequestService {
     });
   }
 
-  async getAll(snifferId: string) {
+  async getBySnifferId(snifferId: string) {
     const requests = await this.repository.repository.find({
       where: {
         snifferId,
@@ -41,8 +41,17 @@ export class RequestService {
     return requests;
   }
 
+  async getById(id: string) {
+    return this.repository.repository.findOne({ where: { id } });
+  }
+
   async getRequestsTree(snifferId: string) {
-    const requests = await this.getAll(snifferId);
+    // const requests = await this.getAll(snifferId);
+    const requests = await this.repository.repository.find({
+      where: {
+        snifferId,
+      },
+    });
     console.log("requests", requests);
 
     const result = {
