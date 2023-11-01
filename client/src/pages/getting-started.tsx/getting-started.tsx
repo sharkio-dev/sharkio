@@ -1,6 +1,6 @@
 import { ArrowRight } from "@mui/icons-material";
 import { Card, IconButton } from "@mui/material";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 
@@ -51,6 +51,13 @@ const GettingStartedCard: React.FC<IGettingStartedCardProps> = ({
 
 export const GettingStarted = () => {
   const navigate = useNavigate();
+  const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e) => {
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    setGradientPosition({ x, y });
+  };
 
   return (
     <div className="flex flex-col bg-[#232323] p-4 flex-1">

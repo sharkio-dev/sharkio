@@ -12,4 +12,5 @@ export const routes = {
   SERVICE: "/service/:id",
   OPENAPI: "/gen-openapi",
   COLLECTION: "/collections",
+  DOCS: "/docs",
 };
