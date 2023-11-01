@@ -1,6 +1,6 @@
 import { ArrowRight } from "@mui/icons-material";
-import { Card, IconButton } from "@mui/material";
-import React, { ReactElement, useState } from "react";
+import { IconButton } from "@mui/material";
+import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 

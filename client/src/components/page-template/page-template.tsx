@@ -20,7 +20,7 @@ export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
     <div className="flex flex-col h-full w-full min-h-screen">
       <div className="flex flex-row h-full w-full flex-1">
         {sideMenuOpen && <SideBar />}
-        <div className="flex flex-col flex-1 bg-secondary">
+        <div className="flex flex-col flex-1 bg-tertiary">
           <Navbar />
           {children}
         </div>
