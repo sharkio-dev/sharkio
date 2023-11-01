@@ -4,13 +4,6 @@ import { Navbar } from "../navbar/navbar";
 import { SideBar } from "../sidebar/sidebar";
 import { BiTerminal } from "react-icons/bi";
 
-export type Sniffer = {
-  name: string;
-  id: string;
-  downstreamUrl: string;
-  port: number;
-};
-
 export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
   const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
   const { user } = useAuthStore();

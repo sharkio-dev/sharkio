@@ -39,7 +39,12 @@ class ProxyServer {
   chooseRoute(req) {
     const port = req.headers["x-sharkio-port"];
     if (!port) {
-      throw new Error("Port not found");
+      console.log(
+        chalk.red.white.bold("\n🌊 Ocean Warning! \n") +
+          chalk.red(
+            "You didn't set the port on the sniffer. Please try again.\n",
+          ),
+      );
     }
     return getLocalUrl(port);
   }

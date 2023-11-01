@@ -1,52 +1,26 @@
-import { useEffect, useState } from "react";
-import { useAuthStore } from "../../stores/authStore";
+import { useState } from "react";
 import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useSnackbar } from "../../hooks/useSnackbar";
-import { getSniffers } from "../../api/api";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { AddSnifferModal } from "./AddSnifferModal";
-import { Sniffer } from "../../components/page-template/page-template";
+import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
 
 type SniffersSideBarProps = {
   activeSniffer?: Sniffer;
   setActiveSniffer: (sniffer: Sniffer) => void;
-  sniffers: Sniffer[];
-  setSniffers: (sniffers: Sniffer[]) => void;
 };
 export const SniffersSideBar = ({
   activeSniffer,
   setActiveSniffer,
-  sniffers,
-  setSniffers,
 }: SniffersSideBarProps) => {
   const [selectedSniffer, setSelectedSniffer] = useState<Sniffer | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const { user } = useAuthStore();
-  const userId = user?.id;
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
-
-  const loadSniffers = async () => {
-    if (userId == null) {
-      return;
-    }
-    return getSniffers()
-      .then((res: any) => {
-        setSniffers(res.data);
-      })
-      .catch(() => {
-        showSnackbar("Failed to get sniffers", "error");
-      });
-  };
-
-  useEffect(() => {
-    loadSniffers();
-  }, [userId]);
+  const { sniffers, loadSniffers } = useSniffersStore();
 
   const onAddSnifferModalClose = () => {
     setIsAddModalOpen(false);
