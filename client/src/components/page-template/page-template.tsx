@@ -20,7 +20,7 @@ export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
     <div className="flex flex-col h-full w-full min-h-screen">
       <div className="flex flex-row h-full w-full flex-1">
         {sideMenuOpen && <SideBar />}
-        <div className="flex flex-col flex-1 bg-[#1d1d1d]">
+        <div className="flex flex-col flex-1 bg-secondary">
           <Navbar />
           {children}
         </div>
@@ -32,11 +32,11 @@ export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
 
 const BottomBar: React.FC = () => {
   return (
-    <div className="sticky bottom-0 flex-row w-full bg-[#1d1d1d] h-10 border-t-[0.1px] border-[#3a3a3a]">
+    <div className="sticky bottom-0 flex-row w-full bg-secondary h-10 border-t-[0.1px] border-border-color">
       <div className="flex flex-row w-full h-full items-center justify-between px-4">
         <div className="text-[#fff]">© 2023 Sharkio</div>
         <div className="flex flex-row items-center">
-          <BiTerminal className="text-[#fff] text-2xl hover:bg-[#3a3a3a] rounded-md hover:cursor-pointer active:scale-110" />
+          <BiTerminal className="text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110" />
         </div>
       </div>
     </div>

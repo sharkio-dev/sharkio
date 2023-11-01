@@ -28,7 +28,7 @@ const GettingStartedCard: React.FC<IGettingStartedCardProps> = ({
   action,
 }) => {
   return (
-    <div className="h-full bg-[#1d1d1d] shadow-lg rounded-lg">
+    <div className="h-full bg-secondary shadow-lg rounded-lg">
       <div className="py-2 flex h-full">
         <Number number={number} />
         <div className="">
@@ -51,16 +51,9 @@ const GettingStartedCard: React.FC<IGettingStartedCardProps> = ({
 
 export const GettingStarted = () => {
   const navigate = useNavigate();
-  const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
-
-  const handleMouseMove = (e) => {
-    const x = (e.clientX / window.innerWidth) * 100;
-    const y = (e.clientY / window.innerHeight) * 100;
-    setGradientPosition({ x, y });
-  };
 
   return (
-    <div className="flex flex-col bg-[#232323] p-4 flex-1">
+    <div className="flex flex-col bg-[] p-4 flex-1">
       <div className="flex flex-col">
         <div className="flex w-full content-center justify-center font-bold text-xl mb-5">
           The best API development tool

@@ -27,7 +27,7 @@ const SniffersPage = () => {
         activeSniffer={activeSniffer}
         setActiveSniffer={setActiveSniffer}
       />
-      <div className="flex bg-[#232323] h-full w-full">
+      <div className="flex bg-tertiary h-full w-full">
         <Requests />
       </div>
     </div>

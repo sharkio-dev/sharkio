@@ -47,7 +47,7 @@ export const SniffersSideBar = ({
   };
 
   return (
-    <div className="relative min-w-[240px] border-r-[0.1px] border-[#3a3a3a]">
+    <div className="relative min-w-[240px] border-r-[0.1px] border-border-color">
       <div className="flex h-16 items-center p-2 mb-2 justify-between">
         <div className="text-white text-xl font-bold">Sniffers</div>
         <AiOutlinePlus
@@ -77,8 +77,8 @@ export const SniffersSideBar = ({
       {sniffers.map((sniffer, i) => (
         <div
           key={i}
-          className={`group flex h-10 items-center px-2 shadow-lg border-b-[0.1px] border-[#3a3a3a] cursor-pointer hover:bg-[#232323] transition-colors active:first:bg-[#232323] ${
-            activeSniffer?.id === sniffer.id && "bg-[#232323]"
+          className={`group flex h-10 items-center px-2 shadow-lg border-b-[0.1px] border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
+            activeSniffer?.id === sniffer.id && "bg-secondary"
           }`}
         >
           <div

@@ -55,7 +55,7 @@ export const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col bg-[#232323]">
+    <div className="flex flex-col bg-tertiary">
       <div className="flex flex-col">
         <div className="font-bold text-xl mb-5">Getting started</div>
         <div className="sm:flex sm:flex-col sm:gap-2 md:grid grid-rows-3 grid-cols-2 md:gap-3 sm:gap-2 grid-flow-col">

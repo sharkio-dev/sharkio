@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
   const isLoggedOut = user == null || user.email == null;
 
   return (
-    <div className="flex w-full h-14 bg-[#181818] border-b-[0.1px] border-[#3a3a3a] px-4 py-2 justify-between">
+    <div className="flex w-full h-14 bg-primary border-b-[0.1px] border-border-color px-4 py-2 justify-between">
       <div className="items-center flex space-x-2">
         {isLoggedOut && <Logo />}
         <div className="text-white text-lg font-bold font-mono">
