@@ -3,26 +3,24 @@ import React from "react";
 import { CopyAll } from "@mui/icons-material";
 import { ConfigButton } from "../../components/config-card/ConfigButton";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { postKey } from "../../api/apiKeys";
+import { useApiKeysStore } from "../../stores/apiKeysStore";
 
 type GenerateTokenModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onGenerate: () => void;
 };
 export const GenerateTokenModal = ({
   isOpen,
   onClose,
-  onGenerate,
 }: GenerateTokenModalProps) => {
   const [name, setName] = React.useState<string>("");
   const [newToken, setNewToken] = React.useState<string>("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const { addKey } = useApiKeysStore();
 
   const generateKey = () => {
-    postKey(name)
+    addKey(name)
       .then((res) => {
-        onGenerate();
         showSnackbar("API key generated successfully", "success");
         setName("");
         setNewToken(res.data.key);
