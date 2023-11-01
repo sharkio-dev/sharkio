@@ -1,9 +1,8 @@
 import { useState, useCallback } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { editSniffer } from "../../api/api";
 import { CircularProgress } from "@mui/material";
-import { Sniffer } from "../../stores/sniffersStores";
+import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
 
 type EdirSnifferModalProps = {
   isOpen: boolean;
@@ -22,6 +21,7 @@ export const EditSnifferModal = ({
   const [port, setPort] = useState<number | undefined>(sniffer.port);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { editSniffer } = useSniffersStore();
 
   const handleEditSniffer = useCallback(() => {
     if (name === "") {
@@ -33,7 +33,7 @@ export const EditSnifferModal = ({
       return;
     }
     setIsLoading(true);
-    editSniffer({ name, downstreamUrl, port, id: sniffer.id })
+    editSniffer({ name, downstreamUrl, port: port || 1, id: sniffer.id })
       .then(() => {
         setName("");
         setDownstreamUrl("");

@@ -20,17 +20,15 @@ export const SniffersSideBar = ({
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const { sniffers, loadSniffers } = useSniffersStore();
+  const { sniffers } = useSniffersStore();
 
   const onAddSnifferModalClose = () => {
     setIsAddModalOpen(false);
-    loadSniffers();
   };
 
   const onEditSnifferModalClose = () => {
     setIsEditModalOpen(false);
     setSelectedSniffer(null);
-    loadSniffers();
   };
 
   const onEditSniffer = (sniffer: Sniffer) => {
@@ -41,7 +39,6 @@ export const SniffersSideBar = ({
   const onDeleteModalClose = () => {
     setIsDeleteModalOpen(false);
     setSelectedSniffer(null);
-    loadSniffers();
   };
 
   const onDeleteSniffer = (sniffer: Sniffer) => {

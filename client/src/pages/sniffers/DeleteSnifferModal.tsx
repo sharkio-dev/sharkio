@@ -1,9 +1,8 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { deleteSniffer } from "../../api/api";
 import { CircularProgress } from "@mui/material";
-import { Sniffer } from "../../stores/sniffersStores";
+import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
 
 type DeleteSnifferModalProps = {
   isOpen: boolean;
@@ -18,6 +17,7 @@ export const DeleteSnifferModal = ({
   const [verifyDelete, setVerifyDelete] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { deleteSniffer } = useSniffersStore();
 
   const handleDeleteSniffer = useCallback(() => {
     // TODO: port should not be required
