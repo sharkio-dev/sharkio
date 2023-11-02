@@ -13,10 +13,14 @@ export const Navbar: React.FC = () => {
   return (
     <div className="flex w-full h-14 bg-primary border-b-[0.1px] border-border-color px-4 py-2 justify-between">
       <div className="items-center flex space-x-2">
-        {isLoggedOut && <Logo />}
-        <div className="text-white text-lg font-bold font-mono">
-          <div>Sharkio</div>
-        </div>
+        {isLoggedOut && (
+          <>
+            <Logo />
+            <div className="text-white text-lg font-bold font-mono">
+              <div>Sharkio</div>
+            </div>
+          </>
+        )}
       </div>
       <div className="items-center flex">
         {!isLoggedOut && <LoginComponent />}
