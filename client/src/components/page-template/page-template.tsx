@@ -4,22 +4,15 @@ import { Navbar } from "../navbar/navbar";
 import { SideBar } from "../sidebar/sidebar";
 import { BiTerminal } from "react-icons/bi";
 
-export const PageTemplate: React.FC<PropsWithChildren> = ({ children }) => {
-  const [sideMenuOpen, setSideMenuOpen] = useState<boolean>(false);
+export const PageTemplate: React.FC<
+  PropsWithChildren & { isSideBar?: boolean }
+> = ({ children, isSideBar = true }) => {
   const { user } = useAuthStore();
-
-  useEffect(() => {
-    if (user != null && user.email != null) {
-      setSideMenuOpen(true);
-    } else {
-      setSideMenuOpen(false);
-    }
-  }, [user]);
 
   return (
     <div className="flex flex-col h-full w-full min-h-screen">
       <div className="flex flex-row h-full w-full flex-1">
-        {sideMenuOpen && <SideBar />}
+        {user && isSideBar && <SideBar />}
         <div className="flex flex-col flex-1 bg-tertiary">
           <Navbar />
           {children}

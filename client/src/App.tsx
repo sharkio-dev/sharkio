@@ -1,6 +1,15 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useNavigation,
+  useParams,
+  useResolvedPath,
+} from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
 import { RequestMetadataProvider } from "./context/requests-context";
@@ -17,6 +26,7 @@ import SniffersPage from "./pages/sniffers/SniffersPage";
 import { a11yDark, CopyBlock } from "react-code-blocks";
 import { TfiSettings } from "react-icons/tfi";
 import { AiOutlinePlayCircle } from "react-icons/ai";
+import { LandingPage } from "./LandingPage";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -104,10 +114,18 @@ function App(): React.JSX.Element {
               }
             />
             <Route
-              path={routes.DOCS}
+              path={routes.DOCS_GETTINGS_STARTED}
               element={
-                <PageTemplate>
+                <PageTemplate isSideBar={false}>
                   <SharkioDocsGettingStartedPage />
+                </PageTemplate>
+              }
+            />
+            <Route
+              path={routes.DOCS_SETUP}
+              element={
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsSetupPage />
                 </PageTemplate>
               }
             />
@@ -126,41 +144,6 @@ function App(): React.JSX.Element {
   );
 }
 
-const LandingPage = () => {
-  const navigate = useNavigate();
-
-  return (
-    <div
-      className="flex flex-1 items-center justify-center"
-      style={{
-        background: `linear-gradient(to right, #181818, #2d2d2d, #181818)`,
-      }}
-    >
-      <div className="flex flex-col items-center justify-center">
-        <div className="text-white text-4xl font-bold font-mono">
-          <div>Sharkio</div>
-          <div className="text-2xl font-normal">API Development Made Easy.</div>
-        </div>
-        <div className="flex flex-row mt-4 w-full justify-between">
-          <div
-            className="flex border-blue-200 border-2 rounded-lg p-2 items-center w-40 justify-center hover:scale-105 hover:cursor-pointer active:scale-95 text-white text-lg font-bold font-mono"
-            onClick={() => navigate(routes.DOCS)}
-          >
-            Get Started
-          </div>
-
-          <div
-            className="flex bg-blue-200 rounded-lg p-2 shadow-sm items-center w-40 justify-center hover:scale-105 hover:cursor-pointer active:scale-95 text-border-color text-lg font-bold font-mono"
-            onClick={() => navigate(routes.LOGIN)}
-          >
-            Login
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const SharkioDocsSetupPage = () => {
   return (
     <SharkioDocsPageTemplate
@@ -175,7 +158,7 @@ const SharkioDocsSetupPage = () => {
           Sharkio website.
         </a>
         <img
-          src="login.png"
+          src="/login.png"
           alt=""
           className="w-full rounded-lg h-96 border-2 border-border-color mt-4"
         />
@@ -193,7 +176,7 @@ const SharkioDocsSetupPage = () => {
           by clicking on your profile picture and generate a token.
         </p>
         <img
-          src="apiKeys.png"
+          src="/apiKeys.png"
           alt=""
           className="w-full rounded-lg h-96 border-2 border-border-color mt-4"
         />
@@ -315,21 +298,40 @@ const SharkioDocsSection = ({
   );
 };
 
-const SharkioDocsNavigation = () => {
+type SharkioDocsNavigationProps = {
+  navigationItems: { title: string; path: string; icon: React.ReactNode }[];
+};
+
+const SharkioDocsNavigation = ({
+  navigationItems,
+}: SharkioDocsNavigationProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const onClick = (path: string) => {
+    navigate(path);
+  };
+
   return (
-    <div className="flex h-full flex-col w-1/5 border-r bg-secondary border-border-color hidden sm:inline-flex ">
-      <div className="flex text-lg font-serif text-center items-center border-b border-border-color hover:cursor-pointer hover:bg-tertiary">
-        <div className="flex flex-1 active:scale-105 px-4 py-2">
-          <TfiSettings className="w-6 h-6 mr-2" />
-          Setup
+    <div className="flex-col w-1/5 border-r bg-secondary border-border-color hidden sm:flex sm:w-1/4 lg:w-1/5">
+      {navigationItems.map(({ title, path, icon }) => (
+        <div
+          key={title}
+          className={`flex text-lg font-serif text-center items-center border-b border-border-color hover:cursor-pointer hover:bg-tertiary 
+          
+            `}
+          onClick={() => onClick(path)}
+        >
+          <div className="flex flex-1 active:scale-95 px-4 py-2 items-center">
+            <div
+              className={`${location.pathname === path ? "text-blue-300" : ""}`}
+            >
+              {icon}
+            </div>
+            {title}
+          </div>
         </div>
-      </div>
-      <div className="flex text-lg font-serif text-center items-center border-b border-border-color hover:cursor-pointer hover:bg-tertiary">
-        <div className="flex flex-1 active:scale-105 px-4 py-2">
-          <AiOutlinePlayCircle className="w-6 h-6 mr-2" />
-          Getting Started
-        </div>
-      </div>
+      ))}
     </div>
   );
 };
@@ -345,10 +347,23 @@ const SharkioDocsPageTemplate = ({
   title,
   subTitle,
 }: SharkioDocsPageTemplateProps) => {
+  const navigationItems = [
+    {
+      title: "Getting Started",
+      path: routes.DOCS_GETTINGS_STARTED,
+      icon: <TfiSettings className="w-6 h-6 mr-2" />,
+    },
+    {
+      title: "Setup",
+      path: routes.DOCS_SETUP,
+      icon: <AiOutlinePlayCircle className="w-6 h-6 mr-2" />,
+    },
+  ];
+
   return (
-    <div className="flex flex-row w-full h-full">
-      <SharkioDocsNavigation />
-      <div className="p-4 flex flex-col flex-1">
+    <div className="flex flex-1 flex-row">
+      <SharkioDocsNavigation navigationItems={navigationItems} />
+      <div className="p-4 flex flex-col flex-1 ">
         <div className="flex text-4xl font-serif ">{title}</div>
         <div className="flex w-full border-b border-border-color my-6"></div>
         <div className="text-lg font-serif mb-4 text-[#717171]">{subTitle}</div>
