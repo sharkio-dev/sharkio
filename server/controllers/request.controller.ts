@@ -39,7 +39,7 @@ export class RequestController {
       },
     );
 
-    router.route("/:requestId").get(async (req, res) => {
+    router.route("/:requestId/invocation").get(async (req, res) => {
       const request = await this.requestService.getById(req.params.requestId);
       if (request === null) {
         return res.status(404).send("Request not found");

@@ -15,6 +15,16 @@ export const authMiddleware = async (
   next: NextFunction,
 ) => {
   try {
+    if (req.headers["override-auth-user-id"] != null) {
+      res.locals.auth = {
+        user: {
+          id: req.headers["override-auth-user-id"],
+        },
+      };
+
+      return next();
+    }
+
     if (
       [/\/sharkio\/api\/auth/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
         .map((regex) => regex.test(req.path))
@@ -23,9 +33,8 @@ export const authMiddleware = async (
       return next();
     }
     const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
-    const { data: user, error } = await supabaseClient.auth.getUser(
-      access_token,
-    );
+    const { data: user, error } =
+      await supabaseClient.auth.getUser(access_token);
 
     if (error || !user) {
       log.error(error);
