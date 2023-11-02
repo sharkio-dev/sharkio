@@ -289,7 +289,17 @@ const SharkioDocsGettingStartedPage = () => {
   );
 };
 
-const SharkioDocsSection = ({ title, children, sectionNumber }) => {
+type SharkioDocsSectionProps = {
+  title: string;
+  children: React.ReactNode;
+  sectionNumber?: number;
+};
+
+const SharkioDocsSection = ({
+  title,
+  children,
+  sectionNumber,
+}: SharkioDocsSectionProps) => {
   return (
     <section className="flex flex-col mb-8">
       <div className="flex w-full flex-row mb-2">
@@ -324,7 +334,17 @@ const SharkioDocsNavigation = () => {
   );
 };
 
-const SharkioDocsPageTemplate = ({ children, title, subTitle }) => {
+type SharkioDocsPageTemplateProps = {
+  title: string;
+  subTitle: string;
+  children: React.ReactNode;
+};
+
+const SharkioDocsPageTemplate = ({
+  children,
+  title,
+  subTitle,
+}: SharkioDocsPageTemplateProps) => {
   return (
     <div className="flex flex-row w-full h-full">
       <SharkioDocsNavigation />
