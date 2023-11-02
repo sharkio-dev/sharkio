@@ -50,7 +50,7 @@ const LoginComponent: React.FC = () => {
       }
       case "Signup": {
         setLoading(false);
-        navigate(routes.SIGNUP);
+        navigate(routes.LOGIN);
         break;
       }
       default: {
