@@ -11,6 +11,7 @@ export type Sniffer = {
   id: string;
   downstreamUrl: string;
   port: number;
+  subdomain: string;
 };
 
 interface SniffersState {

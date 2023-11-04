@@ -10,10 +10,7 @@ const log = useLog({
 });
 
 export class RequestController {
-  constructor(
-    private readonly requestService: RequestService,
-    private readonly baseUrl: string = "/sharkio/request",
-  ) {}
+  constructor(private readonly requestService: RequestService) {}
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
@@ -56,6 +53,6 @@ export class RequestController {
       res.status(200).send(result);
     });
 
-    return { router, path: this.baseUrl };
+    return { router, path: "/sharkio/request" };
   }
 }

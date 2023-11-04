@@ -14,7 +14,7 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
     supabaseClient.auth
       .getSession()
       .then(({ data: { session } }) => {
-        if (session == null) {
+        if (session === null) {
           return;
         }
         const userDetails = session?.user.user_metadata;
@@ -36,11 +36,12 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
       const {
         data: { subscription },
       } = supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_IN") {
+        if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
           setAuthCookie(event, session).then((res) => {
             if (!res.ok) return;
           });
         }
+        console.log("event", event);
       });
       return () => subscription.unsubscribe();
     }

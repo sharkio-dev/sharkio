@@ -45,6 +45,8 @@ export const SniffersSideBar = ({
     setSelectedSniffer(sniffer);
     setIsDeleteModalOpen(true);
   };
+  console.log(activeSniffer);
+  console.log(sniffers);
 
   return (
     <div className="relative min-w-[240px] border-r-[0.1px] border-border-color bg-secondary">
@@ -78,7 +80,7 @@ export const SniffersSideBar = ({
         <div
           key={i}
           className={`group flex h-10 items-center px-2 shadow-lg border-b-[0.1px] border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
-            activeSniffer?.id === sniffer.id && "bg-secondary"
+            activeSniffer?.id === sniffer.id && "bg-tertiary"
           }`}
         >
           <div
