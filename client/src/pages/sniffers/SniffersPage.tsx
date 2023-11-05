@@ -15,66 +15,59 @@ import { selectIconByMethod } from "./selectIconByMethod";
 import { EndpointType, InvocationType } from "./types";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { InvocationsBottomBar } from "./InvocationsBottomBar";
-import { BackendAxios } from "../../api/backendAxios";
 import { LoadingIcon } from "./LoadingIcon";
 import { getInvocations } from "../../api/api";
+import JSONPretty from "react-json-pretty";
+import { generateCurlCommand } from "../../lib/jsonSchema";
 
-export function Tabs() {
+type InvocationDetailsProps = {
+  invocation: InvocationType;
+};
+
+export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   const [value, setValue] = React.useState("1");
+  const [invocationBody, setInvocationBody] = useState(invocation.body);
+  const [invocationHeaders, setInvocationHeaders] = useState(
+    invocation.headers
+  );
 
-  const handleChange = (newValue) => {
+  const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  console.log({ invocation });
 
   return (
-    <Box sx={{ width: "100%", typography: "body1", height: "100%" }}>
+    <div className="flex flex-col w-full">
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Response" value="1" />
-            <Tab label="Body" value="2" />
-            <Tab label="Headers" value="3" />
+            <Tab label="Body" value="1" />
+            <Tab label="Headers" value="2" />
+            <Tab label="Response" value="3" />
             <Tab label="Code" value="4" />
           </TabList>
         </Box>
-        <TabPanel value="1">
-          <TextField
-            label="Response"
-            variant="outlined"
-            size="small"
-            style={{ width: "100%" }}
-            disabled
-          />
+        <TabPanel value="1" style={{ padding: 0, paddingTop: 16 }}>
+          <div className="flex flex-1 bg-secondary p-2 rounded-md">
+            <JSONPretty data={invocationBody}></JSONPretty>
+          </div>
         </TabPanel>
-        <TabPanel value="2">
-          <TextField
-            label="Body"
-            variant="outlined"
-            size="small"
-            style={{ width: "100%" }}
-            disabled
-          />
+        <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
+          <div className="flex flex-1 bg-secondary p-2 rounded-md">
+            <JSONPretty data={invocationHeaders}></JSONPretty>
+          </div>
         </TabPanel>
-        <TabPanel value="3">
-          <TextField
-            label="Headers"
-            variant="outlined"
-            size="small"
-            style={{ width: "100%" }}
-            disabled
-          />
-        </TabPanel>
-        <TabPanel value="4">
-          <TextField
-            label="Code"
-            variant="outlined"
-            size="small"
-            style={{ width: "100%" }}
-            disabled
-          />
+        <TabPanel value="3" style={{ padding: 0, paddingTop: 16 }}></TabPanel>
+        <TabPanel
+          value="4"
+          style={{ padding: 0, paddingTop: 16, width: "100%" }}
+        >
+          <div className="flex flex-1 bg-secondary p-2 rounded-md ">
+            <JSONPretty data={generateCurlCommand(invocation)}></JSONPretty>
+          </div>
         </TabPanel>
       </TabContext>
-    </Box>
+    </div>
   );
 }
 const SniffersPage = () => {
@@ -137,11 +130,14 @@ const SniffersPage = () => {
           <div className="flex flex-row flex-1">
             <div className="flex flex-col w-full">
               <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-                {activeEndpoint && (
-                  <InvocationUpperBar activeEndpoint={activeEndpoint} />
+                {activeEndpoint && activeInvocation && (
+                  <InvocationUpperBar
+                    activeEndpoint={activeEndpoint}
+                    activeInvocation={activeInvocation}
+                  />
                 )}
               </div>
-              <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto">
+              <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
                 {activeEndpoint &&
                   (loadingRequests ? (
                     <div className="flex flex-1 justify-center items-center">
@@ -174,9 +170,13 @@ const SniffersPage = () => {
 
 type InvocationUpperBarProps = {
   activeEndpoint: EndpointType;
+  activeInvocation: InvocationType;
 };
 
-const InvocationUpperBar = ({ activeEndpoint }: InvocationUpperBarProps) => {
+const InvocationUpperBar = ({
+  activeEndpoint,
+  activeInvocation,
+}: InvocationUpperBarProps) => {
   return (
     <>
       <div className="flex flex-row items-center space-x-4">
@@ -190,8 +190,8 @@ const InvocationUpperBar = ({ activeEndpoint }: InvocationUpperBarProps) => {
         />
         <PlayArrow className="text-green-500 cursor-pointer" />
       </div>
-      <div className="flex flex-row items-center space-x-4 mt-4 flex-1">
-        <Tabs />
+      <div className="flex flex-row space-x-4 mt-4 flex-1">
+        <InvocationDetails invocation={activeInvocation} />
       </div>
     </>
   );

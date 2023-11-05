@@ -21,7 +21,7 @@ interface RequestMetadata {
 export class RequestService {
   constructor(
     private readonly repository: RequestRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string) {
