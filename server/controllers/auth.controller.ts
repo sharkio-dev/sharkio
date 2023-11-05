@@ -34,6 +34,9 @@ export class AuthController {
      *               properties:
      *                 event:
      *                   type: string
+     *                   enum:
+     *                     - SIGNED_IN
+     *                     - SIGNED_OUT
      *                 session:
      *                   type: object
      *                   properties:
