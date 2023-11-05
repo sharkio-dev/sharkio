@@ -120,7 +120,7 @@ const SniffersPage = () => {
                   <InvocationUpperBar activeEndpoint={activeEndpoint} />
                 )}
               </div>
-              <div className="flex flex-col p-2 px-4 h-1/3 overflow-y-auto">
+              <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto">
                 {activeEndpoint && (
                   <InvocationsBottomBar
                     invocations={invocations}

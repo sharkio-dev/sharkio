@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RequestsMetadataContext } from "../../context/requests-context";
 import { TextField } from "@mui/material";
 import { EndpointType } from "./types";
@@ -18,6 +18,7 @@ export const EndpointSideBar = ({
     loadData,
     loading,
   } = useContext(RequestsMetadataContext);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadData?.();
@@ -35,6 +36,18 @@ export const EndpointSideBar = ({
       ]
     : [];
 
+  const filteredRequests =
+    manyRequests?.filter((request) => {
+      const filterByMethod = request.method
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      const filterByUrl = request.url
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      return filterByMethod || filterByUrl;
+    }) || [];
+
   return (
     <>
       <TextField
@@ -42,10 +55,12 @@ export const EndpointSideBar = ({
         variant="outlined"
         style={{ marginBottom: "16px" }}
         size="small"
+        onChange={(e) => setSearch(e.target.value)}
+        value={search}
       />
       {requests &&
         services &&
-        manyRequests?.map((request) => {
+        filteredRequests.map((request) => {
           return (
             <Endpoint
               isSelected={request.id === activeEndpoint?.id}
