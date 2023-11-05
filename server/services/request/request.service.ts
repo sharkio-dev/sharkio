@@ -21,7 +21,7 @@ interface RequestMetadata {
 export class RequestService {
   constructor(
     private readonly repository: RequestRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string) {
@@ -153,6 +153,16 @@ export class RequestService {
         url: request.url,
       },
     });
+  }
+
+  async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
+    const invocations = await this.invocationRepository.repository.find({
+      where: {
+        userId,
+        snifferId,
+      },
+    });
+    return invocations;
   }
 }
 
