@@ -55,7 +55,10 @@ async function main() {
     userService,
     snifferService,
   );
-  const snifferController = new SnifferController(snifferService);
+  const snifferController = new SnifferController(
+    snifferService,
+    requestService,
+  );
   const requestController = new RequestController(requestService);
   const swaggerUi = new SwaggerUiController();
 

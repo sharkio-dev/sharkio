@@ -6,20 +6,23 @@ export class SnifferService {
   constructor(private readonly snifferRepository: SnifferRepository) {}
 
   async getSniffer(userId: string, id: string) {}
+
   async getUserSniffers(userId: string): Promise<Sniffer[]> {
     return this.snifferRepository.findByUserId(userId);
   }
+
   async getAllSniffers(): Promise<Sniffer[]> {
     return this.snifferRepository.repository.find();
   }
+
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
     const snifferEntity =
       this.snifferRepository.repository.create(snifferConfig);
-    const newSniffer = await this.snifferRepository.repository.save(
-      snifferEntity,
-    );
+    const newSniffer =
+      await this.snifferRepository.repository.save(snifferEntity);
     return newSniffer;
   }
+
   async editSniffer(newConfig: EditSnifferDTO) {
     return this.snifferRepository.repository
       .createQueryBuilder()
@@ -33,6 +36,7 @@ export class SnifferService {
       })
       .execute();
   }
+
   async removeSniffer(userId: string, id: string) {
     return this.snifferRepository.repository
       .createQueryBuilder()
@@ -45,6 +49,7 @@ export class SnifferService {
   async findBySubdomain(subdomain: string) {
     return this.snifferRepository.findBySubdomain(subdomain);
   }
+
   async findByName(userId: string, name: string) {
     return this.snifferRepository.findByName(userId, name);
   }

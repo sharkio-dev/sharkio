@@ -4,6 +4,7 @@ import {
 } from "../../model/request/request.model";
 import { InvocationRepository } from "../../model/invocation/invocation.model";
 import { Request as ExpressRequest } from "express";
+import { Sniffer } from "../../model/sniffer/sniffers.model";
 
 type TreeNodeKey = string;
 interface RequestTreeNode {
@@ -20,7 +21,7 @@ interface RequestMetadata {
 export class RequestService {
   constructor(
     private readonly repository: RequestRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string) {
@@ -31,9 +32,10 @@ export class RequestService {
     });
   }
 
-  async getBySnifferId(snifferId: string) {
+  async getBySnifferId(userId: string, snifferId: Sniffer["id"]) {
     const requests = await this.repository.repository.find({
       where: {
+        userId,
         snifferId,
       },
     });
@@ -46,7 +48,6 @@ export class RequestService {
   }
 
   async getRequestsTree(snifferId: string) {
-    // const requests = await this.getAll(snifferId);
     const requests = await this.repository.repository.find({
       where: {
         snifferId,

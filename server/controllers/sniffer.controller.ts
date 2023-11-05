@@ -7,6 +7,7 @@ import PromiseRouter from "express-promise-router";
 import { CreateSnifferValidator } from "../dto/in/create-sniffer.dto";
 import z from "zod";
 import { EditSnifferValidator } from "../dto/in/index";
+import RequestService from "../services/request/request.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -16,6 +17,7 @@ const log = useLog({
 export class SnifferController {
   constructor(
     private readonly snifferManager: SnifferService,
+    private readonly requestService: RequestService,
     private readonly baseUrl: string = "/sharkio/sniffer",
   ) {}
 
@@ -238,6 +240,43 @@ export class SnifferController {
           res.json(sniffer);
         },
       );
+    router.route("/:id/request").get(
+      /**
+       * @openapi
+       * /sharkio/sniffer/{id}/request:
+       *   get:
+       *     tags:
+       *      - sniffer
+       *     description: Get all sniffers requests
+       *     parameters:
+       *       - name: id
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Sniffer id
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Returns all requests for a sniffer
+       *       500:
+       *         description: Server error
+       */
+      requestValidator({
+        params: z.object({
+          id: z.string().uuid(),
+        }),
+      }),
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const userId = res.locals.auth.user.id;
+        const snifferRequests = await this.requestService.getBySnifferId(
+          userId,
+          id,
+        );
+
+        res.json(snifferRequests);
+      },
+    );
 
     return {
       router,
