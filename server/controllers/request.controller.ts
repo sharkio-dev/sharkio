@@ -33,7 +33,7 @@ export class RequestController {
 
         const requests = await this.requestService.getByUser(userId);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(async (req, res) => {
@@ -42,12 +42,14 @@ export class RequestController {
         return res.status(404).send("Request not found");
       }
 
-      return this.requestService.getInvocations(request);
+      const requests =
+        (await this.requestService.getInvocations(request)) || [];
+      res.status(200).send(requests);
     });
 
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.requestService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);

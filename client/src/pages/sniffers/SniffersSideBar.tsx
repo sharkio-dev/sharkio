@@ -49,7 +49,7 @@ export const SniffersSideBar = ({
   console.log(sniffers);
 
   return (
-    <div className="relative min-w-[240px] border-r-[0.1px] border-border-color bg-secondary">
+    <>
       <div className="flex h-16 items-center p-2 mb-2 justify-between">
         <div className="text-white text-xl font-bold">Sniffers</div>
         <AiOutlinePlus
@@ -102,6 +102,6 @@ export const SniffersSideBar = ({
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 };

@@ -1,9 +1,8 @@
 import { CgSearch } from "react-icons/cg";
 import { InvocationType } from "./types";
 import { Invocation } from "./Invocation";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { TextField } from "@mui/material";
-import { Endpoint } from "./Endpoint";
 
 type InvocationsBottomBarProps = {
   invocations?: InvocationType[];
@@ -20,10 +19,11 @@ export const InvocationsBottomBar = ({
 
   const filteredInvocations =
     invocations?.filter((invocation) => {
-      const filterByMethod = invocation.status
+      if (!search) return true;
+      const filterByMethod = invocation?.status
         .toString()
         .includes(search.toLowerCase());
-      const filterByUrl = invocation.url
+      const filterByUrl = invocation?.url
         .toLowerCase()
         .includes(search.toLowerCase());
 

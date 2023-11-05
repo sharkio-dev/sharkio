@@ -1,43 +1,45 @@
-import { useContext, useEffect, useState } from "react";
-import { RequestsMetadataContext } from "../../context/requests-context";
+import { useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { EndpointType } from "./types";
 import { Endpoint } from "./Endpoint";
+import { Sniffer } from "../../stores/sniffersStores";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { LoadingIcon } from "./LoadingIcon";
+import { getEnpoints } from "../../api/api";
 
 type EndpointSideBarProps = {
   activeEndpoint?: EndpointType;
   setActiveEndpoint: (endpointId: EndpointType) => void;
+  activeSniffer: Sniffer;
 };
 export const EndpointSideBar = ({
   activeEndpoint,
   setActiveEndpoint,
+  activeSniffer,
 }: EndpointSideBarProps) => {
-  const {
-    requestsData: requests,
-    servicesData: services,
-    loadData,
-    loading,
-  } = useContext(RequestsMetadataContext);
   const [search, setSearch] = useState("");
+  const [requests, setRequests] = useState<EndpointType[]>();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const [loadingEndpoints, setLoadingEndpoints] = useState(false);
 
   useEffect(() => {
-    loadData?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const manyRequests = requests
-    ? [
-        ...requests,
-        { id: "1", method: "DELETE", url: "https://google.com" },
-        { id: "2", method: "PUT", url: "https://google.com" },
-        { id: "3", method: "POST", url: "https://google.com" },
-        { id: "4", method: "PATCH", url: "https://google.com" },
-        { id: "5", method: "OPTIONS", url: "https://google.com" },
-      ]
-    : [];
+    if (!activeSniffer) return;
+    setLoadingEndpoints(true);
+    getEnpoints(activeSniffer.id)
+      .then((res) => {
+        console.log({ invocations: res.data });
+        setRequests(res.data);
+      })
+      .catch((err) => {
+        showSnackbar("Failed to get endpoints", "error");
+      })
+      .finally(() => {
+        setLoadingEndpoints(false);
+      });
+  }, [activeSniffer]);
 
   const filteredRequests =
-    manyRequests?.filter((request) => {
+    requests?.filter((request) => {
       const filterByMethod = request.method
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -50,6 +52,7 @@ export const EndpointSideBar = ({
 
   return (
     <>
+      {snackBar}
       <TextField
         label="Search Endpoint"
         variant="outlined"
@@ -58,8 +61,11 @@ export const EndpointSideBar = ({
         onChange={(e) => setSearch(e.target.value)}
         value={search}
       />
-      {requests &&
-        services &&
+      {loadingEndpoints ? (
+        <div className="flex flex-1 justify-center items-center">
+          <LoadingIcon />
+        </div>
+      ) : (
         filteredRequests.map((request) => {
           return (
             <Endpoint
@@ -70,7 +76,8 @@ export const EndpointSideBar = ({
               url={request.url}
             />
           );
-        })}
+        })
+      )}
     </>
   );
 };
