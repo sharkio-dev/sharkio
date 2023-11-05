@@ -9,13 +9,8 @@ const options = {
       version: "1.0.0",
     },
   },
-  apis: [
-    "./controllers/mock-manager-controller.ts",
-    "./controllers/sniffer.controller.ts",
-    "./controllers/collection-manager-controller.ts",
-    "./controllers/auth-controller.ts",
-    "./controllers/request.controller.ts",
-  ],
+
+  apis: ["./controllers/*.ts"],
 };
 
 export const openApiSpecification = swaggerJsdoc(options);
