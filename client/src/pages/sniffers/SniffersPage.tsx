@@ -111,8 +111,8 @@ const SniffersPage = () => {
         clearInterval(int);
       };
     }
-    setIntervalInvocations(undefined);
     clearInterval(intervalInvocations);
+    setIntervalInvocations(undefined);
     setLoadingEndpoints(true);
     getEnpoints(activeSniffer.id)
       .then((res) => {

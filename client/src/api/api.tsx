@@ -10,7 +10,7 @@ import { BackendAxios } from "./backendAxios";
 
 export const setAuthCookie = (
   event: AuthChangeEvent,
-  session: Session | null,
+  session: Session | null
 ) => {
   return fetch("/sharkio/api/auth", {
     method: "POST",
@@ -47,7 +47,7 @@ export const deleteSniffer = async (id: string) => {
 export const editSniffer = async (newConfig: SnifferCreateConfig) => {
   return BackendAxios.put(
     `/sniffer/${newConfig.id}`,
-    JSON.stringify(newConfig),
+    JSON.stringify(newConfig)
   );
 };
 
@@ -59,11 +59,11 @@ export const executeRequest = (
   port: number,
   url: string,
   method: string,
-  invocation: Invocation,
+  invocation: Invocation
 ) => {
   return BackendAxios.post(
     `/sniffer/${port}/actions/execute`,
-    JSON.stringify({ url, method, invocation }),
+    JSON.stringify({ url, method, invocation })
   );
 };
 
@@ -76,11 +76,11 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(
     `/sniffer/${snifferId}/mock`,
-    JSON.stringify({ sniffer_id: snifferId, method, endpoint, data, status }),
+    JSON.stringify({ sniffer_id: snifferId, method, endpoint, data, status })
   );
 };
 
@@ -90,11 +90,11 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(
     `/sniffer/${port}/mock`,
-    JSON.stringify({ mockId: id, method, endpoint, data, status }),
+    JSON.stringify({ mockId: id, method, endpoint, data, status })
   );
 };
 
@@ -107,22 +107,22 @@ export const deleteMock = (id: string, sniffer_id: string) => {
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(
     `/sniffer/${port}/mock/actions/activate`,
-    JSON.stringify({ mockId: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` })
   );
 };
 
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(
     `/sniffer/${port}/mock/actions/deactivate`,
-    JSON.stringify({ mockId: `${method} ${endpoint}` }),
+    JSON.stringify({ mockId: `${method} ${endpoint}` })
   );
 };
 
@@ -140,11 +140,11 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(
     `/collection/${id}/request`,
-    JSON.stringify({ request }),
+    JSON.stringify({ request })
   );
 };
 
