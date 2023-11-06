@@ -4,7 +4,6 @@ export const routes = {
   REQUEST_INVOCATION:
     "/service/:serviceId/request/:requestId/invocation/:invocationId",
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
-  REQUESTS: "/requests",
   HOME: "/home",
   SNIFFERS: "/sniffers",
   SNIFFER: "/sniffers/:snifferId",

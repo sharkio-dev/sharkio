@@ -9,7 +9,7 @@ import { InvocationsBottomBar } from "./InvocationsBottomBar";
 import { LoadingIcon } from "./LoadingIcon";
 import { getEnpoints, getInvocations, getRequests } from "../../api/api";
 import { InvocationUpperBar } from "./InvocationUpperBar";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SniffersPage = () => {
   const [activeSniffer, setActiveSniffer] = useState<string>();

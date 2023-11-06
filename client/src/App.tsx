@@ -3,11 +3,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
-import { RequestMetadataProvider } from "./context/requests-context";
 import AuthUI from "./pages/auth/Auth";
-import { InvocationEditor } from "./pages/invocation/invocation";
-import { Requests } from "./pages/requests/requests";
-import { ServiceRequest } from "./pages/service-request/service-request";
 import { useThemeStore } from "./stores/themeStore";
 import APIKeys from "./pages/api-keys/api-keys";
 import { useAuthStore } from "./stores/authStore";
@@ -29,22 +25,12 @@ function App(): React.JSX.Element {
 
   const routesWithAuth = () => {
     const routesWithAuth = [
-      { path: routes.SERVICE_REQUEST, element: <ServiceRequest /> },
-      // { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
-      { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.REQUESTS, element: <Requests /> },
       { path: routes.SNIFFERS, element: <SniffersPage /> },
       { path: routes.SNIFFER, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
       { path: routes.INVOCATION, element: <SniffersPage /> },
-
-      // { path: routes.MOCKS, element: <MocksPage /> },
-      // { path: routes.SERVICE, element: <Service /> },
-      // { path: routes.MOCKS, element: <Mocks /> },
-      // { path: routes.OPENAPI, element: <GenOpenAPI /> },
-      // { path: routes.COLLECTION, element: <Collections /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
