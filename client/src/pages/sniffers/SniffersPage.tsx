@@ -9,15 +9,16 @@ import { InvocationsBottomBar } from "./InvocationsBottomBar";
 import { LoadingIcon } from "./LoadingIcon";
 import { getEnpoints, getInvocations, getRequests } from "../../api/api";
 import { InvocationUpperBar } from "./InvocationUpperBar";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const SniffersPage = () => {
-  const [activeSniffer, setActiveSniffer] = useState<Sniffer>();
-  const [activeEndpoint, setActiveEndpoint] = useState<EndpointType>();
+  const [activeSniffer, setActiveSniffer] = useState<string>();
+  const [activeEndpoint, setActiveEndpoint] = useState<string>();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadSniffers } = useSniffersStore();
+  const { loadSniffers, sniffers } = useSniffersStore();
   const { user } = useAuthStore();
   const [invocations, setInvocations] = useState<InvocationType[]>([]);
-  const [activeInvocation, setActiveInvocation] = useState<InvocationType>();
+  const [activeInvocation, setActiveInvocation] = useState<string>();
   const [loadingRequests, setLoadingRequests] = useState(false);
   const [loadingSniffers, setLoadingSniffers] = useState(false);
   const [loadingEndpoints, setLoadingEndpoints] = useState(false);
@@ -25,6 +26,37 @@ const SniffersPage = () => {
   const [intervalInvocations, setIntervalInvocations] =
     useState<NodeJS.Timeout>();
   const userId = user?.id;
+  const { snifferId, endpointId, invocationId } = useParams();
+  const navigator = useNavigate();
+
+  const sniffer = sniffers.find((s) => s.id === activeSniffer);
+  const endpoint = endpoints.find((e) => e.id === activeEndpoint);
+  const invocation = invocations.find((i) => i.id === activeInvocation);
+
+  useEffect(() => {
+    if (!snifferId) {
+      setActiveSniffer(undefined);
+      return;
+    }
+    setActiveSniffer(snifferId);
+  }, [snifferId]);
+
+  useEffect(() => {
+    if (!endpointId) {
+      setActiveEndpoint(undefined);
+      return;
+    }
+    setActiveEndpoint(endpointId);
+  }, [endpointId]);
+
+  useEffect(() => {
+    if (!invocationId) {
+      setActiveInvocation(undefined);
+      return;
+    }
+
+    setActiveInvocation(invocationId);
+  }, [invocationId]);
 
   useEffect(() => {
     if (!activeSniffer) {
@@ -33,9 +65,6 @@ const SniffersPage = () => {
         getRequests()
           .then((res) => {
             setInvocations(res.data);
-            if (res.data.length > 0) {
-              setActiveInvocation(res.data[0]);
-            }
           })
           .finally(() => {
             setLoadingRequests(false);
@@ -54,12 +83,9 @@ const SniffersPage = () => {
     clearInterval(intervalInvocations);
     setIntervalInvocations(undefined);
     setLoadingEndpoints(true);
-    getEnpoints(activeSniffer.id)
+    getEnpoints(activeSniffer)
       .then((res) => {
         setEndpoints(res.data);
-        if (res.data.length > 0) {
-          setActiveEndpoint(res.data[0]);
-        }
       })
       .catch((err) => {
         showSnackbar("Failed to get endpoints", "error");
@@ -72,12 +98,9 @@ const SniffersPage = () => {
   useEffect(() => {
     if (!activeEndpoint) return;
     setLoadingRequests(true);
-    getInvocations(activeEndpoint.id)
+    getInvocations(activeEndpoint)
       .then((res) => {
         setInvocations(res.data);
-        if (res.data.length > 0) {
-          setActiveInvocation(res.data[0]);
-        }
       })
       .catch((err) => {
         showSnackbar("Failed to get invocations", "error");
@@ -100,11 +123,35 @@ const SniffersPage = () => {
   }, [userId]);
 
   const onSnifferClick = (sniffer: Sniffer) => {
-    if (activeSniffer?.id === sniffer.id) {
+    if (activeSniffer === sniffer.id) {
       setActiveSniffer(undefined);
       return;
     }
-    setActiveSniffer(sniffer);
+    navigator(`/sniffers/${sniffer.id}`);
+  };
+
+  const onEndpointClick = (endpointId: string) => {
+    if (activeEndpoint === endpointId) {
+      setActiveEndpoint(undefined);
+      return;
+    }
+
+    navigator(`/sniffers/${activeSniffer}/endpoints/${endpointId}`);
+  };
+
+  const onInvocationClick = (invocationId: string) => {
+    if (activeInvocation === invocationId) {
+      setActiveInvocation(undefined);
+      return;
+    }
+    if (!activeEndpoint || !activeSniffer) {
+      setActiveInvocation(invocationId);
+      navigator(`/invocations/${invocationId}`);
+      return;
+    }
+    navigator(
+      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`
+    );
   };
 
   return (
@@ -117,7 +164,7 @@ const SniffersPage = () => {
           </div>
         ) : (
           <SniffersSideBar
-            activeSniffer={activeSniffer}
+            activeSniffer={sniffer}
             setActiveSniffer={onSnifferClick}
           />
         )}
@@ -133,12 +180,7 @@ const SniffersPage = () => {
           }`}
         >
           <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-            {activeInvocation && (
-              <InvocationUpperBar
-                activeEndpoint={activeInvocation}
-                activeInvocation={activeInvocation}
-              />
-            )}
+            <InvocationUpperBar activeInvocation={invocation} />
           </div>
           <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
             {invocations &&
@@ -150,8 +192,8 @@ const SniffersPage = () => {
                 <InvocationsBottomBar
                   title={activeSniffer ? "Invocations" : "🔴 Live Invocations"}
                   invocations={invocations}
-                  activeInvocation={activeInvocation}
-                  setActiveInvocation={setActiveInvocation}
+                  activeInvocation={invocation}
+                  setActiveInvocation={onInvocationClick}
                 />
               ))}
           </div>
@@ -164,8 +206,8 @@ const SniffersPage = () => {
               </div>
             ) : (
               <EndpointSideBar
-                activeEndpoint={activeEndpoint}
-                setActiveEndpoint={setActiveEndpoint}
+                activeEndpoint={endpoint}
+                setActiveEndpoint={onEndpointClick}
                 requests={endpoints}
               />
             )}

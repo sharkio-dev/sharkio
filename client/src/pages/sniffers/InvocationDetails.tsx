@@ -10,7 +10,7 @@ import { generateCurlCommand } from "../../lib/jsonSchema";
 import Editor from "@monaco-editor/react";
 
 type InvocationDetailsProps = {
-  invocation: InvocationType;
+  invocation?: InvocationType;
 };
 
 export function InvocationDetails({ invocation }: InvocationDetailsProps) {
@@ -52,7 +52,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(invocation.body, null, 2)}
+              defaultValue={JSON.stringify(invocation?.body || {}, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -63,7 +63,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(invocation.headers, null, 2)}
+              defaultValue={JSON.stringify(invocation?.headers || {}, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -75,7 +75,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               theme="vs-dark"
               defaultLanguage="json"
               defaultValue={JSON.stringify(
-                responseData(invocation.response),
+                responseData(invocation?.response || {}),
                 null,
                 2
               )}
@@ -90,7 +90,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height={"250px"}
               theme="vs-dark"
               defaultLanguage="bash"
-              defaultValue={generateCurlCommand(invocation)}
+              defaultValue={invocation ? generateCurlCommand(invocation) : ""}
             />
           </div>
         </TabPanel>

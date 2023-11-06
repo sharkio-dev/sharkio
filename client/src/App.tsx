@@ -35,6 +35,10 @@ function App(): React.JSX.Element {
       { path: routes.API_KEYS, element: <APIKeys /> },
       { path: routes.REQUESTS, element: <Requests /> },
       { path: routes.SNIFFERS, element: <SniffersPage /> },
+      { path: routes.SNIFFER, element: <SniffersPage /> },
+      { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
+      { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
+      { path: routes.INVOCATION, element: <SniffersPage /> },
 
       // { path: routes.MOCKS, element: <MocksPage /> },
       // { path: routes.SERVICE, element: <Service /> },

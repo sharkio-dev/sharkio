@@ -5,7 +5,7 @@ import { Endpoint } from "./Endpoint";
 
 type EndpointSideBarProps = {
   activeEndpoint?: EndpointType;
-  setActiveEndpoint: (endpointId: EndpointType) => void;
+  setActiveEndpoint: (endpointId: string) => void;
   requests: EndpointType[];
 };
 export const EndpointSideBar = ({
@@ -41,7 +41,7 @@ export const EndpointSideBar = ({
         return (
           <Endpoint
             isSelected={request.id === activeEndpoint?.id}
-            onClick={() => setActiveEndpoint(request)}
+            onClick={() => setActiveEndpoint(request.id)}
             key={request.id}
             method={request.method}
             url={request.url}

@@ -5,19 +5,17 @@ import { EndpointType, InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 
 type InvocationUpperBarProps = {
-  activeEndpoint: EndpointType;
-  activeInvocation: InvocationType;
+  activeInvocation?: InvocationType;
 };
 export const InvocationUpperBar = ({
-  activeEndpoint,
   activeInvocation,
 }: InvocationUpperBarProps) => {
   return (
     <>
       <div className="flex flex-row items-center space-x-4">
-        {selectIconByMethod(activeEndpoint.method)}
+        {selectIconByMethod(activeInvocation?.method || "GET")}
         <TextField
-          label={activeEndpoint.url}
+          label={activeInvocation?.url}
           variant="outlined"
           size="small"
           style={{ width: "100%" }}

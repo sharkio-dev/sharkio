@@ -22,6 +22,6 @@ export const selectIconByMethod = (method: string) => {
     case "OPTIONS":
       return <TbHttpOptions className="text-gray-500 h-8 w-8 p-1" />;
     default:
-      return;
+      return <TbHttpGet className="text-green-500 h-8 w-8 p-1" />;
   }
 };

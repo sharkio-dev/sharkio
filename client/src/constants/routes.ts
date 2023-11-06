@@ -7,6 +7,11 @@ export const routes = {
   REQUESTS: "/requests",
   HOME: "/home",
   SNIFFERS: "/sniffers",
+  SNIFFER: "/sniffers/:snifferId",
+  INVOCATION: "/invocations/:invocationId",
+  SNIFFER_ENDPOINT: "/sniffers/:snifferId/endpoints/:endpointId",
+  SNIFFER_ENDPOINT_INVOCATION:
+    "/sniffers/:snifferId/endpoints/:endpointId/invocations/:invocationId",
   API_KEYS: "/api-keys",
   MOCKS: "/mocks",
   SERVICE: "/service/:id",

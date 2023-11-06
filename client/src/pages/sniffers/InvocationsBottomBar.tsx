@@ -7,7 +7,7 @@ import { TextField } from "@mui/material";
 type InvocationsBottomBarProps = {
   invocations?: InvocationType[];
   activeInvocation?: InvocationType;
-  setActiveInvocation: (invocationId: InvocationType) => void;
+  setActiveInvocation: (invocationId: string) => void;
   title: string;
 };
 export const InvocationsBottomBar = ({
@@ -58,7 +58,7 @@ export const InvocationsBottomBar = ({
           return (
             <Invocation
               isSelected={invocation.id === activeInvocation?.id}
-              onClick={() => setActiveInvocation(invocation)}
+              onClick={() => setActiveInvocation(invocation.id)}
               key={i}
               status={invocation?.response?.status}
               url={invocation.url}
