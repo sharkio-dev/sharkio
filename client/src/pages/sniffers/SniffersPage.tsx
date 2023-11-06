@@ -26,14 +26,25 @@ type InvocationDetailsProps = {
 
 export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   const [value, setValue] = React.useState("1");
-  const [invocationBody, setInvocationBody] = useState(invocation.body);
-  const [invocationHeaders, setInvocationHeaders] = useState(
-    invocation.headers,
-  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const responseData = (response: any) => {
+    let data = {
+      body: {},
+      headers: {},
+    };
+    if (!response) return data;
+    data = response.data ? response.data : {};
+    data = response.headers ? { ...data, headers: response.headers } : data;
+    data = response.status ? { ...data, status: response.status } : data;
+    return data;
+  };
+  useEffect(() => {
+    setValue("1");
+  }, [invocation]);
 
   return (
     <div className="flex flex-col w-full">
@@ -52,7 +63,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(invocationBody, null, 2)}
+              defaultValue={JSON.stringify(invocation.body, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -63,12 +74,26 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(invocationHeaders, null, 2)}
+              defaultValue={JSON.stringify(invocation.headers, null, 2)}
               className="rounded-md"
             />
           </div>
         </TabPanel>
-        <TabPanel value="3" style={{ padding: 0, paddingTop: 16 }}></TabPanel>
+        <TabPanel value="3" style={{ padding: 0, paddingTop: 16 }}>
+          <div className="flex flex-1 bg-secondary p-2 rounded-md">
+            <Editor
+              height="90vh"
+              theme="vs-dark"
+              defaultLanguage="json"
+              defaultValue={JSON.stringify(
+                responseData(invocation.response),
+                null,
+                2
+              )}
+              className="rounded-md"
+            />
+          </div>
+        </TabPanel>
         <TabPanel value="4" style={{ padding: 0, paddingTop: 16 }}>
           <div className="flex bg-secondary p-2 rounded-md ">
             <Editor

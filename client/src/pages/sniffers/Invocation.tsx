@@ -1,6 +1,5 @@
 import { Tooltip } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
-import * as React from "react";
 
 type InvocationProps = {
   status: number;

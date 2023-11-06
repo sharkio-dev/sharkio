@@ -5,7 +5,11 @@ export type EndpointType = {
 };
 export type InvocationType = {
   id: string;
-  status: number;
+  response: {
+    status: number;
+    body: object;
+    headers: object;
+  };
   url: string;
   body: object;
   headers: object;

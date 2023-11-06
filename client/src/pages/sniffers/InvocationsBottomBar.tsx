@@ -22,7 +22,7 @@ export const InvocationsBottomBar = ({
   const filteredInvocations =
     invocations?.filter((invocation) => {
       if (!search) return true;
-      const filterByMethod = invocation?.status
+      const filterByMethod = invocation?.response?.status
         .toString()
         .includes(search.toLowerCase());
       const filterByUrl = invocation?.url
@@ -60,7 +60,7 @@ export const InvocationsBottomBar = ({
               isSelected={invocation.id === activeInvocation?.id}
               onClick={() => setActiveInvocation(invocation)}
               key={i}
-              status={invocation.status}
+              status={invocation?.response?.status}
               url={invocation.url}
             />
           );
