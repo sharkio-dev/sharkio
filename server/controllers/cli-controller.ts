@@ -17,7 +17,7 @@ class CLIController {
   constructor(
     private readonly apiKeyService: APIKeysService,
     private readonly userService: UserService,
-    private readonly snifferService: SnifferService
+    private readonly snifferService: SnifferService,
   ) {
     this.authMiddleware = this.authMiddleware.bind(this);
   }
@@ -96,7 +96,7 @@ class CLIController {
 
     router.get("/sniffers", this.authMiddleware, async (req, res) => {
       const sniffers = await this.snifferService.getUserSniffers(
-        res.locals.user.id
+        res.locals.user.id,
       );
       return res.status(200).send({ sniffers });
     });
