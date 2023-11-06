@@ -33,7 +33,7 @@ export class RequestController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.requestService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(async (req, res) => {
@@ -49,7 +49,7 @@ export class RequestController {
 
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.requestService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);
