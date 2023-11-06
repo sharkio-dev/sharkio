@@ -61,43 +61,41 @@ function App(): React.JSX.Element {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
-          <RequestMetadataProvider>
-            <Routes>
-              {routesWithAuth()}
-              <Route
-                path={"*"}
-                element={
-                  <PageTemplate>
-                    {user ? <SniffersPage /> : <LandingPage />}
-                  </PageTemplate>
-                }
-              />
-              <Route
-                path={routes.DOCS_GETTINGS_STARTED}
-                element={
-                  <PageTemplate isSideBar={false}>
-                    <SharkioDocsGettingStartedPage />
-                  </PageTemplate>
-                }
-              />
-              <Route
-                path={routes.DOCS_SETUP}
-                element={
-                  <PageTemplate isSideBar={false}>
-                    <SharkioDocsSetupPage />
-                  </PageTemplate>
-                }
-              />
-              <Route
-                path={routes.LOGIN}
-                element={
-                  <PageTemplate>
-                    <AuthUI />
-                  </PageTemplate>
-                }
-              />
-            </Routes>
-          </RequestMetadataProvider>
+          <Routes>
+            {routesWithAuth()}
+            <Route
+              path={"*"}
+              element={
+                <PageTemplate>
+                  {user ? <SniffersPage /> : <LandingPage />}
+                </PageTemplate>
+              }
+            />
+            <Route
+              path={routes.DOCS_GETTINGS_STARTED}
+              element={
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsGettingStartedPage />
+                </PageTemplate>
+              }
+            />
+            <Route
+              path={routes.DOCS_SETUP}
+              element={
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsSetupPage />
+                </PageTemplate>
+              }
+            />
+            <Route
+              path={routes.LOGIN}
+              element={
+                <PageTemplate>
+                  <AuthUI />
+                </PageTemplate>
+              }
+            />
+          </Routes>
         </BrowserRouter>
       </ThemeProvider>
     </AuthWrapper>

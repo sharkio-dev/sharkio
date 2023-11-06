@@ -1,4 +1,5 @@
-import { InterceptedRequest } from "../types/types";
+import { InvocationType } from "../pages/sniffers/types";
+import { InterceptedRequest, Invocation } from "../types/types";
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
@@ -102,12 +103,12 @@ export function jsonSchemaToTypescriptInterface(
   return output;
 }
 
-export function generateCurlCommand(req: InterceptedRequest): string {
-  const host = req.invocations[0].headers.host;
-  let curlCommand = `curl -X ${req.method} http://${host}${req.url} \\\n`;
+export function generateCurlCommand(req: InvocationType): string {
+  const host = req?.headers?.host;
+  let curlCommand = `curl -X ${req?.method} http://${host}${req.url} \\\n`;
 
   // Add request headers
-  for (const [key, value] of Object.entries(req.invocations[0].headers)) {
+  for (const [key, value] of Object.entries(req.headers)) {
     if (key === "host" || key.includes("sec-ch-ua")) {
       continue;
     }
@@ -115,8 +116,8 @@ export function generateCurlCommand(req: InterceptedRequest): string {
   }
 
   // Add request body, if present
-  if (req.invocations[0].body) {
-    curlCommand += `\t-d '${JSON.stringify(req.invocations[0].body)}' \\\n`;
+  if (req.body) {
+    curlCommand += `\t-d '${JSON.stringify(req.body)}' \\\n`;
   }
 
   return curlCommand.slice(0, -2);

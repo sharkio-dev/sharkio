@@ -1,29 +1,31 @@
 import { CgSearch } from "react-icons/cg";
 import { InvocationType } from "./types";
 import { Invocation } from "./Invocation";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { TextField } from "@mui/material";
-import { Endpoint } from "./Endpoint";
 
 type InvocationsBottomBarProps = {
   invocations?: InvocationType[];
   activeInvocation?: InvocationType;
   setActiveInvocation: (invocationId: InvocationType) => void;
+  title: string;
 };
 export const InvocationsBottomBar = ({
   invocations,
   activeInvocation,
   setActiveInvocation,
+  title,
 }: InvocationsBottomBarProps) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
 
   const filteredInvocations =
     invocations?.filter((invocation) => {
-      const filterByMethod = invocation.status
+      if (!search) return true;
+      const filterByMethod = invocation?.status
         .toString()
         .includes(search.toLowerCase());
-      const filterByUrl = invocation.url
+      const filterByUrl = invocation?.url
         .toLowerCase()
         .includes(search.toLowerCase());
 
@@ -33,7 +35,7 @@ export const InvocationsBottomBar = ({
   return (
     <>
       <div className="flex flex-row justify-between items-center text-center mb-4">
-        <div className="text-xl font-bold font-mono ">Invocations</div>
+        <div className="text-xl font-bold font-mono ">{title}</div>
         {!showSearch ? (
           <CgSearch
             className="text-gray-500 text-xl cursor-pointer"

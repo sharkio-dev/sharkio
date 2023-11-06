@@ -7,4 +7,7 @@ export type InvocationType = {
   id: string;
   status: number;
   url: string;
+  body: object;
+  headers: object;
+  method: string;
 };
