@@ -2,10 +2,13 @@ import {
   Column,
   DataSource,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
 import { useLog } from "../../lib/log";
+import { Invocation } from "../invocation/invocation.model";
 
 const log = useLog({
   dirname: __dirname,
@@ -40,6 +43,10 @@ export class InterceptedResponse {
 
   @Column({ type: "int" })
   status: number;
+
+  @ManyToOne("Invocation", "response")
+  @JoinColumn({ name: "invocation_id" })
+  invocation: Invocation;
 }
 
 export class ResponseRepository {

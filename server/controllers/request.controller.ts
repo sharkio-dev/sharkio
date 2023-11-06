@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
 import { useLog } from "../lib/log";
-import { IRouterConfig } from "./router.interface";
 import { RequestService } from "../services/request/request.service";
+import { IRouterConfig } from "./router.interface";
 
 const log = useLog({
   dirname: __dirname,
@@ -33,7 +33,7 @@ export class RequestController {
 
         const requests = await this.requestService.getByUser(userId);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(async (req, res) => {
@@ -47,7 +47,7 @@ export class RequestController {
 
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.requestService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);

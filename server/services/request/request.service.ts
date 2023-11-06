@@ -1,9 +1,9 @@
+import { Request as ExpressRequest } from "express";
+import { InvocationRepository } from "../../model/invocation/invocation.model";
 import {
   InterceptedRequest,
   RequestRepository,
 } from "../../model/request/request.model";
-import { InvocationRepository } from "../../model/invocation/invocation.model";
-import { Request as ExpressRequest } from "express";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
 
 type TreeNodeKey = string;
@@ -21,7 +21,7 @@ interface RequestMetadata {
 export class RequestService {
   constructor(
     private readonly repository: RequestRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string) {
@@ -157,12 +157,22 @@ export class RequestService {
 
   async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
     const invocations = await this.invocationRepository.repository.find({
-      where: {
-        userId,
-        snifferId,
+      relations: {
+        response: true,
       },
     });
-    return invocations;
+
+    // make sure only one response is returned
+    const mapped = invocations.map((invocation) => {
+      let response = undefined;
+      const responses = invocation.response;
+      if (responses && responses.length > 0) {
+        response = responses[0];
+      }
+      return { ...invocation, response };
+    });
+
+    return mapped;
   }
 }
 
