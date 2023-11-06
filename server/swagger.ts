@@ -8,6 +8,28 @@ const options = {
       title: "Sharkio",
       version: "1.0.0",
     },
+    servers: [
+      {
+        url: "http://localhost:5012",
+      },
+      {
+        url: "https://sharkio.dev",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        ApiKeyAuth: {
+          type: "apiKey",
+          in: "header",
+          name: "override-auth-user-id",
+        },
+      },
+    },
+    security: [
+      {
+        ApiKeyAuth: [],
+      },
+    ],
   },
 
   apis: ["./controllers/*.ts"],
