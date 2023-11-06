@@ -28,7 +28,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   const [value, setValue] = React.useState("1");
   const [invocationBody, setInvocationBody] = useState(invocation.body);
   const [invocationHeaders, setInvocationHeaders] = useState(
-    invocation.headers
+    invocation.headers,
   );
 
   const handleChange = (event, newValue) => {
