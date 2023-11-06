@@ -28,7 +28,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   const [value, setValue] = React.useState("1");
   const [invocationBody, setInvocationBody] = useState(invocation.body);
   const [invocationHeaders, setInvocationHeaders] = useState(
-    invocation.headers,
+    invocation.headers
   );
 
   const handleChange = (event, newValue) => {
@@ -88,7 +88,7 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!activeSniffer) {
-      const int = setInterval(() => {
+      const loadInvocations = () => {
         setLoadingRequests(true);
         getRequests()
           .then((res) => {
@@ -100,6 +100,10 @@ const SniffersPage = () => {
           .finally(() => {
             setLoadingRequests(false);
           });
+      };
+      loadInvocations();
+      const int = setInterval(() => {
+        loadInvocations();
       }, 60000);
 
       setIntervalInvocations(int);
