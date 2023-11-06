@@ -8,11 +8,13 @@ type InvocationsBottomBarProps = {
   invocations?: InvocationType[];
   activeInvocation?: InvocationType;
   setActiveInvocation: (invocationId: InvocationType) => void;
+  title: string;
 };
 export const InvocationsBottomBar = ({
   invocations,
   activeInvocation,
   setActiveInvocation,
+  title,
 }: InvocationsBottomBarProps) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -33,7 +35,7 @@ export const InvocationsBottomBar = ({
   return (
     <>
       <div className="flex flex-row justify-between items-center text-center mb-4">
-        <div className="text-xl font-bold font-mono ">Invocations</div>
+        <div className="text-xl font-bold font-mono ">{title}</div>
         {!showSearch ? (
           <CgSearch
             className="text-gray-500 text-xl cursor-pointer"

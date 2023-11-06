@@ -45,8 +45,6 @@ export const SniffersSideBar = ({
     setSelectedSniffer(sniffer);
     setIsDeleteModalOpen(true);
   };
-  console.log(activeSniffer);
-  console.log(sniffers);
 
   return (
     <>
@@ -77,31 +75,57 @@ export const SniffersSideBar = ({
       )}
 
       {sniffers.map((sniffer, i) => (
-        <div
+        <Sniffer
           key={i}
-          className={`group flex h-10 items-center px-2 shadow-lg border-b-[0.1px] border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
-            activeSniffer?.id === sniffer.id && "bg-tertiary"
-          }`}
-        >
-          <div
-            className="flex items-center w-full active:scale-105 h-full"
-            onClick={() => setActiveSniffer(sniffer)}
-          >
-            <GiSharkFin className="text-blue-200 mr-2" />
-            <div className="text-white text-sm">{sniffer.name}</div>
-          </div>
-          <div className="flex space-x-2 opacity-0 group-hover:opacity-100">
-            <AiOutlineEdit
-              className="opacity-0 group-hover:opacity-100 text-amber-200 active:scale-110 text-lg"
-              onClick={() => onEditSniffer(sniffer)}
-            />
-            <AiOutlineDelete
-              className="opacity-0 group-hover:opacity-100 text-red-200 active:scale-110 text-lg"
-              onClick={() => onDeleteSniffer(sniffer)}
-            />
-          </div>
-        </div>
+          isSelected={activeSniffer?.id === sniffer.id}
+          onClick={() => setActiveSniffer(sniffer)}
+          onEditSniffer={() => onEditSniffer(sniffer)}
+          onDeleteSniffer={() => onDeleteSniffer(sniffer)}
+          name={sniffer.name}
+        />
       ))}
     </>
+  );
+};
+
+type SnifferProps = {
+  isSelected: boolean;
+  onClick: () => void;
+  onEditSniffer: () => void;
+  onDeleteSniffer: () => void;
+  name: string;
+};
+
+const Sniffer = ({
+  isSelected,
+  onClick,
+  onEditSniffer,
+  onDeleteSniffer,
+  name,
+}: SnifferProps) => {
+  return (
+    <div
+      className={`group flex h-10 items-center px-2 shadow-lg border-b-[0.1px] border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
+        isSelected && "bg-tertiary"
+      }`}
+    >
+      <div
+        className="flex items-center w-full active:scale-105 h-full"
+        onClick={onClick}
+      >
+        <GiSharkFin className="text-blue-200 mr-2" />
+        <div className="text-white text-sm">{name}</div>
+      </div>
+      <div className="flex space-x-2 opacity-0 group-hover:opacity-100">
+        <AiOutlineEdit
+          className="opacity-0 group-hover:opacity-100 text-amber-200 active:scale-110 text-lg"
+          onClick={onEditSniffer}
+        />
+        <AiOutlineDelete
+          className="opacity-0 group-hover:opacity-100 text-red-200 active:scale-110 text-lg"
+          onClick={onDeleteSniffer}
+        />
+      </div>
+    </div>
   );
 };

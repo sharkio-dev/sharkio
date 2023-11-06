@@ -44,7 +44,7 @@ export const DeleteSnifferModal = ({
       <Modal
         open={isOpen}
         onClose={onClose}
-        className="flex justify-center items-center"
+        className="flex justify-center items-center border-0"
       >
         <Paper className="flex flex-col p-4 w-96 rounded-sm">
           <div className="text-2xl font-bold">Delete Sniffer</div>
