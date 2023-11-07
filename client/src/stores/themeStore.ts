@@ -19,6 +19,6 @@ export const useThemeStore = create<themeStore>()(
     {
       name: "theme-mode",
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 );

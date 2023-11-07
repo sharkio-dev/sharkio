@@ -22,7 +22,7 @@ export class ProxyServer {
 
   constructor(
     private readonly proxyMiddleware: ProxyMiddleware,
-    private readonly requestInterceptor: RequestInterceptor,
+    private readonly requestInterceptor: RequestInterceptor
   ) {
     this.app = express();
     this.app.use(logMiddleware);
@@ -30,7 +30,7 @@ export class ProxyServer {
     this.app.use(json());
     this.app.use(cookieParser());
     this.app.use(
-      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
+      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor)
     );
     this.app.use(this.proxyMiddleware.getMiddleware());
   }

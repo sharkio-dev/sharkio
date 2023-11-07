@@ -62,7 +62,7 @@ class SettingsController {
         const user = res.locals.auth;
         const key = await this.apiKeyService.add(user.user.id, name);
         return res.status(200).send(key);
-      },
+      }
     );
 
     router.delete(
@@ -102,7 +102,7 @@ class SettingsController {
 
         await this.apiKeyService.remove(user.user.id, apiKeyId);
         return res.sendStatus(200);
-      },
+      }
     );
 
     router.put(
@@ -151,7 +151,7 @@ class SettingsController {
 
         await this.apiKeyService.update(user.user.id, apiKeyId, name);
         return res.sendStatus(200);
-      },
+      }
     );
     return { router, path: "/sharkio/settings/api-keys" };
   }

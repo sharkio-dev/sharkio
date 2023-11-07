@@ -2,7 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
 import { useLog } from "../lib/log";
 import { RequestService } from "../services/request/request.service";
+import { SnifferService } from "../services/sniffer/sniffer.service";
 import { IRouterConfig } from "./router.interface";
+import axios from "axios";
 
 const log = useLog({
   dirname: __dirname,
@@ -10,7 +12,10 @@ const log = useLog({
 });
 
 export class RequestController {
-  constructor(private readonly requestService: RequestService) {}
+  constructor(
+    private readonly requestService: RequestService,
+    private readonly snifferService: SnifferService
+  ) {}
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
@@ -33,7 +38,7 @@ export class RequestController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.requestService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(
@@ -59,17 +64,62 @@ export class RequestController {
         const requests =
           (await this.requestService.getInvocations(request)) || [];
         res.status(200).send(requests);
-      },
+      }
     );
 
+    router.route("/:requestId/execute").get(
+      /**
+       * @openapi
+       * /sharkio/request/{requestId}/execute:
+       *   get:
+       *     tags:
+       *      - request
+       *     parameters:
+       *       - name: requestId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Request id
+       *         required: true
+       *     description: executes a request
+       *     responses:
+       *       200:
+       *         description: request was successfully executed
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        const request = await this.requestService.getById(req.params.requestId);
+        if (request == null) {
+          return res.status(404).send("Request not found");
+        }
+        const userId = res.locals.auth.userId;
+        const sniffer = await this.snifferService.getSniffer(
+          userId,
+          request.snifferId
+        );
+        if (sniffer == null) {
+          return res.status(404).send("Sniffer not found");
+        }
+
+        await axios.request({
+          method: request.method,
+          headers: request.headers,
+          url:
+            `http://${sniffer.subdomain}.localhost.sharkio.dev` + request.url,
+          data: request.body,
+        });
+      }
+    );
+
+    // TODO: deprecate this
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.requestService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);
     });
-
     return { router, path: "/sharkio/request" };
   }
 }

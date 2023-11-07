@@ -5,7 +5,14 @@ import { EditSnifferDTO } from "../../dto/in";
 export class SnifferService {
   constructor(private readonly snifferRepository: SnifferRepository) {}
 
-  async getSniffer(userId: string, id: string) {}
+  async getSniffer(userId: string, id: string) {
+    return this.snifferRepository.repository.findOne({
+      where: {
+        userId,
+        id,
+      },
+    });
+  }
 
   async getUserSniffers(userId: string): Promise<Sniffer[]> {
     return this.snifferRepository.findByUserId(userId);
@@ -18,8 +25,9 @@ export class SnifferService {
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
     const snifferEntity =
       this.snifferRepository.repository.create(snifferConfig);
-    const newSniffer =
-      await this.snifferRepository.repository.save(snifferEntity);
+    const newSniffer = await this.snifferRepository.repository.save(
+      snifferEntity
+    );
     return newSniffer;
   }
 

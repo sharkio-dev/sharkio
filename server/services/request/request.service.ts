@@ -21,7 +21,7 @@ interface RequestMetadata {
 export class RequestService {
   constructor(
     private readonly repository: RequestRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -57,7 +57,6 @@ export class RequestService {
         snifferId,
       },
     });
-    console.log("requests", requests);
 
     const result = {
       name: "/",

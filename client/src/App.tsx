@@ -1,17 +1,17 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthWrapper } from "./AuthWrapper";
+import { LandingPage } from "./LandingPage";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
-import AuthUI from "./pages/auth/Auth";
-import { useThemeStore } from "./stores/themeStore";
 import APIKeys from "./pages/api-keys/api-keys";
-import { useAuthStore } from "./stores/authStore";
-import SniffersPage from "./pages/sniffers/SniffersPage";
-import { LandingPage } from "./LandingPage";
+import AuthUI from "./pages/auth/Auth";
 import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
 import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
-import { AuthWrapper } from "./AuthWrapper";
+import SniffersPage from "./pages/sniffers/SniffersPage";
+import { useAuthStore } from "./stores/authStore";
+import { useThemeStore } from "./stores/themeStore";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -62,7 +62,7 @@ function App(): React.JSX.Element {
               }
             />
             <Route
-              path={routes.DOCS_GETTINGS_STARTED}
+              path={routes.DOCS_GETTING_STARTED}
               element={
                 <PageTemplate isSideBar={false}>
                   <SharkioDocsGettingStartedPage />

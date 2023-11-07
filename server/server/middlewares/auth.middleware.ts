@@ -12,7 +12,7 @@ const log = useLog({
 export const authMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     if (req.headers["override-auth-user-id"] != null) {
@@ -33,14 +33,15 @@ export const authMiddleware = async (
       return next();
     }
     const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
-    const { data: user, error } =
-      await supabaseClient.auth.getUser(access_token);
+    const { data: user, error } = await supabaseClient.auth.getUser(
+      access_token
+    );
 
     if (error || !user) {
       log.error(error);
       res.setHeader(
         "Set-Cookie",
-        `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
+        `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`
       );
       res.sendStatus(401);
     } else {
@@ -51,7 +52,7 @@ export const authMiddleware = async (
     log.error(err);
     res.setHeader(
       "Set-Cookie",
-      `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
+      `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`
     );
     res.sendStatus(401);
   }

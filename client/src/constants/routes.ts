@@ -16,6 +16,6 @@ export const routes = {
   SERVICE: "/service/:id",
   OPENAPI: "/gen-openapi",
   COLLECTION: "/collections",
-  DOCS_GETTINGS_STARTED: "/docs/getting-started",
+  DOCS_GETTING_STARTED: "/docs/getting-started",
   DOCS_SETUP: "/docs/setup",
 };

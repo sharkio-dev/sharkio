@@ -8,48 +8,35 @@ type AuthContextProviderProps = {
 };
 export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
   const { signIn } = useAuthStore();
-  const [authenticating, setAuthenticating] = React.useState(true);
 
   useEffect(() => {
-    supabaseClient.auth
-      .getSession()
-      .then(({ data: { session } }) => {
-        if (session === null) {
-          return;
-        }
-        const userDetails = session?.user.user_metadata;
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session === null) {
+        return;
+      }
+      const userDetails = session?.user.user_metadata;
 
-        signIn({
-          id: session?.user.id ?? "",
-          fullName: userDetails?.full_name,
-          email: userDetails?.email,
-          profileImg: userDetails?.avatar_url,
-        });
-      })
-      .finally(() => {
-        setAuthenticating(false);
+      signIn({
+        id: session?.user.id ?? "",
+        fullName: userDetails?.full_name,
+        email: userDetails?.email,
+        profileImg: userDetails?.avatar_url,
       });
+    });
   }, []);
 
   useEffect(() => {
-    if (!authenticating) {
-      const {
-        data: { subscription },
-      } = supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
-          setAuthCookie(event, session).then((res) => {
-            if (!res.ok) return;
-          });
-        }
-        console.log("event", event);
-      });
-      return () => subscription.unsubscribe();
-    }
-  }, [authenticating]);
-
-  if (authenticating) {
-    return null;
-  }
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+        setAuthCookie(event, session).then((res) => {
+          if (!res.ok) return;
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  });
 
   return children;
 };

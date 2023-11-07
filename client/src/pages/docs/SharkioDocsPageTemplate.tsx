@@ -17,7 +17,7 @@ export const SharkioDocsPageTemplate = ({
   const navigationItems = [
     {
       title: "Getting Started",
-      path: routes.DOCS_GETTINGS_STARTED,
+      path: routes.DOCS_GETTING_STARTED,
       icon: <TfiSettings className="w-6 h-6 mr-2" />,
     },
     {

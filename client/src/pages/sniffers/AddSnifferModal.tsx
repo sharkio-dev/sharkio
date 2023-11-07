@@ -27,7 +27,12 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
     }
 
     setIsLoading(true);
-    createSniffer({ name, downstreamUrl, port: Number(port) })
+    createSniffer({
+      name,
+      downstreamUrl,
+      port: Number(port),
+      subdomain: "",
+    })
       .then(() => {
         setName("");
         setDownstreamUrl("");
