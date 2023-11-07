@@ -43,6 +43,7 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!endpointId) {
+      setEndpoints([]);
       setActiveEndpoint(undefined);
       return;
     }
@@ -51,6 +52,7 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!invocationId) {
+      setInvocations([]);
       setActiveInvocation(undefined);
       return;
     }
@@ -97,8 +99,15 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!activeEndpoint) return;
+    refreshInvocations(activeEndpoint);
+  }, [activeEndpoint]);
+
+  const refreshInvocations = (invocationId?: string) => {
+    if (!invocationId) {
+      return;
+    }
     setLoadingRequests(true);
-    getInvocations(activeEndpoint)
+    getInvocations(invocationId)
       .then((res) => {
         setInvocations(res.data);
       })
@@ -108,7 +117,7 @@ const SniffersPage = () => {
       .finally(() => {
         setLoadingRequests(false);
       });
-  }, [activeEndpoint]);
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -199,6 +208,7 @@ const SniffersPage = () => {
                   invocations={invocations}
                   activeInvocation={invocation}
                   setActiveInvocation={onInvocationClick}
+                  refresh={() => refreshInvocations(activeEndpoint || "")}
                 />
               ))}
           </div>

@@ -1,7 +1,7 @@
 import { TextField, Tooltip } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { selectIconByMethod } from "./selectIconByMethod";
-import { EndpointType, InvocationType } from "./types";
+import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { MdDomain } from "react-icons/md";
 import { Sniffer } from "../../stores/sniffersStores";
