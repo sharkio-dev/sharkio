@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
 };
 
 const GithubStarButton = () => {
-  const [starCount, setStarCount] = useState<number | null>(null);
+  const [_, setStarCount] = useState<number | null>(null);
 
   useEffect(() => {
     const repoUrl = "https://api.github.com/repos/sharkio-dev/sharkio";

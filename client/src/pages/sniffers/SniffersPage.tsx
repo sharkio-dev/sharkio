@@ -43,6 +43,7 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!endpointId) {
+      setEndpoints([]);
       setActiveEndpoint(undefined);
       return;
     }
@@ -51,6 +52,7 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!invocationId) {
+      setInvocations([]);
       setActiveInvocation(undefined);
       return;
     }
@@ -87,7 +89,7 @@ const SniffersPage = () => {
       .then((res) => {
         setEndpoints(res.data);
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Failed to get endpoints", "error");
       })
       .finally(() => {
@@ -97,18 +99,25 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!activeEndpoint) return;
+    refreshInvocations(activeEndpoint);
+  }, [activeEndpoint]);
+
+  const refreshInvocations = (invocationId?: string) => {
+    if (!invocationId) {
+      return;
+    }
     setLoadingRequests(true);
-    getInvocations(activeEndpoint)
+    getInvocations(invocationId)
       .then((res) => {
         setInvocations(res.data);
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Failed to get invocations", "error");
       })
       .finally(() => {
         setLoadingRequests(false);
       });
-  }, [activeEndpoint]);
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -126,6 +135,10 @@ const SniffersPage = () => {
     if (activeSniffer === sniffer.id) {
       setActiveSniffer(undefined);
       return;
+    } else {
+      setActiveSniffer(sniffer.id);
+      setEndpoints([]);
+      setInvocations([]);
     }
     navigator(`/sniffers/${sniffer.id}`);
   };
@@ -146,11 +159,11 @@ const SniffersPage = () => {
     }
     if (!activeEndpoint || !activeSniffer) {
       setActiveInvocation(invocationId);
-      navigator(`/invocations/${invocationId}`);
+      navigator(`/sniffers/invocations/${invocationId}`);
       return;
     }
     navigator(
-      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`,
+      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`
     );
   };
 
@@ -180,7 +193,10 @@ const SniffersPage = () => {
           }`}
         >
           <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-            <InvocationUpperBar activeInvocation={invocation} />
+            <InvocationUpperBar
+              activeInvocation={invocation}
+              activeSniffer={sniffer}
+            />
           </div>
           <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
             {invocations &&
@@ -194,6 +210,7 @@ const SniffersPage = () => {
                   invocations={invocations}
                   activeInvocation={invocation}
                   setActiveInvocation={onInvocationClick}
+                  refresh={() => refreshInvocations(activeEndpoint || "")}
                 />
               ))}
           </div>

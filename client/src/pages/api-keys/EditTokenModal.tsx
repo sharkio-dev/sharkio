@@ -1,7 +1,6 @@
 import { Button, Modal, Paper, TextField } from "@mui/material";
 import React, { useCallback } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { editKey } from "../../api/apiKeys";
 import { useApiKeysStore } from "../../stores/apiKeysStore";
 
 type EditTokenModalProps = {

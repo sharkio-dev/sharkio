@@ -27,6 +27,7 @@ export type InterceptedRequest = {
   snifferId: string;
   url: string;
   method: string;
+  invocations: Invocation[];
 };
 
 export type Sniffer = {

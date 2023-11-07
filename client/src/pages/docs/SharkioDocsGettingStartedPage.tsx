@@ -1,4 +1,3 @@
-import React from "react";
 import { a11yDark, CopyBlock } from "react-code-blocks";
 import { SharkioDocsPageTemplate } from "./SharkioDocsPageTemplate";
 import { SharkioDocsSection } from "./SharkioDocsSection";
@@ -18,6 +17,7 @@ export const SharkioDocsGettingStartedPage = () => {
         following command:
         <div className="flex flex-col w-full my-2">
           <CopyBlock
+            // @ts-ignore
             language="bash"
             text={`sharkio create sniffer -p <port> -n <name>`}
             showLineNumbers={false}
@@ -38,6 +38,7 @@ export const SharkioDocsGettingStartedPage = () => {
         Start your sniffer by running the following command:
         <div className="flex flex-col w-full my-2">
           <CopyBlock
+            // @ts-ignore
             language="bash"
             text={`sharkio start sniffer`}
             showLineNumbers={false}

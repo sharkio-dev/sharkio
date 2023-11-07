@@ -3,18 +3,21 @@ import { InvocationType } from "./types";
 import { Invocation } from "./Invocation";
 import { useState } from "react";
 import { TextField } from "@mui/material";
+import { LuRefreshCcw } from "react-icons/lu";
 
 type InvocationsBottomBarProps = {
   invocations?: InvocationType[];
   activeInvocation?: InvocationType;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
+  refresh?: () => void;
 };
 export const InvocationsBottomBar = ({
   invocations,
   activeInvocation,
   setActiveInvocation,
   title,
+  refresh,
 }: InvocationsBottomBarProps) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -36,21 +39,29 @@ export const InvocationsBottomBar = ({
     <>
       <div className="flex flex-row justify-between items-center text-center mb-4">
         <div className="text-xl font-bold font-mono ">{title}</div>
-        {!showSearch ? (
-          <CgSearch
-            className="text-gray-500 text-xl cursor-pointer"
-            onClick={() => setShowSearch(true)}
-          />
-        ) : (
-          <TextField
-            label="Search Invocations"
-            variant="outlined"
-            size="small"
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
-            className="w-1/2"
-          />
-        )}
+        <div className="flex flex-row-reverse items-center space-x-4 w-1/2">
+          {refresh && (
+            <LuRefreshCcw
+              className="flex text-gray-500 text-xl cursor-pointer ml-4"
+              onClick={refresh}
+            />
+          )}
+          {!showSearch ? (
+            <CgSearch
+              className="flex text-gray-500 text-xl cursor-pointer"
+              onClick={() => setShowSearch(true)}
+            />
+          ) : (
+            <TextField
+              label="Search Invocations"
+              variant="outlined"
+              size="small"
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              className="flex w-2/3"
+            />
+          )}
+        </div>
       </div>
 
       {invocations &&
