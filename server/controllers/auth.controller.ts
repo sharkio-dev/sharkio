@@ -75,7 +75,7 @@ export class AuthController {
             case "SIGNED_OUT": {
               res.setHeader(
                 "Set-Cookie",
-                `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`
+                `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
               );
               res.sendStatus(200);
               return;
@@ -97,7 +97,7 @@ export class AuthController {
           });
           res.sendStatus(500);
         }
-      }
+      },
     );
 
     return { router, path: "" };

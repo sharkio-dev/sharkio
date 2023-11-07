@@ -9,5 +9,5 @@ export const supabaseClient = createClient(
     auth: {
       persistSession: false,
     },
-  }
+  },
 );

@@ -9,7 +9,7 @@ export function JsonToOpenapi(
   requests: InterceptedRequest[],
   apiName = "",
   apiVersion = "",
-  description = ""
+  description = "",
 ) {
   const openApiDocument: OpenAPIDocument = {
     openapi: "3.0.0",
@@ -28,7 +28,7 @@ export function JsonToOpenapi(
 
 function handleRequests(
   openApiDocument: OpenAPIDocument,
-  requests: InterceptedRequest[]
+  requests: InterceptedRequest[],
 ) {
   requests.forEach((request) => {
     const { url, method, invocations } = request;

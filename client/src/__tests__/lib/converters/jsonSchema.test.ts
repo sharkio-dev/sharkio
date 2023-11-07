@@ -69,7 +69,7 @@ describe("generateTypescriptType", () => {
 
     expect(res).toBeDefined();
     expect(res.replace(/\n/g, "")).toEqual(
-      "type ISchema  = { hello: string;}".replace(/\n/g, "")
+      "type ISchema  = { hello: string;}".replace(/\n/g, ""),
     );
   });
 });
