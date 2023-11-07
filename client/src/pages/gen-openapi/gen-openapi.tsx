@@ -35,7 +35,7 @@ export const GenOpenAPI: React.FC = () => {
       requests?.filter((req) => req.snifferId === serviceId) || [];
 
     setOpenApiDoc(
-      JsonToOpenapi(filteredRequests, undefined, undefined, undefined)
+      JsonToOpenapi(filteredRequests, undefined, undefined, undefined),
     );
   };
 
