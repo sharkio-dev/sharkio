@@ -89,7 +89,7 @@ const SniffersPage = () => {
       .then((res) => {
         setEndpoints(res.data);
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Failed to get endpoints", "error");
       })
       .finally(() => {
@@ -111,7 +111,7 @@ const SniffersPage = () => {
       .then((res) => {
         setInvocations(res.data);
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Failed to get invocations", "error");
       })
       .finally(() => {
@@ -163,7 +163,7 @@ const SniffersPage = () => {
       return;
     }
     navigator(
-      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`,
+      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`
     );
   };
 

@@ -1,6 +1,4 @@
 import React from "react";
-import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
-import { ListItemButton } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { Logo } from "./Logo";

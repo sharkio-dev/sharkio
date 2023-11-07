@@ -1,4 +1,3 @@
-import React from "react";
 import { a11yDark, CopyBlock } from "react-code-blocks";
 import { SharkioDocsPageTemplate } from "./SharkioDocsPageTemplate";
 import { SharkioDocsSection } from "./SharkioDocsSection";
@@ -45,6 +44,7 @@ export const SharkioDocsSetupPage = () => {
         Install the Sharkio-cli.
         <div className="flex flex-col w-full mt-2">
           <CopyBlock
+            // @ts-ignore
             language="bash"
             text={`npm i -g sharkio-cli`}
             showLineNumbers={false}
@@ -59,6 +59,7 @@ export const SharkioDocsSetupPage = () => {
         Login to Sharkio-cli, the session will be saved in your home folder.
         <div className="flex flex-col w-full my-2">
           <CopyBlock
+            // @ts-ignore
             language="bash"
             text={`sharkio login`}
             showLineNumbers={false}

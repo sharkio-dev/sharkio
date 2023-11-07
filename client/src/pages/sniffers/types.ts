@@ -12,6 +12,8 @@ export type InvocationType = {
   };
   url: string;
   body: object;
-  headers: object;
+  headers: {
+    [key: string]: string;
+  };
   method: string;
 };

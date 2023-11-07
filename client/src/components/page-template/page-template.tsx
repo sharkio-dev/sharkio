@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren } from "react";
 import { useAuthStore } from "../../stores/authStore";
 import { Navbar } from "../navbar/navbar";
 import { SideBar } from "../sidebar/sidebar";

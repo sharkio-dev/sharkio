@@ -16,7 +16,7 @@ type InvocationDetailsProps = {
 export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   const [value, setValue] = React.useState("1");
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_: any, newValue: string) => {
     setValue(newValue);
   };
 
@@ -24,6 +24,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
     let data = {
       body: {},
       headers: {},
+      status: undefined,
     };
     if (!response) return data;
     data = response.data ? response.data : {};
@@ -77,7 +78,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               defaultValue={JSON.stringify(
                 responseData(invocation?.response || {}),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
             />

@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { createMock } from "../../../api/api";
-import { SnifferSelector } from "../../../components/sniffer-selector/sniffer-selector";
 import styles from "./add-mock-dialog.module.scss";
 import { useAuthStore } from "../../../stores/authStore";
 
@@ -18,7 +17,7 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
   open,
   close,
 }) => {
-  const [snifferId, setSnifferId] = useState<string>();
+  const [snifferId, _] = useState<string>();
   const [method, setMethod] = useState<string>("GET");
   const [endpoint, setEndpoint] = useState<string>("");
   const [status, setStatus] = useState<number>(200);
@@ -44,10 +43,10 @@ export const AddMockDialog: React.FC<AddMockDialogProps> = ({
     <Dialog open={open} onClose={close}>
       <Card className={styles.card}>
         <Typography>Add mock</Typography>
-        <SnifferSelector
+        {/* <SnifferSelector
           onChange={(value) => setSnifferId(value)}
           selectedSnifferId={`${snifferId}`}
-        />
+        /> */}
         <TextField
           label="Method"
           placeholder="GET"
