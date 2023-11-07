@@ -19,7 +19,7 @@ export class SnifferService {
     const snifferEntity =
       this.snifferRepository.repository.create(snifferConfig);
     const newSniffer = await this.snifferRepository.repository.save(
-      snifferEntity,
+      snifferEntity
     );
     return newSniffer;
   }

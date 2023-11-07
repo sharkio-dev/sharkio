@@ -61,7 +61,7 @@ class ApiKeyRepository {
   remove(userId: string, apiKeyId: string) {
     return this.repository.update(
       { userId, id: apiKeyId },
-      { status: ApiKeyStatus.INACTIVE },
+      { status: ApiKeyStatus.INACTIVE }
     );
   }
 

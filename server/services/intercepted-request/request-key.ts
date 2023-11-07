@@ -1,8 +1,5 @@
 export class RequestKey extends Object {
-  constructor(
-    public readonly method: string,
-    public readonly url: string,
-  ) {
+  constructor(public readonly method: string, public readonly url: string) {
     super();
   }
 

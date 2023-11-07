@@ -40,6 +40,7 @@
     "jsonwebtoken": "^9.0.2",
     "node-json-db": "^2.1.4",
     "npm": "^9.6.5",
+    "openai": "^4.16.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.2.8",

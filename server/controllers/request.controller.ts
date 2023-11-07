@@ -33,23 +33,38 @@ export class RequestController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.requestService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
     );
 
-    router.route("/:requestId/invocation").get(async (req, res) => {
-      const request = await this.requestService.getById(req.params.requestId);
-      if (request === null) {
-        return res.status(404).send("Request not found");
-      }
+    router.route("/:requestId/invocation").get(
+      /**
+       * @openapi
+       * /sharkio/request/{requestId}/invocation:
+       *   get:
+       *     tags:
+       *      - request
+       *     description: Get all requests
+       *     responses:
+       *       200:
+       *         description: Returns requests
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        const request = await this.requestService.getById(req.params.requestId);
+        if (request === null) {
+          return res.status(404).send("Request not found");
+        }
 
-      const requests =
-        (await this.requestService.getInvocations(request)) || [];
-      res.status(200).send(requests);
-    });
+        const requests =
+          (await this.requestService.getInvocations(request)) || [];
+        res.status(200).send(requests);
+      }
+    );
 
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.requestService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);
