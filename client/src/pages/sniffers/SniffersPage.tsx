@@ -159,7 +159,7 @@ const SniffersPage = () => {
     }
     if (!activeEndpoint || !activeSniffer) {
       setActiveInvocation(invocationId);
-      navigator(`/invocations/${invocationId}`);
+      navigator(`/sniffers/invocations/${invocationId}`);
       return;
     }
     navigator(
