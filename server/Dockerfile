@@ -1,15 +1,14 @@
-FROM node:latest as builder
+FROM node:latest
+
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+
 COPY . .
+
+RUN npm install
+
 RUN npm run build
 
-FROM node:latest
-ENV NODE_ENV production
-WORKDIR /app
-COPY --from=builder /app/package.json .
-RUN npm install
-COPY --from=builder /app/dist .
 EXPOSE 5012
-CMD [ "npm", "run", "prod"]
+EXPOSE 80
+
+CMD npm run prod
