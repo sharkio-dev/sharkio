@@ -7,6 +7,7 @@ import { DeleteSnifferModal } from "./DeleteSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { AddSnifferModal } from "./AddSnifferModal";
 import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
+import { useNavigate } from "react-router-dom";
 
 type SniffersSideBarProps = {
   activeSniffer?: Sniffer;
@@ -21,6 +22,7 @@ export const SniffersSideBar = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const { sniffers } = useSniffersStore();
+  const navigator = useNavigate();
 
   const onAddSnifferModalClose = () => {
     setIsAddModalOpen(false);
@@ -39,6 +41,7 @@ export const SniffersSideBar = ({
   const onDeleteModalClose = () => {
     setIsDeleteModalOpen(false);
     setSelectedSniffer(null);
+    navigator("/sniffers");
   };
 
   const onDeleteSniffer = (sniffer: Sniffer) => {

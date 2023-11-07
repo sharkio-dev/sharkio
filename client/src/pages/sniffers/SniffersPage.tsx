@@ -126,6 +126,8 @@ const SniffersPage = () => {
     if (activeSniffer === sniffer.id) {
       setActiveSniffer(undefined);
       return;
+    } else {
+      setActiveSniffer(sniffer.id);
     }
     navigator(`/sniffers/${sniffer.id}`);
   };
@@ -150,7 +152,7 @@ const SniffersPage = () => {
       return;
     }
     navigator(
-      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`,
+      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`
     );
   };
 
@@ -180,7 +182,10 @@ const SniffersPage = () => {
           }`}
         >
           <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-            <InvocationUpperBar activeInvocation={invocation} />
+            <InvocationUpperBar
+              activeInvocation={invocation}
+              activeSniffer={sniffer}
+            />
           </div>
           <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
             {invocations &&
