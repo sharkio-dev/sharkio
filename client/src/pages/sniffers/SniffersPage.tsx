@@ -137,6 +137,8 @@ const SniffersPage = () => {
       return;
     } else {
       setActiveSniffer(sniffer.id);
+      setEndpoints([]);
+      setInvocations([]);
     }
     navigator(`/sniffers/${sniffer.id}`);
   };
