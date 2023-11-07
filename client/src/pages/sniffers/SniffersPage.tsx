@@ -163,7 +163,7 @@ const SniffersPage = () => {
       return;
     }
     navigator(
-      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`
+      `/sniffers/${activeSniffer}/endpoints/${activeEndpoint}/invocations/${invocationId}`,
     );
   };
 

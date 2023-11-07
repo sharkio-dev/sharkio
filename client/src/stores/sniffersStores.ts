@@ -18,7 +18,7 @@ interface SniffersState {
   sniffers: Sniffer[];
   loadSniffers: () => Promise<void>;
   createSniffer: (
-    sniffer: Omit<Omit<Sniffer, "id">, "subdomain">
+    sniffer: Omit<Omit<Sniffer, "id">, "subdomain">,
   ) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
   editSniffer: (sniffer: Partial<Omit<Sniffer, "subdomain">>) => Promise<void>;

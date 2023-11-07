@@ -35,7 +35,7 @@ export const EditMockDialog: React.FC<EditMockDialogProps> = (props) => {
       mock.method,
       mock.endpoint,
       mock.status,
-      mock.data
+      mock.data,
     )
       .then(() => {
         close();

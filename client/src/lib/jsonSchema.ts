@@ -76,7 +76,7 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
 export function jsonSchemaToTypescriptInterface(
   schema: JsonSchema,
   interfaceName = "",
-  isNested = false
+  isNested = false,
 ): string {
   let output = isNested ? "" : `type${" " + interfaceName + " "} = {\n`;
 
@@ -88,7 +88,7 @@ export function jsonSchemaToTypescriptInterface(
     output += `  ${jsonSchemaToTypescriptInterface(
       schema.items,
       "",
-      true
+      true,
     )}[];\n`;
   } else if (schema.type === "string") {
     output += "string;\n";
@@ -128,7 +128,7 @@ export function generateApiRequestSnippet(
   url: string,
   headers: any,
   requestBody: any = null,
-  queryParams: any = null
+  queryParams: any = null,
 ) {
   let snippet = "";
 
@@ -144,7 +144,7 @@ export function generateApiRequestSnippet(
         url,
         headers,
         method,
-        requestBody
+        requestBody,
       );
       break;
     case "java":
@@ -153,7 +153,7 @@ export function generateApiRequestSnippet(
         url,
         method,
         headers,
-        requestBody
+        requestBody,
       );
       break;
     case "golang":
@@ -162,7 +162,7 @@ export function generateApiRequestSnippet(
         url,
         method,
         headers,
-        requestBody
+        requestBody,
       );
       break;
     case "php":
@@ -182,7 +182,7 @@ const jsonToQueryString = (json: JsonObject): string => {
   return Object.keys(json)
     .map(
       (key) =>
-        encodeURIComponent(key) + "=" + encodeURIComponent(json[key] as any)
+        encodeURIComponent(key) + "=" + encodeURIComponent(json[key] as any),
     )
     .join("&");
 };
@@ -191,7 +191,7 @@ const generateGoLangSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any
+  requestBody: any,
 ) => {
   snippet += `package main
 
@@ -261,7 +261,7 @@ const generateJavaOkHttpSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any
+  requestBody: any,
 ) => {
   snippet += `import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -290,7 +290,7 @@ public class Main {
     snippet += `
     MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
     RequestBody body = RequestBody.create(mediaType, "${JSON.stringify(
-      requestBody
+      requestBody,
     )}");
     requestBuilder.method("${method}", body);`;
   }
@@ -319,7 +319,7 @@ const generatePythonSnippet = (
   url: string,
   headers: any,
   method: string,
-  requestBody: any
+  requestBody: any,
 ) => {
   snippet += `import requests
 
@@ -354,7 +354,7 @@ const generateJsSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any
+  requestBody: any,
 ) => {
   snippet += `fetch('${url}', {
       method: '${method}',
@@ -380,7 +380,7 @@ const generatePhpGuzzle = (
   url: string,
   headers: any,
   requestBody: any,
-  method: string
+  method: string,
 ) => {
   snippet += `<?php
       use GuzzleHttp\Client;
