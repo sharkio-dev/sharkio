@@ -98,45 +98,28 @@ export const RequestPage: React.FC<IRequestPageProps> = ({
       );
       setJsfetch(javascriptSnippet);
 
-      const phpScript = generateApiRequestSnippet(
-        "php",
-        request.method,
-        url,
-        headers,
-        request.invocations[0].body,
-        request.invocations[0].params,
-      );
-      setPhpGuzzle(phpScript);
+      const apiRequestSnippetFor = (language: string) => {
+        return generateApiRequestSnippet(
+          language,
+          request.method,
+          url,
+          headers,
+          request.invocations[0].body,
+          request.invocations[0].params,
+        );
+      };
 
-      const pythonScript = generateApiRequestSnippet(
-        "python",
-        request.method,
-        url,
-        headers,
-        request.invocations[0].body,
-        request.invocations[0].params,
-      );
-      setPythonRequest(pythonScript);
+      const phpSnippet = apiRequestSnippetFor("php");
+      setPhpGuzzle(phpSnippet);
 
-      const javaSnippet = generateApiRequestSnippet(
-        "java",
-        request.method,
-        url,
-        headers,
-        request.invocations[0].body,
-        request.invocations[0].params,
-      );
+      const pythonSnippet = apiRequestSnippetFor("python");
+      setPythonRequest(pythonSnippet);
+
+      const javaSnippet = apiRequestSnippetFor("java");
       setJavaOkHttp(javaSnippet);
 
-      const goLangSnippet = generateApiRequestSnippet(
-        "golang",
-        request.method,
-        url,
-        headers,
-        request.invocations[0].body,
-        request.invocations[0].params,
-      );
-      setGolang(goLangSnippet);
+      const golangSnippet = apiRequestSnippetFor("golang");
+      setGolang(golangSnippet);
 
       setCurl(curlCommand);
       setTypescript(jsonSchemaToTypescriptInterface(schema, "body"));

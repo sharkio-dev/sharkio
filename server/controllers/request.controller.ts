@@ -45,7 +45,9 @@ export class RequestController {
         return res.status(404).send("Request not found");
       }
 
-      return this.requestService.getInvocations(request);
+      const invocations = await this.requestService.getInvocations(request);
+
+      return res.status(200).json(invocations);
     });
 
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
