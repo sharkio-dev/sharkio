@@ -6,9 +6,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { InvocationType } from "./types";
-import {
-  generateApiRequestSnippet,
-} from "../../lib/jsonSchema";
+import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import Editor from "@monaco-editor/react";
 import { IconButton, MenuItem, Select } from "@mui/material";
 import { ContentCopy } from "@mui/icons-material";
