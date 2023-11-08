@@ -25,7 +25,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   };
 
   const responseData = (response: any) => {
-    let data = {
+    const data = {
       body: response?.body ?? {},
       headers: response?.headers ?? {},
       status: response?.status ?? undefined,
@@ -60,7 +60,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(body || {}, null, 2)}
+              value={JSON.stringify(body || {}, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -71,7 +71,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(headers || {}, null, 2)}
+              value={JSON.stringify(headers || {}, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -82,10 +82,10 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(
+              value={JSON.stringify(
                 responseData(invocation?.response),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
             />
