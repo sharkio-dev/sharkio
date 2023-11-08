@@ -1,4 +1,3 @@
-import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import {
   Collection,
   InterceptedRequest,
@@ -7,13 +6,6 @@ import {
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
 import { Sniffer } from "../stores/sniffersStores";
-
-export const setAuthCookie = (
-  event: AuthChangeEvent,
-  session: Session | null,
-) => {
-  return BackendAxios.post("/api/auth", { event, session });
-};
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return BackendAxios.post("/sniffer", config);

@@ -14,46 +14,32 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
+  ``;
   try {
-    if (req.headers["override-auth-user-id"] != null) {
-      res.locals.auth = {
-        user: {
-          id: req.headers["override-auth-user-id"],
-        },
-      };
-
-      return next();
-    }
-
     if (
-      [/\/sharkio\/api\/auth/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
+      [/\/sharkio\/api\/login\/email/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
         .map((regex) => regex.test(req.path))
         .some((value) => value === true)
     ) {
-      return next();
+      next();
+      return;
     }
-    const access_token = req.cookies[process.env.SUPABASE_COOKIE_KEY!];
-    const { data: user, error } = await supabaseClient.auth.getUser(
-      access_token,
-    );
+
+    const authorization = req.headers["authorization"];
+    const access_token = authorization?.split(" ")[1];
+
+    const { data: user, error } =
+      await supabaseClient.auth.getUser(access_token);
 
     if (error || !user) {
       log.error(error);
-      res.setHeader(
-        "Set-Cookie",
-        `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
-      );
-      res.sendStatus(401);
+      return res.sendStatus(401);
     } else {
       res.locals.auth = user;
       next();
     }
   } catch (err) {
     log.error(err);
-    res.setHeader(
-      "Set-Cookie",
-      `${cookieKey}=; Path=/; HttpOnly; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`,
-    );
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 };

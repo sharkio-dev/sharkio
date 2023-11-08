@@ -358,7 +358,7 @@ export class SnifferController {
     );
 
     router.use(
-      "/:id/openapi/swagger",
+      "/:id/api-docs",
       swaggerUi.serve,
       async (req: Request, res: Response) => {
         const { id } = req.params;

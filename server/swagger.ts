@@ -10,10 +10,16 @@ const options = {
     },
     servers: [
       {
+        url: "",
+        description: "same as url",
+      },
+      {
         url: "http://localhost:5012",
+        description: "local debugging",
       },
       {
         url: "https://sharkio.dev",
+        description: "sharkio production server",
       },
       {
         url: "",
@@ -24,7 +30,7 @@ const options = {
         ApiKeyAuth: {
           type: "apiKey",
           in: "header",
-          name: "override-auth-user-id",
+          name: "authorization",
         },
       },
     },

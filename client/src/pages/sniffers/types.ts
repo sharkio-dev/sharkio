@@ -7,11 +7,11 @@ export type InvocationType = {
   id: string;
   response: {
     status: number;
-    body: object;
+    body: object | string;
     headers: object;
   };
   url: string;
-  body: object;
+  body: object | string;
   headers: {
     [key: string]: string;
   };

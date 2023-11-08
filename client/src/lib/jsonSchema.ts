@@ -184,17 +184,6 @@ export function generateApiRequestSnippet(
   return snippet;
 }
 
-const jsonToQueryString = (json: JsonObject): string => {
-  if (!json) {
-    return "";
-  }
-  return Object.keys(json)
-    .map(
-      (key) =>
-        encodeURIComponent(key) + "=" + encodeURIComponent(json[key] as any),
-    )
-    .join("&");
-};
 const generateGoLangSnippet = (
   snippet: string,
   url: string,
