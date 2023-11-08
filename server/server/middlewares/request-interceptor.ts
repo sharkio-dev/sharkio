@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { useLog } from "../../lib/log/index";
-import RequestService from "../../services/request/request.service";
+import EndpointService from "../../services/endpoint/endpoint.service";
 import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { User } from "../../model/user/user.model";
@@ -15,8 +15,8 @@ const logger = useLog({
 export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestService: RequestService,
-    private readonly responseService: ResponseService,
+    private readonly requestService: EndpointService,
+    private readonly responseService: ResponseService
   ) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
@@ -49,7 +49,7 @@ export class RequestInterceptor {
     const request = await this.requestService.findOrCreate(
       req,
       sniffer.id,
-      sniffer.userId,
+      sniffer.userId
     );
     const invocation = await this.requestService.addInvocation(request);
 
@@ -64,7 +64,7 @@ export class RequestInterceptor {
       headers: Record<string, string | string[] | undefined>;
       statusCode: number | undefined;
       body: any;
-    },
+    }
   ) {
     await this.responseService.addResponse({
       userId,

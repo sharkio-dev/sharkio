@@ -13,7 +13,7 @@ const log = useLog({
 });
 
 @Entity({ name: "request" })
-export class InterceptedRequest {
+export class Endpoint {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -42,10 +42,10 @@ export class InterceptedRequest {
   headers: Record<string, any>;
 }
 
-export class RequestRepository {
-  repository: Repository<InterceptedRequest>;
+export class EndpointRepository {
+  repository: Repository<Endpoint>;
 
   constructor(private readonly appDataSource: DataSource) {
-    this.repository = appDataSource.manager.getRepository(InterceptedRequest);
+    this.repository = appDataSource.manager.getRepository(Endpoint);
   }
 }

@@ -1,27 +1,27 @@
 import { Request as ExpressRequest } from "express";
 import { InvocationRepository } from "../../model/invocation/invocation.model";
 import {
-  InterceptedRequest,
-  RequestRepository,
-} from "../../model/request/request.model";
+  Endpoint,
+  EndpointRepository,
+} from "../../model/endpoint/endpoint.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
 
 type TreeNodeKey = string;
-interface RequestTreeNode {
+interface EndpointTreeNode {
   name: TreeNodeKey;
   callCount: number;
-  metadata: RequestMetadata;
-  next?: Record<TreeNodeKey, RequestTreeNode>;
+  metadata: EndpointMetadata;
+  next?: Record<TreeNodeKey, EndpointTreeNode>;
 }
 
-interface RequestMetadata {
+interface EndpointMetadata {
   suspectedPath: boolean;
 }
 
-export class RequestService {
+export class EndpointService {
   constructor(
-    private readonly repository: RequestRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly repository: EndpointRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -64,7 +64,7 @@ export class RequestService {
         suspectedPath: true,
       },
       callCount: 0,
-    } as RequestTreeNode;
+    } as EndpointTreeNode;
 
     for (const request of requests) {
       const url = new URL(request.url);
@@ -132,7 +132,7 @@ export class RequestService {
     return this.create(req, snifferId, userId);
   }
 
-  async addInvocation(request: InterceptedRequest) {
+  async addInvocation(request: Endpoint) {
     const theInvocation = this.invocationRepository.repository.create({
       requestId: request.id,
       snifferId: request.snifferId,
@@ -146,7 +146,7 @@ export class RequestService {
     return this.invocationRepository.repository.save(theInvocation);
   }
 
-  async getInvocations(request: InterceptedRequest) {
+  async getInvocations(request: Endpoint) {
     const invocations = await this.invocationRepository.repository.find({
       relations: {
         response: true,
@@ -157,6 +157,33 @@ export class RequestService {
         userId: request.userId,
         method: request.method,
         url: request.url,
+      },
+    });
+
+    // make sure only one response is returned
+    const mapped = invocations.map((invocation) => {
+      let response = undefined;
+      const responses = invocation.response;
+      if (responses && responses.length > 0) {
+        response = responses[0];
+      }
+      return { ...invocation, response };
+    });
+
+    return mapped;
+  }
+
+  async getInvocationsByUser(userId: string, limit: number) {
+    const invocations = await this.invocationRepository.repository.find({
+      relations: {
+        response: true,
+      },
+      where: {
+        userId,
+      },
+      take: limit,
+      order: {
+        createdAt: "DESC",
       },
     });
 
@@ -194,4 +221,4 @@ export class RequestService {
   }
 }
 
-export default RequestService;
+export default EndpointService;

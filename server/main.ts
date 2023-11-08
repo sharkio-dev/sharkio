@@ -1,27 +1,28 @@
 import "dotenv/config";
 import "reflect-metadata";
 import { AuthController } from "./controllers/auth.controller";
+import CLIController from "./controllers/cli-controller";
+import { RequestController } from "./controllers/request.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
-import APIKeysService from "./services/settings/apiKeys";
-import CLIController from "./controllers/cli-controller";
-import UserRepository from "./model/user/user.model";
-import UserService from "./services/user/user";
-import { RequestRepository } from "./model/request/request.model";
+import { EndpointRepository } from "./model/endpoint/endpoint.model";
+import { InvocationRepository } from "./model/invocation/invocation.model";
+import { ResponseRepository } from "./model/response/response.model";
 import { SnifferRepository } from "./model/sniffer/sniffers.model";
+import UserRepository from "./model/user/user.model";
 import { getAppDataSource } from "./server/app-data-source";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
 import { RequestInterceptor } from "./server/middlewares/request-interceptor";
 import { ProxyServer } from "./server/proxy-server";
 import { Server } from "./server/server";
-import RequestService from "./services/request/request.service";
-import { SnifferService } from "./services/sniffer/sniffer.service";
-import { RequestController } from "./controllers/request.controller";
-import { InvocationRepository } from "./model/invocation/invocation.model";
+import EndpointService from "./services/endpoint/endpoint.service";
 import ResponseService from "./services/response/response.service";
-import { ResponseRepository } from "./model/response/response.model";
+import APIKeysService from "./services/settings/apiKeys";
+import { SnifferService } from "./services/sniffer/sniffer.service";
+import UserService from "./services/user/user";
+import { InvocationController } from "./controllers/invocation.controller";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -30,7 +31,7 @@ async function main() {
   const appDataSource = await getAppDataSource();
 
   /* Repositories */
-  const requestRepository = new RequestRepository(appDataSource);
+  const requestRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
   const invocationRepository = new InvocationRepository(appDataSource);
   const snifferRepository = new SnifferRepository(appDataSource);
@@ -40,9 +41,9 @@ async function main() {
   /* Services */
   const snifferService = new SnifferService(snifferRepository);
   const responseService = new ResponseService(responseRepository);
-  const requestService = new RequestService(
+  const requestService = new EndpointService(
     requestRepository,
-    invocationRepository,
+    invocationRepository
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -53,43 +54,46 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService,
+    snifferService
   );
   const snifferController = new SnifferController(
     snifferService,
-    requestService,
+    requestService
   );
   const requestController = new RequestController(
     requestService,
-    snifferService,
+    snifferService
   );
+  const invocationController = new InvocationController(requestService);
+
   const swaggerUi = new SwaggerUiController();
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     requestService,
-    responseService,
+    responseService
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
   const snifferManagerServer = new Server(
     [
       authController.getRouter(),
       snifferController.getRouter(),
       settingsController.getRouter(),
+      invocationController.getRouter(),
       cliController.getRouter(),
       requestController.getRouter(),
     ],
-    swaggerUi,
+    swaggerUi
   );
 
   /* Start Servers */

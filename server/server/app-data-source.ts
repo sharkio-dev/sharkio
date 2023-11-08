@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { Sniffer } from "../model/sniffer/sniffers.model";
 import { ApiKey } from "../model/apikeys/apiKeys.model";
-import { InterceptedRequest } from "../model/request/request.model";
+import { Endpoint } from "../model/endpoint/endpoint.model";
 import { User } from "../model/user/user.model";
 import { Invocation } from "../model/invocation/invocation.model";
 import { InterceptedResponse } from "../model/response/response.model";
@@ -14,11 +14,11 @@ export const getAppDataSource = async () => {
       type: "postgres",
       url: process.env.DATABASE_URL,
       synchronize: false,
-      logging: false,
+      logging: process.env.LOG_SQL == "true" ?? false,
       entities: [
         Sniffer,
         ApiKey,
-        InterceptedRequest,
+        Endpoint,
         User,
         Invocation,
         InterceptedResponse,
