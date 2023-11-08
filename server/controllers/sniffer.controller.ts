@@ -8,6 +8,8 @@ import { CreateSnifferValidator } from "../dto/in/create-sniffer.dto";
 import z from "zod";
 import { EditSnifferValidator } from "../dto/in/index";
 import RequestService from "../services/request/request.service";
+import { generateOpenApi } from "../services/code-generator/open-api-generator";
+import swaggerUi from "swagger-ui-express";
 
 const log = useLog({
   dirname: __dirname,
@@ -312,6 +314,73 @@ export class SnifferController {
           await this.requestService.getInvocationsBySnifferId(userId, id);
 
         res.json(snifferInvocations);
+      },
+    );
+
+    router.route("/:id/openapi").get(
+      requestValidator({
+        params: z.object({
+          id: z.string().uuid(),
+        }),
+      }),
+      /**
+       * @openapi
+       * /sharkio/sniffer/{id}/openapi:
+       *   get:
+       *     tags:
+       *      - sniffer
+       *     description: Get the openAPI schema for the sniffer
+       *     parameters:
+       *       - name: id
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Sniffer id
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Returns the openAPI schema for the sniffer
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const userId = res.locals.auth.user.id;
+        const snifferRequests = await this.requestService.getBySnifferId(
+          userId,
+          id,
+        );
+
+        const generatedSwagger = generateOpenApi(snifferRequests);
+
+        res.json(generatedSwagger);
+      },
+    );
+
+    router.use(
+      "/:id/openapi/swagger",
+      swaggerUi.serve,
+      async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const userId = res.locals.auth.user.id;
+        const sniffer = await this.snifferManager.getSniffer(userId, id);
+        const snifferRequests = await this.requestService.getBySnifferId(
+          userId,
+          id,
+        );
+
+        const generatedSwagger = generateOpenApi(snifferRequests);
+        //@ts-ignore
+        generatedSwagger.servers = [
+          {
+            url: `https://${sniffer?.subdomain}.localhost.sharkio.dev`,
+          },
+          {
+            url: `https://${sniffer?.subdomain}.sharkio.dev`,
+          },
+        ];
+        const html = swaggerUi.generateHTML(generatedSwagger);
+        res.send(html).status(200);
       },
     );
 

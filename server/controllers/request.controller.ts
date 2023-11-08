@@ -14,7 +14,7 @@ const log = useLog({
 export class RequestController {
   constructor(
     private readonly requestService: RequestService,
-    private readonly snifferService: SnifferService,
+    private readonly snifferService: SnifferService
   ) {}
 
   getRouter(): IRouterConfig {
@@ -38,7 +38,7 @@ export class RequestController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.requestService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(
@@ -64,10 +64,10 @@ export class RequestController {
         const requests =
           (await this.requestService.getInvocations(request)) || [];
         res.status(200).send(requests);
-      },
+      }
     );
 
-    router.route("/:requestId/execute").get(
+    router.route("/:requestId/execute").post(
       /**
        * @openapi
        * /sharkio/request/{requestId}/execute:
@@ -96,7 +96,7 @@ export class RequestController {
         const userId = res.locals.auth.userId;
         const sniffer = await this.snifferService.getSniffer(
           userId,
-          request.snifferId,
+          request.snifferId
         );
         if (sniffer == null) {
           return res.status(404).send("Sniffer not found");
@@ -109,13 +109,58 @@ export class RequestController {
             `http://${sniffer.subdomain}.localhost.sharkio.dev` + request.url,
           data: request.body,
         });
-      },
+      }
+    );
+
+    router.route("/execute").post(
+      /**
+       * @openapi
+       * /sharkio/request/execute:
+       *   post:
+       *     requestBody:
+       *        description: Execute a request
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              properties:
+       *                body:
+       *                  type: object
+       *                headers:
+       *                  type: object
+       *                url:
+       *                  type: string
+       *                method:
+       *                  type: string
+       *
+       *     tags:
+       *      - request
+       *     description: executes a request
+       *     responses:
+       *       200:
+       *         description: request was successfully executed
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        log.info("asdasd");
+        const { method, headers, body, url } = req.body;
+
+        const executionRes = await axios.request({
+          method,
+          headers,
+          url,
+          data: body,
+        });
+
+        res.json(executionRes);
+      }
     );
 
     // TODO: deprecate this
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.requestService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);
