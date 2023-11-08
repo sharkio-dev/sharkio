@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -88,7 +87,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               defaultValue={JSON.stringify(
                 responseData(invocation?.response || {}),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
             />

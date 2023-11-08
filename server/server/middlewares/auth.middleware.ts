@@ -12,7 +12,7 @@ const log = useLog({
 export const authMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     if (
@@ -27,7 +27,7 @@ export const authMiddleware = async (
     const access_token = authorization?.split(" ")[1];
 
     const { data: user, error } = await supabaseClient.auth.getUser(
-      access_token
+      access_token,
     );
 
     if (error || !user) {
