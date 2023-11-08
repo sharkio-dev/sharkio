@@ -1,6 +1,7 @@
 import {
   TbHttpDelete,
   TbHttpGet,
+  TbHttpHead,
   TbHttpOptions,
   TbHttpPatch,
   TbHttpPost,
@@ -21,6 +22,8 @@ export const selectIconByMethod = (method: string) => {
       return <TbHttpDelete className="text-red-500 h-8 w-8 p-1" />;
     case "OPTIONS":
       return <TbHttpOptions className="text-gray-500 h-8 w-8 p-1" />;
+    case "HEAD":
+      return <TbHttpHead className="text-gray-500 h-8 w-8 p-1" />;
     default:
       return <TbHttpGet className="text-green-500 h-8 w-8 p-1" />;
   }

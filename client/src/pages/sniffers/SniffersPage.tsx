@@ -12,13 +12,8 @@ import { InvocationUpperBar } from "./InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const LivePage = () => {
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadSniffers } = useSniffersStore();
-  const { user } = useAuthStore();
   const [invocations, setInvocations] = useState<InvocationType[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
-  const [loadingSniffers, setLoadingSniffers] = useState(false);
-  const userId = user?.id;
   const { invocationId } = useParams();
   const navigator = useNavigate();
 
@@ -30,6 +25,11 @@ export const LivePage = () => {
       .then((res) => {
         const invocations = res.data;
         setInvocations(invocations);
+        if (invocations.length > 0) {
+          navigator(`/invocations/${invocations[0].id}`, {
+            replace: true,
+          });
+        }
         return invocations;
       })
       .finally(() => {
@@ -48,6 +48,54 @@ export const LivePage = () => {
     };
   }, []);
 
+  const onInvocationClick = useCallback(
+    (id: string) => {
+      navigator(`/invocations/${id}`);
+    },
+    [invocationId]
+  );
+
+  return (
+    <>
+      <div className={`flex flex-col w-full`}>
+        <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
+          <InvocationUpperBar
+            activeInvocation={invocation}
+            activeSniffer={undefined}
+          />
+        </div>
+        <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
+          {invocations &&
+            (loadingRequests ? (
+              <div className="flex flex-1 justify-center items-center">
+                <LoadingIcon />
+              </div>
+            ) : (
+              <InvocationsBottomBar
+                title={"Live Invocations"}
+                invocations={invocations}
+                activeInvocation={invocation}
+                setActiveInvocation={onInvocationClick}
+                refresh={() => loadInvocations()}
+              />
+            ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const SniffersPage = () => {
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const { loadSniffers, sniffers } = useSniffersStore();
+
+  const [loadingSniffers, setLoadingSniffers] = useState(false);
+  const { snifferId } = useParams();
+  const userId = useAuthStore((s) => s.user?.id);
+  const navigator = useNavigate();
+
+  const sniffer = sniffers.find((s) => s.id === snifferId);
+
   useEffect(() => {
     if (!userId) return;
     setLoadingSniffers(true);
@@ -61,19 +109,12 @@ export const LivePage = () => {
   }, [userId]);
 
   const onSnifferClick = async (sniffer: Sniffer) => {
+    if (snifferId === sniffer.id) {
+      navigator(`/live`);
+      return;
+    }
     navigator(`/sniffers/${sniffer.id}`);
   };
-
-  const onInvocationClick = useCallback(
-    (id: string) => {
-      if (invocationId === id) {
-        navigator(`/live`);
-        return;
-      }
-      navigator(`/live/invocations/${id}`);
-    },
-    [invocationId]
-  );
 
   return (
     <div className="flex flex-row h-full w-full">
@@ -85,97 +126,47 @@ export const LivePage = () => {
           </div>
         ) : (
           <SniffersSideBar
-            activeSniffer={undefined}
+            activeSniffer={sniffer}
             setActiveSniffer={onSnifferClick}
           />
         )}
       </div>
       <div className={`flex bg-tertiary h-full w-full`}>
-        <div className={`flex flex-col w-full`}>
-          <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-            <InvocationUpperBar
-              activeInvocation={invocation}
-              activeSniffer={undefined}
-            />
-          </div>
-          <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
-            {invocations &&
-              (loadingRequests ? (
-                <div className="flex flex-1 justify-center items-center">
-                  <LoadingIcon />
-                </div>
-              ) : (
-                <InvocationsBottomBar
-                  title={"Live Invocations"}
-                  invocations={invocations}
-                  activeInvocation={invocation}
-                  setActiveInvocation={onInvocationClick}
-                  refresh={() => loadInvocations()}
-                />
-              ))}
-          </div>
-        </div>
+        {snifferId ? <SnifferData /> : <LivePage />}
       </div>
     </div>
   );
 };
 
-const SniffersPage = () => {
+const SnifferData = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadSniffers, sniffers } = useSniffersStore();
   const [invocations, setInvocations] = useState<InvocationType[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
-  const [loadingSniffers, setLoadingSniffers] = useState(false);
-  const [loadingEndpoints, setLoadingEndpoints] = useState(false);
   const [endpoints, setEndpoints] = useState<EndpointType[]>([]);
   const { snifferId, endpointId, invocationId } = useParams();
-  const userId = useAuthStore((s) => s.user?.id);
-  const navigator = useNavigate();
-
-  const sniffer = sniffers.find((s) => s.id === snifferId);
+  const [loadingEndpoints, setLoadingEndpoints] = useState(false);
   const endpoint = endpoints.find((e) => e.id === endpointId);
   const invocation = invocations.find((i) => i.id === invocationId);
+  const sniffer = useSniffersStore((s) =>
+    s.sniffers.find((s) => s.id === snifferId)
+  );
+  const navigator = useNavigate();
 
   useEffect(() => {
-    if (!userId) return;
-    setLoadingSniffers(true);
-    loadSniffers()
-      .catch(() => {
-        showSnackbar("Failed to get sniffers", "error");
-      })
-      .finally(() => {
-        setLoadingSniffers(false);
-      });
-  }, [userId]);
-
-  useEffect(() => {
-    if (!snifferId) return;
-    setLoadingEndpoints(true);
-    getEnpoints(snifferId)
-      .then((res) => {
-        setEndpoints(res.data);
-        if (res.data.length > 0) {
-          navigator(`/sniffers/${snifferId}/endpoints/${res.data[0].id}`, {
-            replace: true,
-          });
-        }
-      })
-      .catch(() => {
-        showSnackbar("Failed to get endpoints", "error");
-      })
-      .finally(() => {
-        setLoadingEndpoints(false);
-      });
-  }, [snifferId]);
-
-  useEffect(() => {
-    if (!endpointId) return;
+    if (!endpointId) {
+      setEndpoints([]);
+      setInvocations([]);
+      return;
+    }
     refreshInvocations(endpointId);
   }, [endpointId]);
 
   const refreshInvocations = (invocationId?: string) => {
-    if (!invocationId) return;
-
+    if (!invocationId) {
+      setInvocations([]);
+      return;
+    }
+    setInvocations([]);
     setLoadingRequests(true);
     getInvocations(invocationId)
       .then((res) => {
@@ -195,11 +186,26 @@ const SniffersPage = () => {
       });
   };
 
-  const onSnifferClick = async (sniffer: Sniffer) => {
+  useEffect(() => {
+    if (!snifferId) return;
     setEndpoints([]);
-    setInvocations([]);
-    navigator(`/sniffers/${sniffer.id}`);
-  };
+    setLoadingEndpoints(true);
+    getEnpoints(snifferId)
+      .then((res) => {
+        setEndpoints(res.data);
+        if (res.data.length > 0) {
+          navigator(`/sniffers/${snifferId}/endpoints/${res.data[0].id}`, {
+            replace: true,
+          });
+        }
+      })
+      .catch(() => {
+        showSnackbar("Failed to get endpoints", "error");
+      })
+      .finally(() => {
+        setLoadingEndpoints(false);
+      });
+  }, [snifferId]);
 
   const onEndpointClick = (endpointId: string) => {
     setInvocations([]);
@@ -213,60 +219,45 @@ const SniffersPage = () => {
   };
 
   return (
-    <div className="flex flex-row h-full w-full">
-      {snackBar}
-      <div className="relative min-w-[240px] border-r-[0.1px] border-border-color bg-secondary">
-        {loadingSniffers ? (
-          <div className="flex h-full justify-center items-center">
+    <>
+      <div className={`flex flex-col w-[calc(100vw-296px-25%)]`}>
+        <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
+          <InvocationUpperBar
+            activeInvocation={invocation}
+            activeSniffer={sniffer}
+          />
+        </div>
+        <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
+          {invocations &&
+            (loadingRequests ? (
+              <div className="flex flex-1 justify-center items-center">
+                <LoadingIcon />
+              </div>
+            ) : (
+              <InvocationsBottomBar
+                title={"Invocations"}
+                invocations={invocations}
+                activeInvocation={invocation}
+                setActiveInvocation={onInvocationClick}
+                refresh={() => refreshInvocations(endpointId)}
+              />
+            ))}
+        </div>
+      </div>
+      <div className="flex flex-col h-full max-h-[calc(100vh-96px)] min-w-[25%] p-4 border-l border-border-color overflow-y-auto">
+        {endpoints && loadingEndpoints ? (
+          <div className="flex flex-1 justify-center items-center">
             <LoadingIcon />
           </div>
         ) : (
-          <SniffersSideBar
-            activeSniffer={sniffer}
-            setActiveSniffer={onSnifferClick}
+          <EndpointSideBar
+            activeEndpoint={endpoint}
+            setActiveEndpoint={onEndpointClick}
+            requests={endpoints}
           />
         )}
       </div>
-      <div className={`flex bg-tertiary h-full w-[calc(100vw-296px)]`}>
-        <div className={`flex flex-col w-[calc(100vw-296px-25%)]`}>
-          <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-            <InvocationUpperBar
-              activeInvocation={invocation}
-              activeSniffer={sniffer}
-            />
-          </div>
-          <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
-            {invocations &&
-              (loadingRequests ? (
-                <div className="flex flex-1 justify-center items-center">
-                  <LoadingIcon />
-                </div>
-              ) : (
-                <InvocationsBottomBar
-                  title={"Invocations"}
-                  invocations={invocations}
-                  activeInvocation={invocation}
-                  setActiveInvocation={onInvocationClick}
-                  refresh={() => refreshInvocations(endpointId)}
-                />
-              ))}
-          </div>
-        </div>
-        <div className="flex flex-col h-full max-h-[calc(100vh-96px)] min-w-[25%] p-4 border-l border-border-color overflow-y-auto">
-          {endpoints && loadingEndpoints ? (
-            <div className="flex flex-1 justify-center items-center">
-              <LoadingIcon />
-            </div>
-          ) : (
-            <EndpointSideBar
-              activeEndpoint={endpoint}
-              setActiveEndpoint={onEndpointClick}
-              requests={endpoints}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

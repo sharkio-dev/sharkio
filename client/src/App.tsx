@@ -26,11 +26,11 @@ function App(): React.JSX.Element {
   const routesWithAuth = () => {
     const routesWithAuth = [
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.LIVE, element: <LivePage /> },
+      { path: routes.LIVE, element: <SniffersPage /> },
       { path: routes.SNIFFER, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
-      { path: routes.LIVE_INVOCATION, element: <LivePage /> },
+      { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
@@ -57,7 +57,7 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  {user ? <LivePage /> : <LandingPage />}
+                  {user ? <SniffersPage /> : <LandingPage />}
                 </PageTemplate>
               }
             />
