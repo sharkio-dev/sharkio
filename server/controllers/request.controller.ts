@@ -48,6 +48,13 @@ export class RequestController {
        *   get:
        *     tags:
        *      - request
+       *     parameters:
+       *       - name: requestId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Request id
+       *         required: true
        *     description: Get all requests
        *     responses:
        *       200:
@@ -143,7 +150,6 @@ export class RequestController {
        *         description: Server error
        */
       async (req, res) => {
-        log.info("asdasd");
         const { method, headers, body, url } = req.body;
 
         const executionRes = await axios.request({

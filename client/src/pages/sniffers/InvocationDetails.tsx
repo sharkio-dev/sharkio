@@ -1,15 +1,15 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
+import Editor from "@monaco-editor/react";
+import { ContentCopy } from "@mui/icons-material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { InvocationType } from "./types";
-import { generateApiRequestSnippet } from "../../lib/jsonSchema";
-import Editor from "@monaco-editor/react";
 import { IconButton, MenuItem, Select } from "@mui/material";
-import { ContentCopy } from "@mui/icons-material";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import * as React from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { generateApiRequestSnippet } from "../../lib/jsonSchema";
+import { InvocationType } from "./types";
 
 type InvocationDetailsProps = {
   invocation?: InvocationType;
@@ -26,17 +26,15 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
 
   const responseData = (response: any) => {
     let data = {
-      body: {},
-      headers: {},
-      status: undefined,
+      body: response?.body ?? {},
+      headers: response?.headers ?? {},
+      status: response?.status ?? undefined,
     };
-    if (!response) return data;
-    data = response.data ? response.data : {};
-    data = response.headers ? { ...data, headers: response.headers } : data;
-    data = response.status ? { ...data, status: response.status } : data;
+
     return data;
   };
 
+  const { body, headers } = invocation ?? {};
   const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
   const languageCodeText = React.useMemo(() => {
     return invocation
@@ -62,7 +60,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(invocation?.body || {}, null, 2)}
+              defaultValue={JSON.stringify(body || {}, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -73,7 +71,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               height="90vh"
               theme="vs-dark"
               defaultLanguage="json"
-              defaultValue={JSON.stringify(invocation?.headers || {}, null, 2)}
+              defaultValue={JSON.stringify(headers || {}, null, 2)}
               className="rounded-md"
             />
           </div>
@@ -85,7 +83,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               theme="vs-dark"
               defaultLanguage="json"
               defaultValue={JSON.stringify(
-                responseData(invocation?.response || {}),
+                responseData(invocation?.response),
                 null,
                 2
               )}

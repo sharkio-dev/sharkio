@@ -10,10 +10,16 @@ const options = {
     },
     servers: [
       {
+        url: "",
+        description: "same as url",
+      },
+      {
         url: "http://localhost:5012",
+        description: "local debugging",
       },
       {
         url: "https://sharkio.dev",
+        description: "sharkio production server",
       },
       {
         url: "",
