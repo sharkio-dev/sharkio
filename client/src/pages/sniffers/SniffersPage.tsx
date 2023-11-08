@@ -25,7 +25,7 @@ export const LivePage = () => {
       .then((res) => {
         const invocations = res.data;
         setInvocations(invocations);
-        if (invocations.length > 0) {
+        if (invocations.length > 0 && !invocationId) {
           navigator(`/invocations/${invocations[0].id}`, {
             replace: true,
           });

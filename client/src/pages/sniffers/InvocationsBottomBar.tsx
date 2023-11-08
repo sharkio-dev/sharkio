@@ -32,7 +32,11 @@ export const InvocationsBottomBar = ({
         .toLowerCase()
         .includes(search.toLowerCase());
 
-      return filterByMethod || filterByUrl;
+      const filterByDate = new Date(invocation.createdAt)
+        .toLocaleString()
+        .includes(search.toLowerCase());
+
+      return filterByMethod || filterByUrl || filterByDate;
     }) || [];
 
   return (
@@ -71,6 +75,7 @@ export const InvocationsBottomBar = ({
               isSelected={invocation.id === activeInvocation?.id}
               onClick={() => setActiveInvocation(invocation.id)}
               key={i}
+              date={new Date(invocation.createdAt).toLocaleString()}
               status={invocation?.response?.status}
               url={invocation.url}
             />

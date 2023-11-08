@@ -16,4 +16,5 @@ export type InvocationType = {
     [key: string]: string;
   };
   method: string;
+  createdAt: string;
 };
