@@ -6,7 +6,10 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { InvocationType } from "./types";
-import { generateApiRequestSnippet, generateCurlCommand } from "../../lib/jsonSchema";
+import {
+  generateApiRequestSnippet,
+  generateCurlCommand,
+} from "../../lib/jsonSchema";
 import Editor from "@monaco-editor/react";
 import { Icon, IconButton, MenuItem, Select } from "@mui/material";
 import { ContentCopy } from "@mui/icons-material";
@@ -41,10 +44,11 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
     setValue("1");
   }, [invocation]);
 
-  const [codeLanguage, setCodeLanguage] =
-    React.useState(defaultCodeLanguage);
+  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
   const languageCodeText = React.useMemo(() => {
-    return invocation ? generateApiRequestSnippet(codeLanguage, invocation) : ""
+    return invocation
+      ? generateApiRequestSnippet(codeLanguage, invocation)
+      : "";
   }, [invocation, codeLanguage]);
   const snackbar = useSnackbar();
 
@@ -96,7 +100,11 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
             />
           </div>
         </TabPanel>
-        <TabPanel value="4" style={{ padding: 0, paddingTop: 16 }} className="space-y-4">
+        <TabPanel
+          value="4"
+          style={{ padding: 0, paddingTop: 16 }}
+          className="space-y-4"
+        >
           <div className="flex">
             <div>
               <Select
@@ -113,9 +121,13 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               </Select>
             </div>
             <div className="ml-auto">
-              <IconButton onClick={() => navigator.clipboard.writeText(languageCodeText).then(() => {
-                snackbar.show("Copied to clipboard", "success");
-              })}>
+              <IconButton
+                onClick={() =>
+                  navigator.clipboard.writeText(languageCodeText).then(() => {
+                    snackbar.show("Copied to clipboard", "success");
+                  })
+                }
+              >
                 <ContentCopy />
               </IconButton>
             </div>

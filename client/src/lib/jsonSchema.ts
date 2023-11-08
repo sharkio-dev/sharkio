@@ -129,7 +129,7 @@ export function generateApiRequestSnippet(
   // headers: any,
   // requestBody: any = null,
   // queryParams: any = null,
-  req: InvocationType
+  req: InvocationType,
 ) {
   let snippet = "";
 
@@ -137,7 +137,13 @@ export function generateApiRequestSnippet(
 
   switch (language) {
     case "javascript":
-      snippet = generateJsSnippet(snippet, req.url, req.method, req.headers, req.body);
+      snippet = generateJsSnippet(
+        snippet,
+        req.url,
+        req.method,
+        req.headers,
+        req.body,
+      );
       break;
     case "python":
       snippet = generatePythonSnippet(
@@ -167,7 +173,13 @@ export function generateApiRequestSnippet(
       );
       break;
     case "php":
-      snippet = generatePhpGuzzle(snippet, req.url, req.method, req.headers, req.body);
+      snippet = generatePhpGuzzle(
+        snippet,
+        req.url,
+        req.method,
+        req.headers,
+        req.body,
+      );
       break;
     case "bash":
       snippet = generateCurlCommand(req);
