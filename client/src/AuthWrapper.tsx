@@ -30,7 +30,7 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
       data: { subscription },
     } = supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
-        setAuthCookie(event, session).then((res) => {
+        setAuthCookie(event, session).then((res: any) => {
           if (!res.ok) return;
         });
       }
