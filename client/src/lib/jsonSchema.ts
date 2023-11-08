@@ -168,6 +168,9 @@ export function generateApiRequestSnippet(
     case "php":
       snippet = generatePhpGuzzle(snippet, url, headers, requestBody, method);
       break;
+    case "bash":
+      generateCurlCommand({})
+      break;
     default:
       snippet = "Unsupported language";
   }

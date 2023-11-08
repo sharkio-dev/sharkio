@@ -8,10 +8,13 @@ import TabPanel from "@mui/lab/TabPanel";
 import { InvocationType } from "./types";
 import { generateCurlCommand } from "../../lib/jsonSchema";
 import Editor from "@monaco-editor/react";
+import { MenuItem, Select } from "@mui/material";
 
 type InvocationDetailsProps = {
   invocation?: InvocationType;
 };
+
+const defaultCodeLanguage = "bash";
 
 export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   const [value, setValue] = React.useState("1");
@@ -35,6 +38,8 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   useEffect(() => {
     setValue("1");
   }, [invocation]);
+
+  const [codeLanguage, setCodeLanguage] = React.useState<string>(defaultCodeLanguage);
 
   return (
     <div className="flex flex-col w-full">
@@ -85,12 +90,21 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
           </div>
         </TabPanel>
         <TabPanel value="4" style={{ padding: 0, paddingTop: 16 }}>
+          <Select value={codeLanguage} defaultValue={"bash"} onChange={(evt) => setCodeLanguage(evt.target.value)}>
+            <MenuItem value="bash">curl</MenuItem>
+            <MenuItem value="javascript">javascript</MenuItem>
+            <MenuItem value="python">python</MenuItem>
+            <MenuItem value="java">java</MenuItem>
+            <MenuItem value="golang">golang</MenuItem>
+            <MenuItem value="php">php</MenuItem>
+          </Select>
           <div className="flex bg-secondary p-2 rounded-md ">
             <Editor
               width={"100%"}
               height={"250px"}
               theme="vs-dark"
-              defaultLanguage="bash"
+              defaultLanguage={defaultCodeLanguage}
+              language={codeLanguage}
               defaultValue={invocation ? generateCurlCommand(invocation) : ""}
             />
           </div>
