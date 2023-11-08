@@ -15,6 +15,9 @@ const options = {
       {
         url: "https://sharkio.dev",
       },
+      {
+        url: "",
+      },
     ],
     components: {
       securitySchemes: {
