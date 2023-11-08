@@ -33,10 +33,10 @@ export class InvocationController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
-          limit
+          limit,
         );
         res.status(200).send(requests);
-      }
+      },
     );
 
     return { router, path: "/sharkio/invocation" };

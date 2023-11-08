@@ -43,7 +43,7 @@ async function main() {
   const responseService = new ResponseService(responseRepository);
   const requestService = new EndpointService(
     requestRepository,
-    invocationRepository
+    invocationRepository,
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -54,15 +54,15 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService
+    snifferService,
   );
   const snifferController = new SnifferController(
     snifferService,
-    requestService
+    requestService,
   );
   const requestController = new RequestController(
     requestService,
-    snifferService
+    snifferService,
   );
   const invocationController = new InvocationController(requestService);
 
@@ -72,17 +72,17 @@ async function main() {
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     requestService,
-    responseService
+    responseService,
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware
+    requestInterceptorMiddleware,
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware
+    requestInterceptorMiddleware,
   );
   const snifferManagerServer = new Server(
     [
@@ -93,7 +93,7 @@ async function main() {
       cliController.getRouter(),
       requestController.getRouter(),
     ],
-    swaggerUi
+    swaggerUi,
   );
 
   /* Start Servers */

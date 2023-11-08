@@ -21,7 +21,7 @@ interface EndpointMetadata {
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly invocationRepository: InvocationRepository
+    private readonly invocationRepository: InvocationRepository,
   ) {}
 
   async getByUser(userId: string, limit: number) {
