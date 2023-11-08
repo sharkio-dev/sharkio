@@ -124,16 +124,9 @@ export function generateCurlCommand(req: InvocationType): string {
 
 export function generateApiRequestSnippet(
   language: string,
-  // method: string,
-  // url: string,
-  // headers: any,
-  // requestBody: any = null,
-  // queryParams: any = null,
   req: InvocationType,
 ) {
   let snippet = "";
-
-  // url = url + jsonToQueryString(queryParams);
 
   switch (language) {
     case "javascript":
