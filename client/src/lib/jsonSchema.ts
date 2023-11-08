@@ -124,52 +124,53 @@ export function generateCurlCommand(req: InvocationType): string {
 
 export function generateApiRequestSnippet(
   language: string,
-  method: string,
-  url: string,
-  headers: any,
-  requestBody: any = null,
-  queryParams: any = null,
+  // method: string,
+  // url: string,
+  // headers: any,
+  // requestBody: any = null,
+  // queryParams: any = null,
+  req: InvocationType
 ) {
   let snippet = "";
 
-  url = url + jsonToQueryString(queryParams);
+  // url = url + jsonToQueryString(queryParams);
 
   switch (language) {
     case "javascript":
-      snippet = generateJsSnippet(snippet, url, method, headers, requestBody);
+      snippet = generateJsSnippet(snippet, req.url, req.method, req.headers, req.body);
       break;
     case "python":
       snippet = generatePythonSnippet(
         snippet,
-        url,
-        headers,
-        method,
-        requestBody,
+        req.url,
+        req.method,
+        req.headers,
+        req.body,
       );
       break;
     case "java":
       snippet = generateJavaOkHttpSnippet(
         snippet,
-        url,
-        method,
-        headers,
-        requestBody,
+        req.url,
+        req.method,
+        req.headers,
+        req.body,
       );
       break;
     case "golang":
       snippet = generateGoLangSnippet(
         snippet,
-        url,
-        method,
-        headers,
-        requestBody,
+        req.url,
+        req.method,
+        req.headers,
+        req.body,
       );
       break;
     case "php":
-      snippet = generatePhpGuzzle(snippet, url, headers, requestBody, method);
+      snippet = generatePhpGuzzle(snippet, req.url, req.method, req.headers, req.body);
       break;
     case "bash":
-      generateCurlCommand({})
+      snippet = generateCurlCommand(req);
       break;
     default:
       snippet = "Unsupported language";
@@ -320,8 +321,8 @@ public class Main {
 const generatePythonSnippet = (
   snippet: string,
   url: string,
-  headers: any,
   method: string,
+  headers: any,
   requestBody: any,
 ) => {
   snippet += `import requests
@@ -381,9 +382,9 @@ const generateJsSnippet = (
 const generatePhpGuzzle = (
   snippet: string,
   url: string,
+  method: string,
   headers: any,
   requestBody: any,
-  method: string,
 ) => {
   snippet += `<?php
       use GuzzleHttp\Client;
