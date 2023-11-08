@@ -1,4 +1,3 @@
-import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import {
   Collection,
   InterceptedRequest,
@@ -8,20 +7,8 @@ import {
 import { BackendAxios } from "./backendAxios";
 import { Sniffer } from "../stores/sniffersStores";
 
-export const setAuthCookie = (
-  event: AuthChangeEvent,
-  session: Session | null,
-) => {
-  return fetch("/sharkio/api/auth", {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    credentials: "same-origin",
-    body: JSON.stringify({ event, session }),
-  });
-};
-
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
-  return BackendAxios.post("/sniffer", JSON.stringify(config));
+  return BackendAxios.post("/sniffer", config);
 };
 
 export const getSniffers = () => {
@@ -45,12 +32,9 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<Sniffer, "subdomain">>,
+  newConfig: Partial<Omit<Sniffer, "subdomain">>
 ) => {
-  return BackendAxios.put(
-    `/sniffer/${newConfig.id}`,
-    JSON.stringify(newConfig),
-  );
+  return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
 
 export const getRequests = () => {
@@ -61,12 +45,13 @@ export const executeRequest = (
   port: number,
   url: string,
   method: string,
-  invocation: Invocation,
+  invocation: Invocation
 ) => {
-  return BackendAxios.post(
-    `/sniffer/${port}/actions/execute`,
-    JSON.stringify({ url, method, invocation }),
-  );
+  return BackendAxios.post(`/sniffer/${port}/actions/execute`, {
+    url,
+    method,
+    invocation,
+  });
 };
 
 export const getAllMocks = () => {
@@ -78,12 +63,15 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
-  return BackendAxios.post(
-    `/sniffer/${snifferId}/mock`,
-    JSON.stringify({ sniffer_id: snifferId, method, endpoint, data, status }),
-  );
+  return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
+    sniffer_id: snifferId,
+    method,
+    endpoint,
+    data,
+    status,
+  });
 };
 
 export const editMock = (
@@ -92,12 +80,15 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
-  return BackendAxios.put(
-    `/sniffer/${port}/mock`,
-    JSON.stringify({ mockId: id, method, endpoint, data, status }),
-  );
+  return BackendAxios.put(`/sniffer/${port}/mock`, {
+    mockId: id,
+    method,
+    endpoint,
+    data,
+    status,
+  });
 };
 
 export const deleteMock = (id: string, sniffer_id: string) => {
@@ -109,23 +100,21 @@ export const deleteMock = (id: string, sniffer_id: string) => {
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
-  return BackendAxios.post(
-    `/sniffer/${port}/mock/actions/activate`,
-    JSON.stringify({ mockId: `${method} ${endpoint}` }),
-  );
+  return BackendAxios.post(`/sniffer/${port}/mock/actions/activate`, {
+    mockId: `${method} ${endpoint}`,
+  });
 };
 
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
-  return BackendAxios.post(
-    `/sniffer/${port}/mock/actions/deactivate`,
-    JSON.stringify({ mockId: `${method} ${endpoint}` }),
-  );
+  return BackendAxios.post(`/sniffer/${port}/mock/actions/deactivate`, {
+    mockId: `${method} ${endpoint}`,
+  });
 };
 
 export const getCollections = () => {
@@ -133,21 +122,21 @@ export const getCollections = () => {
 };
 
 export const createCollection = (name: string) => {
-  return BackendAxios.post("/collection", JSON.stringify({ name }), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return (
+    BackendAxios.post("/collection", { name }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
-  return BackendAxios.post(
-    `/collection/${id}/request`,
-    JSON.stringify({ request }),
-  );
+  return BackendAxios.post(`/collection/${id}/request`, { request });
 };
 
 export const getInvocations = (requestId: string) => {

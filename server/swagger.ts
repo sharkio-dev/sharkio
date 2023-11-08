@@ -21,6 +21,9 @@ const options = {
         url: "https://sharkio.dev",
         description: "sharkio production server",
       },
+      {
+        url: "",
+      },
     ],
     components: {
       securitySchemes: {
