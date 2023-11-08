@@ -9,7 +9,7 @@ import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
 import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
 import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
-import SniffersPage from "./pages/sniffers/SniffersPage";
+import SniffersPage, { LivePage } from "./pages/sniffers/SniffersPage";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 
@@ -26,11 +26,11 @@ function App(): React.JSX.Element {
   const routesWithAuth = () => {
     const routesWithAuth = [
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.SNIFFERS, element: <SniffersPage /> },
+      { path: routes.LIVE, element: <LivePage /> },
       { path: routes.SNIFFER, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
-      { path: routes.INVOCATION, element: <SniffersPage /> },
+      { path: routes.LIVE_INVOCATION, element: <LivePage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
@@ -57,7 +57,7 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  {user ? <SniffersPage /> : <LandingPage />}
+                  {user ? <LivePage /> : <LandingPage />}
                 </PageTemplate>
               }
             />

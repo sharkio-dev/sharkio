@@ -11,7 +11,7 @@ interface IMenuItem {
 }
 
 const menus: IMenuItem[] = [
-  { to: routes.SNIFFERS, title: "Sniffers", Icon: GiFishingHook },
+  { to: routes.LIVE, title: "Sniffers", Icon: GiFishingHook },
 ];
 
 export const SideBar: React.FC = () => {

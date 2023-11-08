@@ -41,7 +41,7 @@ export const SniffersSideBar = ({
   const onDeleteModalClose = () => {
     setIsDeleteModalOpen(false);
     setSelectedSniffer(null);
-    navigator("/sniffers");
+    navigator("/live");
   };
 
   const onDeleteSniffer = (sniffer: Sniffer) => {

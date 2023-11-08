@@ -5,9 +5,9 @@ export const routes = {
     "/service/:serviceId/request/:requestId/invocation/:invocationId",
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
   HOME: "/home",
-  SNIFFERS: "/sniffers",
+  LIVE: "/live",
   SNIFFER: "/sniffers/:snifferId",
-  INVOCATION: "/sniffers/invocations/:invocationId",
+  LIVE_INVOCATION: "/live/invocations/:invocationId",
   SNIFFER_ENDPOINT: "/sniffers/:snifferId/endpoints/:endpointId",
   SNIFFER_ENDPOINT_INVOCATION:
     "/sniffers/:snifferId/endpoints/:endpointId/invocations/:invocationId",
