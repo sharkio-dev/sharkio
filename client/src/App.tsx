@@ -9,7 +9,7 @@ import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
 import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
 import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
-import SniffersPage, { LivePage } from "./pages/sniffers/SniffersPage";
+import SniffersPage from "./pages/sniffers/SniffersPage";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 

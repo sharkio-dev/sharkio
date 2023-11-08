@@ -139,7 +139,7 @@ const SniffersPage = () => {
 };
 
 const SnifferData = () => {
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const { show: showSnackbar } = useSnackbar();
   const [invocations, setInvocations] = useState<InvocationType[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
   const [endpoints, setEndpoints] = useState<EndpointType[]>([]);
