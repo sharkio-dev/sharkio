@@ -62,17 +62,24 @@ const SniffersPage = () => {
 
   useEffect(() => {
     if (!activeSniffer) {
-      const loadInvocations = () => {
+      const loadInvocations = async () => {
         setLoadingRequests(true);
-        getRequests()
+        return getRequests()
           .then((res) => {
-            setInvocations(res.data);
+            const invocations = res.data;
+            setInvocations(invocations);
+            return invocations;
           })
           .finally(() => {
             setLoadingRequests(false);
           });
       };
-      loadInvocations();
+      loadInvocations().then((invocations) => {
+        const defaultInvocation = invocations[0];
+        if (defaultInvocation !== undefined) {
+          return navigator(`/sniffers/invocations/${defaultInvocation.id}`);
+        }
+      });
       const int = setInterval(() => {
         loadInvocations();
       }, 60000);
@@ -131,16 +138,31 @@ const SniffersPage = () => {
       });
   }, [userId]);
 
-  const onSnifferClick = (sniffer: Sniffer) => {
+  const onSnifferClick = async (sniffer: Sniffer) => {
     if (activeSniffer === sniffer.id) {
       setActiveSniffer(undefined);
       return;
     } else {
       setActiveSniffer(sniffer.id);
-      setEndpoints([]);
-      setInvocations([]);
+      const endpoints = await getEnpoints(sniffer.id).then((v) => v.data);
+      setEndpoints(endpoints);
+      const defaultEndpoint = endpoints[0];
+      let navigationUrl = `/sniffers/${sniffer.id}`;
+      if (defaultEndpoint === undefined) {
+        return navigator(navigationUrl);
+      }
+      navigationUrl = `${navigationUrl}/endpoints/${defaultEndpoint.id}`;
+      const invocations = await getInvocations(defaultEndpoint.id).then(
+        (v) => v.data,
+      );
+      setInvocations(invocations);
+      const defaultInvocation = invocations[0];
+      if (defaultInvocation === undefined) {
+        return navigator(navigationUrl);
+      }
+      navigationUrl = `${navigationUrl}/invocations/${defaultInvocation.id}`;
+      return navigator(navigationUrl);
     }
-    navigator(`/sniffers/${sniffer.id}`);
   };
 
   const onEndpointClick = (endpointId: string) => {
