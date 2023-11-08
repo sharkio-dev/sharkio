@@ -30,7 +30,7 @@ const options = {
         ApiKeyAuth: {
           type: "apiKey",
           in: "header",
-          name: "override-auth-user-id",
+          name: "authorization",
         },
       },
     },

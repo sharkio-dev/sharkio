@@ -14,13 +14,15 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
+  ``;
   try {
     if (
-      [/\/sharkio\/api\/auth/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
+      [/\/sharkio\/api\/login\/email/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
         .map((regex) => regex.test(req.path))
         .some((value) => value === true)
     ) {
       next();
+      return;
     }
 
     const authorization = req.headers["authorization"];
