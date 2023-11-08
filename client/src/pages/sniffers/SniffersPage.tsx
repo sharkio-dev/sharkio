@@ -176,6 +176,9 @@ const SniffersPage = () => {
 
   const onInvocationClick = (invocationId: string) => {
     if (activeInvocation === invocationId) {
+      if (location.pathname.startsWith("/sniffers/invocations")) {
+        return;
+      }
       setActiveInvocation(undefined);
       return;
     }
