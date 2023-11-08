@@ -57,7 +57,7 @@ export class AuthController {
         } catch (err) {
           res.sendStatus(401);
         }
-      }
+      },
     );
 
     return { router, path: "" };
