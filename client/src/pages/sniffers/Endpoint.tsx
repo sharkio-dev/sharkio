@@ -1,0 +1,31 @@
+import { Tooltip } from "@mui/material";
+import { selectIconByMethod } from "./selectIconByMethod";
+
+type EndpointProps = {
+  timestamp?: string;
+  method: string;
+  url: string;
+  isSelected?: boolean;
+  onClick?: () => void;
+};
+export const Endpoint = ({
+  method,
+  url,
+  isSelected,
+  onClick,
+}: EndpointProps) => {
+  return (
+    <Tooltip title={url} placement="top" arrow enterDelay={500}>
+      <div
+        className={`flex flex-row w-full hover:bg-secondary p-2 cursor-pointer active:bg-primary items-center rounded-md space-x-4
+    ${isSelected ? "bg-primary" : ""}`}
+        onClick={onClick}
+      >
+        {selectIconByMethod(method)}
+        <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
+          {url}
+        </div>
+      </div>
+    </Tooltip>
+  );
+};

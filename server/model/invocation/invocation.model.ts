@@ -2,10 +2,13 @@ import {
   Column,
   DataSource,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
 import { useLog } from "../../lib/log";
+import { InterceptedResponse } from "../response/response.model";
 
 const log = useLog({
   dirname: __dirname,
@@ -43,6 +46,10 @@ export class Invocation {
 
   @Column({ type: "varchar" })
   headers: Record<string, any>;
+
+  @OneToMany("InterceptedResponse", "invocation")
+  @JoinColumn({ name: "id" })
+  response: InterceptedResponse[];
 }
 
 export class InvocationRepository {

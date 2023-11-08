@@ -1,9 +1,10 @@
 import ServerAxios from "./serverAxios.js";
 import Table from "cli-table3";
 import chalk from "chalk";
+import { getSniffers } from "./api.js";
 
-const getSniffers = async () => {
-  const res = await ServerAxios.get("/sniffers").catch((err) => {
+const listSniffers = async () => {
+  const sniffers = await getSniffers().catch((err) => {
     const errorMessage =
       chalk.bgRed.white.bold(" 🦈 Shark Alert! ") +
       chalk.red(
@@ -14,7 +15,6 @@ const getSniffers = async () => {
     process.exit(1);
   });
 
-  const sniffers = res.data.sniffers;
   const table = new Table({
     head: ["Name", "Downstream URL", "Local Port"],
     colWidths: [20, 30, 20],
@@ -27,4 +27,4 @@ const getSniffers = async () => {
   console.log(table.toString());
 };
 
-export default getSniffers;
+export default listSniffers;

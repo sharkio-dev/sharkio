@@ -7,7 +7,8 @@ import "reflect-metadata";
 import { useLog } from "../lib/log";
 import { logMiddleware } from "./middlewares/log.middleware";
 import { ProxyMiddleware } from "./middlewares/proxy.middleware";
-import { RequestInterceptorMiddleware } from "./middlewares/request-interceptor.middleware";
+import { requestValidator } from "../lib/request-validator/request-validator";
+import { RequestInterceptor } from "./middlewares/request-interceptor";
 
 const log = useLog({
   dirname: __dirname,
@@ -21,7 +22,7 @@ export class ProxyServer {
 
   constructor(
     private readonly proxyMiddleware: ProxyMiddleware,
-    private readonly requestInterceptorMiddleware: RequestInterceptorMiddleware,
+    private readonly requestInterceptor: RequestInterceptor,
   ) {
     this.app = express();
     this.app.use(logMiddleware);
@@ -29,9 +30,7 @@ export class ProxyServer {
     this.app.use(json());
     this.app.use(cookieParser());
     this.app.use(
-      this.requestInterceptorMiddleware.intercept.bind(
-        this.requestInterceptorMiddleware,
-      ),
+      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
     );
     this.app.use(this.proxyMiddleware.getMiddleware());
   }

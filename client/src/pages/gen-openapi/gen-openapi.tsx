@@ -32,7 +32,7 @@ export const GenOpenAPI: React.FC = () => {
 
   const onSubmit = (serviceId: string) => {
     const filteredRequests: InterceptedRequest[] =
-      requests?.filter((req) => req.serviceId === serviceId) || [];
+      requests?.filter((req) => req.snifferId === serviceId) || [];
 
     setOpenApiDoc(
       JsonToOpenapi(filteredRequests, undefined, undefined, undefined),

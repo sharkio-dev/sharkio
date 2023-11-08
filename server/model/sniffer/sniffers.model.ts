@@ -54,4 +54,7 @@ export class Sniffer {
 
   @Column()
   subdomain: string;
+
+  @Column()
+  port: number;
 }

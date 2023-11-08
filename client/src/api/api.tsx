@@ -3,10 +3,10 @@ import {
   Collection,
   InterceptedRequest,
   Invocation,
-  SnifferConfig,
   SnifferCreateConfig,
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
+import { Sniffer } from "../stores/sniffersStores";
 
 export const setAuthCookie = (
   event: AuthChangeEvent,
@@ -25,7 +25,7 @@ export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
 };
 
 export const getSniffers = () => {
-  return BackendAxios.get<SnifferConfig[]>("/sniffer");
+  return BackendAxios.get<Sniffer[]>("/sniffer");
 };
 
 export const getSniffer = (port: number) => {
@@ -44,7 +44,9 @@ export const deleteSniffer = async (id: string) => {
   return await BackendAxios.delete(`/sniffer/${id}`);
 };
 
-export const editSniffer = async (newConfig: SnifferCreateConfig) => {
+export const editSniffer = async (
+  newConfig: Partial<Omit<Sniffer, "subdomain">>,
+) => {
   return BackendAxios.put(
     `/sniffer/${newConfig.id}`,
     JSON.stringify(newConfig),
@@ -146,4 +148,12 @@ export const saveRequestToCollection = (
     `/collection/${id}/request`,
     JSON.stringify({ request }),
   );
+};
+
+export const getInvocations = (requestId: string) => {
+  return BackendAxios.get(`/request/${requestId}/invocation`);
+};
+
+export const getEnpoints = (snifferId: string) => {
+  return BackendAxios.get(`/sniffer/${snifferId}/request`);
 };

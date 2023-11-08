@@ -1,9 +1,10 @@
+import { Request as ExpressRequest } from "express";
+import { InvocationRepository } from "../../model/invocation/invocation.model";
 import {
   InterceptedRequest,
   RequestRepository,
 } from "../../model/request/request.model";
-import { InvocationRepository } from "../../model/invocation/invocation.model";
-import { Request as ExpressRequest } from "express";
+import { Sniffer } from "../../model/sniffer/sniffers.model";
 
 type TreeNodeKey = string;
 interface RequestTreeNode {
@@ -23,17 +24,22 @@ export class RequestService {
     private readonly invocationRepository: InvocationRepository,
   ) {}
 
-  async getByUser(userId: string) {
+  async getByUser(userId: string, limit: number) {
     return this.repository.repository.find({
       where: {
         userId,
       },
+      take: limit,
+      order: {
+        createdAt: "DESC",
+      },
     });
   }
 
-  async getBySnifferId(snifferId: string) {
+  async getBySnifferId(userId: string, snifferId: Sniffer["id"]) {
     const requests = await this.repository.repository.find({
       where: {
+        userId,
         snifferId,
       },
     });
@@ -46,13 +52,11 @@ export class RequestService {
   }
 
   async getRequestsTree(snifferId: string) {
-    // const requests = await this.getAll(snifferId);
     const requests = await this.repository.repository.find({
       where: {
         snifferId,
       },
     });
-    console.log("requests", requests);
 
     const result = {
       name: "/",
@@ -143,7 +147,10 @@ export class RequestService {
   }
 
   async getInvocations(request: InterceptedRequest) {
-    return this.invocationRepository.repository.find({
+    const invocations = await this.invocationRepository.repository.find({
+      relations: {
+        response: true,
+      },
       where: {
         requestId: request.id,
         snifferId: request.snifferId,
@@ -152,6 +159,38 @@ export class RequestService {
         url: request.url,
       },
     });
+
+    // make sure only one response is returned
+    const mapped = invocations.map((invocation) => {
+      let response = undefined;
+      const responses = invocation.response;
+      if (responses && responses.length > 0) {
+        response = responses[0];
+      }
+      return { ...invocation, response };
+    });
+
+    return mapped;
+  }
+
+  async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
+    const invocations = await this.invocationRepository.repository.find({
+      relations: {
+        response: true,
+      },
+    });
+
+    // make sure only one response is returned
+    const mapped = invocations.map((invocation) => {
+      let response = undefined;
+      const responses = invocation.response;
+      if (responses && responses.length > 0) {
+        response = responses[0];
+      }
+      return { ...invocation, response };
+    });
+
+    return mapped;
   }
 }
 

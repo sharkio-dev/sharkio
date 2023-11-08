@@ -1,108 +1,41 @@
 import React from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  FolderCopyOutlined,
-  Home,
-  SwapHoriz,
-} from "@mui/icons-material";
-import ApiIcon from "@mui/icons-material/Api";
-import DataObjectIcon from "@mui/icons-material/DataObject";
-import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
-import { IconButton, List, ListItemButton, Paper } from "@mui/material";
-import c from "classnames";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "./sidebar.module.scss";
+import { useLocation, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
-
-const Logo: React.FC<{ minimized: boolean }> = ({ minimized }) => {
-  return (
-    <div
-      className={c({
-        [styles.sharkioContainer]: true,
-      })}
-    >
-      <div className={styles.logo}>
-        <a href="/home">
-          <img src="shark-logo.png" alt="Logo" />
-        </a>
-      </div>
-      {!minimized && <div className={styles.logoText}>𝐒𝐡𝐚𝐫𝐤𝐢𝐨</div>}
-    </div>
-  );
-};
-
-const Toggle: React.FC<{
-  minimized: boolean;
-  handleMenuIconClicked: () => void;
-}> = ({ minimized, handleMenuIconClicked }) => {
-  return (
-    <div className={styles.toggleMenu} onClick={handleMenuIconClicked}>
-      <IconButton>{minimized ? <ChevronRight /> : <ChevronLeft />}</IconButton>
-    </div>
-  );
-};
+import { Logo } from "./Logo";
+import { GiFishingHook } from "react-icons/gi";
 
 interface IMenuItem {
   to: string;
   title: string;
-  Icon: React.FC;
+  Icon: React.FC<any>;
 }
 
 const menus: IMenuItem[] = [
-  { to: routes.HOME, title: "Home", Icon: Home },
-  { to: routes.CONFIG, title: "Sniffers", Icon: SettingsInputComponentIcon },
-  { to: routes.REQUESTS, title: "Requests", Icon: SwapHoriz },
-  { to: routes.MOCKS, title: "Mocks", Icon: DataObjectIcon },
-  { to: routes.OPENAPI, title: "OpenAPI", Icon: ApiIcon },
-  { to: routes.COLLECTION, title: "Collections", Icon: FolderCopyOutlined },
+  { to: routes.SNIFFERS, title: "Sniffers", Icon: GiFishingHook },
 ];
 
 export const SideBar: React.FC = () => {
   const navigate = useNavigate();
-  const [minimized, setMinimized] = useState(false);
+  const location = useLocation();
 
-  const handleMenuIconClicked = () => {
-    setMinimized((prev) => !prev);
+  const onIconClicked = (to: string) => {
+    navigate(to);
   };
 
   return (
-    <div
-      className={c({
-        [styles.sidebarContainer]: true,
-        [styles.sidebarContainerMinimized]: minimized,
-      })}
-    >
-      <Paper className={styles.paper} elevation={8}>
-        <Logo minimized={minimized} />
-
-        <List>
-          <Toggle
-            minimized={minimized}
-            handleMenuIconClicked={handleMenuIconClicked}
+    <div className="sticky flex-col bg-primary border-r-[0.1px] border-border-color w-[56px]">
+      <Logo />
+      <div className="flex flex-col justify-center items-center py-4 space-y-4">
+        {/* <GiFishingHook className="text-[#fff] text-2xl" onIconClicked={onIconClicked} /> */}
+        {menus.map(({ Icon, to }, index) => (
+          <Icon
+            key={index}
+            className={`text-[#fff] text-2xl cursor-pointer hover:scale-110 rounded-md hover:cursor-pointer active:scale-100 w-full
+            ${location.pathname.includes(to) ? "text-blue-200" : ""}`}
+            onClick={() => onIconClicked(to)}
           />
-          {menus.map(({ to, title, Icon }) => (
-            <ListItemButton
-              key={title}
-              onClick={() => {
-                navigate(to);
-              }}
-              selected={
-                to === location.pathname ||
-                (to === "/home" && "/" === location.pathname)
-              }
-              className={c({
-                [styles.listItem]: true,
-                [styles.listItemMinimized]: minimized,
-              })}
-            >
-              <Icon />
-              {!minimized && <>{title}</>}
-            </ListItemButton>
-          ))}
-        </List>
-      </Paper>
+        ))}
+      </div>
     </div>
   );
 };

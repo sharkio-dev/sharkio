@@ -1,59 +1,21 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthWrapper } from "./AuthWrapper";
+import { LandingPage } from "./LandingPage";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
-import { RequestMetadataProvider } from "./context/requests-context";
-import AuthUI from "./pages/auth/Auth";
-import { CollectionRequest } from "./pages/collection-request/collection-request";
-import { Collections } from "./pages/collections/collections";
-import { Config } from "./pages/config/config";
-import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
-import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
-import { InvocationEditor } from "./pages/invocation/invocation";
-import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
-import { Pricing } from "./pages/pricing/pricing";
-import { Requests } from "./pages/requests/requests";
-import { ServiceRequest } from "./pages/service-request/service-request";
-import { Service } from "./pages/service/service";
-import { useThemeStore } from "./stores/themeStore";
 import APIKeys from "./pages/api-keys/api-keys";
+import AuthUI from "./pages/auth/Auth";
+import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
+import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
+import SniffersPage from "./pages/sniffers/SniffersPage";
 import { useAuthStore } from "./stores/authStore";
-import { supabaseClient } from "./utils/supabase-auth";
-import { setAuthCookie } from "./api/api";
+import { useThemeStore } from "./stores/themeStore";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
-  const { signIn } = useAuthStore();
-
-  useEffect(() => {
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session == null) {
-        return;
-      }
-      const userDetails = session?.user.user_metadata;
-
-      signIn({
-        id: session?.user.id ?? "",
-        fullName: userDetails?.full_name,
-        email: userDetails?.email,
-        profileImg: userDetails?.avatar_url,
-      });
-    });
-
-    const {
-      data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((event, session) => {
-      setAuthCookie(
-        session ? event : "SIGNED_OUT", // Sign the user out if the session is null (ignore other events)
-        session,
-      ).then((res) => {
-        if (!res.ok) return;
-      });
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user } = useAuthStore();
 
   const theme = createTheme({
     palette: {
@@ -63,17 +25,12 @@ function App(): React.JSX.Element {
 
   const routesWithAuth = () => {
     const routesWithAuth = [
-      { path: routes.SERVICE_REQUEST, element: <ServiceRequest /> },
-      { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
-      { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
-      { path: routes.CONFIG, element: <Config /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.REQUESTS, element: <Requests /> },
-      { path: routes.MOCKS, element: <MocksPage /> },
-      { path: routes.SERVICE, element: <Service /> },
-      { path: routes.MOCKS, element: <Mocks /> },
-      { path: routes.OPENAPI, element: <GenOpenAPI /> },
-      { path: routes.COLLECTION, element: <Collections /> },
+      { path: routes.SNIFFERS, element: <SniffersPage /> },
+      { path: routes.SNIFFER, element: <SniffersPage /> },
+      { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
+      { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
+      { path: routes.INVOCATION, element: <SniffersPage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
@@ -90,46 +47,38 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <BrowserRouter>
+    <AuthWrapper>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <RequestMetadataProvider>
+        <BrowserRouter>
           <Routes>
             {routesWithAuth()}
             <Route
               path={"*"}
               element={
                 <PageTemplate>
-                  <GettingStarted />
+                  {user ? <SniffersPage /> : <LandingPage />}
                 </PageTemplate>
               }
             />
             <Route
-              path={"/getting-started"}
+              path={routes.DOCS_GETTING_STARTED}
               element={
-                <PageTemplate>
-                  <GettingStarted />
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsGettingStartedPage />
                 </PageTemplate>
               }
             />
             <Route
-              path={"/pricing"}
+              path={routes.DOCS_SETUP}
               element={
-                <PageTemplate>
-                  <Pricing />
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsSetupPage />
                 </PageTemplate>
               }
             />
             <Route
-              path={"/login"}
-              element={
-                <PageTemplate>
-                  <AuthUI />
-                </PageTemplate>
-              }
-            />
-            <Route
-              path={"/signup"}
+              path={routes.LOGIN}
               element={
                 <PageTemplate>
                   <AuthUI />
@@ -137,9 +86,9 @@ function App(): React.JSX.Element {
               }
             />
           </Routes>
-        </RequestMetadataProvider>
+        </BrowserRouter>
       </ThemeProvider>
-    </BrowserRouter>
+    </AuthWrapper>
   );
 }
 

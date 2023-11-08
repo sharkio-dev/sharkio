@@ -4,6 +4,7 @@ import { ApiKey } from "../model/apikeys/apiKeys.model";
 import { InterceptedRequest } from "../model/request/request.model";
 import { User } from "../model/user/user.model";
 import { Invocation } from "../model/invocation/invocation.model";
+import { InterceptedResponse } from "../model/response/response.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -14,7 +15,14 @@ export const getAppDataSource = async () => {
       url: process.env.DATABASE_URL,
       synchronize: false,
       logging: false,
-      entities: [Sniffer, ApiKey, InterceptedRequest, User, Invocation],
+      entities: [
+        Sniffer,
+        ApiKey,
+        InterceptedRequest,
+        User,
+        Invocation,
+        InterceptedResponse,
+      ],
       subscribers: [],
       migrations: [],
     });

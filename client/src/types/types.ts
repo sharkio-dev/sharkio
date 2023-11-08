@@ -16,6 +16,7 @@ export type SnifferCreateConfig = {
 export type Invocation = {
   id: string;
   timestamp: string;
+  method: string;
   body: Record<string, string>;
   headers: Record<string, string>;
   params: Record<string, string>;
@@ -26,8 +27,6 @@ export type InterceptedRequest = {
   snifferId: string;
   url: string;
   method: string;
-  hitCount: number;
-  lastInvocationDate: string;
   invocations: Invocation[];
 };
 

@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { deleteKey, getKeys } from "../../api/apiKeys";
 import { EditTokenModal } from "./EditTokenModal";
 import { GenerateTokenModal } from "./GenerateTokenModal";
 import { KeysTable } from "./KeysTable";
+import { useApiKeysStore } from "../../stores/apiKeysStore";
 
 export type Key = {
   id: string;
@@ -13,32 +13,20 @@ export type Key = {
 };
 
 function APIKeys() {
-  const [keys, setKeys] = React.useState<Key[]>([]);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState<boolean>(false);
   const [editKeyId, setEditKeyId] = React.useState<string>("");
-
-  const updateKeys = () => {
-    getKeys()
-      .then((res) => {
-        setKeys(res.data || []);
-      })
-      .catch((err) => {
-        console.log(err);
-        showSnackbar("Error fetching API keys", "error");
-      });
-  };
+  const { keys, loadApiKeys, deleteKey } = useApiKeysStore();
 
   useEffect(() => {
-    updateKeys();
+    loadApiKeys();
   }, []);
 
   const invokeKey = (id: string) => {
     deleteKey(id)
       .then(() => {
         showSnackbar("API key deleted successfully", "success");
-        updateKeys();
       })
       .catch((err) => {
         console.log(err);
@@ -57,17 +45,15 @@ function APIKeys() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full p-4">
       {snackBar}
       <GenerateTokenModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onGenerate={() => updateKeys()}
       />
       <EditTokenModal
         isOpen={isEditModalOpen}
         onClose={onCloseEditModal}
-        onSubmit={() => updateKeys()}
         name={keys.find((key) => key.id === editKeyId)?.name ?? ""}
         keyId={editKeyId}
       />
