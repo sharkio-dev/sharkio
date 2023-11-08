@@ -2,7 +2,7 @@ import "dotenv/config";
 import "reflect-metadata";
 import { AuthController } from "./controllers/auth.controller";
 import CLIController from "./controllers/cli-controller";
-import { RequestController } from "./controllers/request.controller";
+import { EndpointController } from "./controllers/endpoint.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
@@ -31,7 +31,7 @@ async function main() {
   const appDataSource = await getAppDataSource();
 
   /* Repositories */
-  const requestRepository = new EndpointRepository(appDataSource);
+  const endpointRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
   const invocationRepository = new InvocationRepository(appDataSource);
   const snifferRepository = new SnifferRepository(appDataSource);
@@ -41,9 +41,9 @@ async function main() {
   /* Services */
   const snifferService = new SnifferService(snifferRepository);
   const responseService = new ResponseService(responseRepository);
-  const requestService = new EndpointService(
-    requestRepository,
-    invocationRepository,
+  const endpointService = new EndpointService(
+    endpointRepository,
+    invocationRepository
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -54,35 +54,35 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService,
+    snifferService
   );
   const snifferController = new SnifferController(
     snifferService,
-    requestService,
+    endpointService
   );
-  const requestController = new RequestController(
-    requestService,
-    snifferService,
+  const endpointController = new EndpointController(
+    endpointService,
+    snifferService
   );
-  const invocationController = new InvocationController(requestService);
+  const invocationController = new InvocationController(endpointService);
 
   const swaggerUi = new SwaggerUiController();
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
-    requestService,
-    responseService,
+    endpointService,
+    responseService
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
   const snifferManagerServer = new Server(
     [
@@ -91,9 +91,9 @@ async function main() {
       settingsController.getRouter(),
       invocationController.getRouter(),
       cliController.getRouter(),
-      requestController.getRouter(),
+      endpointController.getRouter(),
     ],
-    swaggerUi,
+    swaggerUi
   );
 
   /* Start Servers */
