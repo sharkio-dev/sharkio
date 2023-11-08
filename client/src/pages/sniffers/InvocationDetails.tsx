@@ -37,9 +37,6 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
     data = response.status ? { ...data, status: response.status } : data;
     return data;
   };
-  useEffect(() => {
-    setValue("1");
-  }, [invocation]);
 
   const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
   const languageCodeText = React.useMemo(() => {
