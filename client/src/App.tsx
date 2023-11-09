@@ -1,26 +1,21 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthWrapper } from "./AuthWrapper";
+import { LandingPage } from "./LandingPage";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
-import { RequestMetadataProvider } from "./context/requests-context";
+import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
-import { CollectionRequest } from "./pages/collection-request/collection-request";
-import { Collections } from "./pages/collections/collections";
-import { Config } from "./pages/config/config";
-import { GenOpenAPI } from "./pages/gen-openapi/gen-openapi";
-import { GettingStarted } from "./pages/getting-started.tsx/getting-started";
-import { InvocationEditor } from "./pages/invocation/invocation";
-import { default as Mocks, default as MocksPage } from "./pages/mocks/mocks";
-import { Pricing } from "./pages/pricing/pricing";
-import { Requests } from "./pages/requests/requests";
-import { ServiceRequest } from "./pages/service-request/service-request";
-import { Service } from "./pages/service/service";
+import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
+import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
+import SniffersPage from "./pages/sniffers/SniffersPage";
+import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
-import Footer from "./components/footer/footer";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
+  const { user } = useAuthStore();
 
   const theme = createTheme({
     palette: {
@@ -30,16 +25,12 @@ function App(): React.JSX.Element {
 
   const routesWithAuth = () => {
     const routesWithAuth = [
-      { path: routes.SERVICE_REQUEST, element: <ServiceRequest /> },
-      { path: routes.COLLECTION_REQUEST, element: <CollectionRequest /> },
-      { path: routes.REQUEST_INVOCATION, element: <InvocationEditor /> },
-      { path: routes.CONFIG, element: <Config /> },
-      { path: routes.REQUESTS, element: <Requests /> },
-      { path: routes.MOCKS, element: <MocksPage /> },
-      { path: routes.SERVICE, element: <Service /> },
-      { path: routes.MOCKS, element: <Mocks /> },
-      { path: routes.OPENAPI, element: <GenOpenAPI /> },
-      { path: routes.COLLECTION, element: <Collections /> },
+      { path: routes.API_KEYS, element: <APIKeys /> },
+      { path: routes.LIVE, element: <SniffersPage /> },
+      { path: routes.SNIFFER, element: <SniffersPage /> },
+      { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
+      { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
+      { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
@@ -56,48 +47,38 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <BrowserRouter>
+    <AuthWrapper>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <RequestMetadataProvider>
+        <BrowserRouter>
           <Routes>
             {routesWithAuth()}
             <Route
               path={"*"}
               element={
                 <PageTemplate>
-                  <GettingStarted />
-                  <AuthUI />
-                  <Footer />
+                  {user ? <SniffersPage /> : <LandingPage />}
                 </PageTemplate>
               }
             />
             <Route
-              path={"/getting-started"}
+              path={routes.DOCS_GETTING_STARTED}
               element={
-                <PageTemplate>
-                  <GettingStarted />
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsGettingStartedPage />
                 </PageTemplate>
               }
             />
             <Route
-              path={"/pricing"}
+              path={routes.DOCS_SETUP}
               element={
-                <PageTemplate>
-                  <Pricing />
+                <PageTemplate isSideBar={false}>
+                  <SharkioDocsSetupPage />
                 </PageTemplate>
               }
             />
             <Route
-              path={"/login"}
-              element={
-                <PageTemplate>
-                  <AuthUI />
-                </PageTemplate>
-              }
-            />
-            <Route
-              path={"/signup"}
+              path={routes.LOGIN}
               element={
                 <PageTemplate>
                   <AuthUI />
@@ -105,9 +86,9 @@ function App(): React.JSX.Element {
               }
             />
           </Routes>
-        </RequestMetadataProvider>
+        </BrowserRouter>
       </ThemeProvider>
-    </BrowserRouter>
+    </AuthWrapper>
   );
 }
 

@@ -47,7 +47,7 @@ export const RequestMetadataProvider: React.FC<PropsWithChildren> = ({
   };
 
   const handleServices = (res: any) => {
-    const data = res.data.map((item: { config: { name: any } }) => item.config);
+    const data = res.data.map((item: { config: { name: any } }) => item);
     setServicesList((prev) => ({ ...prev, servicesData: data }));
   };
 

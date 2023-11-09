@@ -6,9 +6,6 @@ export default () => {
     plugins: [react(), basicSsl()],
     server: {
       port: 443,
-      proxy: {
-        "/sharkio": "http://localhost:5012",
-      },
     },
   });
 };

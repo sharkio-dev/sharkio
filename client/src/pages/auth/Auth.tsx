@@ -1,62 +1,33 @@
-import { Typography } from "@mui/material";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { Session } from "@supabase/supabase-js";
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren } from "react";
 import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
-import styles from "./auth.module.scss";
 
 export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>();
-  const { signIn } = useAuthStore();
-  const disableSupabase = import.meta.env.VITE_DISABLE_SUPABASE;
+  const { user } = useAuthStore();
 
-  useEffect(() => {
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      const userDetails = session?.user.user_metadata;
-      signIn({
-        fullName: userDetails?.full_name,
-        email: userDetails?.email,
-        profileImg: userDetails?.avatar_url,
-      });
-    });
-
-    const {
-      data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (disableSupabase) {
-    return children;
-  }
-
-  if (!session) {
+  if (user?.email == null || user?.id == null) {
     return (
-      <div className={styles.authContainer}>
-        <div className={styles.authHeader}>
-          <img className={styles.sharkioLogo} src="shark-logo.png" alt="Logo" />
-          <Typography variant="h3">Welcome to sharkio!</Typography>
-        </div>
-        <div className={styles.auth}>
+      <div className="flex flex-1 flex-col bg-tertiary justify-center p-4">
+        <div className="flex flex-col w-3/4 mx-auto md:w-1/2">
+          <div className="text-4xl font-bold text-center mb-16 font-mono">
+            <div>Login to Sharkio</div>
+          </div>
           <Auth
             supabaseClient={supabaseClient}
             theme="dark"
             appearance={{ theme: ThemeSupa }}
             providers={["github", "google"]}
-            view="sign_up"
+            view="sign_in"
             redirectTo={window.location.pathname}
+            magicLink={true}
           />
         </div>
       </div>
     );
   } else {
-    return children;
+    return <>{children}</>;
   }
 };
 

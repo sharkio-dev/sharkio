@@ -8,12 +8,40 @@ const options = {
       title: "Sharkio",
       version: "1.0.0",
     },
+    servers: [
+      {
+        url: "",
+        description: "same as url",
+      },
+      {
+        url: "http://localhost:5012",
+        description: "local debugging",
+      },
+      {
+        url: "https://sharkio.dev",
+        description: "sharkio production server",
+      },
+      {
+        url: "",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        ApiKeyAuth: {
+          type: "apiKey",
+          in: "header",
+          name: "authorization",
+        },
+      },
+    },
+    security: [
+      {
+        ApiKeyAuth: [],
+      },
+    ],
   },
-  apis: [
-    "./lib/sniffer-manager/mock-manager-controller.ts",
-    "./lib/sniffer-manager/sniffer-manager-controller.ts",
-    "./lib/collection-manager/collection-manager-controller.ts",
-  ],
+
+  apis: ["./controllers/*.ts"],
 };
 
 export const openApiSpecification = swaggerJsdoc(options);

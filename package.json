@@ -18,7 +18,7 @@
     "dev": "concurrently --kill-others \"cd ./server && npm run dev\"  \"cd ./client && npm run dev\"",
     "dev2": "concurrently --kill-others \"cd ./server && npm run dev\"  \"cd ./client && npm run dev2\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
-    "format": "prettier -w . && git add .",
+    "format": "prettier -w .",
     "test:server": "cd ./server && npm test",
     "test:client": "cd ./client && npm test",
     "test": "concurrently \"npm run test:server\" \"npm run test:client\"",

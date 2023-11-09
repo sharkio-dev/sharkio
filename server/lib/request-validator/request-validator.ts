@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { ZodType, ZodError } from "zod";
+import { NextFunction, Request, Response } from "express";
+import { ZodError, ZodType } from "zod";
 import { useLog } from "../log";
 
 const log = useLog({

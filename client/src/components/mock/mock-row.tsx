@@ -10,14 +10,14 @@ import {
 } from "@mui/material";
 import React from "react";
 import { activateMock, deactivateMock } from "../../api/api";
-import { Mock, Service } from "../../types/types";
+import { Mock, SnifferConfig } from "../../types/types";
 import { HttpMethod } from "../http-method/http-method";
 import { HttpStatus } from "../http-status/http-status";
 import styles from "./mock-row.module.scss";
 
 type MockRowProps = {
   mock: Mock;
-  service: Service;
+  service: SnifferConfig;
   editable: boolean;
   loadData: () => void;
   onEditClick?: () => void;

@@ -1,13 +1,14 @@
 export const routes = {
-  SERVICE_REQUEST: "/service/:serviceId/request/:id",
-  REQUEST_INVOCATION:
-    "/service/:serviceId/request/:requestId/invocation/:invocationId",
+  LOGIN: "/login",
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
-  REQUESTS: "/requests",
-  HOME: "/home",
-  CONFIG: "/config",
-  MOCKS: "/mocks",
-  SERVICE: "/service/:port",
-  OPENAPI: "/gen-openapi",
-  COLLECTION: "/collections",
+  LIVE: "/live",
+  SNIFFER: "/sniffers/:snifferId",
+  LIVE_INVOCATION: "/invocations/:invocationId",
+  SNIFFER_ENDPOINT: "/sniffers/:snifferId/endpoints/:endpointId",
+  SNIFFER_ENDPOINT_INVOCATION:
+    "/sniffers/:snifferId/endpoints/:endpointId/invocations/:invocationId",
+  API_KEYS: "/api-keys",
+  DOCS_GETTING_STARTED: "/docs/getting-started",
+  DOCS_SETUP: "/docs/setup",
+  CHAT: "/chat",
 };

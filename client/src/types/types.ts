@@ -16,6 +16,7 @@ export type SnifferCreateConfig = {
 export type Invocation = {
   id: string;
   timestamp: string;
+  method: string;
   body: Record<string, string>;
   headers: Record<string, string>;
   params: Record<string, string>;
@@ -23,11 +24,9 @@ export type Invocation = {
 
 export type InterceptedRequest = {
   id: string;
-  serviceId: string;
+  snifferId: string;
   url: string;
   method: string;
-  hitCount: number;
-  lastInvocationDate: string;
   invocations: Invocation[];
 };
 
@@ -49,13 +48,8 @@ export type Mock = {
   status: number;
 };
 
-export type Service = {
-  name: string;
-  port: number;
-};
-
 export type ServiceMock = {
-  service: Service;
+  service: SnifferConfig;
   mocks: Mock[];
 };
 

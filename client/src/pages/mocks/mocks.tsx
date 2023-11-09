@@ -7,11 +7,14 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { Mock, ServiceMock } from "../../types/types";
 import { AddMockDialog } from "./add-mock-dialog/add-mock.dialog";
 import { EditMockDialog } from "./edit-mock-dialog/edit-mock-dialog";
+import { useAuthStore } from "../../stores/authStore";
 
 const MocksPage: React.FC = () => {
   const [mocks, setMocks] = useState<ServiceMock[]>([]);
   const [addOpen, setAddOpen] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
+  const { user } = useAuthStore();
+  const userId = user?.id;
 
   const [editMock, setEditMock] = useState<
     (Omit<Mock, "active"> & { port: number }) | null
@@ -20,6 +23,10 @@ const MocksPage: React.FC = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const loadData = () => {
+    if (userId == null) {
+      showSnackbar("You are not logged in", "error");
+      return;
+    }
     getAllMocks().then((res) => setMocks(res.data));
   };
 
@@ -43,8 +50,8 @@ const MocksPage: React.FC = () => {
     setEditMock({ ...mock, port });
   };
 
-  const handleDeleteClicked = (id: string, port: number) => {
-    deleteMock(id, port).then(() => {
+  const handleDeleteClicked = (id: string, sniffer_id: string) => {
+    deleteMock(id, sniffer_id).then(() => {
       showSnackbar("Mock removed successfully", "info");
       loadData();
     });
@@ -72,7 +79,7 @@ const MocksPage: React.FC = () => {
                   handleEditClicked(mock, serviceMock.service.port)
                 }
                 onDeleteClick={() =>
-                  handleDeleteClicked(mock.id, serviceMock.service.port)
+                  handleDeleteClicked(mock.id, serviceMock.service.id)
                 }
               />
             );

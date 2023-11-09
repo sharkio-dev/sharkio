@@ -1,10 +1,3 @@
-export type SnifferConfig = {
-  name: string;
-  port: number;
-  downstreamUrl: string;
-  id: string;
-};
-
 export type Invocation = {
   id: string;
   timestamp: Date;
@@ -22,15 +15,15 @@ export type PathMetadataConfig = {
   recordParams: boolean;
 };
 
-export type PathResponseData = {
-  id: string;
-  serviceId: SnifferConfig["id"];
-  method: string;
-  hitCount: number;
-  lastInvocationDate: Date | undefined;
-  url: string;
-  invocations: Invocation[];
-};
+// export type PathResponseData = {
+//   id: string;
+//   serviceId: SnifferConfig["id"];
+//   method: string;
+//   hitCount: number;
+//   lastInvocationDate: Date | undefined;
+//   url: string;
+//   invocations: Invocation[];
+// };
 
 export type Mock = {
   method: string;

@@ -12,12 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./login-component.module.scss";
+import { routes } from "../../constants/routes";
 
 const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
   const { user, signOut } = useAuthStore();
   const [loading, setLoading] = useState(false);
-  const settings = user != null ? ["Logout"] : ["Login", "Signup"];
+  const settings = user != null ? ["Logout", "API keys"] : ["Login", "Signup"];
   const navigate = useNavigate();
 
   const handleOpenUserMenu = () => {
@@ -29,6 +30,11 @@ const LoginComponent: React.FC = () => {
     setAnchorElUser(!anchorElUser);
 
     switch (setting) {
+      case "API keys": {
+        setLoading(false);
+        navigate(routes.API_KEYS);
+        break;
+      }
       case "Logout": {
         supabaseClient.auth.signOut().then(() => {
           setLoading(false);
@@ -39,22 +45,23 @@ const LoginComponent: React.FC = () => {
       }
       case "Login": {
         setLoading(false);
-        navigate("/login");
+        navigate(routes.LOGIN);
         break;
       }
       case "Signup": {
         setLoading(false);
-        navigate("/signup");
+        navigate(routes.LOGIN);
         break;
       }
       default: {
         setLoading(false);
+        break;
       }
     }
   };
 
   return (
-    <div className={styles.login_component_container}>
+    <div>
       <div>
         <div onClick={handleOpenUserMenu} className={styles.my_box}>
           <Tooltip title="Open settings">
