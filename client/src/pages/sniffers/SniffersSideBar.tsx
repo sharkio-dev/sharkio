@@ -113,11 +113,13 @@ const Sniffer = ({
       }`}
     >
       <div
-        className="flex items-center w-full active:scale-105 h-full"
+        className={`flex items-center w-full active:scale-105 h-full ${
+          isSelected ? "text-blue-200" : "text-white"
+        }`}
         onClick={onClick}
       >
-        <GiSharkFin className="text-blue-200 mr-2" />
-        <div className="text-white text-sm">{name}</div>
+        <GiSharkFin className={`mr-2`} />
+        <div className="text-sm">{name}</div>
       </div>
       <div className="flex space-x-2 opacity-0 group-hover:opacity-100">
         <AiOutlineEdit

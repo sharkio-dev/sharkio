@@ -5,10 +5,14 @@ import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { MdDomain } from "react-icons/md";
 import { Sniffer } from "../../stores/sniffersStores";
+import { executeInvocation } from "../../api/api";
+import { useState } from "react";
+import { LoadingIcon } from "./LoadingIcon";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
   activeSniffer?: Sniffer;
+  refresh?: () => void;
 };
 
 const domainPath = (subdomain: string) => {
@@ -18,7 +22,25 @@ const domainPath = (subdomain: string) => {
 export const InvocationUpperBar = ({
   activeInvocation,
   activeSniffer,
+  refresh,
 }: InvocationUpperBarProps) => {
+  const [loading, setLoading] = useState(false);
+  const onExecute = () => {
+    if (!activeInvocation) {
+      return;
+    }
+    setLoading(true);
+    executeInvocation(activeInvocation)
+      .then(() => {
+        refresh && refresh();
+      })
+      .catch(() => {
+        refresh && refresh();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   return (
     <>
       {activeSniffer && (
@@ -40,7 +62,14 @@ export const InvocationUpperBar = ({
           style={{ width: "100%" }}
           disabled
         />
-        <PlayArrow className="text-green-500 cursor-pointer" />
+        {loading ? (
+          <LoadingIcon />
+        ) : (
+          <PlayArrow
+            className="text-green-500 cursor-pointer"
+            onClick={onExecute}
+          />
+        )}
       </div>
       <div className="flex flex-row space-x-4 mt-4 flex-1">
         <InvocationDetails invocation={activeInvocation} />

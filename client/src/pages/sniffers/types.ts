@@ -5,6 +5,7 @@ export type EndpointType = {
 };
 export type InvocationType = {
   id: string;
+  snifferId: string;
   response: {
     status: number;
     body: object | string;

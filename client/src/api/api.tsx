@@ -1,11 +1,11 @@
 import {
   Collection,
   InterceptedRequest,
-  Invocation,
   SnifferCreateConfig,
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
 import { Sniffer } from "../stores/sniffersStores";
+import { InvocationType } from "../pages/sniffers/types";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return BackendAxios.post("/sniffer", config);
@@ -32,26 +32,13 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<Sniffer, "subdomain">>,
+  newConfig: Partial<Omit<Sniffer, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
 
 export const getRequests = () => {
   return BackendAxios.get("/request");
-};
-
-export const executeRequest = (
-  port: number,
-  url: string,
-  method: string,
-  invocation: Invocation,
-) => {
-  return BackendAxios.post(`/sniffer/${port}/actions/execute`, {
-    url,
-    method,
-    invocation,
-  });
 };
 
 export const getAllMocks = () => {
@@ -63,7 +50,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -80,7 +67,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -100,7 +87,7 @@ export const deleteMock = (id: string, sniffer_id: string) => {
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(`/sniffer/${port}/mock/actions/activate`, {
     mockId: `${method} ${endpoint}`,
@@ -110,7 +97,7 @@ export const activateMock = (
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(`/sniffer/${port}/mock/actions/deactivate`, {
     mockId: `${method} ${endpoint}`,
@@ -134,7 +121,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -149,4 +136,18 @@ export const getEnpoints = (snifferId: string) => {
 
 export const getLiveInvocations = () => {
   return BackendAxios.get(`/invocation`);
+};
+export const executeInvocation = (invocation: InvocationType) => {
+  const url = invocation.url;
+  const method = invocation.method;
+  const headers = invocation.headers;
+  const body = invocation.body;
+
+  return BackendAxios.post("/request/execute", {
+    snifferId: invocation.snifferId,
+    url,
+    method,
+    headers,
+    body,
+  });
 };
