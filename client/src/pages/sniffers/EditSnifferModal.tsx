@@ -16,7 +16,7 @@ export const EditSnifferModal = ({
 }: EdirSnifferModalProps) => {
   const [name, setName] = useState<string>(sniffer.name);
   const [downstreamUrl, setDownstreamUrl] = useState<string>(
-    sniffer.downstreamUrl
+    sniffer.downstreamUrl,
   );
   const [port, setPort] = useState<number | undefined>(sniffer.port);
   const { show: showSnackbar, component: snackBar } = useSnackbar();

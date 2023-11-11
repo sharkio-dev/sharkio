@@ -52,7 +52,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/invocations/${id}`);
     },
-    [invocationId]
+    [invocationId],
   );
 
   return (
@@ -149,7 +149,7 @@ const SnifferData = () => {
   const endpoint = endpoints.find((e) => e.id === endpointId);
   const invocation = invocations.find((i) => i.id === invocationId);
   const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId)
+    s.sniffers.find((s) => s.id === snifferId),
   );
   const navigator = useNavigate();
 
@@ -175,7 +175,7 @@ const SnifferData = () => {
         if (res.data.length > 0) {
           navigator(
             `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${res.data[0].id}`,
-            { replace: true }
+            { replace: true },
           );
         }
       })
@@ -215,7 +215,7 @@ const SnifferData = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`
+      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
     );
   };
 

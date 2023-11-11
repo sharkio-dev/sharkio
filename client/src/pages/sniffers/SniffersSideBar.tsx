@@ -18,7 +18,7 @@ export const SniffersSideBar = ({
   setActiveSniffer,
 }: SniffersSideBarProps) => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null
+    null,
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
