@@ -4,14 +4,14 @@ import { selectIconByMethod } from "./selectIconByMethod";
 import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { MdDomain } from "react-icons/md";
-import { Sniffer } from "../../stores/sniffersStores";
+import { SnifferType } from "../../stores/sniffersStores";
 import { executeInvocation } from "../../api/api";
 import { useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
-  activeSniffer?: Sniffer;
+  activeSniffer?: SnifferType;
   refresh?: () => void;
 };
 

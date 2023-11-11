@@ -6,18 +6,20 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { AddSnifferModal } from "./AddSnifferModal";
-import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
+import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { useNavigate } from "react-router-dom";
 
 type SniffersSideBarProps = {
-  activeSniffer?: Sniffer;
-  setActiveSniffer: (sniffer: Sniffer) => void;
+  activeSniffer?: SnifferType;
+  setActiveSniffer: (sniffer: SnifferType) => void;
 };
 export const SniffersSideBar = ({
   activeSniffer,
   setActiveSniffer,
 }: SniffersSideBarProps) => {
-  const [selectedSniffer, setSelectedSniffer] = useState<Sniffer | null>(null);
+  const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
+    null
+  );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -33,7 +35,7 @@ export const SniffersSideBar = ({
     setSelectedSniffer(null);
   };
 
-  const onEditSniffer = (sniffer: Sniffer) => {
+  const onEditSniffer = (sniffer: SnifferType) => {
     setSelectedSniffer(sniffer);
     setIsEditModalOpen(true);
   };
@@ -44,7 +46,7 @@ export const SniffersSideBar = ({
     navigator("/live");
   };
 
-  const onDeleteSniffer = (sniffer: Sniffer) => {
+  const onDeleteSniffer = (sniffer: SnifferType) => {
     setSelectedSniffer(sniffer);
     setIsDeleteModalOpen(true);
   };
@@ -54,7 +56,7 @@ export const SniffersSideBar = ({
       <div className="flex h-16 items-center p-2 mb-2 justify-between">
         <div className="text-white text-xl font-bold">Sniffers</div>
         <AiOutlinePlus
-          className="text-blue-200 text-xl hover:cursor-pointer active:scale-110"
+          className="text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
           onClick={() => setIsAddModalOpen(true)}
         />
       </div>
@@ -79,6 +81,7 @@ export const SniffersSideBar = ({
 
       {sniffers.map((sniffer, i) => (
         <Sniffer
+          LeftIcon={GiSharkFin}
           key={i}
           isSelected={activeSniffer?.id === sniffer.id}
           onClick={() => setActiveSniffer(sniffer)}
@@ -97,18 +100,20 @@ type SnifferProps = {
   onEditSniffer: () => void;
   onDeleteSniffer: () => void;
   name: string;
+  LeftIcon?: any;
 };
 
-const Sniffer = ({
+export const Sniffer = ({
   isSelected,
   onClick,
   onEditSniffer,
   onDeleteSniffer,
   name,
+  LeftIcon,
 }: SnifferProps) => {
   return (
     <div
-      className={`group flex h-10 items-center px-2 shadow-lg border-b-[0.1px] border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
+      className={`group flex h-10 items-center px-2 shadow-lg border-b border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
         isSelected && "bg-tertiary"
       }`}
     >
@@ -118,16 +123,16 @@ const Sniffer = ({
         }`}
         onClick={onClick}
       >
-        <GiSharkFin className={`mr-2`} />
+        {LeftIcon && <LeftIcon className={`mr-2`} />}
         <div className="text-sm">{name}</div>
       </div>
       <div className="flex space-x-2 opacity-0 group-hover:opacity-100">
         <AiOutlineEdit
-          className="opacity-0 group-hover:opacity-100 text-amber-200 active:scale-110 text-lg"
+          className="opacity-0 group-hover:opacity-100 text-amber-400 active:scale-110 text-lg"
           onClick={onEditSniffer}
         />
         <AiOutlineDelete
-          className="opacity-0 group-hover:opacity-100 text-red-200 active:scale-110 text-lg"
+          className="opacity-0 group-hover:opacity-100 text-red-400 active:scale-110 text-lg"
           onClick={onDeleteSniffer}
         />
       </div>

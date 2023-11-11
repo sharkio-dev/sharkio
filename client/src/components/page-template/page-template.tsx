@@ -25,7 +25,7 @@ export const PageTemplate: React.FC<
 
 const BottomBar: React.FC = () => {
   return (
-    <div className="sticky bottom-0 flex-row w-full bg-secondary h-10 border-t-[0.1px] border-border-color">
+    <div className="sticky bottom-0 flex-row w-full bg-secondary h-10 border-t border-border-color">
       <div className="flex flex-row w-full h-full items-center justify-between px-4">
         <div className="text-[#fff]">© 2023 Sharkio</div>
         <div className="flex flex-row items-center">

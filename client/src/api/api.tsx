@@ -4,7 +4,7 @@ import {
   SnifferCreateConfig,
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
-import { Sniffer } from "../stores/sniffersStores";
+import { SnifferType } from "../stores/sniffersStores";
 import { InvocationType } from "../pages/sniffers/types";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
@@ -12,7 +12,7 @@ export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
 };
 
 export const getSniffers = () => {
-  return BackendAxios.get<Sniffer[]>("/sniffer");
+  return BackendAxios.get<SnifferType[]>("/sniffer");
 };
 
 export const getSniffer = (port: number) => {
@@ -32,7 +32,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<Sniffer, "subdomain">>
+  newConfig: Partial<Omit<SnifferType, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
