@@ -38,6 +38,14 @@ export class TestRepository {
     });
     return this.repository.save(newTest);
   }
+
+  getById(id: string) {
+    return this.repository.findOne({ where: { id } });
+  }
+
+  deleteById(id: string) {
+    return this.repository.delete(id);
+  }
 }
 
 @Entity()

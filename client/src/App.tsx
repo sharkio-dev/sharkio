@@ -34,6 +34,7 @@ function App(): React.JSX.Element {
       { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },
+      { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

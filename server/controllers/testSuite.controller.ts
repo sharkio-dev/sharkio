@@ -61,14 +61,14 @@ export class TestSuiteController {
             {
               type: "status_code",
               comparator: "equals",
-              // @ts-ignore
-              value: invocation?.response?.status || 200,
+              expectedValue: invocation?.response?.status || 200,
+              targetPath: "",
             },
             {
               type: "body",
               comparator: "equals",
-              // @ts-ignore
-              value: invocation?.response?.body || "",
+              expectedValue: invocation?.response?.body || "",
+              targetPath: "",
             },
             ...headerRules,
           ]
@@ -80,9 +80,36 @@ export class TestSuiteController {
       }
     });
 
+    router.delete("/:testSuiteId/tests/:testId", async (req, res) => {
+      const { testSuiteId, testId } = req.params;
+      const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+      if (!testSuite) {
+        return res.status(404).send();
+      }
+      const test = await this.testService.getById(testId);
+      if (!test) {
+        return res.status(404).send();
+      }
+      await this.testService.deleteById(testId);
+      res.status(204).send();
+    });
+
+    router.get("/:testSuiteId/tests/:testId", async (req, res) => {
+      const { testSuiteId, testId } = req.params;
+      const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+      if (!testSuite) {
+        return res.status(404).send();
+      }
+      const test = await this.testService.getById(testId);
+      if (!test) {
+        return res.status(404).send();
+      }
+      res.json(test);
+    });
+
     router.get("/:testSuiteId/tests", async (req, res) => {
       const { testSuiteId } = req.params;
-      const testSuite = await this.testService.getTestSuiteId(testSuiteId);
+      const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
       if (!testSuite) {
         return res.status(404).send();
       }

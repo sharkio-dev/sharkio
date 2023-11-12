@@ -17,8 +17,13 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { BackendAxios } from "../../api/backendAxios";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import {
+  TestType,
+  deleteTest,
+  getTestByTestSuiteId,
+} from "../../stores/testStore";
 
 type AddTestModalProps = {
   open: boolean;
@@ -70,6 +75,7 @@ const AddTestModal = ({ open, onClose }: AddTestModalProps) => {
 
 type CustomContentProps = {
   type: "endpoint" | "test";
+  onDelete?: () => void;
   className?: string;
   label?: React.ReactNode;
   nodeId: string;
@@ -96,6 +102,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
     expansionIcon,
     displayIcon,
     type,
+    onDelete,
   } = props;
 
   const {
@@ -110,11 +117,12 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const [addTestModalOpen, setAddTestModalOpen] =
     React.useState<boolean>(false);
   const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
+  const navigator = useNavigate();
+  const { testSuiteId } = useParams();
 
   const handleDeleteClick = () => {
     if (isDeleteClicked) {
-      // TODO: Delete test
-      return;
+      onDelete && onDelete();
     }
     setIsDeleteClicked(true);
   };
@@ -136,6 +144,9 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   };
 
   const handleSelectionClick = (event: any) => {
+    if (type === "test") {
+      navigator("/test-suites/" + testSuiteId + "/tests/" + nodeId);
+    }
     handleSelection(event);
   };
 
@@ -162,19 +173,23 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
       </Typography>
       {selected && (
         <div className="flex flex-row items-center space-x-2 px-2">
-          <AiOutlineDelete
-            className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
-              isDeleteClicked && "text-red-500"
-            }`}
-            onClick={handleDeleteClick}
-          />
+          {type === "test" && (
+            <AiOutlineDelete
+              className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
+                isDeleteClicked && "text-red-500"
+              }`}
+              onClick={handleDeleteClick}
+            />
+          )}
           {type === "endpoint" && (
             <AiOutlinePlus
               className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
               onClick={() => setAddTestModalOpen(true)}
             />
           )}
-          <AiOutlinePlayCircle className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
+          {type === "test" && (
+            <AiOutlinePlayCircle className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
+          )}
         </div>
       )}
       <AddTestModal
@@ -189,6 +204,7 @@ const CustomContentRef = React.forwardRef(CustomContent);
 
 type CustomTreeItemProps = {
   type: "endpoint" | "test";
+  onDelete?: () => void;
   nodeId: string;
   label?: React.ReactNode;
   icon?: React.ReactNode;
@@ -210,28 +226,49 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 
 export function TestTree() {
   const { testSuiteId } = useParams();
-  const [testTree, setTestTree] = React.useState<any>({});
+  const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
+    {}
+  );
+  const { show, component: snackBar } = useSnackbar();
+
+  const fetchTestTree = () => {
+    if (!testSuiteId) {
+      return;
+    }
+    getTestByTestSuiteId(testSuiteId).then((res) => {
+      const a = res.data.reduce(
+        (acc: Record<string, TestType[]>, test: TestType) => {
+          const url = test.url;
+          if (Object.hasOwnProperty.call(acc, url)) {
+            acc[url] = [...acc[url], test];
+          } else {
+            acc[url] = [test];
+          }
+          return acc;
+        },
+        {}
+      );
+      setTestTree(a);
+    });
+  };
 
   React.useEffect(() => {
     if (!testSuiteId) {
       return;
     }
-    BackendAxios.get(`/test-suites/${testSuiteId}/tests`).then((res) => {
-      console.log({ res: res.data });
-      const a = res.data.reduce((acc, test) => {
-        const url = test.url;
-        if (Object.hasOwnProperty.call(acc, url)) {
-          // If URL exists in accumulator, append the current test object to its array
-          acc[url] = [...acc[url], test];
-        } else {
-          // If URL does not exist, create a new array with the current test object
-          acc[url] = [test];
-        }
-        return acc;
-      }, {});
-      setTestTree(a);
-    });
+    fetchTestTree();
   }, [testSuiteId]);
+
+  const onDeleteClicked = (testId: string) => {
+    deleteTest(testId)
+      .then(() => {
+        show("Test deleted successfully", "success");
+        fetchTestTree();
+      })
+      .catch(() => {
+        show("Failed to delete test", "error");
+      });
+  };
 
   return (
     <TreeView
@@ -249,6 +286,7 @@ export function TestTree() {
                 testTree[url].map((test: any) => {
                   return (
                     <CustomTreeItem
+                      onDelete={() => onDeleteClicked(test.id)}
                       key={test.id}
                       nodeId={test.id}
                       label={test.name}

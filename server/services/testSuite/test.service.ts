@@ -24,7 +24,15 @@ export class TestService {
     );
   }
 
-  getTestSuiteId(id: string) {
+  getByTestSuiteId(id: string) {
     return this.testRepository.getByTestSuiteId(id);
+  }
+
+  getById(id: string) {
+    return this.testRepository.getById(id);
+  }
+
+  deleteById(id: string) {
+    return this.testRepository.deleteById(id);
   }
 }

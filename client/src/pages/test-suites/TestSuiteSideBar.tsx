@@ -22,11 +22,11 @@ export const TestSuiteSideBar = () => {
     React.useState<boolean>(false);
   const { loadTestSuites, testSuites } = useTestSuiteStore();
   const navigator = useNavigate();
-  const { testSuiteId } = useParams();
+  const { testSuiteId, testId } = useParams();
 
   React.useEffect(() => {
     loadTestSuites().then((res) => {
-      if (res.length > 0) {
+      if (res.length > 0 && !testId) {
         navigator("/test-suites/" + res[0].id, { replace: true });
       }
     });
