@@ -33,10 +33,41 @@ export class InvocationController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
-          limit,
+          limit
         );
         res.status(200).send(requests);
-      },
+      }
+    );
+
+    router.route("/:id").get(
+      /**
+       * @openapi
+       * /sharkio/invocation/{id}:
+       *   get:
+       *     tags:
+       *      - invocation
+       *     description: Get invocation by id
+       *     parameters:
+       *       - in: path
+       *         name: id
+       *         required: true
+       *         schema:
+       *           type: string
+       *     responses:
+       *       200:
+       *         description: Returns invocation
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const { id } = req.params;
+        const request = await this.endpointService.getInvocationById(
+          id,
+          userId
+        );
+        res.status(200).send(request);
+      }
     );
 
     return { router, path: "/sharkio/invocation" };

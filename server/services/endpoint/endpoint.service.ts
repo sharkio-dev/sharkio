@@ -21,7 +21,7 @@ interface EndpointMetadata {
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -218,6 +218,30 @@ export class EndpointService {
     });
 
     return mapped;
+  }
+
+  async getInvocationById(id: string, userId: string) {
+    const invocation = await this.invocationRepository.repository.findOne({
+      relations: {
+        response: true,
+      },
+      where: {
+        id,
+        userId,
+      },
+    });
+    if (!invocation) {
+      return undefined;
+    }
+
+    // make sure only one response is returned
+    let response = undefined;
+    const responses = invocation.response;
+    if (responses && responses.length > 0) {
+      response = responses[0];
+    }
+
+    return { ...invocation, response };
   }
 }
 

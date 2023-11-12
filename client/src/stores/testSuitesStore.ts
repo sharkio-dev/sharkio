@@ -18,7 +18,7 @@ type TestSuiteType = {
 
 interface TestSuiteStore {
   testSuites: TestSuiteType[];
-  loadTestSuites: () => Promise<void>;
+  loadTestSuites: () => Promise<TestSuiteType[]>;
   createTestSuite: (name: string) => Promise<void>;
 }
 
@@ -27,6 +27,7 @@ export const useTestSuiteStore = create<TestSuiteStore>((set, get) => ({
   loadTestSuites: async () => {
     return getTestSuites().then((res) => {
       set({ testSuites: res.data });
+      return res.data;
     });
   },
   createTestSuite: async (name: string) => {

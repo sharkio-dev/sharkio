@@ -33,6 +33,7 @@ function App(): React.JSX.Element {
       { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
       { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
+      { path: routes.TEST_SUITE, element: <TestSuitePage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

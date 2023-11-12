@@ -6,6 +6,10 @@ import { User } from "../model/user/user.model";
 import { Invocation } from "../model/invocation/invocation.model";
 import { InterceptedResponse } from "../model/response/response.model";
 import { TestSuite } from "../model/testSuite/testSuite.model";
+import { Test } from "../model/testSuite/test.model";
+import { TestExecution } from "../model/testSuite/testExecution.model";
+import { TestRequest } from "../model/testSuite/testRequest";
+import { TestResponse } from "../model/testSuite/testResponse";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -24,6 +28,10 @@ export const getAppDataSource = async () => {
         Invocation,
         InterceptedResponse,
         TestSuite,
+        Test,
+        TestExecution,
+        TestRequest,
+        TestResponse,
       ],
       subscribers: [],
       migrations: [],

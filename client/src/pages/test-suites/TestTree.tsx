@@ -17,6 +17,8 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { BackendAxios } from "../../api/backendAxios";
 
 type AddTestModalProps = {
   open: boolean;
@@ -195,7 +197,6 @@ type CustomTreeItemProps = {
   children?: React.ReactNode;
 };
 const CustomTreeItemRef = (props: CustomTreeItemProps, ref: React.Ref<any>) => {
-  console.log({ props });
   return (
     <TreeItem
       ContentComponent={(p) => <CustomContentRef {...props} {...p} />}
@@ -208,15 +209,58 @@ const CustomTreeItemRef = (props: CustomTreeItemProps, ref: React.Ref<any>) => {
 const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 
 export function TestTree() {
+  const { testSuiteId } = useParams();
+  const [testTree, setTestTree] = React.useState<any>({});
+
+  React.useEffect(() => {
+    if (!testSuiteId) {
+      return;
+    }
+    BackendAxios.get(`/test-suites/${testSuiteId}/tests`).then((res) => {
+      console.log({ res: res.data });
+      const a = res.data.reduce((acc, test) => {
+        const url = test.url;
+        if (Object.hasOwnProperty.call(acc, url)) {
+          // If URL exists in accumulator, append the current test object to its array
+          acc[url] = [...acc[url], test];
+        } else {
+          // If URL does not exist, create a new array with the current test object
+          acc[url] = [test];
+        }
+        return acc;
+      }, {});
+      setTestTree(a);
+    });
+  }, [testSuiteId]);
+
   return (
     <TreeView
       aria-label="icon expansion"
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
-      <CustomTreeItem nodeId="1" label="/Users" type="endpoint">
-        <CustomTreeItem nodeId="2" label="Positive" type="test" />
-      </CustomTreeItem>
+      {
+        // For each URL, create a tree item
+        Object.keys(testTree).map((url) => {
+          return (
+            <CustomTreeItem key={url} nodeId={url} label={url} type="endpoint">
+              {
+                // For each test in the URL, create a tree item
+                testTree[url].map((test: any) => {
+                  return (
+                    <CustomTreeItem
+                      key={test.id}
+                      nodeId={test.id}
+                      label={test.name}
+                      type="test"
+                    />
+                  );
+                })
+              }
+            </CustomTreeItem>
+          );
+        })
+      }
     </TreeView>
   );
 }

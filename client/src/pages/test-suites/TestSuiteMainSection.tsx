@@ -2,11 +2,11 @@ import * as React from "react";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import { PlayArrowOutlined } from "@mui/icons-material";
 import TabPanel from "@mui/lab/TabPanel";
 import { SelectComponent } from "./SelectComponent";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
+import { CiSaveDown2 } from "react-icons/ci";
 
 export const TestSuiteMainSection = () => {
   const [value, setValue] = React.useState("1");
@@ -15,11 +15,18 @@ export const TestSuiteMainSection = () => {
     setValue(newValue);
   };
 
+  const hadnleSave = () => {
+    // TODO: Save the test suite
+  };
+
   return (
     <>
       <div className="flex flex-row items-center justify-between">
         <span className="text-white text-xl font-bold">Positive</span>
-        <PlayArrowOutlined className="text-green-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110" />
+        <CiSaveDown2
+          className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+          onClick={hadnleSave}
+        />
       </div>
       <SelectComponent
         options={[{ value: "200", label: "200" }]}

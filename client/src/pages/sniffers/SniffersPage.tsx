@@ -52,7 +52,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/invocations/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
 
   return (
@@ -149,7 +149,7 @@ const SnifferData = () => {
   const endpoint = endpoints.find((e) => e.id === endpointId);
   const invocation = invocations.find((i) => i.id === invocationId);
   const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId),
+    s.sniffers.find((s) => s.id === snifferId)
   );
   const navigator = useNavigate();
 
@@ -171,11 +171,11 @@ const SnifferData = () => {
     setLoadingRequests(true);
     getInvocations(invocationId)
       .then((res) => {
-        setInvocations(res.data);
-        if (res.data.length > 0) {
+        setInvocations(res);
+        if (res.length > 0) {
           navigator(
-            `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${res.data[0].id}`,
-            { replace: true },
+            `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${res[0].id}`,
+            { replace: true }
           );
         }
       })
@@ -192,10 +192,10 @@ const SnifferData = () => {
     setEndpoints([]);
     setLoadingEndpoints(true);
     getEnpoints(snifferId)
-      .then((res) => {
-        setEndpoints(res.data);
-        if (res.data.length > 0) {
-          navigator(`/sniffers/${snifferId}/endpoints/${res.data[0].id}`, {
+      .then((data) => {
+        setEndpoints(data);
+        if (data.length > 0) {
+          navigator(`/sniffers/${snifferId}/endpoints/${data[0].id}`, {
             replace: true,
           });
         }
@@ -215,7 +215,7 @@ const SnifferData = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
+      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`
     );
   };
 

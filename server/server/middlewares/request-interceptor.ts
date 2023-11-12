@@ -16,7 +16,7 @@ export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
     private readonly requestService: EndpointService,
-    private readonly responseService: ResponseService,
+    private readonly responseService: ResponseService
   ) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
@@ -49,7 +49,7 @@ export class RequestInterceptor {
     const request = await this.requestService.findOrCreate(
       req,
       sniffer.id,
-      sniffer.userId,
+      sniffer.userId
     );
     const invocation = await this.requestService.addInvocation(request);
 
@@ -64,7 +64,7 @@ export class RequestInterceptor {
       headers: Record<string, string | string[] | undefined>;
       statusCode: number | undefined;
       body: any;
-    },
+    }
   ) {
     await this.responseService.addResponse({
       userId,

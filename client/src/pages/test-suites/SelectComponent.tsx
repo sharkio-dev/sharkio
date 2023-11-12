@@ -9,6 +9,7 @@ type SelectComponentProps = {
   title: string;
   value: string;
   setValue: (value: string) => void;
+  disabled?: boolean;
 };
 
 export function SelectComponent({
@@ -16,9 +17,10 @@ export function SelectComponent({
   title,
   value,
   setValue,
+  disabled,
 }: SelectComponentProps) {
   return (
-    <FormControl sx={{ width: "100%" }} size="small">
+    <FormControl sx={{ width: "100%" }} size="small" disabled={disabled}>
       <InputLabel>{title}</InputLabel>
       <Select
         value={value}
