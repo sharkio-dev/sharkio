@@ -5,7 +5,7 @@ export default () => {
   return defineConfig({
     plugins: [react(), basicSsl()],
     server: {
-      port: 443,
+      port: 444,
     },
   });
 };

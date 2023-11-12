@@ -7,8 +7,9 @@ import "reflect-metadata";
 import { useLog } from "../lib/log";
 import { logMiddleware } from "./middlewares/log.middleware";
 import { ProxyMiddleware } from "./middlewares/proxy.middleware";
-import { requestValidator } from "../lib/request-validator/request-validator";
 import { RequestInterceptor } from "./middlewares/request-interceptor";
+import https from "https";
+import fs from "fs";
 
 const log = useLog({
   dirname: __dirname,
@@ -16,7 +17,7 @@ const log = useLog({
 });
 
 export class ProxyServer {
-  private readonly port: number = 80;
+  private readonly port: number = 443;
   private app: Express;
   private server?: http.Server;
 
@@ -25,6 +26,7 @@ export class ProxyServer {
     private readonly requestInterceptor: RequestInterceptor,
   ) {
     this.app = express();
+
     this.app.use(logMiddleware);
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
@@ -36,8 +38,17 @@ export class ProxyServer {
   }
 
   start() {
-    this.server = this.app.listen(this.port, () => {
-      log.info("proxy server started listening on port" + this.port);
+    var options = {
+      key: fs.readFileSync(process.env.PROXY_PRIVATE_KEY_FILE ?? ""),
+      cert: fs.readFileSync(process.env.PROXY_CERT_FILE ?? ""),
+    };
+    this.app.listen(80, () => {
+      log.info("proxy server started listening on port " + 80);
+    });
+
+    const server1 = https.createServer(options, this.app);
+    this.server = server1.listen(443, () => {
+      log.info("proxy server started listening on port " + this.port);
     });
   }
 
