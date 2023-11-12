@@ -1,5 +1,11 @@
 import { create } from "zustand";
-import { User } from "../models/userModel";
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  profileImg: string;
+}
 
 interface authState {
   user: User | null;

@@ -10,8 +10,64 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem, useTreeItem } from "@mui/x-tree-view/TreeItem";
+import {
+  Button,
+  CircularProgress,
+  Modal,
+  Paper,
+  TextField,
+} from "@mui/material";
+
+type AddTestModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const AddTestModal = ({ open, onClose }: AddTestModalProps) => {
+  const [name, setName] = React.useState<string>("");
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const onClickAdd = () => {
+    if (name === "") {
+      return;
+    }
+    setIsLoading(true);
+    // TODO: Add test suite
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      className="flex justify-center items-center border-0"
+    >
+      <Paper className="flex flex-col p-4 w-96 rounded-sm border-0">
+        <div className="text-2xl font-bold">Add Test</div>
+        <div className="w-full border-b-[0.05px] my-4" />
+        <div className="flex flex-col space-y-2"></div>
+        <TextField
+          label={"Name"}
+          placeholder="Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <div className="flex flex-row justify-end mt-4">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onClickAdd}
+            disabled={isLoading}
+          >
+            {isLoading ? <CircularProgress size={24} /> : "Add"}
+          </Button>
+        </div>
+      </Paper>
+    </Modal>
+  );
+};
 
 type CustomContentProps = {
+  type: "endpoint" | "test";
   className?: string;
   label?: React.ReactNode;
   nodeId: string;
@@ -37,6 +93,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
     icon: iconProp,
     expansionIcon,
     displayIcon,
+    type,
   } = props;
 
   const {
@@ -48,6 +105,23 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
     handleSelection,
     preventSelection,
   } = useTreeItem(nodeId);
+  const [addTestModalOpen, setAddTestModalOpen] =
+    React.useState<boolean>(false);
+  const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
+
+  const handleDeleteClick = () => {
+    if (isDeleteClicked) {
+      // TODO: Delete test
+      return;
+    }
+    setIsDeleteClicked(true);
+  };
+
+  React.useEffect(() => {
+    if (!selected) {
+      setIsDeleteClicked(false);
+    }
+  }, [selected]);
 
   const icon = iconProp || expansionIcon || displayIcon;
 
@@ -86,16 +160,33 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
       </Typography>
       {selected && (
         <div className="flex flex-row items-center space-x-2 px-2">
-          <AiOutlineDelete className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
-          <AiOutlinePlus className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
+          <AiOutlineDelete
+            className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
+              isDeleteClicked && "text-red-500"
+            }`}
+            onClick={handleDeleteClick}
+          />
+          {type === "endpoint" && (
+            <AiOutlinePlus
+              className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+              onClick={() => setAddTestModalOpen(true)}
+            />
+          )}
           <AiOutlinePlayCircle className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
         </div>
       )}
+      <AddTestModal
+        open={addTestModalOpen}
+        onClose={() => setAddTestModalOpen(false)}
+      />
     </div>
   );
 }
+
 const CustomContentRef = React.forwardRef(CustomContent);
+
 type CustomTreeItemProps = {
+  type: "endpoint" | "test";
   nodeId: string;
   label?: React.ReactNode;
   icon?: React.ReactNode;
@@ -104,8 +195,16 @@ type CustomTreeItemProps = {
   children?: React.ReactNode;
 };
 const CustomTreeItemRef = (props: CustomTreeItemProps, ref: React.Ref<any>) => {
-  return <TreeItem ContentComponent={CustomContentRef} {...props} ref={ref} />;
+  console.log({ props });
+  return (
+    <TreeItem
+      ContentComponent={(p) => <CustomContentRef {...props} {...p} />}
+      {...props}
+      ref={ref}
+    />
+  );
 };
+
 const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 
 export function TestTree() {
@@ -115,8 +214,8 @@ export function TestTree() {
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
-      <CustomTreeItem nodeId="1" label="/Users">
-        <CustomTreeItem nodeId="2" label="Positive" />
+      <CustomTreeItem nodeId="1" label="/Users" type="endpoint">
+        <CustomTreeItem nodeId="2" label="Positive" type="test" />
       </CustomTreeItem>
     </TreeView>
   );
