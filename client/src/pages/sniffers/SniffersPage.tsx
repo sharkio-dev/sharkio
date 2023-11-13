@@ -191,7 +191,6 @@ const SnifferData: React.FC<SnifferDataProps> = (props) => {
   // Populate the endpoints of the screen
   useEffect(() => {
     if (!snifferId) return;
-    // setEndpoints([]);
     setLoadingEndpoints(true);
     getEnpoints(snifferId)
       .then((res) => {
