@@ -5,6 +5,8 @@ import { Endpoint } from "../model/endpoint/endpoint.model";
 import { User } from "../model/user/user.model";
 import { Invocation } from "../model/invocation/invocation.model";
 import { InterceptedResponse } from "../model/response/response.model";
+import { Chat } from "../model/chat/chat.model";
+import { Message } from "../model/chat/message.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -22,6 +24,8 @@ export const getAppDataSource = async () => {
         User,
         Invocation,
         InterceptedResponse,
+        Chat,
+        Message,
       ],
       subscribers: [],
       migrations: [],

@@ -23,6 +23,11 @@ import APIKeysService from "./services/settings/apiKeys";
 import { SnifferService } from "./services/sniffer/sniffer.service";
 import UserService from "./services/user/user";
 import { InvocationController } from "./controllers/invocation.controller";
+import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
+import { ChatController } from "./controllers/chat.controller";
+import { ChatService } from "./services/chat/chat.service";
+import ChatRepository from "./model/chat/chat.model";
+import MessageRepository from "./model/chat/message.model";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -37,16 +42,20 @@ async function main() {
   const snifferRepository = new SnifferRepository(appDataSource);
   const apiKeyRepository = new ApiKeyRepository(appDataSource);
   const userRepository = new UserRepository(appDataSource);
+  const chatRepository = new ChatRepository(appDataSource);
+  const messageRepository = new MessageRepository(appDataSource);
 
   /* Services */
   const snifferService = new SnifferService(snifferRepository);
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
-    invocationRepository,
+    invocationRepository
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
+  const docGenerator = new SnifferDocGenerator(snifferService, endpointService);
+  const chatService = new ChatService(chatRepository, messageRepository);
 
   /* Controllers */
   const settingsController = new SettingsController(apiKeyService);
@@ -54,35 +63,40 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService,
+    snifferService
   );
   const snifferController = new SnifferController(
     snifferService,
     endpointService,
+    docGenerator
   );
   const endpointController = new EndpointController(
     endpointService,
-    snifferService,
+    snifferService
   );
   const invocationController = new InvocationController(endpointService);
-
+  const chatController = new ChatController(
+    snifferService,
+    endpointService,
+    chatService
+  );
   const swaggerUi = new SwaggerUiController();
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     endpointService,
-    responseService,
+    responseService
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
   const snifferManagerServer = new Server(
     [
@@ -92,11 +106,12 @@ async function main() {
       invocationController.getRouter(),
       cliController.getRouter(),
       endpointController.getRouter(),
+      chatController.getRouter(),
     ],
-    swaggerUi,
+    swaggerUi
   );
 
-  /* Start Servers */
+  // /* Start Servers */
   snifferManagerServer.start();
   proxyServer.start();
 }
