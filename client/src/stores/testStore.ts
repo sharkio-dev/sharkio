@@ -5,7 +5,7 @@ type RuleComparator = "equals";
 export type Rule = {
   type: RuleType;
   comparator: RuleComparator;
-  targetPath: string;
+  targetPath?: string;
   expectedValue: any;
 };
 

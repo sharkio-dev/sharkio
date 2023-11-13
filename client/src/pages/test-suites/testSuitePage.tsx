@@ -1,5 +1,6 @@
 import { TestSuiteSideBar } from "./TestSuiteSideBar";
 import { TestSuiteMainSection } from "./TestSuiteMainSection";
+import { useParams } from "react-router-dom";
 
 const TestSuitePage = () => {
   return (

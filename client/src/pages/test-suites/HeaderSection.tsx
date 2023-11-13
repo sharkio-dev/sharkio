@@ -1,28 +1,19 @@
-import * as React from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import { SelectComponent } from "./SelectComponent";
+import { Rule } from "../../stores/testStore";
 
-export const HeaderSection = ({ headers, setHeaders }) => {
-  const DeleteHeader = (index: number) => {
-    const newHeaders = headers.filter((_, i) => i !== index);
-    setHeaders(newHeaders);
-  };
+type HeaderSectionProps = {
+  headers: Rule[];
+  setHeaders: (index: number, value: any, targetPath: string) => void;
+  addHeader: () => void;
+  deleteHeader: (index: number) => void;
+};
 
-  const AddHeader = () => {
-    const newHeaders = [...headers, { name: "", value: "" }];
-    setHeaders(newHeaders);
-  };
-
-  const handleChange = (index: number, key: string, value: string) => {
-    const newHeaders = headers.map((header, i) => {
-      if (i === index) {
-        return { ...header, [key]: value };
-      }
-      return header;
-    });
-    setHeaders(newHeaders);
-  };
-
+export const HeaderSection = ({
+  headers,
+  setHeaders,
+  addHeader,
+  deleteHeader,
+}: HeaderSectionProps) => {
   return (
     <>
       <div className="flex flex-col items-center space-y-2 w-full">
@@ -32,9 +23,9 @@ export const HeaderSection = ({ headers, setHeaders }) => {
               <input
                 className="border border-border-color rounded-md px-2 py-1 w-full"
                 placeholder="Name"
-                value={header.name}
+                value={header.targetPath}
                 onChange={(event) => {
-                  handleChange(i, "name", event.target.value);
+                  setHeaders(i, header.expectedValue, event.target.value);
                 }}
               />
               <div className="flex flex-row">=</div>
@@ -42,15 +33,15 @@ export const HeaderSection = ({ headers, setHeaders }) => {
               <input
                 className="border border-border-color rounded-md px-2 py-1 w-full"
                 placeholder="Value"
-                value={header.value}
+                value={header.expectedValue}
                 onChange={(event) => {
-                  handleChange(i, "value", event.target.value);
+                  setHeaders(i, event.target.value, header.targetPath || "");
                 }}
               />
               <div className="flex flex-row min-w-[20px] h-full">
                 <AiOutlineDelete
                   className="flex text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                  onClick={() => DeleteHeader(i)}
+                  onClick={() => deleteHeader(i)}
                 />
               </div>
             </div>
@@ -60,7 +51,7 @@ export const HeaderSection = ({ headers, setHeaders }) => {
 
       <div
         className="flex flex-row items-center space-x-2 px-2 mt-2 w-32 cursor-pointer"
-        onClick={AddHeader}
+        onClick={addHeader}
       >
         <AiOutlinePlus className="flex text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
         <span className="hover:text-green-400">Add Header</span>

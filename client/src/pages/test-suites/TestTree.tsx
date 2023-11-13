@@ -174,7 +174,7 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 export function TestTree() {
   const { testSuiteId } = useParams();
   const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
-    {}
+    {},
   );
   const { show, component: snackBar } = useSnackbar();
 
@@ -193,7 +193,7 @@ export function TestTree() {
           }
           return acc;
         },
-        {}
+        {},
       );
       setTestTree(a);
     });

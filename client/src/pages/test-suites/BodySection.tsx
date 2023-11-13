@@ -1,6 +1,12 @@
 import Editor from "@monaco-editor/react";
+import { Rule } from "../../stores/testStore";
 
-export const BodySection = ({ body, setBody }) => {
+type BodySectionProps = {
+  body: Rule;
+  setBody: (body: any) => void;
+};
+
+export const BodySection = ({ body, setBody }: BodySectionProps) => {
   return (
     <div className="flex flex-col space-y-4">
       <Editor
@@ -8,8 +14,8 @@ export const BodySection = ({ body, setBody }) => {
         width={"100%"}
         theme="vs-dark"
         defaultLanguage="json"
-        value={body}
-        language={body?.includes("html") ? "html" : "json"}
+        value={body.expectedValue}
+        language={body.expectedValue?.includes("html") ? "html" : "json"}
         onChange={(value) => setBody(value)}
       />
     </div>

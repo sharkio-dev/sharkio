@@ -7,7 +7,7 @@ export class TestSuiteController {
   constructor(
     private readonly testSuiteService: TestSuiteService,
     private readonly endpointService: EndpointService,
-    private readonly testService: TestService,
+    private readonly testService: TestService
   ) {}
 
   getRouter() {
@@ -33,7 +33,7 @@ export class TestSuiteController {
         const { invocationId, testSuiteId } = req.params;
         const invocation = await this.endpointService.getInvocationById(
           invocationId,
-          userId,
+          userId
         );
 
         if (!invocation) {
@@ -42,7 +42,7 @@ export class TestSuiteController {
 
         const headerRules: Rule[] = Object.entries(
           // @ts-ignore
-          invocation?.response?.headers || {},
+          invocation?.response?.headers || {}
         ).map(([key, value]) => ({
           type: "header",
           comparator: "equals",
@@ -71,7 +71,7 @@ export class TestSuiteController {
               targetPath: "",
             },
             ...headerRules,
-          ],
+          ]
         );
         res.status(201).json(test);
       } catch (error) {
@@ -114,6 +114,24 @@ export class TestSuiteController {
         return res.status(404).send();
       }
       res.json(testSuite);
+    });
+
+    router.put("/:testSuiteId/tests/:testId", async (req, res) => {
+      const { testSuiteId, testId } = req.params;
+      const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+      if (!testSuite) {
+        return res.status(404).send();
+      }
+      const test = await this.testService.getById(testId);
+      if (!test) {
+        return res.status(404).send();
+      }
+      const { name, rules } = req.body;
+      await this.testService.updateById(testId, {
+        name,
+        rules,
+      });
+      res.status(204).send();
     });
 
     return { path: "/sharkio/test-suites", router };

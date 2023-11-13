@@ -18,6 +18,20 @@ export class TestRepository {
     return this.repository.find({ where: { testSuiteId } });
   }
 
+  updateById(
+    id: string,
+    test: {
+      name?: string;
+      url?: string;
+      body?: Record<string, any>;
+      headers?: Record<string, any>;
+      method?: string;
+      rules?: Rule[];
+    }
+  ) {
+    return this.repository.update(id, test);
+  }
+
   async create(
     name: string,
     testSuiteId: string,
@@ -25,7 +39,7 @@ export class TestRepository {
     body: Record<string, any>,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[],
+    rules?: Rule[]
   ): Promise<Test> {
     const newTest = this.repository.create({
       name,
