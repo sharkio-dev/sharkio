@@ -25,7 +25,7 @@ export class TestRepository {
     body: Record<string, any>,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[]
+    rules?: Rule[],
   ): Promise<Test> {
     const newTest = this.repository.create({
       name,

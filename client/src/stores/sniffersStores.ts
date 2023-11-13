@@ -16,20 +16,23 @@ export type SnifferType = {
 
 interface SniffersState {
   sniffers: SnifferType[];
-  loadSniffers: () => Promise<void>;
+  loadSniffers: () => Promise<SnifferType[]>;
   createSniffer: (
-    sniffer: Omit<Omit<SnifferType, "id">, "subdomain">,
+    sniffer: Omit<Omit<SnifferType, "id">, "subdomain">
   ) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
   editSniffer: (
-    sniffer: Partial<Omit<SnifferType, "subdomain">>,
+    sniffer: Partial<Omit<SnifferType, "subdomain">>
   ) => Promise<void>;
 }
 
 export const useSniffersStore = create<SniffersState>((set) => ({
   sniffers: [],
   loadSniffers: () => {
-    return getSniffers().then((res) => set({ sniffers: res.data }));
+    return getSniffers().then((res) => {
+      set({ sniffers: res.data });
+      return res.data;
+    });
   },
   createSniffer: (sniffer: Omit<Omit<SnifferType, "id">, "subdomain">) => {
     return createSniffer(sniffer).then(() => {

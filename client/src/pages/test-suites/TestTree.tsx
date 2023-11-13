@@ -10,13 +10,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem, useTreeItem } from "@mui/x-tree-view/TreeItem";
-import {
-  Button,
-  CircularProgress,
-  Modal,
-  Paper,
-  TextField,
-} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import {
@@ -24,54 +17,7 @@ import {
   deleteTest,
   getTestByTestSuiteId,
 } from "../../stores/testStore";
-
-type AddTestModalProps = {
-  open: boolean;
-  onClose: () => void;
-};
-
-const AddTestModal = ({ open, onClose }: AddTestModalProps) => {
-  const [name, setName] = React.useState<string>("");
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
-  const onClickAdd = () => {
-    if (name === "") {
-      return;
-    }
-    setIsLoading(true);
-    // TODO: Add test suite
-  };
-
-  return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      className="flex justify-center items-center border-0"
-    >
-      <Paper className="flex flex-col p-4 w-96 rounded-sm border-0">
-        <div className="text-2xl font-bold">Add Test</div>
-        <div className="w-full border-b-[0.05px] my-4" />
-        <div className="flex flex-col space-y-2"></div>
-        <TextField
-          label={"Name"}
-          placeholder="Name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-        <div className="flex flex-row justify-end mt-4">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={onClickAdd}
-            disabled={isLoading}
-          >
-            {isLoading ? <CircularProgress size={24} /> : "Add"}
-          </Button>
-        </div>
-      </Paper>
-    </Modal>
-  );
-};
+import { AddTestSuiteModal } from "./TestSuiteSideBar";
 
 type CustomContentProps = {
   type: "endpoint" | "test";
@@ -192,9 +138,10 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           )}
         </div>
       )}
-      <AddTestModal
+      <AddTestSuiteModal
         open={addTestModalOpen}
         onClose={() => setAddTestModalOpen(false)}
+        type="Test Endpoint"
       />
     </div>
   );
@@ -276,29 +223,23 @@ export function TestTree() {
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
-      {
-        // For each URL, create a tree item
-        Object.keys(testTree).map((url) => {
-          return (
-            <CustomTreeItem key={url} nodeId={url} label={url} type="endpoint">
-              {
-                // For each test in the URL, create a tree item
-                testTree[url].map((test: any) => {
-                  return (
-                    <CustomTreeItem
-                      onDelete={() => onDeleteClicked(test.id)}
-                      key={test.id}
-                      nodeId={test.id}
-                      label={test.name}
-                      type="test"
-                    />
-                  );
-                })
-              }
-            </CustomTreeItem>
-          );
-        })
-      }
+      {Object.keys(testTree).map((url) => {
+        return (
+          <CustomTreeItem key={url} nodeId={url} label={url} type="endpoint">
+            {testTree[url].map((test: any) => {
+              return (
+                <CustomTreeItem
+                  onDelete={() => onDeleteClicked(test.id)}
+                  key={test.id}
+                  nodeId={test.id}
+                  label={test.name}
+                  type="test"
+                />
+              );
+            })}
+          </CustomTreeItem>
+        );
+      })}
     </TreeView>
   );
 }

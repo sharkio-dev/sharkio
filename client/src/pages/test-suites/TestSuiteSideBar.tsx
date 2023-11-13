@@ -53,9 +53,9 @@ export const TestSuiteSideBar = () => {
         <TestTree />
       </div>
       <AddTestSuiteModal
-        testSuiteId={testSuiteId || ""}
         open={addTestSuiteModalOpen}
         onClose={() => setAddTestSuiteModalOpen(false)}
+        type="Test Suite"
       />
     </>
   );
@@ -64,17 +64,17 @@ export const TestSuiteSideBar = () => {
 type AddTestSuiteModalProps = {
   open: boolean;
   onClose: () => void;
-  testSuiteId: string;
+  type?: "Test Suite" | "Test Endpoint";
 };
 
-const AddTestSuiteModal = ({
+export const AddTestSuiteModal = ({
   open,
   onClose,
-  testSuiteId,
+  type = "Test Suite",
 }: AddTestSuiteModalProps) => {
   const [name, setName] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [type, setType] = React.useState<string>("Test Suite");
+  const [formType, setFormType] = React.useState<string>(type);
   const { createTestSuite } = useTestSuiteStore();
   const { show, component: snackBar } = useSnackbar();
   const { sniffers, loadSniffers } = useSniffersStore();
@@ -83,6 +83,7 @@ const AddTestSuiteModal = ({
   const [endpoint, setEndpoint] = React.useState<string>("");
   const [invocations, setInvocations] = React.useState<InvocationType[]>([]);
   const [invocation, setInvocation] = React.useState<string>("");
+  const { testSuiteId } = useParams();
 
   const onSnifferPicked = (value: string) => {
     setSniffer(value);
@@ -104,7 +105,7 @@ const AddTestSuiteModal = ({
       show("Name cannot be empty", "error");
       return;
     }
-    if (type === "Test Suite") {
+    if (formType === "Test Suite") {
       setIsLoading(true);
 
       createTestSuite(name)
@@ -125,7 +126,6 @@ const AddTestSuiteModal = ({
         return;
       }
       setIsLoading(true);
-      console.log({ invocation, testSuiteId });
 
       BackendAxios.post(`/test-suites/${testSuiteId}/import/${invocation}`, {
         name,
@@ -147,7 +147,7 @@ const AddTestSuiteModal = ({
   const resetState = () => {
     setName("");
     setIsLoading(false);
-    setType("Test Suite");
+    setFormType(type);
     setSniffer("");
     setEndpoints([]);
     setEndpoint("");
@@ -171,7 +171,7 @@ const AddTestSuiteModal = ({
       <Paper className="flex flex-col p-4 w-96 rounded-sm border-0">
         {snackBar}
 
-        <div className="text-2xl font-bold">Add {type}</div>
+        <div className="text-2xl font-bold">Add {formType}</div>
         <div className="w-full border-b-[0.05px] my-4" />
         <div className="flex flex-col space-y-4">
           <SelectComponent
@@ -180,17 +180,17 @@ const AddTestSuiteModal = ({
               { value: "Test Endpoint", label: "Test Endpoint" },
             ]}
             title="Type"
-            value={type}
-            setValue={(value: string) => setType(value)}
+            value={formType}
+            setValue={(value: string) => setFormType(value)}
           />
           <TextField
-            label={`${type} Name`}
-            placeholder={`${type} Name`}
+            label={`${formType} Name`}
+            placeholder={`${formType} Name`}
             size="small"
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
-          {type === "Test Endpoint" && (
+          {formType === "Test Endpoint" && (
             <>
               <SelectComponent
                 options={sniffers.map((sniffer) => ({

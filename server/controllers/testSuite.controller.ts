@@ -7,7 +7,7 @@ export class TestSuiteController {
   constructor(
     private readonly testSuiteService: TestSuiteService,
     private readonly endpointService: EndpointService,
-    private readonly testService: TestService
+    private readonly testService: TestService,
   ) {}
 
   getRouter() {
@@ -33,7 +33,7 @@ export class TestSuiteController {
         const { invocationId, testSuiteId } = req.params;
         const invocation = await this.endpointService.getInvocationById(
           invocationId,
-          userId
+          userId,
         );
 
         if (!invocation) {
@@ -42,7 +42,7 @@ export class TestSuiteController {
 
         const headerRules: Rule[] = Object.entries(
           // @ts-ignore
-          invocation?.response?.headers || {}
+          invocation?.response?.headers || {},
         ).map(([key, value]) => ({
           type: "header",
           comparator: "equals",
@@ -71,7 +71,7 @@ export class TestSuiteController {
               targetPath: "",
             },
             ...headerRules,
-          ]
+          ],
         );
         res.status(201).json(test);
       } catch (error) {

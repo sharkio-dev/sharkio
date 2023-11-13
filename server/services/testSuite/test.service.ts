@@ -11,7 +11,7 @@ export class TestService {
     body: Record<string, any>,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[]
+    rules?: Rule[],
   ) {
     return this.testRepository.create(
       name,
@@ -20,7 +20,7 @@ export class TestService {
       body,
       headers,
       method,
-      rules
+      rules,
     );
   }
 

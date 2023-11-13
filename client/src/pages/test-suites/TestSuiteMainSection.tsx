@@ -7,9 +7,8 @@ import { SelectComponent } from "./SelectComponent";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import { CiSaveDown2 } from "react-icons/ci";
-import { TestType } from "../../stores/testStore";
+import { TestType, getTest } from "../../stores/testStore";
 import { useParams } from "react-router-dom";
-import { BackendAxios } from "../../api/backendAxios";
 
 export const TestSuiteMainSection = () => {
   const [value, setValue] = React.useState("1");
@@ -19,11 +18,6 @@ export const TestSuiteMainSection = () => {
   const [body, setBody] = React.useState<string>();
   const [headers, setHeaders] =
     React.useState<{ name: string; value: string }[]>();
-
-  console.log({ statusCode });
-  console.log({ body });
-  console.log({ headers });
-  console.log({ testRules: test?.rules });
 
   const extractStatusCode = (test: TestType) => {
     test.rules.forEach((rule) => {
@@ -55,9 +49,7 @@ export const TestSuiteMainSection = () => {
     if (!testSuiteId || !testId) {
       return;
     }
-    BackendAxios.get<TestType>(
-      `/test-suites/${testSuiteId}/tests/${testId}`
-    ).then((res) => {
+    getTest(testSuiteId, testId).then((res) => {
       setTest(res.data);
       extractStatusCode(res.data);
       extractBody(res.data);
@@ -72,6 +64,8 @@ export const TestSuiteMainSection = () => {
   const hadnleSave = () => {
     // TODO: Save the test suite
   };
+
+  console.log(statusCode, body, headers);
 
   return (
     <>
@@ -98,10 +92,10 @@ export const TestSuiteMainSection = () => {
           <Tab label="Headers" value="2" />
         </TabList>
         <TabPanel value="1" style={{ padding: 0, paddingTop: 16 }}>
-          <BodySection body={body} />
+          <BodySection body={body} setBody={setBody} />
         </TabPanel>
         <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
-          <HeaderSection headers={headers} />
+          <HeaderSection headers={headers} setHeaders={setHeaders} />
         </TabPanel>
       </TabContext>
     </>
