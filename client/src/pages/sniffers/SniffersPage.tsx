@@ -62,7 +62,7 @@ export const LivePage = () => {
           <InvocationUpperBar
             activeInvocation={invocation}
             activeSniffer={undefined}
-            refresh={() => loadInvocations()}
+            onExecuteRequest={() => loadInvocations()}
           />
         </div>
         <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
@@ -133,53 +133,45 @@ const SniffersPage = () => {
         )}
       </div>
       <div className={`flex bg-tertiary h-full w-full`}>
-        {snifferId ? <SnifferData /> : <LivePage />}
+        {sniffer ? <SnifferData sniffer={sniffer} /> : <LivePage />}
       </div>
     </div>
   );
 };
 
-const SnifferData = () => {
+interface SnifferDataProps {
+  sniffer: Sniffer;
+}
+const SnifferData: React.FC<SnifferDataProps> = (props) => {
+  const navigator = useNavigate();
   const { show: showSnackbar } = useSnackbar();
   const [invocations, setInvocations] = useState<InvocationType[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
   const [endpoints, setEndpoints] = useState<EndpointType[]>([]);
   const { snifferId, endpointId, invocationId } = useParams();
   const [loadingEndpoints, setLoadingEndpoints] = useState(false);
+  const sniffer = props.sniffer;
   const endpoint = endpoints.find((e) => e.id === endpointId);
   const invocation = invocations.find((i) => i.id === invocationId);
-  const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId),
-  );
-  const navigator = useNavigate();
 
-  useEffect(() => {
-    if (!endpointId) {
-      setEndpoints([]);
-      setInvocations([]);
-      return;
-    }
-    refreshInvocations(endpointId);
-  }, [endpointId]);
-
-  const refreshInvocations = (invocationId?: string) => {
-    if (!invocationId) {
-      setInvocations([]);
-      return;
-    }
-    setInvocations([]);
+  // Invocations source function
+  const refreshInvocations = (endpointId: string) => {
     setLoadingRequests(true);
-    getInvocations(invocationId)
+    getInvocations(endpointId)
       .then((res) => {
         setInvocations(res.data);
-        if (res.data.length > 0) {
+        return res.data;
+      })
+      .then((invocations) => {
+        if (invocations.length > 0) {
           navigator(
-            `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${res.data[0].id}`,
+            `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocations[0].id}`,
             { replace: true },
           );
         }
       })
       .catch(() => {
+        setInvocations([]);
         showSnackbar("Failed to get invocations", "error");
       })
       .finally(() => {
@@ -187,9 +179,19 @@ const SnifferData = () => {
       });
   };
 
+  // populate the invocations
+  useEffect(() => {
+    if (!endpointId) {
+      setInvocations([]);
+    } else {
+      refreshInvocations(endpointId);
+    }
+  }, [endpointId]);
+
+  // Populate the endpoints of the screen
   useEffect(() => {
     if (!snifferId) return;
-    setEndpoints([]);
+    // setEndpoints([]);
     setLoadingEndpoints(true);
     getEnpoints(snifferId)
       .then((res) => {
@@ -226,7 +228,9 @@ const SnifferData = () => {
           <InvocationUpperBar
             activeInvocation={invocation}
             activeSniffer={sniffer}
-            refresh={() => refreshInvocations(endpointId)}
+            onExecuteRequest={() =>
+              endpointId && refreshInvocations(endpointId)
+            }
           />
         </div>
         <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
@@ -241,7 +245,7 @@ const SnifferData = () => {
                 invocations={invocations}
                 activeInvocation={invocation}
                 setActiveInvocation={onInvocationClick}
-                refresh={() => refreshInvocations(endpointId)}
+                refresh={() => endpointId && refreshInvocations(endpointId)}
               />
             ))}
         </div>
