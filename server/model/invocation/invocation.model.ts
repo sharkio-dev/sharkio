@@ -50,6 +50,9 @@ export class Invocation {
   @OneToMany("InterceptedResponse", "invocation")
   @JoinColumn({ name: "id" })
   response: InterceptedResponse[];
+
+  @Column({ name: "test_id" })
+  testId?: string;
 }
 
 export class InvocationRepository {

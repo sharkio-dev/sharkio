@@ -21,7 +21,7 @@ interface EndpointMetadata {
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly invocationRepository: InvocationRepository,
+    private readonly invocationRepository: InvocationRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -103,7 +103,12 @@ export class EndpointService {
     return result;
   }
 
-  async create(req: ExpressRequest, snifferId: string, userId: string) {
+  async create(
+    req: ExpressRequest,
+    snifferId: string,
+    userId: string,
+    testId?: string
+  ) {
     const newRequest = this.repository.repository.create({
       snifferId,
       userId,
@@ -111,6 +116,7 @@ export class EndpointService {
       method: req.method,
       headers: req.headers,
       body: req.body,
+      testId: testId,
     });
     return this.repository.repository.save(newRequest);
   }
@@ -141,6 +147,7 @@ export class EndpointService {
       body: request.body,
       headers: request.headers,
       url: request.url,
+      testId: request.testId,
     });
 
     return this.invocationRepository.repository.save(theInvocation);

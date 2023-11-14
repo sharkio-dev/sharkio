@@ -3,11 +3,22 @@ import { TestSuiteService } from "../services/testSuite/testSuite.service";
 import { TestService } from "../services/testSuite/test.service";
 import { Router } from "express";
 import { Rule } from "../model/testSuite/types";
+import { RequestService } from "../services/request/request.service";
+import { SnifferService } from "../services/sniffer/sniffer.service";
+import { useLog } from "../lib/log";
+
+const log = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
+
 export class TestSuiteController {
   constructor(
     private readonly testSuiteService: TestSuiteService,
     private readonly endpointService: EndpointService,
-    private readonly testService: TestService
+    private readonly testService: TestService,
+    private readonly requestService: RequestService,
+    private readonly snifferService: SnifferService
   ) {}
 
   getRouter() {
@@ -53,6 +64,7 @@ export class TestSuiteController {
         const test = await this.testService.create(
           name,
           testSuiteId,
+          invocation.snifferId,
           invocation.url,
           invocation.body,
           invocation.headers,
@@ -132,6 +144,47 @@ export class TestSuiteController {
         rules,
       });
       res.status(204).send();
+    });
+
+    router.post("/:testSuiteId/tests/:testId/run", async (req, res) => {
+      try {
+        const { testSuiteId, testId } = req.params;
+        const userId = res.locals.auth.user.id;
+        const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+        const test = await this.testService.getById(testId);
+        if (!test) {
+          return res.status(404).send();
+        }
+
+        const sniffer = await this.snifferService.getSniffer(
+          userId,
+          test.snifferId
+        );
+        if (!sniffer) {
+          return res.status(404).send();
+        }
+
+        const headers = {
+          ...test.headers,
+          "x-sharkio-test-id": test.id,
+        };
+
+        await this.requestService.execute({
+          method: test.method,
+          url: test.url,
+          headers: headers,
+          body: test.body,
+          subdomain: sniffer.subdomain,
+        });
+
+        res.status(204).send();
+      } catch (e) {
+        log.error(e);
+        res.status(500).send();
+      }
     });
 
     return { path: "/sharkio/test-suites", router };

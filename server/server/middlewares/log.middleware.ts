@@ -9,7 +9,7 @@ const logger = useLog({
 export const logMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   logger.debug(`http: ${req.method} ${req.path}`);
   next();

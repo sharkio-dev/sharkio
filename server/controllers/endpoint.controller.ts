@@ -4,6 +4,7 @@ import { useLog } from "../lib/log";
 import { EndpointService } from "../services/endpoint/endpoint.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { IRouterConfig } from "./router.interface";
+import { RequestService } from "../services/request/request.service";
 import axios from "axios";
 
 const log = useLog({
@@ -15,6 +16,7 @@ export class EndpointController {
   constructor(
     private readonly endpointService: EndpointService,
     private readonly snifferService: SnifferService,
+    private readonly requestService: RequestService
   ) {}
 
   getRouter(): IRouterConfig {
@@ -38,7 +40,7 @@ export class EndpointController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.endpointService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(
@@ -64,7 +66,7 @@ export class EndpointController {
        */
       async (req, res) => {
         const request = await this.endpointService.getById(
-          req.params.requestId,
+          req.params.requestId
         );
         if (request === null) {
           return res.status(404).send("Request not found");
@@ -73,7 +75,7 @@ export class EndpointController {
         const requests =
           (await this.endpointService.getInvocations(request)) || [];
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/execute").post(
@@ -99,7 +101,7 @@ export class EndpointController {
        */
       async (req, res) => {
         const request = await this.endpointService.getById(
-          req.params.requestId,
+          req.params.requestId
         );
         if (request == null) {
           return res.status(404).send("Request not found");
@@ -107,21 +109,19 @@ export class EndpointController {
         const userId = res.locals.auth.userId;
         const sniffer = await this.snifferService.getSniffer(
           userId,
-          request.snifferId,
+          request.snifferId
         );
         if (sniffer == null) {
           return res.status(404).send("Sniffer not found");
         }
-
-        await axios.request({
+        await this.requestService.execute({
           method: request.method,
+          url: request.url,
           headers: request.headers,
-          url:
-            `https://${sniffer.subdomain}.${process.env.PROXY_SERVER_DOMAIN}` +
-            request.url,
-          data: request.body,
+          body: request.body,
+          subdomain: sniffer.subdomain,
         });
-      },
+      }
     );
 
     router.route("/execute").post(
@@ -156,36 +156,40 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
-          const { method, headers, body, url, snifferId } = req.body;
+          const { method, headers, body, url, snifferId, testId } = req.body;
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
           if (!sniffer) {
             return res.status(404).send("Sniffer not found");
           }
 
-          const executionRes = await axios.request({
+          let newHeaders = !headers ? {} : headers;
+          if (testId) {
+            newHeaders["x-sharkio-test-id"] = testId;
+          }
+
+          await this.requestService.execute({
             method,
-            url:
-              `https://${sniffer.subdomain}.${process.env.PROXY_SERVER_DOMAIN}` +
-              url,
-            headers,
-            data: body,
+            url,
+            headers: newHeaders,
+            body,
+            subdomain: sniffer.subdomain,
           });
 
-          res.json(executionRes).send();
+          res.sendStatus(200);
         } catch (e) {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     // TODO: deprecate this
     router.route("/:snifferId/requests-tree").get(async (req, res) => {
       const result = await this.endpointService.getRequestsTree(
-        req.params.snifferId,
+        req.params.snifferId
       );
 
       res.status(200).send(result);

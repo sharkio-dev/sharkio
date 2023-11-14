@@ -40,6 +40,9 @@ export class Endpoint {
 
   @Column({ type: "varchar" })
   headers: Record<string, any>;
+
+  @Column({ name: "test_id" })
+  testId?: string;
 }
 
 export class EndpointRepository {

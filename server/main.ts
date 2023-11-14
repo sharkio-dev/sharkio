@@ -28,6 +28,7 @@ import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import { TestSuiteController } from "./controllers/testSuite.controller";
 import { TestService } from "./services/testSuite/test.service";
 import { TestRepository } from "./model/testSuite/test.model";
+import { RequestService } from "./services/request/request.service";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -50,27 +51,30 @@ async function main() {
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
-    invocationRepository,
+    invocationRepository
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
   const testSuiteService = new TestSuiteService(testSuiteRepository);
   const testService = new TestService(testRepository);
+  const requestService = new RequestService();
+
   /* Controllers */
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService,
+    snifferService
   );
   const snifferController = new SnifferController(
     snifferService,
-    endpointService,
+    endpointService
   );
   const endpointController = new EndpointController(
     endpointService,
     snifferService,
+    requestService
   );
   const invocationController = new InvocationController(endpointService);
 
@@ -79,23 +83,25 @@ async function main() {
     testSuiteService,
     endpointService,
     testService,
+    requestService,
+    snifferService
   );
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     endpointService,
-    responseService,
+    responseService
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
   const snifferManagerServer = new Server(
     [
@@ -107,7 +113,7 @@ async function main() {
       endpointController.getRouter(),
       testSuiteController.getRouter(),
     ],
-    swaggerUi,
+    swaggerUi
   );
 
   /* Start Servers */

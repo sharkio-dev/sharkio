@@ -47,6 +47,9 @@ export class InterceptedResponse {
   @ManyToOne("Invocation", "response")
   @JoinColumn({ name: "invocation_id" })
   invocation: Invocation;
+
+  @Column({ name: "test_id" })
+  testId?: string;
 }
 
 export class ResponseRepository {

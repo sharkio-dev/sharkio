@@ -7,6 +7,7 @@ export class TestService {
   create(
     name: string,
     testSuiteId: string,
+    snifferId: string,
     url: string,
     body: Record<string, any>,
     headers: Record<string, any>,
@@ -16,6 +17,7 @@ export class TestService {
     return this.testRepository.create(
       name,
       testSuiteId,
+      snifferId,
       url,
       body,
       headers,

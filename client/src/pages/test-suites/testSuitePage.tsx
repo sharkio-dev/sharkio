@@ -1,6 +1,5 @@
 import { TestSuiteSideBar } from "./TestSuiteSideBar";
 import { TestSuiteMainSection } from "./TestSuiteMainSection";
-import { useParams } from "react-router-dom";
 
 const TestSuitePage = () => {
   return (
@@ -9,7 +8,7 @@ const TestSuitePage = () => {
         <TestSuiteSideBar />
       </div>
 
-      <div className="flex flex-col w-[calc(100vw-56px-20%)] p-4 space-y-4">
+      <div className="flex flex-col max-h-[calc(100vh-96px)] w-[calc(100vw-56px-20%)] p-4 space-y-4 overflow-y-auto">
         <TestSuiteMainSection />
       </div>
     </div>

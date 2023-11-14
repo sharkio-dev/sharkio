@@ -35,6 +35,7 @@ export class TestRepository {
   async create(
     name: string,
     testSuiteId: string,
+    snifferId: string,
     url: string,
     body: Record<string, any>,
     headers: Record<string, any>,
@@ -44,6 +45,7 @@ export class TestRepository {
     const newTest = this.repository.create({
       name,
       testSuiteId,
+      snifferId,
       url,
       body,
       headers,
@@ -75,6 +77,9 @@ export class Test {
 
   @Column({ name: "test_suite_id" })
   testSuiteId: string;
+
+  @Column({ name: "sniffer_id" })
+  snifferId: string;
 
   @Column()
   url: string;

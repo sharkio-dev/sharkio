@@ -16,6 +16,7 @@ import { getEnpoints, getInvocations } from "../../api/api";
 import { EndpointType, InvocationType } from "../sniffers/types";
 import { BackendAxios } from "../../api/backendAxios";
 import { useNavigate, useParams } from "react-router-dom";
+import { VscChecklist } from "react-icons/vsc";
 
 export const TestSuiteSideBar = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =

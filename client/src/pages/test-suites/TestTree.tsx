@@ -18,8 +18,11 @@ import {
   getTestByTestSuiteId,
 } from "../../stores/testStore";
 import { AddTestSuiteModal } from "./TestSuiteSideBar";
+import { BackendAxios } from "../../api/backendAxios";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type CustomContentProps = {
+  onExecute?: () => Promise<void>;
   type: "endpoint" | "test";
   onDelete?: () => void;
   className?: string;
@@ -40,6 +43,7 @@ type CustomContentProps = {
 };
 function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const {
+    onExecute,
     classes,
     className,
     label,
@@ -65,6 +69,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
   const navigator = useNavigate();
   const { testSuiteId } = useParams();
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const handleDeleteClick = () => {
     if (isDeleteClicked) {
@@ -94,6 +99,15 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
       navigator("/test-suites/" + testSuiteId + "/tests/" + nodeId);
     }
     handleSelection(event);
+  };
+
+  const onClickPlay = () => {
+    if (onExecute) {
+      setLoading(true);
+      onExecute().finally(() => {
+        setLoading(false);
+      });
+    }
   };
 
   return (
@@ -133,9 +147,15 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
               onClick={() => setAddTestModalOpen(true)}
             />
           )}
-          {type === "test" && (
-            <AiOutlinePlayCircle className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
-          )}
+          {type === "test" &&
+            (!loading ? (
+              <AiOutlinePlayCircle
+                className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+                onClick={onClickPlay}
+              />
+            ) : (
+              <LoadingIcon />
+            ))}
         </div>
       )}
       <AddTestSuiteModal
@@ -150,6 +170,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
 const CustomContentRef = React.forwardRef(CustomContent);
 
 type CustomTreeItemProps = {
+  onExecute?: () => Promise<void>;
   type: "endpoint" | "test";
   onDelete?: () => void;
   nodeId: string;
@@ -174,7 +195,7 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 export function TestTree() {
   const { testSuiteId } = useParams();
   const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
-    {},
+    {}
   );
   const { show, component: snackBar } = useSnackbar();
 
@@ -193,7 +214,7 @@ export function TestTree() {
           }
           return acc;
         },
-        {},
+        {}
       );
       setTestTree(a);
     });
@@ -217,12 +238,25 @@ export function TestTree() {
       });
   };
 
+  const executeTest = (testId: string) => {
+    return BackendAxios.post(
+      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run"
+    )
+      .then(() => {
+        show("Test executed successfully", "success");
+      })
+      .catch(() => {
+        show("Failed to execute test", "error");
+      });
+  };
+
   return (
     <TreeView
       aria-label="icon expansion"
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
+      {snackBar}
       {Object.keys(testTree).map((url) => {
         return (
           <CustomTreeItem key={url} nodeId={url} label={url} type="endpoint">
@@ -234,6 +268,7 @@ export function TestTree() {
                   nodeId={test.id}
                   label={test.name}
                   type="test"
+                  onExecute={() => executeTest(test.id)}
                 />
               );
             })}
