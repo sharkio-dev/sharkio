@@ -47,10 +47,10 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <AuthWrapper>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <AuthWrapper>
           <Routes>
             {routesWithAuth()}
             <Route
@@ -86,9 +86,9 @@ function App(): React.JSX.Element {
               }
             />
           </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </AuthWrapper>
+        </AuthWrapper>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
