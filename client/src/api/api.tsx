@@ -151,3 +151,26 @@ export const executeInvocation = (invocation: InvocationType) => {
     body,
   });
 };
+
+
+//just for development
+export interface ProjectType {
+  name: string;
+  id: string;
+  isOpen: boolean;
+}
+
+//will get all the user projects from the backend
+export const getProjects = (): ProjectType[] => {
+  const projectsArray: ProjectType[] = [
+    { name: "project1", id: "1", isOpen: false },
+    { name: "project2", id: "2", isOpen: false },
+    { name: "project3", id: "3", isOpen: true },
+    { name: "project4", id: "4", isOpen: false },
+  ];
+  return projectsArray; //just for development checking
+};
+
+//call for:add a new project
+
+//call for: change project isOpen state to move between projects
