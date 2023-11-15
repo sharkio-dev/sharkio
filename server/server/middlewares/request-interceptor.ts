@@ -5,7 +5,7 @@ import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { User } from "../../model/user/user.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
-import { Invocation } from "../../model/invocation/invocation.model";
+import { Request } from "../../model/request/request.model";
 
 const logger = useLog({
   dirname: __dirname,
@@ -64,7 +64,7 @@ export class RequestInterceptor {
   async interceptResponse(
     userId: User["id"],
     snifferId: Sniffer["id"],
-    invocationId: Invocation["id"],
+    invocationId: Request["id"],
     res: {
       headers: Record<string, string | string[] | undefined>;
       statusCode: number | undefined;
@@ -75,7 +75,7 @@ export class RequestInterceptor {
     await this.responseService.addResponse({
       userId,
       snifferId,
-      invocationId,
+      requestId: invocationId,
       headers: res.headers,
       body: res.body,
       status: res.statusCode,

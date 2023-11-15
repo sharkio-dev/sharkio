@@ -12,7 +12,7 @@ const log = useLog({
   filename: __filename,
 });
 
-@Entity({ name: "request" })
+@Entity({ name: "endpoint" })
 export class Endpoint {
   @PrimaryGeneratedColumn()
   id: string;
@@ -40,9 +40,6 @@ export class Endpoint {
 
   @Column({ type: "varchar" })
   headers: Record<string, any>;
-
-  @Column({ name: "test_id" })
-  testId?: string;
 }
 
 export class EndpointRepository {

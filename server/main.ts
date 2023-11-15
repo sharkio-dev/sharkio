@@ -8,7 +8,7 @@ import { SnifferController } from "./controllers/sniffer.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import { EndpointRepository } from "./model/endpoint/endpoint.model";
-import { InvocationRepository } from "./model/invocation/invocation.model";
+import { RequestRepository } from "./model/request/request.model";
 import { ResponseRepository } from "./model/response/response.model";
 import { SnifferRepository } from "./model/sniffer/sniffers.model";
 import UserRepository from "./model/user/user.model";
@@ -39,7 +39,7 @@ async function main() {
   /* Repositories */
   const endpointRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
-  const invocationRepository = new InvocationRepository(appDataSource);
+  const invocationRepository = new RequestRepository(appDataSource);
   const snifferRepository = new SnifferRepository(appDataSource);
   const apiKeyRepository = new ApiKeyRepository(appDataSource);
   const userRepository = new UserRepository(appDataSource);

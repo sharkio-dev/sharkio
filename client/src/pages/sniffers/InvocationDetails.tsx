@@ -59,7 +59,12 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               theme="vs-dark"
               defaultLanguage="json"
               value={JSON.stringify(body || {}, null, 2)}
-              className="rounded-md"
+              options={{
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>
@@ -70,7 +75,12 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               theme="vs-dark"
               defaultLanguage="json"
               value={JSON.stringify(headers || {}, null, 2)}
-              className="rounded-md"
+              options={{
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>
@@ -83,9 +93,15 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               value={JSON.stringify(
                 responseData(invocation?.response),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
+              options={{
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>
@@ -128,6 +144,11 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               theme="vs-dark"
               language={codeLanguage}
               value={languageCodeText}
+              options={{
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>

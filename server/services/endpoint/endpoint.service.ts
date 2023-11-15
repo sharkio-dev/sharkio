@@ -1,5 +1,5 @@
 import { Request as ExpressRequest } from "express";
-import { InvocationRepository } from "../../model/invocation/invocation.model";
+import { Request, RequestRepository } from "../../model/request/request.model";
 import {
   Endpoint,
   EndpointRepository,
@@ -21,7 +21,7 @@ interface EndpointMetadata {
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly invocationRepository: InvocationRepository
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -103,12 +103,7 @@ export class EndpointService {
     return result;
   }
 
-  async create(
-    req: ExpressRequest,
-    snifferId: string,
-    userId: string,
-    testId?: string
-  ) {
+  async create(req: ExpressRequest, snifferId: string, userId: string) {
     const newRequest = this.repository.repository.create({
       snifferId,
       userId,
@@ -116,7 +111,6 @@ export class EndpointService {
       method: req.method,
       headers: req.headers,
       body: req.body,
-      testId: testId,
     });
     return this.repository.repository.save(newRequest);
   }
@@ -138,9 +132,9 @@ export class EndpointService {
     return this.create(req, snifferId, userId);
   }
 
-  async addInvocation(request: Endpoint) {
-    const theInvocation = this.invocationRepository.repository.create({
-      requestId: request.id,
+  async addInvocation(request: Request) {
+    const theInvocation = this.requestRepository.repository.create({
+      endpointId: request.id,
       snifferId: request.snifferId,
       userId: request.userId,
       method: request.method,
@@ -150,16 +144,16 @@ export class EndpointService {
       testId: request.testId,
     });
 
-    return this.invocationRepository.repository.save(theInvocation);
+    return this.requestRepository.repository.save(theInvocation);
   }
 
   async getInvocations(request: Endpoint) {
-    const invocations = await this.invocationRepository.repository.find({
+    const invocations = await this.requestRepository.repository.find({
       relations: {
         response: true,
       },
       where: {
-        requestId: request.id,
+        endpointId: request.id,
         snifferId: request.snifferId,
         userId: request.userId,
         method: request.method,
@@ -181,7 +175,7 @@ export class EndpointService {
   }
 
   async getInvocationsByUser(userId: string, limit: number) {
-    const invocations = await this.invocationRepository.repository.find({
+    const invocations = await this.requestRepository.repository.find({
       relations: {
         response: true,
       },
@@ -208,7 +202,7 @@ export class EndpointService {
   }
 
   async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
-    const invocations = await this.invocationRepository.repository.find({
+    const invocations = await this.requestRepository.repository.find({
       relations: {
         response: true,
       },
@@ -228,7 +222,7 @@ export class EndpointService {
   }
 
   async getInvocationById(id: string, userId: string) {
-    const invocation = await this.invocationRepository.repository.findOne({
+    const invocation = await this.requestRepository.repository.findOne({
       relations: {
         response: true,
       },
