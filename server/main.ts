@@ -29,6 +29,11 @@ import { TestSuiteController } from "./controllers/testSuite.controller";
 import { TestService } from "./services/testSuite/test.service";
 import { TestRepository } from "./model/testSuite/test.model";
 import { RequestService } from "./services/request/request.service";
+import {
+  TestExecution,
+  TextExecutionRepository,
+} from "./model/testSuite/testExecution.model";
+import { TestExecutionService } from "./services/testSuite/testExecution.service";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -45,6 +50,7 @@ async function main() {
   const userRepository = new UserRepository(appDataSource);
   const testSuiteRepository = new TestSuiteRepository(appDataSource);
   const testRepository = new TestRepository(appDataSource);
+  const testExecutionRepository = new TextExecutionRepository(appDataSource);
 
   /* Services */
   const snifferService = new SnifferService(snifferRepository);
@@ -57,7 +63,10 @@ async function main() {
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
   const testSuiteService = new TestSuiteService(testSuiteRepository);
   const testService = new TestService(testRepository);
-  const requestService = new RequestService();
+  const requestService = new RequestService(invocationRepository);
+  const testExecutionService = new TestExecutionService(
+    testExecutionRepository
+  );
 
   /* Controllers */
   const settingsController = new SettingsController(apiKeyService);
@@ -84,7 +93,8 @@ async function main() {
     endpointService,
     testService,
     requestService,
-    snifferService
+    snifferService,
+    testExecutionService
   );
 
   /* Middlewares */

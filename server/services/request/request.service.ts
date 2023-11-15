@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useLog } from "../../lib/log";
+import { RequestRepository } from "../../model/request/request.model";
 
 const log = useLog({
   dirname: __dirname,
@@ -14,8 +15,10 @@ type ExecutionType = {
 };
 
 export class RequestService {
+  constructor(private readonly requestRepository: RequestRepository) {}
+
   async execute({ method, url, headers, body, subdomain }: ExecutionType) {
-    return await axios
+    await axios
       .request({
         method,
         url: `http://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
@@ -25,5 +28,15 @@ export class RequestService {
       .catch((e) => {
         log.error(e);
       });
+    return;
+  }
+
+  async getByTestExecutionId(testExecutionId: string) {
+    return this.requestRepository.repository.findOne({
+      where: {
+        testExecutionId,
+      },
+      relations: ["response"],
+    });
   }
 }

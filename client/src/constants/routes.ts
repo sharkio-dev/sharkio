@@ -13,5 +13,7 @@ export const routes = {
   CHAT: "/chat",
   TEST_SUITES: "/test-suites",
   TEST_SUITE: "/test-suites/:testSuiteId",
-  TEST_SUITE_TEST: "/test-suites/:testSuiteId/tests/:testId",
+  TEST_ENDPOINT: "/test-suites/:testSuiteId/endpoints/:endpointId",
+  TEST_SUITE_TEST:
+    "/test-suites/:testSuiteId/endpoints/:endpointId/tests/:testId",
 };

@@ -48,8 +48,8 @@ export class Response {
   @JoinColumn({ name: "request_id" })
   request: Request;
 
-  @Column({ name: "test_id" })
-  testId?: string;
+  @Column({ name: "test_execution_id" })
+  testExecutionId?: string;
 }
 
 export class ResponseRepository {

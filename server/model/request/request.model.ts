@@ -51,8 +51,8 @@ export class Request {
   @JoinColumn({ name: "id" })
   response: Response[];
 
-  @Column({ name: "test_id" })
-  testId?: string;
+  @Column({ name: "test_execution_id" })
+  testExecutionId?: string;
 }
 
 export class RequestRepository {

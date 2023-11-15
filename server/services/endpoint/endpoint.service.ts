@@ -141,7 +141,7 @@ export class EndpointService {
       body: request.body,
       headers: request.headers,
       url: request.url,
-      testId: request.testId,
+      testExecutionId: request.testExecutionId,
     });
 
     return this.requestRepository.repository.save(theInvocation);

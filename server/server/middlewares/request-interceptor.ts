@@ -5,7 +5,7 @@ import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { User } from "../../model/user/user.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
-import { Request } from "../../model/request/request.model";
+import { Request as RequestModel } from "../../model/request/request.model";
 
 const logger = useLog({
   dirname: __dirname,
@@ -46,7 +46,9 @@ export class RequestInterceptor {
       return undefined;
     }
 
-    const testId = req.headers["x-sharkio-test-id"] as string | undefined;
+    const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
+      | string
+      | undefined;
 
     const request = await this.requestService.findOrCreate(
       req,
@@ -55,8 +57,10 @@ export class RequestInterceptor {
     );
     const invocation = await this.requestService.addInvocation({
       ...request,
-      testId,
+      testExecutionId,
     });
+
+    console.log("intercepted request");
 
     return invocation;
   }
@@ -64,13 +68,13 @@ export class RequestInterceptor {
   async interceptResponse(
     userId: User["id"],
     snifferId: Sniffer["id"],
-    invocationId: Request["id"],
+    invocationId: RequestModel["id"],
     res: {
       headers: Record<string, string | string[] | undefined>;
       statusCode: number | undefined;
       body: any;
     },
-    testId?: string
+    testExecutionId?: string
   ) {
     await this.responseService.addResponse({
       userId,
@@ -79,7 +83,8 @@ export class RequestInterceptor {
       headers: res.headers,
       body: res.body,
       status: res.statusCode,
-      testId,
+      testExecutionId,
     });
+    console.log("intercepted response");
   }
 }

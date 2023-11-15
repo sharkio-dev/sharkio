@@ -155,19 +155,60 @@ export const TestSuiteMainSection = () => {
 };
 
 const ExecutionHistory = () => {
+  const { testSuiteId, testId } = useParams();
+  const [executions, setExecutions] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(false);
+  console.log(executions);
+
+  React.useEffect(() => {
+    if (!testSuiteId || !testId) {
+      return;
+    }
+    setLoading(true);
+    BackendAxios.get(
+      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
+    )
+      .then((res) => {
+        setExecutions(res.data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [testSuiteId, testId]);
+
   return (
     <TableContainer className="border-[1px] border-primary rounded-lg">
       <Table>
         <TableHead>
           <TableRow className="bg-secondary">
-            <TableCell style={{ borderBottom: "none" }}>4 executions</TableCell>
+            <TableCell style={{ borderBottom: "none" }}>
+              {executions.length} executions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {[1, 2, 3, 4].map((i) => (
+          {loading && (
+            <TableRow>
+              <TableCell>
+                <div className="flex flex-row items-center justify-center">
+                  <LoadingIcon />
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+          {executions.map((i) => (
             <ExecutionRow
-              status={i % 2 === 0 ? "success" : "failure"}
+              title={i.request.method + " " + i.request.url}
+              status={
+                i.checks.every((check: any) => check.isPassed)
+                  ? "success"
+                  : "failure"
+              }
+              executionDate={i.testExecution.createdAt}
+              passed={i.checks.filter((check: any) => check.isPassed).length}
+              failed={i.checks.filter((check: any) => !check.isPassed).length}
               key={i}
+              checks={i.checks}
             />
           ))}
         </TableBody>
@@ -178,9 +219,28 @@ const ExecutionHistory = () => {
 
 type ExecutionRowProps = {
   status: "success" | "failure";
+  title: string;
+  passed: number;
+  failed: number;
+  executionDate: string;
+  checks: {
+    type: "status_code" | "header" | "body";
+    isPassed: boolean;
+    expectedValue: string;
+    actualValue: string;
+    targetPath: string;
+    comparator: "equals";
+  }[];
 };
 
-const ExecutionRow = ({ status }: ExecutionRowProps) => {
+const ExecutionRow = ({
+  status,
+  title,
+  passed,
+  failed,
+  checks,
+  executionDate,
+}: ExecutionRowProps) => {
   const [show, setShow] = React.useState<boolean>(false);
 
   return (
@@ -191,22 +251,24 @@ const ExecutionRow = ({ status }: ExecutionRowProps) => {
           onClick={() => setShow(!show)}
         >
           <div className="flex flex-row items-center space-x-4">
-            {status === "success" ? (
+            {status === "failure" ? (
               <AiOutlineCloseCircle className="text-red-400 text-2xl" />
             ) : (
               <AiOutlineCheckCircle className="text-green-400 text-2xl" />
             )}
             <div className="flex flex-col h-full">
               <span className="text-lg font-bold hover:cursor-pointer hover:scale-105">
-                Method-Endpoint
+                {title}
               </span>
-              <span className="text-xs">{new Date().toDateString()}</span>
+              <span className="text-xs">
+                {new Date(executionDate).toDateString()}
+              </span>
             </div>
           </div>
           <div className="flex flex-row items-center space-x-4">
             <div className="flex flex-col h-full">
-              <span className="text-xs">Passed: 4</span>
-              <span className="text-xs">Errors: 0</span>
+              <span className="text-xs">Passed: {passed}</span>
+              <span className="text-xs">Errors: {failed}</span>
             </div>
             {show ? (
               <FiChevronRight className="text-gray-400 text-2xl transform rotate-90" />
@@ -217,10 +279,16 @@ const ExecutionRow = ({ status }: ExecutionRowProps) => {
         </div>
         {show && (
           <div className="flex flex-col bg-primary rounded-lg w-full transition-all duration-500 border-[1px] border-border-color ">
-            <ExecutionDetails type="status_code" status={status} />
-            <ExecutionDetails status="failure" type="header" />
-            <ExecutionDetails status="success" type="body" />
-            <ExecutionDetails status="success" type="body" />
+            {checks.map((check, i) => (
+              <ExecutionDetails
+                targetPath={check.targetPath}
+                status={check.isPassed ? "success" : "failure"}
+                type={check.type}
+                key={i}
+                expectedValue={check.expectedValue}
+                actualValue={check.actualValue}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -231,11 +299,17 @@ const ExecutionRow = ({ status }: ExecutionRowProps) => {
 type ExecutionDetailsProps = {
   status?: "success" | "failure";
   type?: "status_code" | "header" | "body";
+  expectedValue: string;
+  actualValue: string;
+  targetPath: string;
 };
 
 const ExecutionDetails = ({
   status = "success",
   type,
+  expectedValue,
+  actualValue,
+  targetPath,
 }: ExecutionDetailsProps) => {
   const [show, setShow] = React.useState<boolean>(false);
   return (
@@ -268,21 +342,50 @@ const ExecutionDetails = ({
         </div>
       </div>
       {type === "status_code" && show && (
-        <StatusCodeDetails status={status} key={type} />
+        <StatusCodeDetails
+          status={status}
+          key={type}
+          expectedValue={expectedValue}
+          actualValue={actualValue}
+        />
       )}
       {type === "header" && show && (
-        <HeaderDetails status={status} key={type} />
+        <HeaderDetails
+          status={status}
+          key={type}
+          expectedHeaderName={targetPath}
+          expectedHeaderValue={expectedValue}
+          actualHeaderName={targetPath}
+          actualHeaderValue={actualValue}
+        />
       )}
-      {type === "body" && show && <BodyDetails status={status} key={type} />}
+      {type === "body" && show && (
+        <BodyDetails
+          status={status}
+          key={type}
+          actualValue={actualValue}
+          expectedValue={expectedValue}
+        />
+      )}
     </div>
   );
 };
 
-const StatusCodeDetails = ({ status = "success" }) => {
+const StatusCodeDetails = ({
+  status = "success",
+  expectedValue,
+  actualValue,
+}: {
+  status: "success" | "failure";
+  expectedValue: string;
+  actualValue: string;
+}) => {
   return (
     <div className="flex flex-row items-center w-full py rounded-lg pb-4 space-x-4 px-4">
       <div className="flex flex-row items-center w-1/2 h-full border-r-secondary border-r bg-secondary rounded-lg p-4">
-        <span className="text text-xs">Expected Status Code - 200</span>
+        <span className="text text-xs">
+          Expected Status Code - {expectedValue}
+        </span>
       </div>
       <div className="flex flex-row items-center w-1/2 h-full border-r-secondary border-r bg-secondary rounded-lg p-4">
         <span className="text text-xs">
@@ -291,21 +394,37 @@ const StatusCodeDetails = ({ status = "success" }) => {
           ) : (
             <span className="text-red-400 mr-2">✗</span>
           )}
-          Actual Status Code - 200
+          Actual Status Code - {actualValue}
         </span>
       </div>
     </div>
   );
 };
 
-const HeaderDetails = ({ status = "success" }) => {
+type HeaderDetailsProps = {
+  status?: "success" | "failure";
+  expectedHeaderName: string;
+  expectedHeaderValue: string;
+  actualHeaderName: string;
+  actualHeaderValue: string;
+};
+
+const HeaderDetails = ({
+  status = "success",
+  expectedHeaderName,
+  expectedHeaderValue,
+  actualHeaderName,
+  actualHeaderValue,
+}: HeaderDetailsProps) => {
   return (
     <div className="flex flex-row items-center w-full py rounded-lg pb-4 space-x-4 px-4">
       <div className="flex flex-row items-center w-1/2 h-full border-r-secondary border-r bg-secondary rounded-lg p-4">
         <div className="flex flex-col">
-          <span className="text text-xs">Expected Header - Content-Type</span>
           <span className="text text-xs">
-            Expected Value - application/json
+            Expected Header - {expectedHeaderName}
+          </span>
+          <span className="text text-xs">
+            Expected Value - {expectedHeaderValue}
           </span>
         </div>
       </div>
@@ -316,15 +435,29 @@ const HeaderDetails = ({ status = "success" }) => {
           <span className="text-red-400 mr-2">✗</span>
         )}
         <div className="flex flex-col">
-          <span className="text text-xs">Actual Header - Content-Type</span>
-          <span className="text text-xs">Actual Value - application/json</span>
+          <span className="text text-xs">
+            Actual Header - {actualHeaderName}
+          </span>
+          <span className="text text-xs">
+            Actual Value - {actualHeaderValue}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-const BodyDetails = ({ status = "success" }) => {
+type BodyDetailsProps = {
+  status?: "success" | "failure";
+  expectedValue: string;
+  actualValue: string;
+};
+
+const BodyDetails = ({
+  status = "success",
+  expectedValue,
+  actualValue,
+}: BodyDetailsProps) => {
   return (
     <div className="flex flex-row items-center w-full py rounded-lg pb-4 space-x-4 px-4">
       <div className="flex flex-row items-center w-1/2 h-full border-r-secondary border-r bg-secondary rounded-lg p-4">
@@ -332,7 +465,7 @@ const BodyDetails = ({ status = "success" }) => {
           height={"20vh"}
           theme="vs-dark"
           defaultLanguage="json"
-          value={""}
+          value={expectedValue}
           options={{
             readOnly: true,
             minimap: {
@@ -353,7 +486,7 @@ const BodyDetails = ({ status = "success" }) => {
           height={"20vh"}
           theme="vs-dark"
           defaultLanguage="json"
-          value={""}
+          value={actualValue}
           options={{
             readOnly: true,
             minimap: {

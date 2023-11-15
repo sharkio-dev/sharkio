@@ -35,6 +35,7 @@ function App(): React.JSX.Element {
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },
+      { path: routes.TEST_ENDPOINT, element: <TestSuitePage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

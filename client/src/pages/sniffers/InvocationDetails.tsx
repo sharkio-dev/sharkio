@@ -93,7 +93,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               value={JSON.stringify(
                 responseData(invocation?.response),
                 null,
-                2
+                2,
               )}
               className="rounded-md"
               options={{

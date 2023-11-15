@@ -6,6 +6,8 @@ import { Rule } from "../model/testSuite/types";
 import { RequestService } from "../services/request/request.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { useLog } from "../lib/log";
+import { randomUUID } from "crypto";
+import { TestExecutionService } from "../services/testSuite/testExecution.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -18,7 +20,8 @@ export class TestSuiteController {
     private readonly endpointService: EndpointService,
     private readonly testService: TestService,
     private readonly requestService: RequestService,
-    private readonly snifferService: SnifferService
+    private readonly snifferService: SnifferService,
+    private readonly testExecutionService: TestExecutionService
   ) {}
 
   getRouter() {
@@ -167,9 +170,11 @@ export class TestSuiteController {
           return res.status(404).send();
         }
 
+        const testExecution = await this.testExecutionService.create(testId);
+
         const headers = {
           ...test.headers,
-          "x-sharkio-test-id": test.id,
+          "x-sharkio-test-execution-id": testExecution.id,
         };
 
         await this.requestService.execute({
@@ -186,6 +191,81 @@ export class TestSuiteController {
         res.status(500).send();
       }
     });
+
+    router.get(
+      "/:testSuiteId/tests/:testId/test-executions",
+      async (req, res) => {
+        const { testSuiteId, testId } = req.params;
+        const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+
+        const test = await this.testService.getById(testId);
+        if (!test) {
+          return res.status(404).send();
+        }
+
+        const testExecutions = await this.testExecutionService.getByTestId(
+          testId
+        );
+        if (!testExecutions) {
+          return res.status(404).send();
+        }
+
+        const rules = test.rules;
+
+        let results: any = [];
+        for (const testExecution of testExecutions) {
+          let result: any = {};
+          const request = await this.requestService.getByTestExecutionId(
+            testExecution.id
+          );
+          const response = request?.response[0];
+          result["request"] = { ...request };
+          result["response"] = { ...response };
+          result["testExecution"] = { ...testExecution };
+
+          result["checks"] = rules.map((rule) => {
+            const { type, comparator, expectedValue, targetPath } = rule;
+            if (type === "status_code") {
+              return {
+                type,
+                comparator,
+                expectedValue,
+                targetPath,
+                actualValue: response?.status,
+                isPassed: response?.status === expectedValue,
+              };
+            }
+            if (type === "body") {
+              return {
+                type,
+                comparator,
+                expectedValue,
+                targetPath,
+                actualValue: response?.body,
+                isPassed: response?.body === expectedValue,
+              };
+            }
+
+            if (type === "header") {
+              return {
+                type,
+                comparator,
+                expectedValue,
+                targetPath,
+                actualValue: response?.headers[targetPath],
+                isPassed: response?.headers[targetPath] === expectedValue,
+              };
+            }
+          });
+          results.push(result);
+        }
+        console.log({ results });
+        res.json(results);
+      }
+    );
 
     return { path: "/sharkio/test-suites", router };
   }

@@ -7,6 +7,7 @@ import { Request } from "../model/request/request.model";
 import { Response } from "../model/response/response.model";
 import { TestSuite } from "../model/testSuite/testSuite.model";
 import { Test } from "../model/testSuite/test.model";
+import { TestExecution } from "../model/testSuite/testExecution.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -25,6 +26,7 @@ export const getAppDataSource = async () => {
         Request,
         Response,
         TestSuite,
+        TestExecution,
         Test,
         Response,
       ],

@@ -24,6 +24,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 type CustomContentProps = {
   onExecute?: () => Promise<void>;
   type: "endpoint" | "test";
+  endpointId?: string;
   onDelete?: () => void;
   className?: string;
   label?: React.ReactNode;
@@ -43,6 +44,7 @@ type CustomContentProps = {
 };
 function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const {
+    endpointId,
     onExecute,
     classes,
     className,
@@ -68,8 +70,9 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
     React.useState<boolean>(false);
   const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
   const navigator = useNavigate();
-  const { testSuiteId } = useParams();
+  const { testSuiteId, testId, endpointId: endpointIdURL } = useParams();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const ref1 = React.useRef<any>(null);
 
   const handleDeleteClick = () => {
     if (isDeleteClicked) {
@@ -94,9 +97,18 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
     handleExpansion(event);
   };
 
-  const handleSelectionClick = (event: any) => {
-    if (type === "test") {
-      navigator("/test-suites/" + testSuiteId + "/tests/" + nodeId);
+  const handleSelectionClick = (event: any, isManual: boolean) => {
+    if (type === "test" && isManual) {
+      navigator(
+        "/test-suites/" +
+          testSuiteId +
+          "/endpoints/" +
+          endpointId +
+          "/tests/" +
+          nodeId
+      );
+    } else if (type === "endpoint" && isManual) {
+      navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
     }
     handleSelection(event);
   };
@@ -125,9 +137,10 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
         {icon}
       </div>
       <Typography
-        onClick={handleSelectionClick}
+        onClick={(event: any) => handleSelectionClick(event, true)}
         component="div"
         className={classes.label}
+        ref={ref1}
       >
         {label}
       </Typography>
@@ -171,6 +184,7 @@ const CustomContentRef = React.forwardRef(CustomContent);
 
 type CustomTreeItemProps = {
   onExecute?: () => Promise<void>;
+  endpointId?: string;
   type: "endpoint" | "test";
   onDelete?: () => void;
   nodeId: string;
@@ -257,12 +271,19 @@ export function TestTree() {
       defaultExpandIcon={<ChevronRightIcon />}
     >
       {snackBar}
-      {Object.keys(testTree).map((url) => {
+      {Object.keys(testTree).map((url, i) => {
         return (
-          <CustomTreeItem key={url} nodeId={url} label={url} type="endpoint">
+          <CustomTreeItem
+            key={url}
+            nodeId={i.toString()}
+            label={url}
+            endpointId={i.toString()}
+            type="endpoint"
+          >
             {testTree[url].map((test: any) => {
               return (
                 <CustomTreeItem
+                  endpointId={i.toString()}
                   onDelete={() => onDeleteClicked(test.id)}
                   key={test.id}
                   nodeId={test.id}
