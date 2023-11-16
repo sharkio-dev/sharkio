@@ -19,7 +19,7 @@ const log = useLog({
 export class SnifferController {
   constructor(
     private readonly snifferManager: SnifferService,
-    private readonly requestService: EndpointService,
+    private readonly endpointService: EndpointService,
     private readonly baseUrl: string = "/sharkio/sniffer",
   ) {}
 
@@ -272,7 +272,7 @@ export class SnifferController {
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
-        const snifferRequests = await this.requestService.getBySnifferId(
+        const snifferRequests = await this.endpointService.getBySnifferId(
           userId,
           id,
         );
@@ -311,7 +311,7 @@ export class SnifferController {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
         const snifferInvocations =
-          await this.requestService.getInvocationsBySnifferId(userId, id);
+          await this.endpointService.getInvocationsBySnifferId(userId, id);
 
         res.json(snifferInvocations);
       },
@@ -346,7 +346,7 @@ export class SnifferController {
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
-        const snifferRequests = await this.requestService.getBySnifferId(
+        const snifferRequests = await this.endpointService.getBySnifferId(
           userId,
           id,
         );
@@ -364,7 +364,7 @@ export class SnifferController {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
         const sniffer = await this.snifferManager.getSniffer(userId, id);
-        const snifferRequests = await this.requestService.getBySnifferId(
+        const snifferRequests = await this.endpointService.getBySnifferId(
           userId,
           id,
         );

@@ -4,7 +4,7 @@ import {
   SnifferCreateConfig,
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
-import { Sniffer } from "../stores/sniffersStores";
+import { SnifferType } from "../stores/sniffersStores";
 import { InvocationType } from "../pages/sniffers/types";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
@@ -12,7 +12,7 @@ export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
 };
 
 export const getSniffers = () => {
-  return BackendAxios.get<Sniffer[]>("/sniffer");
+  return BackendAxios.get<SnifferType[]>("/sniffer");
 };
 
 export const getSniffer = (port: number) => {
@@ -32,7 +32,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<Sniffer, "subdomain">>,
+  newConfig: Partial<Omit<SnifferType, "subdomain">>,
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
@@ -127,17 +127,23 @@ export const saveRequestToCollection = (
 };
 
 export const getInvocations = (requestId: string) => {
-  return BackendAxios.get(`/request/${requestId}/invocation`);
+  return BackendAxios.get(`/request/${requestId}/invocation`).then((res) => {
+    return res.data;
+  });
 };
 
 export const getEnpoints = (snifferId: string) => {
-  return BackendAxios.get(`/sniffer/${snifferId}/request`);
+  return BackendAxios.get(`/sniffer/${snifferId}/request`).then((res) => {
+    return res.data;
+  });
 };
 
 export const getLiveInvocations = () => {
   return BackendAxios.get(`/invocation`);
 };
-export const executeInvocation = (invocation: InvocationType) => {
+export const executeInvocation = (
+  invocation: InvocationType & { testId?: string },
+) => {
   const url = invocation.url;
   const method = invocation.method;
   const headers = invocation.headers;

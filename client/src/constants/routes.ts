@@ -11,4 +11,9 @@ export const routes = {
   DOCS_GETTING_STARTED: "/docs/getting-started",
   DOCS_SETUP: "/docs/setup",
   CHAT: "/chat",
+  TEST_SUITES: "/test-suites",
+  TEST_SUITE: "/test-suites/:testSuiteId",
+  TEST_ENDPOINT: "/test-suites/:testSuiteId/endpoints/:endpointId",
+  TEST_SUITE_TEST:
+    "/test-suites/:testSuiteId/endpoints/:endpointId/tests/:testId",
 };

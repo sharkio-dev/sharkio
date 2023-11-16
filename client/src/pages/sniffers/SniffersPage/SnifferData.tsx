@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getInvocations, getEnpoints } from "../../../api/api";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import { Sniffer } from "../../../stores/sniffersStores";
+import { SnifferType } from "../../../stores/sniffersStores";
 import { EndpointSideBar } from "../EndpointSideBar";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
@@ -10,7 +10,7 @@ import { LoadingIcon } from "../LoadingIcon";
 import { InvocationType, EndpointType } from "../types";
 
 interface SnifferDataProps {
-  sniffer: Sniffer;
+  sniffer: SnifferType;
 }
 export const SnifferData: React.FC<SnifferDataProps> = (props) => {
   const navigator = useNavigate();
@@ -36,7 +36,7 @@ export const SnifferData: React.FC<SnifferDataProps> = (props) => {
         if (invocations.length > 0) {
           navigator(
             `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocations[0].id}`,
-            { replace: true },
+            { replace: true }
           );
         }
       })
@@ -86,7 +86,7 @@ export const SnifferData: React.FC<SnifferDataProps> = (props) => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
+      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`
     );
   };
 
@@ -128,7 +128,7 @@ export const SnifferData: React.FC<SnifferDataProps> = (props) => {
           <EndpointSideBar
             activeEndpoint={endpoint}
             setActiveEndpoint={onEndpointClick}
-            requests={endpoints}
+            endpoints={endpoints}
           />
         )}
       </div>

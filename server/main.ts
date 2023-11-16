@@ -8,7 +8,7 @@ import { SnifferController } from "./controllers/sniffer.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import { EndpointRepository } from "./model/endpoint/endpoint.model";
-import { InvocationRepository } from "./model/invocation/invocation.model";
+import { RequestRepository } from "./model/request/request.model";
 import { ResponseRepository } from "./model/response/response.model";
 import { SnifferRepository } from "./model/sniffer/sniffers.model";
 import UserRepository from "./model/user/user.model";
@@ -23,6 +23,17 @@ import APIKeysService from "./services/settings/apiKeys";
 import { SnifferService } from "./services/sniffer/sniffer.service";
 import UserService from "./services/user/user";
 import { InvocationController } from "./controllers/invocation.controller";
+import { TestSuiteRepository } from "./model/testSuite/testSuite.model";
+import { TestSuiteService } from "./services/testSuite/testSuite.service";
+import { TestSuiteController } from "./controllers/testSuite.controller";
+import { TestService } from "./services/testSuite/test.service";
+import { TestRepository } from "./model/testSuite/test.model";
+import { RequestService } from "./services/request/request.service";
+import {
+  TestExecution,
+  TextExecutionRepository,
+} from "./model/testSuite/testExecution.model";
+import { TestExecutionService } from "./services/testSuite/testExecution.service";
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
@@ -33,10 +44,13 @@ async function main() {
   /* Repositories */
   const endpointRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
-  const invocationRepository = new InvocationRepository(appDataSource);
+  const invocationRepository = new RequestRepository(appDataSource);
   const snifferRepository = new SnifferRepository(appDataSource);
   const apiKeyRepository = new ApiKeyRepository(appDataSource);
   const userRepository = new UserRepository(appDataSource);
+  const testSuiteRepository = new TestSuiteRepository(appDataSource);
+  const testRepository = new TestRepository(appDataSource);
+  const testExecutionRepository = new TextExecutionRepository(appDataSource);
 
   /* Services */
   const snifferService = new SnifferService(snifferRepository);
@@ -47,6 +61,12 @@ async function main() {
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
+  const testSuiteService = new TestSuiteService(testSuiteRepository);
+  const testService = new TestService(testRepository);
+  const requestService = new RequestService(invocationRepository);
+  const testExecutionService = new TestExecutionService(
+    testExecutionRepository,
+  );
 
   /* Controllers */
   const settingsController = new SettingsController(apiKeyService);
@@ -63,10 +83,19 @@ async function main() {
   const endpointController = new EndpointController(
     endpointService,
     snifferService,
+    requestService,
   );
   const invocationController = new InvocationController(endpointService);
 
   const swaggerUi = new SwaggerUiController();
+  const testSuiteController = new TestSuiteController(
+    testSuiteService,
+    endpointService,
+    testService,
+    requestService,
+    snifferService,
+    testExecutionService,
+  );
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
@@ -92,6 +121,7 @@ async function main() {
       invocationController.getRouter(),
       cliController.getRouter(),
       endpointController.getRouter(),
+      testSuiteController.getRouter(),
     ],
     swaggerUi,
   );

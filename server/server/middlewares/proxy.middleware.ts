@@ -28,6 +28,11 @@ export class ProxyMiddleware {
         const invocationId = req.headers["x-sharkio-invocation-id"];
         const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
         const userId = req.headers["x-sharkio-user-id"] as string;
+        const testExecutionId = req.headers[
+          "x-sharkio-test-execution-id"
+        ] as string;
+
+        console.log({ testExecutionId });
 
         try {
           if (invocationId != null && typeof invocationId === "string") {
@@ -38,6 +43,7 @@ export class ProxyMiddleware {
               snifferId,
               invocationId,
               parsedRes,
+              testExecutionId,
             );
           }
         } catch (e) {

@@ -12,7 +12,7 @@ const log = useLog({
   filename: __filename,
 });
 
-@Entity({ name: "request" })
+@Entity({ name: "endpoint" })
 export class Endpoint {
   @PrimaryGeneratedColumn()
   id: string;

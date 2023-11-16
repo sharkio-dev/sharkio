@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SniffersSideBar } from "./SniffersSideBar";
-import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
+import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { useAuthStore } from "../../stores/authStore";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { LoadingIcon } from "./LoadingIcon";
@@ -31,7 +31,7 @@ const SniffersPage = () => {
       });
   }, [userId]);
 
-  const onSnifferClick = async (sniffer: Sniffer) => {
+  const onSnifferClick = async (sniffer: SnifferType) => {
     if (snifferId === sniffer.id) {
       navigator(`/live`);
       return;
@@ -40,9 +40,9 @@ const SniffersPage = () => {
   };
 
   return (
-    <div className="flex flex-row h-full w-full">
+    <div className="flex flex-row h-full w-[calc(100vh-56px)">
       {snackBar}
-      <div className="relative min-w-[240px] border-r-[0.1px] border-border-color bg-secondary">
+      <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
         {loadingSniffers ? (
           <div className="flex h-full justify-center items-center">
             <LoadingIcon />

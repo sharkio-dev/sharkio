@@ -4,7 +4,6 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { IconButton, MenuItem, Select } from "@mui/material";
-import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import * as React from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -46,48 +45,62 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   return (
     <div className="flex flex-col w-full">
       <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Body" value="1" />
-            <Tab label="Headers" value="2" />
-            <Tab label="Response" value="3" />
-            <Tab label="Code" value="4" />
-          </TabList>
-        </Box>
+        <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <Tab label="Body" value="1" />
+          <Tab label="Headers" value="2" />
+          <Tab label="Response" value="3" />
+          <Tab label="Code" value="4" />
+        </TabList>
         <TabPanel value="1" style={{ padding: 0, paddingTop: 16 }}>
           <div className="flex flex-1 bg-secondary p-2 rounded-md">
             <Editor
-              height="90vh"
+              height={"35vh"}
               theme="vs-dark"
               defaultLanguage="json"
               value={JSON.stringify(body || {}, null, 2)}
-              className="rounded-md"
+              options={{
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>
         <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
           <div className="flex flex-1 bg-secondary p-2 rounded-md">
             <Editor
-              height="90vh"
+              height={"35vh"}
               theme="vs-dark"
               defaultLanguage="json"
               value={JSON.stringify(headers || {}, null, 2)}
-              className="rounded-md"
+              options={{
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>
         <TabPanel value="3" style={{ padding: 0, paddingTop: 16 }}>
           <div className="flex flex-1 bg-secondary p-2 rounded-md">
             <Editor
-              height="90vh"
+              height={"35vh"}
               theme="vs-dark"
               defaultLanguage="json"
               value={JSON.stringify(
                 responseData(invocation?.response),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
+              options={{
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>
@@ -130,6 +143,11 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               theme="vs-dark"
               language={codeLanguage}
               value={languageCodeText}
+              options={{
+                minimap: {
+                  enabled: false,
+                },
+              }}
             />
           </div>
         </TabPanel>

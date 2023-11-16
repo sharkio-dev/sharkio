@@ -6,12 +6,12 @@ import { Endpoint } from "./Endpoint";
 type EndpointSideBarProps = {
   activeEndpoint?: EndpointType;
   setActiveEndpoint: (endpointId: string) => void;
-  requests: EndpointType[];
+  endpoints: EndpointType[];
 };
 export const EndpointSideBar = ({
   activeEndpoint,
   setActiveEndpoint,
-  requests,
+  endpoints: requests,
 }: EndpointSideBarProps) => {
   const [search, setSearch] = useState("");
 
