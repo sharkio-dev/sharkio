@@ -106,10 +106,12 @@ export const TestSuiteMainSection = () => {
               {showConfig ? (
                 !saveLoading ? (
                   <Tooltip title="Save" arrow>
-                    <CiSaveDown2
-                      className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                      onClick={hadnleSave}
-                    />
+                    <div>
+                      <CiSaveDown2
+                        className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+                        onClick={hadnleSave}
+                      />
+                    </div>
                   </Tooltip>
                 ) : (
                   <LoadingIcon />
@@ -118,18 +120,22 @@ export const TestSuiteMainSection = () => {
                 <></>
               )}
               {showConfig ? (
-                <Tooltip title="Execution History" arrow>
-                  <VscChecklist
-                    className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                    onClick={() => setShowConfig(!showConfig)}
-                  />
+                <Tooltip title="Tests" arrow>
+                  <div>
+                    <VscChecklist
+                      className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+                      onClick={() => setShowConfig(!showConfig)}
+                    />
+                  </div>
                 </Tooltip>
               ) : (
                 <Tooltip title="Config" arrow>
-                  <TbAdjustmentsCog
-                    className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                    onClick={() => setShowConfig(!showConfig)}
-                  />
+                  <div>
+                    <TbAdjustmentsCog
+                      className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+                      onClick={() => setShowConfig(!showConfig)}
+                    />
+                  </div>
                 </Tooltip>
               )}
             </div>
@@ -165,8 +171,9 @@ const ExecutionHistory = () => {
       return;
     }
     setLoading(true);
+    setExecutions([]);
     BackendAxios.get(
-      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
+      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`,
     )
       .then((res) => {
         setExecutions(res.data);

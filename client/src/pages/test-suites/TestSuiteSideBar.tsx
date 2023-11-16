@@ -16,7 +16,6 @@ import { getEnpoints, getInvocations } from "../../api/api";
 import { EndpointType, InvocationType } from "../sniffers/types";
 import { BackendAxios } from "../../api/backendAxios";
 import { useNavigate, useParams } from "react-router-dom";
-import { VscChecklist } from "react-icons/vsc";
 
 export const TestSuiteSideBar = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =
@@ -55,7 +54,10 @@ export const TestSuiteSideBar = () => {
       </div>
       <AddTestSuiteModal
         open={addTestSuiteModalOpen}
-        onClose={() => setAddTestSuiteModalOpen(false)}
+        onClose={() => {
+          setAddTestSuiteModalOpen(false);
+          navigator("#", { replace: true });
+        }}
         type="Test Suite"
       />
     </>
@@ -157,8 +159,8 @@ export const AddTestSuiteModal = ({
   };
 
   useEffect(() => {
-    loadSniffers();
-  }, []);
+    open && loadSniffers();
+  }, [open]);
 
   return (
     <Modal

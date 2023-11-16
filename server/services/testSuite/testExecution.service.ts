@@ -2,7 +2,7 @@ import { TextExecutionRepository } from "../../model/testSuite/testExecution.mod
 
 export class TestExecutionService {
   constructor(
-    private readonly testExecutionRepository: TextExecutionRepository
+    private readonly testExecutionRepository: TextExecutionRepository,
   ) {}
 
   async create(testId: string) {
@@ -11,5 +11,9 @@ export class TestExecutionService {
 
   async getByTestId(testId: string) {
     return this.testExecutionRepository.getByTestId(testId);
+  }
+
+  async deleteByTestId(testId: string) {
+    return this.testExecutionRepository.deleteByTestId(testId);
   }
 }

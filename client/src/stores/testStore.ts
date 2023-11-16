@@ -21,8 +21,8 @@ export type TestType = {
   rules: Rule[];
 };
 
-export const deleteTest = (testId: string) => {
-  return BackendAxios.delete(`/test-suites/${testId}`);
+export const deleteTest = (testSuiteId: string, testId: string) => {
+  return BackendAxios.delete(`/test-suites/${testSuiteId}/tests/${testId}`);
 };
 
 export const getTestByTestSuiteId = (testSuiteId: string) => {

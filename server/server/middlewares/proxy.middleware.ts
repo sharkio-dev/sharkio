@@ -15,7 +15,7 @@ export class ProxyMiddleware {
 
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestInterceptor: RequestInterceptor
+    private readonly requestInterceptor: RequestInterceptor,
   ) {
     this.proxyMiddleware = createProxyMiddleware({
       router: this.chooseRoute.bind(this),
@@ -43,13 +43,13 @@ export class ProxyMiddleware {
               snifferId,
               invocationId,
               parsedRes,
-              testExecutionId
+              testExecutionId,
             );
           }
         } catch (e) {
           logger.error(
             "failed to capture response for invocation id" + invocationId,
-            e
+            e,
           );
         }
       },
@@ -60,7 +60,7 @@ export class ProxyMiddleware {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
     const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain
+      subdomain,
     );
     req.headers["x-sharkio-port"] = selectedSniffer?.port.toString();
 

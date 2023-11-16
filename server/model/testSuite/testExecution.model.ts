@@ -50,4 +50,8 @@ export class TextExecutionRepository {
       },
     });
   }
+
+  deleteByTestId(testId: string) {
+    return this.repository.delete({ testId });
+  }
 }

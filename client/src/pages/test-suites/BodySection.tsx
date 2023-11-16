@@ -8,7 +8,7 @@ type BodySectionProps = {
 
 export const BodySection = ({ body, setBody }: BodySectionProps) => {
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 w-full">
       <Editor
         height="50vh"
         width={"100%"}
@@ -17,6 +17,11 @@ export const BodySection = ({ body, setBody }: BodySectionProps) => {
         value={body.expectedValue}
         language={body.expectedValue?.includes("html") ? "html" : "json"}
         onChange={(value) => setBody(value)}
+        options={{
+          minimap: {
+            enabled: false,
+          },
+        }}
       />
     </div>
   );
