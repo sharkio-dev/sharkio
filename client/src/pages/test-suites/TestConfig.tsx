@@ -7,7 +7,6 @@ import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import { Rule, TestType } from "../../stores/testStore";
 import { TextField } from "@mui/material";
-import { Editor } from "@monaco-editor/react";
 
 type TestConfigProps = {
   tabNumber: string;
@@ -19,6 +18,7 @@ type TestConfigProps = {
   headerRules: Rule[];
   setHeaderRules: (rules: Rule[]) => void;
   test: TestType;
+  setTest: (test: TestType) => void;
 };
 export const TestConfig = ({
   tabNumber,
@@ -30,6 +30,7 @@ export const TestConfig = ({
   headerRules,
   setHeaderRules,
   test,
+  setTest,
 }: TestConfigProps) => {
   console.log({ test });
   const handleChange = (_: any, newValue: string) => {
@@ -54,6 +55,7 @@ export const TestConfig = ({
     setHeaderRules(headers);
   };
 
+  console.log({ body: test.body, ev: bodyRule.expectedValue });
   return (
     <TabContext value={tabNumber}>
       <div className="flex flex-row items-center justify-between ">
@@ -114,9 +116,9 @@ export const TestConfig = ({
                   { value: "DELETE", label: "DELETE" },
                 ]}
                 title="Method"
-                value={test?.method}
+                value={test?.method || ""}
                 setValue={(value) => {
-                  console.log(value);
+                  setTest({ ...test, method: value });
                 }}
               />
             </div>
@@ -127,24 +129,39 @@ export const TestConfig = ({
               className="w-full"
               value={test.url}
               onChange={(e) => {
-                console.log(e.target.value);
+                setTest({ ...test, url: e.target.value });
               }}
             />
           </div>
           <div className="text-[#fff] text-xl">Headers</div>
           <HeaderSection
             headers={Object.entries(test.headers).map((entry) => {
-              console.log(entry);
               return { name: entry[0], value: entry[1] };
             })}
-            setHeaders={() => {
-              console.log("set headers");
+            setHeaders={(index, value, targetPath) => {
+              setTest({
+                ...test,
+                headers: { ...test.headers, [targetPath]: value },
+              });
             }}
-            addHeader={() => console.log("add header")}
-            deleteHeader={(index) => console.log("delete header")}
+            addHeader={() =>
+              // setTest({ ...test, headers: [...test.headers, ""] })
+              console.log("add")
+            }
+            deleteHeader={(index) =>
+              setTest({
+                ...test,
+                headers: Object.fromEntries(
+                  Object.entries(test.headers).filter((_, i) => i !== index)
+                ),
+              })
+            }
           />
           <div className="text-[#fff] text-xl">Body</div>
-          <BodySection body={test.body} setBody={onChangeBodyValue} />
+          <BodySection
+            body={test.body}
+            setBody={(val) => setTest({ ...test, body: val })}
+          />
         </div>
       </TabPanel>
     </TabContext>

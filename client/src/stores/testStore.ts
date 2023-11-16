@@ -35,6 +35,6 @@ export const getTestById = (testSuiteId: string, testId: string) => {
 
 export const getTest = (testSuiteId: string, testId: string) => {
   return BackendAxios.get<TestType>(
-    `/test-suites/${testSuiteId}/tests/${testId}`
+    `/test-suites/${testSuiteId}/tests/${testId}`,
   );
 };

@@ -39,11 +39,20 @@ export const TestSuiteMainSection = () => {
   });
   const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
   const [showConfig, setShowConfig] = React.useState<boolean>(true);
+  console.log({ test });
 
-  const hadnleSave = () => {
+  const hadnleSave = React.useCallback(() => {
+    console.log({ test1: test });
+    if (!testSuiteId || !testId || !test) {
+      return;
+    }
     setSaveLoading(true);
     BackendAxios.put(`/test-suites/${testSuiteId}/tests/${testId}`, {
       name: test?.name,
+      headers: test?.headers,
+      body: test?.body,
+      url: test?.url,
+      method: test?.method,
       rules: [statusCodeRule, bodyRule, ...headerRules],
     })
       .then(() => {
@@ -55,7 +64,7 @@ export const TestSuiteMainSection = () => {
       .finally(() => {
         setSaveLoading(false);
       });
-  };
+  }, [test, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
 
   const extractStatusCode = (test: TestType) => {
     test.rules.forEach((rule) => {
@@ -143,6 +152,7 @@ export const TestSuiteMainSection = () => {
           {showConfig && test ? (
             <TestConfig
               test={test}
+              setTest={setTest}
               tabNumber={value}
               setTubNumber={setValue}
               statusCodeRule={statusCodeRule}
