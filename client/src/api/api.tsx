@@ -152,7 +152,6 @@ export const executeInvocation = (invocation: InvocationType) => {
   });
 };
 
-
 //just for development
 export interface ProjectType {
   name: string;
