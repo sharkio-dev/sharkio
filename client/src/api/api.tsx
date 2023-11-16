@@ -32,7 +32,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<Sniffer, "subdomain">>,
+  newConfig: Partial<Omit<Sniffer, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
@@ -50,7 +50,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -67,7 +67,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -87,7 +87,7 @@ export const deleteMock = (id: string, sniffer_id: string) => {
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(`/sniffer/${port}/mock/actions/activate`, {
     mockId: `${method} ${endpoint}`,
@@ -97,7 +97,7 @@ export const activateMock = (
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(`/sniffer/${port}/mock/actions/deactivate`, {
     mockId: `${method} ${endpoint}`,
@@ -121,7 +121,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -170,6 +170,32 @@ export const getProjects = (): ProjectType[] => {
   return projectsArray; //just for development checking
 };
 
-//call for:add a new project
+export const GetChangeBetweenProjects = (projectClicked: any) => {
+  // Change between projects logic here
+  return console.log("move to project", projectClicked.target.value);
+};
 
-//call for: change project isOpen state to move between projects
+//Delete project
+export const DeleteProject = (e: React.MouseEvent, projectName: string) => {
+  // Delete project logic here
+  console.log("delete project", projectName);
+  return console.log("updated projects");
+};
+
+export const PostAddNewProject = (newProjectName: string) => {
+  // Add new project logic here
+  return console.log("add new project", newProjectName);
+};
+
+export const PutEditProject = (
+  editedProjectName: string,
+  selectedProjectName: string
+) => {
+  // Edit project logic here
+  return console.log(
+    "new name=",
+    editedProjectName,
+    " old name=",
+    selectedProjectName
+  );
+};

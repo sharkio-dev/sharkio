@@ -13,7 +13,6 @@ export const Navbar: React.FC = () => {
 
   return (
     <div className="flex w-full h-14 bg-primary border-b border-border-color px-4 py-2 justify-between">
-      
       {!isLoggedOut && <ProjectSelector />}
 
       <div className="items-center flex space-x-2">
