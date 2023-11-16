@@ -1,3 +1,4 @@
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Column, DataSource, Entity, PrimaryColumn, Repository } from "typeorm";
 
 @Entity({ name: "message" })
@@ -14,6 +15,9 @@ export class Message {
   @Column()
   content: string;
 
+  @Column()
+  role: string;
+
   @Column({ name: "created_at" })
   createdAt: Date;
 
@@ -27,20 +31,33 @@ class MessageRepository {
     this.repository = this.appDataSource.manager.getRepository(Message);
   }
 
-  getByChatId(chatId: string) {
-    return this.repository.findOne({
+  async getByChatId(chatId: string) {
+    const messages = await this.repository.find({
+      select: {
+        role: true,
+        content: true,
+      },
       where: { chatId },
       order: {
         createdAt: "DESC",
       },
     });
+
+    return messages.map(
+      (message) =>
+        ({
+          role: message.role,
+          content: message.content,
+        } as ChatCompletionMessageParam)
+    );
   }
 
-  addMessage(userId: string, chatId: string, content: string) {
+  addMessage(userId: string, chatId: string, content: string, role: string) {
     const message = this.repository.create({
       chatId,
       content,
       userId,
+      role,
     });
 
     return this.repository.save(message);

@@ -6,18 +6,23 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { AddSnifferModal } from "./AddSnifferModal";
-import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
+import {
+  Sniffer as SnifferRow,
+  useSniffersStore,
+} from "../../stores/sniffersStores";
 import { useNavigate } from "react-router-dom";
 
 type SniffersSideBarProps = {
-  activeSniffer?: Sniffer;
-  setActiveSniffer: (sniffer: Sniffer) => void;
+  activeSniffer?: SnifferRow;
+  setActiveSniffer: (sniffer: SnifferRow) => void;
 };
 export const SniffersSideBar = ({
   activeSniffer,
   setActiveSniffer,
 }: SniffersSideBarProps) => {
-  const [selectedSniffer, setSelectedSniffer] = useState<Sniffer | null>(null);
+  const [selectedSniffer, setSelectedSniffer] = useState<SnifferRow | null>(
+    null
+  );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -33,7 +38,7 @@ export const SniffersSideBar = ({
     setSelectedSniffer(null);
   };
 
-  const onEditSniffer = (sniffer: Sniffer) => {
+  const onEditSniffer = (sniffer: SnifferRow) => {
     setSelectedSniffer(sniffer);
     setIsEditModalOpen(true);
   };
@@ -44,7 +49,7 @@ export const SniffersSideBar = ({
     navigator("/live");
   };
 
-  const onDeleteSniffer = (sniffer: Sniffer) => {
+  const onDeleteSniffer = (sniffer: SnifferRow) => {
     setSelectedSniffer(sniffer);
     setIsDeleteModalOpen(true);
   };
@@ -78,7 +83,7 @@ export const SniffersSideBar = ({
       )}
 
       {sniffers.map((sniffer, i) => (
-        <Sniffer
+        <SnifferSideBarRow
           key={i}
           isSelected={activeSniffer?.id === sniffer.id}
           onClick={() => setActiveSniffer(sniffer)}
@@ -99,7 +104,7 @@ type SnifferProps = {
   name: string;
 };
 
-const Sniffer = ({
+const SnifferSideBarRow = ({
   isSelected,
   onClick,
   onEditSniffer,

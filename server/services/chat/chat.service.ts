@@ -22,7 +22,11 @@ export class ChatService {
     return this.chatRepository.repository.save(chat);
   }
 
-  async addMessage(userId: string, chatId: string, content: string) {
-    return this.messageRepository.addMessage(userId, chatId, content);
+  async addUserMessage(userId: string, chatId: string, content: string) {
+    return this.messageRepository.addMessage(userId, chatId, content, "user");
+  }
+
+  async addSystemMessage(userId: string, chatId: string, content: string) {
+    return this.messageRepository.addMessage(userId, chatId, content, "system");
   }
 }

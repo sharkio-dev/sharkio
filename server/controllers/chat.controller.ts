@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
+import OpenAI from "openai";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useLog } from "../lib/log";
+import { ChatService } from "../services/chat/chat.service";
 import EndpointService from "../services/endpoint/endpoint.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { IRouterConfig } from "./router.interface";
-import OpenAI from "openai";
-import { ChatService } from "../services/chat/chat.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -41,35 +42,67 @@ export class ChatController {
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
 
-    router.route("/new").post(async (req: Request, res: Response) => {
-      const userId = res.locals.auth.userId;
-      const chat = await this.chatService.newChat(userId);
-
-      res.json({ id: chat.id });
-    });
-
-    router.route("/firstMessage").post(async (req: Request, res: Response) => {
+    router.route("").post(async (req: Request, res: Response) => {
       const userId = res.locals.auth.userId;
       const { content } = req.body;
       const chat = await this.chatService.newChat(userId);
 
-      await this.chatService.addMessage(userId, chat.id, content);
+      await this.chatService.addUserMessage(userId, chat.id, content);
 
       const userMessage = { role: "user", content };
       const completion = await this.openai.chat.completions.create({
-        messages: defaultPrompt,
+        messages: [...defaultPrompt, userMessage],
         model: "gpt-3.5-turbo",
       });
 
       const completionMessage = completion.choices[0].message.content;
 
       if (completionMessage != null) {
-        await this.chatService.addMessage(userId, chat.id, completionMessage);
-        res.status(200).json({ message: completionMessage });
+        await this.chatService.addSystemMessage(
+          userId,
+          chat.id,
+          completionMessage
+        );
+        res.status(200).json({ chatId: chat.id, content: completionMessage });
       } else {
         res.sendStatus(500);
       }
     });
+
+    router
+      .route("/:chatId/message")
+      .post(async (req: Request, res: Response) => {
+        const userId = res.locals.auth.userId;
+        const { chatId } = req.params;
+        const { content } = req.body;
+
+        const messages = await this.chatService.loadMessagesByChatId(chatId);
+        await this.chatService.addUserMessage(userId, chatId, content);
+
+        const userMessage: ChatCompletionMessageParam = {
+          role: "user",
+          content,
+        };
+
+        const completion = await this.openai.chat.completions.create({
+          messages: [...messages, userMessage],
+          model: "gpt-3.5-turbo",
+        });
+
+        const completionMessage = completion.choices[0].message.content;
+
+        if (completionMessage != null) {
+          await this.chatService.addSystemMessage(
+            userId,
+            chatId,
+            completionMessage
+          );
+          res.status(200).json({ chatId, content: completionMessage });
+        } else {
+          res.sendStatus(500);
+        }
+      })
+      .get(async (req: Request, res: Response) => {});
 
     return { router, path: this.baseUrl };
   }
