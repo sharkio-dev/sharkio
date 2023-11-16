@@ -4,7 +4,6 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { IconButton, MenuItem, Select } from "@mui/material";
-import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import * as React from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -93,7 +92,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               value={JSON.stringify(
                 responseData(invocation?.response),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
               options={{

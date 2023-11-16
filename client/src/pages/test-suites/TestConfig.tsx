@@ -138,7 +138,7 @@ export const TestConfig = ({
             headers={Object.entries(test.headers).map((entry) => {
               return { name: entry[0], value: entry[1] };
             })}
-            setHeaders={(index, value, targetPath) => {
+            setHeaders={(_, value, targetPath) => {
               setTest({
                 ...test,
                 headers: { ...test.headers, [targetPath]: value },
@@ -152,7 +152,7 @@ export const TestConfig = ({
               setTest({
                 ...test,
                 headers: Object.fromEntries(
-                  Object.entries(test.headers).filter((_, i) => i !== index),
+                  Object.entries(test.headers).filter((_, i) => i !== index)
                 ),
               })
             }

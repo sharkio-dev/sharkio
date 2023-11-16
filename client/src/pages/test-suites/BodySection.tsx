@@ -8,13 +8,13 @@ type BodySectionProps = {
 export const BodySection = ({ body, setBody }: BodySectionProps) => {
   console.log({ body, type: typeof body });
 
-  const onChangeBodyValue = (value: any, event) => {
+  const onChangeBodyValue = (value: any, event: any) => {
     if (typeof value !== "string" && value.includes("html")) {
       setBody(value);
       return;
     }
     console.log({ value, event });
-    const res = JSON.parse(value, null, 2);
+    const res = JSON.parse(value);
     setBody(res);
   };
 

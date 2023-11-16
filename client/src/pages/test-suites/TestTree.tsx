@@ -70,7 +70,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
     React.useState<boolean>(false);
   const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
   const navigator = useNavigate();
-  const { testSuiteId, testId, endpointId: endpointIdURL } = useParams();
+  const { testSuiteId } = useParams();
   const [loading, setLoading] = React.useState<boolean>(false);
   const ref1 = React.useRef<any>(null);
 
@@ -105,7 +105,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId,
+          nodeId
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -209,7 +209,7 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 export function TestTree() {
   const { testSuiteId } = useParams();
   const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
-    {},
+    {}
   );
   const { show, component: snackBar } = useSnackbar();
 
@@ -228,7 +228,7 @@ export function TestTree() {
           }
           return acc;
         },
-        {},
+        {}
       );
       setTestTree(a);
     });
@@ -258,7 +258,7 @@ export function TestTree() {
 
   const executeTest = (testId: string) => {
     return BackendAxios.post(
-      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run",
+      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run"
     )
       .then(() => {
         show("Test executed successfully", "success");

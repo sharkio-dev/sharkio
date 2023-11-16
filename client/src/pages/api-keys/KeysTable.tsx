@@ -4,8 +4,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Delete, Edit } from "@mui/icons-material";
-import { ConfigButton } from "../../components/config-card/ConfigButton";
 import { Key } from "./api-keys";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 

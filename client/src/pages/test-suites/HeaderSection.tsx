@@ -1,5 +1,4 @@
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
-import { Rule } from "../../stores/testStore";
 
 type HeaderSectionProps = {
   headers: { name: string; value: any }[];
