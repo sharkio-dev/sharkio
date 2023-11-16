@@ -184,7 +184,7 @@ const ExecutionHistory = () => {
     setLoading(true);
     setExecutions([]);
     BackendAxios.get(
-      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
+      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`,
     )
       .then((res) => {
         setExecutions(res.data);

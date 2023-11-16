@@ -12,7 +12,7 @@ import { LoadingIcon } from "./LoadingIcon";
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
   activeSniffer?: SnifferType;
-  refresh?: () => void;
+  onExecuteRequest?: () => void;
 };
 
 const domainPath = (subdomain: string) => {
@@ -22,20 +22,20 @@ const domainPath = (subdomain: string) => {
 export const InvocationUpperBar = ({
   activeInvocation,
   activeSniffer,
-  refresh,
+  onExecuteRequest,
 }: InvocationUpperBarProps) => {
   const [loading, setLoading] = useState(false);
-  const onExecute = () => {
+  const executeRequest = () => {
     if (!activeInvocation) {
       return;
     }
     setLoading(true);
     executeInvocation(activeInvocation)
       .then(() => {
-        refresh && refresh();
+        onExecuteRequest && onExecuteRequest();
       })
       .catch(() => {
-        refresh && refresh();
+        onExecuteRequest && onExecuteRequest();
       })
       .finally(() => {
         setLoading(false);
@@ -67,7 +67,7 @@ export const InvocationUpperBar = ({
         ) : (
           <PlayArrow
             className="text-green-500 cursor-pointer"
-            onClick={onExecute}
+            onClick={executeRequest}
           />
         )}
       </div>

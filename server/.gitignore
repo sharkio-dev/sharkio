@@ -16,3 +16,4 @@ sniffers-setup.json
 .yarnrc
 yarn.lock
 yarn-error.log
+certificates
