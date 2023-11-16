@@ -2,7 +2,7 @@ import Editor from "@monaco-editor/react";
 import { Rule } from "../../stores/testStore";
 
 type BodySectionProps = {
-  body: Rule;
+  body: any;
   setBody: (body: any) => void;
 };
 

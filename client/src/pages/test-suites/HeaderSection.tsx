@@ -2,7 +2,7 @@ import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
 import { Rule } from "../../stores/testStore";
 
 type HeaderSectionProps = {
-  headers: Rule[];
+  headers: { name: string; value: any }[];
   setHeaders: (index: number, value: any, targetPath: string) => void;
   addHeader: () => void;
   deleteHeader: (index: number) => void;
@@ -19,13 +19,13 @@ export const HeaderSection = ({
       <div className="flex flex-col items-center space-y-2 w-full">
         {headers?.map((header, i) => (
           <>
-            <div className="flex flex-row items-center space-x-2 px-2 w-full">
+            <div className="flex flex-row items-center space-x-2 w-full">
               <input
                 className="border border-border-color rounded-md px-2 py-1 w-full"
                 placeholder="Name"
-                value={header.targetPath}
+                value={header.name}
                 onChange={(event) => {
-                  setHeaders(i, header.expectedValue, event.target.value);
+                  setHeaders(i, header.value, event.target.value);
                 }}
               />
               <div className="flex flex-row">=</div>
@@ -33,9 +33,9 @@ export const HeaderSection = ({
               <input
                 className="border border-border-color rounded-md px-2 py-1 w-full"
                 placeholder="Value"
-                value={header.expectedValue}
+                value={header.value}
                 onChange={(event) => {
-                  setHeaders(i, event.target.value, header.targetPath || "");
+                  setHeaders(i, event.target.value, header.name);
                 }}
               />
               <div className="flex flex-row min-w-[20px] h-full">

@@ -5,7 +5,9 @@ import TabPanel from "@mui/lab/TabPanel";
 import { SelectComponent } from "./SelectComponent";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
-import { Rule } from "../../stores/testStore";
+import { Rule, TestType } from "../../stores/testStore";
+import { TextField } from "@mui/material";
+import { Editor } from "@monaco-editor/react";
 
 type TestConfigProps = {
   tabNumber: string;
@@ -16,6 +18,7 @@ type TestConfigProps = {
   setBodyRule: (rule: Rule) => void;
   headerRules: Rule[];
   setHeaderRules: (rules: Rule[]) => void;
+  test: TestType;
 };
 export const TestConfig = ({
   tabNumber,
@@ -26,7 +29,9 @@ export const TestConfig = ({
   setBodyRule,
   headerRules,
   setHeaderRules,
+  test,
 }: TestConfigProps) => {
+  console.log({ test });
   const handleChange = (_: any, newValue: string) => {
     setTubNumber(newValue);
   };
@@ -54,6 +59,7 @@ export const TestConfig = ({
       <div className="flex flex-row items-center justify-between ">
         <TabList onChange={handleChange} aria-label="lab API tabs example">
           <Tab label="Assertions" value="1" />
+          <Tab label="Request" value="2" />
         </TabList>
         <div className="flex w-1/4 items-center self-end"></div>
       </div>
@@ -68,7 +74,10 @@ export const TestConfig = ({
           </div>
           <div className="text-[#fff] text-xl">Headers</div>
           <HeaderSection
-            headers={headerRules}
+            headers={headerRules.map((rule) => ({
+              name: (rule.targetPath as string) || "",
+              value: rule.expectedValue,
+            }))}
             setHeaders={onChangeHeader}
             addHeader={() =>
               setHeaderRules([
@@ -86,10 +95,58 @@ export const TestConfig = ({
             }
           />
           <div className="text-[#fff] text-xl">Body</div>
-          <BodySection body={bodyRule} setBody={onChangeBodyValue} />
+          <BodySection
+            body={bodyRule.expectedValue}
+            setBody={onChangeBodyValue}
+          />
         </div>
       </TabPanel>
-      <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}></TabPanel>
+      <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
+        <div className="flex flex-col space-y-4">
+          <div className="flex flex-row space-x-4">
+            <div className="flex flex-row w-40">
+              <SelectComponent
+                options={[
+                  { value: "GET", label: "GET" },
+                  { value: "POST", label: "POST" },
+                  { value: "PUT", label: "PUT" },
+                  { value: "PATCH", label: "PATCH" },
+                  { value: "DELETE", label: "DELETE" },
+                ]}
+                title="Method"
+                value={test?.method}
+                setValue={(value) => {
+                  console.log(value);
+                }}
+              />
+            </div>
+            <TextField
+              label="URL"
+              variant="outlined"
+              size="small"
+              className="w-full"
+              value={test.url}
+              onChange={(e) => {
+                console.log(e.target.value);
+              }}
+            />
+          </div>
+          <div className="text-[#fff] text-xl">Headers</div>
+          <HeaderSection
+            headers={Object.entries(test.headers).map((entry) => {
+              console.log(entry);
+              return { name: entry[0], value: entry[1] };
+            })}
+            setHeaders={() => {
+              console.log("set headers");
+            }}
+            addHeader={() => console.log("add header")}
+            deleteHeader={(index) => console.log("delete header")}
+          />
+          <div className="text-[#fff] text-xl">Body</div>
+          <BodySection body={test.body} setBody={onChangeBodyValue} />
+        </div>
+      </TabPanel>
     </TabContext>
   );
 };

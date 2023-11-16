@@ -140,8 +140,9 @@ export const TestSuiteMainSection = () => {
               )}
             </div>
           </div>
-          {showConfig ? (
+          {showConfig && test ? (
             <TestConfig
+              test={test}
               tabNumber={value}
               setTubNumber={setValue}
               statusCodeRule={statusCodeRule}
@@ -173,7 +174,7 @@ const ExecutionHistory = () => {
     setLoading(true);
     setExecutions([]);
     BackendAxios.get(
-      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`,
+      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
     )
       .then((res) => {
         setExecutions(res.data);
