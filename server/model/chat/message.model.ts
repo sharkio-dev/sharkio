@@ -48,7 +48,7 @@ class MessageRepository {
         ({
           role: message.role,
           content: message.content,
-        } as ChatCompletionMessageParam)
+        }) as ChatCompletionMessageParam,
     );
   }
 
