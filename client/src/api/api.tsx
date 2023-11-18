@@ -152,15 +152,14 @@ export const executeInvocation = (invocation: InvocationType) => {
   });
 };
 
-//just for development
 export interface ProjectType {
   name: string;
   id: string;
   isOpen: boolean;
 }
 
-//will get all the user projects from the backend
 export const getProjects = (): ProjectType[] => {
+  //will get all the user projects from the backend
   const projectsArray: ProjectType[] = [
     { name: "project1", id: "1", isOpen: false },
     { name: "project2", id: "2", isOpen: false },
@@ -170,24 +169,24 @@ export const getProjects = (): ProjectType[] => {
   return projectsArray; //just for development checking
 };
 
-export const GetChangeBetweenProjects = (projectClicked: any) => {
+export const getChangeBetweenProjects = (projectNameClicked: string) => {
   // Change between projects logic here
-  return console.log("move to project", projectClicked.target.value);
+  return console.log("move to project", projectNameClicked);
 };
 
 //Delete project
-export const DeleteProject = (e: React.MouseEvent, projectName: string) => {
+export const deleteProject = (projectName: string) => {
   // Delete project logic here
   console.log("delete project", projectName);
   return console.log("updated projects");
 };
 
-export const PostAddNewProject = (newProjectName: string) => {
+export const postAddNewProject = (newProjectName: string) => {
   // Add new project logic here
   return console.log("add new project", newProjectName);
 };
 
-export const PutEditProject = (
+export const putEditProject = (
   editedProjectName: string,
   selectedProjectName: string
 ) => {

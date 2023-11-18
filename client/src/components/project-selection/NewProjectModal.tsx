@@ -1,11 +1,18 @@
 import { Button, Modal, Paper, TextField } from "@mui/material";
+import React from "react";
 
-const NewProjectModal = ({
+interface EditProjectModalProps {
+  open: boolean;
+  onCancel: () => void;
+  onSave: () => void;
+  setNewProjectName: React.Dispatch<React.SetStateAction<string>>;
+}
+const NewProjectModal: React.FC<EditProjectModalProps> = ({
   open,
   onCancel,
   onSave,
   setNewProjectName,
-}: any) => {
+}) => {
   return (
     <Modal
       open={open}

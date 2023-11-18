@@ -1,14 +1,19 @@
 import { AiOutlinePlus } from "react-icons/ai";
 import { MenuItem } from "@mui/material";
-const NewProjectItem = ({ setNewProjectModalIsOpen }: any) => {
-  const handleAddNewProject = (e: React.MouseEvent) => {
-    e.stopPropagation(); // not working
+
+interface NewProjectItemProps {
+  setNewProjectModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const NewProjectItem: React.FC<NewProjectItemProps> = ({
+  setNewProjectModalIsOpen,
+}) => {
+  const handleAddNewProject = () => {
     setNewProjectModalIsOpen(true);
   };
 
   return (
     <MenuItem
-      onClick={(e: React.MouseEvent) => handleAddNewProject(e)}
+      onClick={() => handleAddNewProject()}
       value="New Project"
     >
       <AiOutlinePlus></AiOutlinePlus> New Project

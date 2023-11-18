@@ -1,12 +1,20 @@
 import { Button, Modal, Paper, TextField } from "@mui/material";
 
-const EditProjectModal = ({
+interface EditProjectModalProps {
+  open: boolean;
+  onCancel: () => void;
+  onSave: () => void;
+  setEditedProjectName: (name: string) => void;
+  EditedProjectName: string;
+}
+
+const EditProjectModal: React.FC<EditProjectModalProps> = ({
   open,
   onCancel,
   onSave,
   setEditedProjectName,
   EditedProjectName,
-}: any) => {
+}) => {
   return (
     <Modal
       open={open}
@@ -15,7 +23,7 @@ const EditProjectModal = ({
       className="flex justify-center items-center border-0"
     >
       <Paper className="flex flex-col p-4 w-96 rounded-sm">
-        <div className="text-2xl font-bold">edit project</div>
+        <div className="text-2xl font-bold">Edit project name</div>
         <div className="w-full border-b-[0.05px] my-4" />
         <div className="flex flex-col space-y-2">
           <TextField
@@ -27,7 +35,7 @@ const EditProjectModal = ({
           />
         </div>
         <div className="flex flex-row justify-start  mt-4">
-          <Button onClick={onSave}>Add</Button>
+          <Button onClick={onSave}>Save</Button>
           <Button onClick={onCancel}>Cancel</Button>
         </div>
       </Paper>
