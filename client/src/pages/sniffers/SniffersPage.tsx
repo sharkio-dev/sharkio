@@ -7,15 +7,17 @@ import { LoadingIcon } from "./LoadingIcon";
 import { useNavigate, useParams } from "react-router-dom";
 import { SnifferData } from "./SniffersPage/SnifferData";
 import { LivePage } from "./SniffersPage/LivePage";
+import { getEnpoints } from "../../api/api";
+import { EndpointType } from "./types";
 
 const SniffersPage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadSniffers, sniffers } = useSniffersStore();
 
   const [loadingSniffers, setLoadingSniffers] = useState(false);
-  const { snifferId } = useParams();
+
+  const { snifferId, endpointId } = useParams();
   const userId = useAuthStore((s) => s.user?.id);
-  const navigator = useNavigate();
 
   const sniffer = sniffers.find((s) => s.id === snifferId);
 
@@ -31,16 +33,8 @@ const SniffersPage = () => {
       });
   }, [userId]);
 
-  const onSnifferClick = async (sniffer: SnifferType) => {
-    if (snifferId === sniffer.id) {
-      navigator(`/live`);
-      return;
-    }
-    navigator(`/sniffers/${sniffer.id}`);
-  };
-
   return (
-    <div className="flex flex-row h-full w-[calc(100vh-56px)">
+    <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
       {snackBar}
       <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
         {loadingSniffers ? (
@@ -48,14 +42,14 @@ const SniffersPage = () => {
             <LoadingIcon />
           </div>
         ) : (
-          <SniffersSideBar
-            activeSniffer={sniffer}
-            setActiveSniffer={onSnifferClick}
-          />
+          <SniffersSideBar />
         )}
       </div>
-      <div className={`flex bg-tertiary h-full w-full`}>
-        {sniffer ? <SnifferData sniffer={sniffer} /> : <LivePage />}
+      <div
+        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(vh-96px)] w-full`}
+      >
+        {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
+        {!sniffer && !endpointId && <LivePage />}
       </div>
     </div>
   );

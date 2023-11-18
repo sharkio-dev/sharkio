@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -7,24 +7,50 @@ import { DeleteSnifferModal } from "./DeleteSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { AddSnifferModal } from "./AddSnifferModal";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { MdOutlineEmergencyRecording } from "react-icons/md";
+import { EndpointType } from "./types";
+import { EndpointSideBar } from "./EndpointSideBar";
+import { getEnpoints } from "../../api/api";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { LoadingIcon } from "./LoadingIcon";
 
-type SniffersSideBarProps = {
-  activeSniffer?: SnifferType;
-  setActiveSniffer: (sniffer: SnifferType) => void;
-};
-export const SniffersSideBar = ({
-  activeSniffer,
-  setActiveSniffer,
-}: SniffersSideBarProps) => {
+export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
+    null
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const { sniffers } = useSniffersStore();
+  const [selectValue, setSelectValue] = useState<string>("");
   const navigator = useNavigate();
+  const [endpoints, setEndpoints] = useState<EndpointType[]>([]);
+  const [loadingEndpoints, setLoadingEndpoints] = useState<boolean>(false);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const { snifferId } = useParams();
+
+  // Populate the endpoints of the screen
+  useEffect(() => {
+    if (!snifferId) {
+      setEndpoints([]);
+      setSelectValue("live");
+      return;
+    }
+    setSelectValue(snifferId);
+    setLoadingEndpoints(true);
+    getEnpoints(snifferId)
+      .then((res) => {
+        setEndpoints(res || []);
+      })
+      .catch(() => {
+        showSnackbar("Failed to get endpoints", "error");
+      })
+      .finally(() => {
+        setLoadingEndpoints(false);
+      });
+  }, [snifferId]);
 
   const onAddSnifferModalClose = () => {
     setIsAddModalOpen(false);
@@ -53,13 +79,67 @@ export const SniffersSideBar = ({
 
   return (
     <>
-      <div className="flex h-16 items-center p-2 mb-2 justify-between">
-        <div className="text-white text-xl font-bold">Sniffers</div>
-        <AiOutlinePlus
-          className="text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-          onClick={() => setIsAddModalOpen(true)}
-        />
+      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
+        {snackBar}
+        <FormControl fullWidth size="small" variant="outlined">
+          <InputLabel>Sniffers</InputLabel>
+          <Select value={selectValue} label="Sniffers">
+            <MenuItem
+              onClick={() => setIsAddModalOpen(true)}
+              value={"addSniffer"}
+            >
+              <Sniffer
+                LeftIcon={AiOutlinePlus}
+                isSelected={false}
+                onClick={() => setIsAddModalOpen(true)}
+                name={"Add Sniffer"}
+              />
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setEndpoints([]);
+                navigator("/live");
+                setSelectValue("live");
+              }}
+              value={"live"}
+            >
+              <Sniffer
+                LeftIcon={MdOutlineEmergencyRecording}
+                isSelected={false}
+                name={"Live Invocations"}
+              />
+            </MenuItem>
+            {sniffers.map((sniffer, i) => (
+              <MenuItem
+                key={i}
+                onClick={() => {
+                  setSelectValue(sniffer.id);
+                  navigator(`/sniffers/${sniffer.id}`);
+                }}
+                value={sniffer.id}
+              >
+                <Sniffer
+                  LeftIcon={GiSharkFin}
+                  isSelected={snifferId === sniffer.id}
+                  onEditSniffer={() => onEditSniffer(sniffer)}
+                  onDeleteSniffer={() => onDeleteSniffer(sniffer)}
+                  name={sniffer.name}
+                />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <div className="flex flex-col w-full overflow-y-auto">
+          {loadingEndpoints ? (
+            <div className="flex h-full justify-center items-center">
+              <LoadingIcon />
+            </div>
+          ) : (
+            <EndpointSideBar endpoints={endpoints} />
+          )}
+        </div>
       </div>
+
       <AddSnifferModal
         isOpen={isAddModalOpen}
         onClose={onAddSnifferModalClose}
@@ -78,27 +158,15 @@ export const SniffersSideBar = ({
           sniffer={selectedSniffer}
         />
       )}
-
-      {sniffers.map((sniffer, i) => (
-        <Sniffer
-          LeftIcon={GiSharkFin}
-          key={i}
-          isSelected={activeSniffer?.id === sniffer.id}
-          onClick={() => setActiveSniffer(sniffer)}
-          onEditSniffer={() => onEditSniffer(sniffer)}
-          onDeleteSniffer={() => onDeleteSniffer(sniffer)}
-          name={sniffer.name}
-        />
-      ))}
     </>
   );
 };
 
 type SnifferProps = {
   isSelected: boolean;
-  onClick: () => void;
-  onEditSniffer: () => void;
-  onDeleteSniffer: () => void;
+  onClick?: () => void;
+  onEditSniffer?: () => void;
+  onDeleteSniffer?: () => void;
   name: string;
   LeftIcon?: any;
 };
@@ -111,12 +179,18 @@ export const Sniffer = ({
   name,
   LeftIcon,
 }: SnifferProps) => {
+  const editSniffer = (event: any) => {
+    event.stopPropagation();
+    onEditSniffer && onEditSniffer();
+  };
+
+  const deleteSniffer = (event: any) => {
+    event.stopPropagation();
+    onDeleteSniffer && onDeleteSniffer();
+  };
+
   return (
-    <div
-      className={`group flex h-10 items-center px-2 shadow-lg border-b border-border-color cursor-pointer hover:bg-tertiary transition-colors active:first:bg-tertiary ${
-        isSelected && "bg-tertiary"
-      }`}
-    >
+    <div className={`group flex items-center flex-row justify-between w-full`}>
       <div
         className={`flex items-center w-full active:scale-105 h-full ${
           isSelected ? "text-blue-200" : "text-white"
@@ -127,14 +201,18 @@ export const Sniffer = ({
         <div className="text-sm">{name}</div>
       </div>
       <div className="flex space-x-2 opacity-0 group-hover:opacity-100">
-        <AiOutlineEdit
-          className="opacity-0 group-hover:opacity-100 text-amber-400 active:scale-110 text-lg"
-          onClick={onEditSniffer}
-        />
-        <AiOutlineDelete
-          className="opacity-0 group-hover:opacity-100 text-red-400 active:scale-110 text-lg"
-          onClick={onDeleteSniffer}
-        />
+        {onEditSniffer && (
+          <AiOutlineEdit
+            className="opacity-0 group-hover:opacity-100 text-amber-400 active:scale-110 text-lg"
+            onClick={editSniffer}
+          />
+        )}
+        {onDeleteSniffer && (
+          <AiOutlineDelete
+            className="opacity-0 group-hover:opacity-100 text-red-400 active:scale-110 text-lg"
+            onClick={deleteSniffer}
+          />
+        )}
       </div>
     </div>
   );
