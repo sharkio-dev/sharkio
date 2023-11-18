@@ -44,7 +44,7 @@ export const InvocationUpperBar = ({
   };
   return (
     <>
-     {activeSniffer && (
+      {activeSniffer && (
         <Tooltip
           onClick={() =>
             navigator.clipboard.writeText(domainPath(activeSniffer.subdomain))
@@ -65,7 +65,6 @@ export const InvocationUpperBar = ({
 
         //you want click to copy only on the icon or the text
       )}
-
 
       <div className="flex flex-row items-center space-x-4">
         {selectIconByMethod(activeInvocation?.method || "GET")}
