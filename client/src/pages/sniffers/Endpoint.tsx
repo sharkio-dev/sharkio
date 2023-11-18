@@ -17,7 +17,7 @@ export const Endpoint = ({
   return (
     <Tooltip title={url} placement="top" arrow enterDelay={500}>
       <div
-        className={`flex flex-row w-full hover:bg-secondary p-2 cursor-pointer active:bg-primary items-center rounded-md space-x-4
+        className={`flex flex-row w-full hover:bg-primary p-2 cursor-pointer active:bg-tertiary items-center rounded-md space-x-4
     ${isSelected ? "bg-primary" : ""}`}
         onClick={onClick}
       >

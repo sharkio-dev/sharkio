@@ -68,19 +68,21 @@ export const InvocationsBottomBar = ({
         </div>
       </div>
 
-      {invocations &&
-        filteredInvocations.map((invocation, i) => {
-          return (
-            <Invocation
-              isSelected={invocation.id === activeInvocation?.id}
-              onClick={() => setActiveInvocation(invocation.id)}
-              key={i}
-              date={new Date(invocation.createdAt).toLocaleString()}
-              status={invocation?.response?.status}
-              url={invocation.url}
-            />
-          );
-        })}
+      <div className="flex flex-col w-full overflow-y-auto">
+        {invocations &&
+          filteredInvocations.map((invocation, i) => {
+            return (
+              <Invocation
+                isSelected={invocation.id === activeInvocation?.id}
+                onClick={() => setActiveInvocation(invocation.id)}
+                key={i}
+                date={new Date(invocation.createdAt).toLocaleString()}
+                status={invocation?.response?.status}
+                url={invocation.url}
+              />
+            );
+          })}
+      </div>
     </>
   );
 };
