@@ -8,7 +8,6 @@ import { Sniffer } from "../../stores/sniffersStores";
 import { executeInvocation } from "../../api/api";
 import { useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
-import { AiOutlineCopy } from "react-icons/ai";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;

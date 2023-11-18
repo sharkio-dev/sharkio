@@ -32,7 +32,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<Sniffer, "subdomain">>,
+  newConfig: Partial<Omit<Sniffer, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
@@ -50,7 +50,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -67,7 +67,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -87,7 +87,7 @@ export const deleteMock = (id: string, sniffer_id: string) => {
 export const activateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(`/sniffer/${port}/mock/actions/activate`, {
     mockId: `${method} ${endpoint}`,
@@ -97,7 +97,7 @@ export const activateMock = (
 export const deactivateMock = (
   port: number,
   method: string,
-  endpoint: string,
+  endpoint: string
 ) => {
   return BackendAxios.post(`/sniffer/${port}/mock/actions/deactivate`, {
     mockId: `${method} ${endpoint}`,
@@ -121,7 +121,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -158,43 +158,53 @@ export interface ProjectType {
   isOpen: boolean;
 }
 
+export const projectsArray: ProjectType[] = [
+  { name: "project1", id: "1", isOpen: false },
+  { name: "project2", id: "2", isOpen: true },
+  { name: "project3", id: "3", isOpen: false },
+  { name: "project4", id: "4", isOpen: false },
+];
+
 export const getProjects = (): ProjectType[] => {
   //will get all the user projects from the backend
-  const projectsArray: ProjectType[] = [
-    { name: "project1", id: "1", isOpen: false },
-    { name: "project2", id: "2", isOpen: false },
-    { name: "project3", id: "3", isOpen: true },
-    { name: "project4", id: "4", isOpen: false },
-  ];
-  return projectsArray; //just for development checking
+  return projectsArray;
 };
 
-export const getChangeBetweenProjects = (projectNameClicked: string) => {
+export const getChangeBetweenProjects = async (projectNameClicked: string) => {
   // Change between projects logic here
-  return console.log("move to project", projectNameClicked);
+  console.log("move to project", projectNameClicked);
+  return await BackendAxios.get(`/project/${projectNameClicked}`); 
 };
 
 //Delete project
-export const deleteProject = (projectName: string) => {
+export const deleteProject = async (projectName: string) => {
   // Delete project logic here
   console.log("delete project", projectName);
-  return console.log("updated projects");
+  return await BackendAxios.delete(`/project/${projectName}`);
 };
 
-export const postAddNewProject = (newProjectName: string) => {
+export const postAddNewProject = async (newProjectName: string) => {
   // Add new project logic here
-  return console.log("add new project", newProjectName);
+  //need to check if project name already exists
+  console.log("add new project", newProjectName);
+  return await BackendAxios.post("/project", {
+    name: newProjectName,
+  });
 };
 
-export const putEditProject = (
+export const putEditProject = async (
   editedProjectName: string,
-  selectedProjectName: string,
+  selectedProjectName: string
 ) => {
   // Edit project logic here
-  return console.log(
+  //need to check if project name already exists
+  console.log(
     "new name=",
     editedProjectName,
     " old name=",
-    selectedProjectName,
+    selectedProjectName
   );
+  return await BackendAxios.put(`/project/${selectedProjectName}`, {
+    name: editedProjectName,
+  });
 };

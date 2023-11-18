@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import {
-  deleteProject,
-  postAddNewProject,
   ProjectType,
   getChangeBetweenProjects,
-  putEditProject,
   getProjects,
 } from "../../api/api";
 import {
@@ -14,96 +11,72 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useSnackbar } from "../../hooks/useSnackbar";
 import ProjectItem from "./ProjectItem";
 import NewProjectModal from "./NewProjectModal";
 import EditProjectModal from "./EditProjectModal";
 import NewProjectItem from "./NewProjectItem";
+import { DeleteProjectModal } from "./DeleteProjectModal";
 const ProjectSelector = () => {
-  const [projects] = useState<ProjectType[]>(getProjects());
+  // const [projects] = useState<ProjectType[]>(getProjects());
 
   const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
-  const [newProjectName, setNewProjectName] = useState("");
-
   const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState(false);
-  const [editedProjectName, setEditedProjectName] = useState("");
-  const [selectedProjectName, setSelectedProjectName] = useState("");
+  const [deleteProjectModalIsOpen, setDeleteProjectModalIsOpen] =
+    useState(false);
 
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const [ProjectToEditName, setProjectToEditName] = useState("");
+  const [selectedProjectName, setSelectedProjectName] = useState(
+    getProjects().find((project) => project.isOpen)?.name || ""
+  );
+
 
   //remove from selected project edit and delete?
   // when remove project open pop up window for confirm delete
+  // add id to every project?
 
   const handleChangeProject = (projectClick: SelectChangeEvent<string>) => {
-    console.log(projectClick);
+    setSelectedProjectName(projectClick.target.value);
     getChangeBetweenProjects(projectClick.target.value); //api call
   };
 
-  const handleDeleteProject = (e: React.MouseEvent, projectName: string) => {
-    e.stopPropagation();
-    deleteProject(projectName); //api call
-  };
-
-  const handleNewProjectSave = () => {
-    if (
-      newProjectName === "" ||
-      projects.find((project) => project.name === newProjectName)
-    ) {
-      showSnackbar("Name cannot be empty or already exists", "error");
-      return;
-    }
-    postAddNewProject(newProjectName); //api call
-
-    setNewProjectName("");
-    setNewProjectModalIsOpen(false);
-  };
-  const handleNewProjectCancel = () => {
-    setNewProjectName("");
+  const handleNewProjectEnd = () => {
     setNewProjectModalIsOpen(false);
   };
 
   const handleEditProject = (e: React.MouseEvent, projectName: string) => {
     e.stopPropagation();
-    setSelectedProjectName(projectName);
-    setEditedProjectName(projectName);
+    setProjectToEditName(projectName);
     setEditProjectModalIsOpen(true);
   };
 
-  const handleEditedProjectSave = () => {
-    if (
-      editedProjectName === "" ||
-      editedProjectName === selectedProjectName ||
-      projects.find((project) => project.name === editedProjectName)
-    ) {
-      showSnackbar("Name cannot be empty or the same", "error");
-      return;
-    }
-    putEditProject(editedProjectName, selectedProjectName); //api call
-
-    handleEditedProjectEnd();
+  const handleEditProjectEnd = () => {
+    setProjectToEditName(" ");
+    setEditProjectModalIsOpen(false);
   };
 
-  const handleEditedProjectEnd = () => {
-    setEditedProjectName("");
-    setSelectedProjectName("");
-    setEditProjectModalIsOpen(false);
+  const handleDeleteProject = (e: React.MouseEvent, projectName: string) => {
+    e.stopPropagation();
+    setDeleteProjectModalIsOpen(true);
+    setProjectToEditName(projectName);
+  };
+
+  const handleDeleteProjectEnd = () => {
+    setDeleteProjectModalIsOpen(false);
+    setProjectToEditName("");
   };
 
   return (
     <div>
-      {snackBar}
       <FormControl fullWidth size="small">
         <InputLabel>NameSpaces</InputLabel>
         <Select
           style={{ width: "200px" }}
-          value={
-            projects.find((project) => project.isOpen === true)?.name || ""
-          }
+          value={selectedProjectName || " "}
           label="project"
           onChange={handleChangeProject}
         >
           <NewProjectItem setNewProjectModalIsOpen={setNewProjectModalIsOpen} />
-          {projects.map((project: ProjectType) => {
+          {getProjects().map((project: ProjectType) => {
             return (
               <MenuItem key={project.id} value={project.name}>
                 <ProjectItem
@@ -118,17 +91,18 @@ const ProjectSelector = () => {
       </FormControl>
       <NewProjectModal
         open={newProjectModalIsOpen}
-        onCancel={handleNewProjectCancel}
-        onSave={handleNewProjectSave}
-        setNewProjectName={setNewProjectName}
+        onCancel={handleNewProjectEnd}
       />
 
       <EditProjectModal
         open={editProjectModalIsOpen}
-        onCancel={handleEditedProjectEnd}
-        onSave={handleEditedProjectSave}
-        setEditedProjectName={setEditedProjectName}
-        EditedProjectName={editedProjectName}
+        onCancel={handleEditProjectEnd}
+        ProjectToEditName={ProjectToEditName}
+      />
+      <DeleteProjectModal
+        projectName={ProjectToEditName}
+        open={deleteProjectModalIsOpen}
+        onCancel={handleDeleteProjectEnd}
       />
     </div>
   );
