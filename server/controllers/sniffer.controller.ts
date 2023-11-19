@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
+import PromiseRouter from "express-promise-router";
+import swaggerUi from "swagger-ui-express";
+import z from "zod";
+import { CreateSnifferValidator } from "../dto/in/create-sniffer.dto";
+import { EditSnifferValidator } from "../dto/in/index";
 import { useLog } from "../lib/log";
 import { requestValidator } from "../lib/request-validator/request-validator";
+import { generateOpenApi } from "../services/code-generator/open-api-generator";
+import EndpointService from "../services/endpoint/endpoint.service";
+import { SnifferDocGenerator } from "../services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { IRouterConfig } from "./router.interface";
-import PromiseRouter from "express-promise-router";
-import { CreateSnifferValidator } from "../dto/in/create-sniffer.dto";
-import z from "zod";
-import { EditSnifferValidator } from "../dto/in/index";
-import EndpointService from "../services/endpoint/endpoint.service";
-import { generateOpenApi } from "../services/code-generator/open-api-generator";
-import swaggerUi from "swagger-ui-express";
 
 const log = useLog({
   dirname: __dirname,
@@ -19,6 +20,8 @@ const log = useLog({
 export class SnifferController {
   constructor(
     private readonly snifferManager: SnifferService,
+    private readonly requestService: EndpointService,
+    private readonly snifferDocGenerator: SnifferDocGenerator,
     private readonly endpointService: EndpointService,
     private readonly baseUrl: string = "/sharkio/sniffer",
   ) {}
@@ -363,23 +366,15 @@ export class SnifferController {
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
+        const generatedDoc =
+          await this.snifferDocGenerator.generateDocForSniffer(userId, id);
         const sniffer = await this.snifferManager.getSniffer(userId, id);
         const snifferRequests = await this.endpointService.getBySnifferId(
           userId,
           id,
         );
 
-        const generatedSwagger = generateOpenApi(snifferRequests);
-        //@ts-ignore
-        generatedSwagger.servers = [
-          {
-            url: `https://${sniffer?.subdomain}.localhost.sharkio.dev`,
-          },
-          {
-            url: `https://${sniffer?.subdomain}.sharkio.dev`,
-          },
-        ];
-        const html = swaggerUi.generateHTML(generatedSwagger);
+        const html = swaggerUi.generateHTML(generatedDoc);
         res.send(html).status(200);
       },
     );

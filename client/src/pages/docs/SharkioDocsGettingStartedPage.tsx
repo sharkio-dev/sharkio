@@ -22,7 +22,7 @@ export const SharkioDocsGettingStartedPage = () => {
             text={`sharkio create sniffer -p <port> -n <name>`}
             showLineNumbers={false}
             theme={a11yDark}
-            wrapLines={true}
+            wrapLongLines={true}
             codeBlock
           />
         </div>
@@ -43,7 +43,7 @@ export const SharkioDocsGettingStartedPage = () => {
             text={`sharkio start sniffer`}
             showLineNumbers={false}
             theme={a11yDark}
-            wrapLines={true}
+            wrapLongLines={true}
             codeBlock
           />
         </div>

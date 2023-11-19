@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getInvocations, getEnpoints } from "../../../api/api";
+import { getInvocations } from "../../../api/api";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { SnifferType } from "../../../stores/sniffersStores";
 import { InvocationUpperBar } from "../InvocationUpperBar";
@@ -32,7 +32,7 @@ export const SnifferData: React.FC<SnifferDataProps> = (props) => {
         if (invocations.length > 0) {
           navigator(
             `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocations[0].id}`,
-            { replace: true }
+            { replace: true },
           );
         }
       })
@@ -56,7 +56,7 @@ export const SnifferData: React.FC<SnifferDataProps> = (props) => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`
+      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
     );
   };
 

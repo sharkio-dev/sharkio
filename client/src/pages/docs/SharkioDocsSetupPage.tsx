@@ -49,7 +49,7 @@ export const SharkioDocsSetupPage = () => {
             text={`npm i -g sharkio-cli`}
             showLineNumbers={false}
             theme={a11yDark}
-            wrapLines={true}
+            wrapLongLines={true}
             codeBlock
           />
         </div>
@@ -64,7 +64,7 @@ export const SharkioDocsSetupPage = () => {
             text={`sharkio login`}
             showLineNumbers={false}
             theme={a11yDark}
-            wrapLines={true}
+            wrapLongLines={true}
             codeBlock
           />
         </div>
