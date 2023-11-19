@@ -36,11 +36,23 @@ import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
+import { EnvValidator } from "./env.validator";
+import { useLog } from "./lib/log";
+
+const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
 async function main() {
+  const envsValidator = new EnvValidator();
+  try {
+    envsValidator.validate();
+  } catch (e) {
+    logger.error("Missing environment variables");
+    logger.error(e);
+  }
+
   const appDataSource = await getAppDataSource();
 
   /* Repositories */

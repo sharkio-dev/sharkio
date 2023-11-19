@@ -132,7 +132,7 @@ export class EndpointService {
     return this.create(req, snifferId, userId);
   }
 
-  async addInvocation(request: Request) {
+  async addInvocation(request: Partial<Request>) {
     const theInvocation = this.requestRepository.repository.create({
       endpointId: request.id,
       snifferId: request.snifferId,
