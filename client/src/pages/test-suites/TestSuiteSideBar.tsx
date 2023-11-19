@@ -23,7 +23,7 @@ export const TestSuiteSideBar = () => {
   const navigator = useNavigate();
   const [selectValue, setSelectValue] = React.useState<string>("");
   const selectedTestSuite = testSuites.find(
-    (testSuite) => testSuite.id === selectValue
+    (testSuite) => testSuite.id === selectValue,
   );
   const { testSuiteId } = useParams();
 

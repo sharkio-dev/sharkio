@@ -254,50 +254,12 @@ export class TestSuiteController {
             body: test.body,
             subdomain: sniffer.subdomain,
           });
-
-          res.status(204).send();
-        } catch (e) {
-          log.error(e);
-          res.status(500).send();
-        }
-      })
-    );
-
-    router.get(
-      "/:testSuiteId/tests/:testId/test-executions",
-      catchAsync(async (req: Request, res: Response) => {
-        const { testSuiteId, testId } = req.params;
-        const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
-        if (!testSuite) {
-          return res.status(404).send();
-        }
-
-        const test = await this.testService.getById(testId);
-        if (!test) {
-          return res.status(404).send();
-        }
-
-        const testExecutions = await this.testExecutionService.getByTestId(
-          testId
-        );
-        if (!testExecutions) {
-          return res.status(404).send();
-        }
-
-        const rules = test.rules;
-
-        let results: any = [];
-        for (const testExecution of testExecutions) {
-          let result: any = {};
           const request = await this.requestService.getByTestExecutionId(
             testExecution.id
           );
           const response = request?.response[0];
-          result["request"] = { ...request };
-          result["response"] = { ...response };
-          result["testExecution"] = { ...testExecution };
 
-          result["checks"] = rules.map((rule) => {
+          const checks = test.rules.map((rule) => {
             const { type, comparator, expectedValue, targetPath } = rule;
             if (type === "status_code") {
               return {
@@ -332,9 +294,51 @@ export class TestSuiteController {
               };
             }
           });
+          console.log({ checks });
+          await this.testExecutionService.update(testExecution.id, checks);
+
+          res.status(204).send();
+        } catch (e) {
+          log.error(e);
+          res.status(500).send();
+        }
+      })
+    );
+
+    router.get(
+      "/:testSuiteId/tests/:testId/test-executions",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId, testId } = req.params;
+        const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+
+        const test = await this.testService.getById(testId);
+        if (!test) {
+          return res.status(404).send();
+        }
+
+        const testExecutions = await this.testExecutionService.getByTestId(
+          testId
+        );
+
+        if (!testExecutions) {
+          return res.status(404).send();
+        }
+
+        let results: any = [];
+        for (const testExecution of testExecutions) {
+          const result: any = {};
+          result["request"] = testExecution.request[0];
+          result["response"] = testExecution.request[0].response[0];
+          result["testExecution"] = { ...testExecution, test: undefined };
+          result["test"] = test;
+          result["checks"] = testExecution.checks || [];
+
           results.push(result);
         }
-        console.log({ results });
+
         res.json(results);
       })
     );

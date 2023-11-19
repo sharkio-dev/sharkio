@@ -16,7 +16,6 @@ export const ExecutionHistory = () => {
   const { testSuiteId, testId } = useParams();
   const [executions, setExecutions] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
-  console.log(executions);
 
   React.useEffect(() => {
     if (!testSuiteId || !testId) {
