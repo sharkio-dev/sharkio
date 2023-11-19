@@ -10,7 +10,7 @@ const customFormat = format.printf(
     }`;
 
     return formattedMessage;
-  }
+  },
 );
 
 const log = createLogger({
@@ -24,7 +24,7 @@ const log = createLogger({
     format.colorize({
       all: true,
     }),
-    customFormat
+    customFormat,
   ),
 });
 
