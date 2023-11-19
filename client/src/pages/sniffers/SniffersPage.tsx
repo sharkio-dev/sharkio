@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { SniffersSideBar } from "./SniffersSideBar";
-import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
-import { useAuthStore } from "../../stores/authStore";
+import { useParams } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useAuthStore } from "../../stores/authStore";
+import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
-import { useNavigate, useParams } from "react-router-dom";
-import { SnifferData } from "./SniffersPage/SnifferData";
 import { LivePage } from "./SniffersPage/LivePage";
-import { getEnpoints } from "../../api/api";
-import { EndpointType } from "./types";
+import { SnifferData } from "./SniffersPage/SnifferData";
+import { SniffersSideBar } from "./SniffersSideBar";
 
 const SniffersPage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();

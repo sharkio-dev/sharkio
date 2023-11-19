@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { TextField } from "@mui/material";
-import { EndpointType } from "./types";
-import { Endpoint } from "./Endpoint";
 import { useNavigate, useParams } from "react-router-dom";
+import { Endpoint } from "./Endpoint";
+import { EndpointType } from "./types";
 
 type EndpointSideBarProps = {
   endpoints: EndpointType[];
 };
 export const EndpointSideBar = ({ endpoints }: EndpointSideBarProps) => {
-  const [search, setSearch] = useState("");
+  const [search, _] = useState("");
   const navigate = useNavigate();
   const { snifferId, endpointId } = useParams();
   console.log("snifferId", snifferId);
