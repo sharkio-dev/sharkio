@@ -1,8 +1,7 @@
 import * as React from "react";
 import { CiSaveDown2 } from "react-icons/ci";
-import { Rule, TestType, getTest } from "../../stores/testStore";
+import { Rule, TestType, useTestStore } from "../../stores/testStore";
 import { useParams } from "react-router-dom";
-import { BackendAxios } from "../../api/backendAxios";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { VscChecklist } from "react-icons/vsc";
@@ -29,18 +28,16 @@ export const TestSuiteMainSection = () => {
   });
   const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
   const [showConfig, setShowConfig] = React.useState<boolean>(true);
+  const { getTest, editTest } = useTestStore();
 
   const hadnleSave = React.useCallback(() => {
     if (!testSuiteId || !testId || !test) {
       return;
     }
     setSaveLoading(true);
-    BackendAxios.put(`/test-suites/${testSuiteId}/tests/${testId}`, {
-      name: test?.name,
-      headers: test?.headers,
-      body: test?.body,
-      url: test?.url,
-      method: test?.method,
+
+    editTest(testSuiteId, testId, {
+      ...test,
       rules: [statusCodeRule, bodyRule, ...headerRules],
     })
       .then(() => {
@@ -84,11 +81,11 @@ export const TestSuiteMainSection = () => {
     if (!testSuiteId || !testId) {
       return;
     }
-    getTest(testSuiteId, testId).then((res) => {
-      setTest(res.data);
-      extractStatusCode(res.data);
-      extractBody(res.data);
-      extractHeaders(res.data);
+    getTest(testSuiteId, testId).then((data) => {
+      setTest(data);
+      extractStatusCode(data);
+      extractBody(data);
+      extractHeaders(data);
     });
   }, [testSuiteId, testId]);
 

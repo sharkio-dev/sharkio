@@ -1,5 +1,3 @@
-import * as React from "react";
-
 type HeaderDetailsProps = {
   status?: "success" | "failure";
   expectedHeaderName: string;

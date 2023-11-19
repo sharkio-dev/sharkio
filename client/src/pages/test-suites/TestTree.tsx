@@ -12,14 +12,8 @@ import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem, useTreeItem } from "@mui/x-tree-view/TreeItem";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import {
-  TestType,
-  deleteTest,
-  getTestByTestSuiteId,
-} from "../../stores/testStore";
-import { AddTestSuiteModal } from "./AddTestSuiteModal";
+import { TestType, useTestStore } from "../../stores/testStore";
 import { AddTestModal } from "./AddTestModal";
-import { BackendAxios } from "../../api/backendAxios";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type CustomContentProps = {
@@ -72,8 +66,8 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
   const navigator = useNavigate();
   const { testSuiteId } = useParams();
-  const [loading, setLoading] = React.useState<boolean>(false);
   const ref1 = React.useRef<any>(null);
+  const { executedTests } = useTestStore();
 
   const handleDeleteClick = () => {
     if (isDeleteClicked) {
@@ -106,7 +100,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId,
+          nodeId
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -115,12 +109,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   };
 
   const onClickPlay = () => {
-    if (onExecute) {
-      setLoading(true);
-      onExecute().finally(() => {
-        setLoading(false);
-      });
-    }
+    onExecute && onExecute();
   };
 
   return (
@@ -162,7 +151,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
             />
           )}
           {type === "test" &&
-            (!loading ? (
+            (!executedTests[nodeId] ? (
               <AiOutlinePlayCircle
                 className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
                 onClick={onClickPlay}
@@ -208,38 +197,21 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 
 export function TestTree() {
   const { testSuiteId } = useParams();
-  const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
-    {},
-  );
   const [testModalOpen, setTestModalOpen] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { executeTest, loadTests, deleteTest, tests, resetTests } =
+    useTestStore();
 
   const fetchTestTree = () => {
     if (!testSuiteId) {
-      setTestTree({});
+      resetTests();
       return;
     }
     setLoading(true);
-    getTestByTestSuiteId(testSuiteId)
-      .then((res) => {
-        const a = res.data.reduce(
-          (acc: Record<string, TestType[]>, test: TestType) => {
-            const url = test.url;
-            if (Object.hasOwnProperty.call(acc, url)) {
-              acc[url] = [...acc[url], test];
-            } else {
-              acc[url] = [test];
-            }
-            return acc;
-          },
-          {},
-        );
-        setTestTree(a);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    loadTests(testSuiteId).finally(() => {
+      setLoading(false);
+    });
   };
 
   React.useEffect(() => {
@@ -261,10 +233,8 @@ export function TestTree() {
       });
   };
 
-  const executeTest = (testId: string) => {
-    return BackendAxios.post(
-      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run",
-    )
+  const execute = (testId: string) => {
+    return executeTest(testSuiteId as string, testId)
       .then(() => {
         show("Test executed successfully", "success");
       })
@@ -275,7 +245,7 @@ export function TestTree() {
 
   return (
     <>
-      {Object.keys(testTree).length === 0 && !loading && (
+      {Object.keys(tests).length === 0 && !loading && (
         <div className="flex flex-col h-full justify-center items-center ">
           <div
             className="flex flex-row items-center space-x-2 px-2 hover:text-blue-400 cursor-pointer"
@@ -296,8 +266,7 @@ export function TestTree() {
         defaultExpandIcon={<ChevronRightIcon />}
       >
         {snackBar}
-
-        {Object.keys(testTree).map((url, i) => {
+        {Object.keys(tests).map((url, i) => {
           return (
             <CustomTreeItem
               key={url}
@@ -306,7 +275,7 @@ export function TestTree() {
               endpointId={i.toString()}
               type="endpoint"
             >
-              {testTree[url].map((test: any) => {
+              {tests[url].map((test: TestType) => {
                 return (
                   <CustomTreeItem
                     endpointId={i.toString()}
@@ -315,7 +284,7 @@ export function TestTree() {
                     nodeId={test.id}
                     label={test.name}
                     type="test"
-                    onExecute={() => executeTest(test.id)}
+                    onExecute={() => execute(test.id)}
                   />
                 );
               })}
@@ -326,7 +295,6 @@ export function TestTree() {
           open={testModalOpen}
           onClose={() => {
             setTestModalOpen(false);
-            fetchTestTree();
           }}
         />
       </TreeView>

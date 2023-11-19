@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Editor } from "@monaco-editor/react";
 
 type BodyDetailsProps = {

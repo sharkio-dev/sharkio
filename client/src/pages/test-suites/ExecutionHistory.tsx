@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
-import { BackendAxios } from "../../api/backendAxios";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import {
   Table,
@@ -11,27 +10,21 @@ import {
   TableRow,
 } from "@mui/material";
 import { ExecutionRow } from "./ExecutionRowProps";
+import { useTestStore } from "../../stores/testStore";
 
 export const ExecutionHistory = () => {
   const { testSuiteId, testId } = useParams();
-  const [executions, setExecutions] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { getExecutions, executions } = useTestStore();
 
   React.useEffect(() => {
     if (!testSuiteId || !testId) {
       return;
     }
     setLoading(true);
-    setExecutions([]);
-    BackendAxios.get(
-      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
-    )
-      .then((res) => {
-        setExecutions(res.data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    getExecutions(testSuiteId, testId).finally(() => {
+      setLoading(false);
+    });
   }, [testSuiteId, testId]);
 
   return (

@@ -11,8 +11,8 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { getEnpoints, getInvocations } from "../../api/api";
 import { EndpointType, InvocationType } from "../sniffers/types";
-import { BackendAxios } from "../../api/backendAxios";
 import { useParams } from "react-router-dom";
+import { useTestStore } from "../../stores/testStore";
 
 export type AddTestModalProps = {
   open: boolean;
@@ -30,6 +30,7 @@ export const AddTestModal = ({ open, onClose }: AddTestModalProps) => {
   const [invocations, setInvocations] = React.useState<InvocationType[]>([]);
   const [invocation, setInvocation] = React.useState<string>("");
   const { testSuiteId } = useParams();
+  const { importTest } = useTestStore();
 
   const onSnifferPicked = (value: string) => {
     setSniffer(value);
@@ -47,22 +48,24 @@ export const AddTestModal = ({ open, onClose }: AddTestModalProps) => {
   };
 
   const onClickAdd = () => {
+    if (!testSuiteId) {
+      show("Test Suite not selected", "error");
+      return;
+    }
     if (name === "") {
       show("Name cannot be empty", "error");
       return;
     }
 
     setIsLoading(true);
-    BackendAxios.post(`/test-suites/${testSuiteId}/import/${invocation}`, {
-      name,
-    })
+    importTest(testSuiteId, invocation, name)
       .then(() => {
-        show("Test Endpoint created successfully", "success");
+        show("Test created successfully", "success");
         resetState();
         onClose();
       })
       .catch(() => {
-        show("Test Endpoint creation failed", "error");
+        show("Test creation failed", "error");
       })
       .finally(() => {
         setIsLoading(false);
