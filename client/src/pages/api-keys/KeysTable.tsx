@@ -4,9 +4,8 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Delete, Edit } from "@mui/icons-material";
-import { ConfigButton } from "../../components/config-card/ConfigButton";
 import { Key } from "./api-keys";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 
 type KeysTableProps = {
   keys: Key[];
@@ -43,19 +42,14 @@ export const KeysTable = ({ keys, invokeKey, onEditKey }: KeysTableProps) => {
               <TableCell align="left">{row.key}</TableCell>
               <TableCell align="left">
                 <div className="flex flex-row-reverse w-full ">
-                  <ConfigButton
-                    tooltip={"Delete the API key"}
+                  <AiOutlineDelete
+                    className=" text-red-400 active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md"
                     onClick={() => invokeKey(row.id)}
-                  >
-                    <Delete color="error" fontSize="small" />
-                  </ConfigButton>
-                  <ConfigButton
-                    tooltip={"Edit the API key"}
+                  />
+                  <AiOutlineEdit
+                    className=" text-amber-400 active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md"
                     onClick={() => onEditKey(row.id)}
-                    className="mr-2"
-                  >
-                    <Edit color="info" fontSize="small" />
-                  </ConfigButton>
+                  />
                 </div>
               </TableCell>
             </TableRow>

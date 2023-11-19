@@ -13,6 +13,7 @@ import SniffersPage from "./pages/sniffers/SniffersPage";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
+import TestSuitePage from "./pages/test-suites/testSuitePage";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -33,6 +34,10 @@ function App(): React.JSX.Element {
       { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
       { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
       { path: routes.CHAT, element: <ChatPage /> },
+      { path: routes.TEST_SUITES, element: <TestSuitePage /> },
+      { path: routes.TEST_SUITE, element: <TestSuitePage /> },
+      { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },
+      { path: routes.TEST_ENDPOINT, element: <TestSuitePage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
@@ -49,10 +54,10 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <AuthWrapper>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <AuthWrapper>
           <Routes>
             {routesWithAuth()}
             <Route
@@ -88,9 +93,9 @@ function App(): React.JSX.Element {
               }
             />
           </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </AuthWrapper>
+        </AuthWrapper>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

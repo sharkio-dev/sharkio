@@ -6,7 +6,7 @@ import {
   getSniffers,
 } from "../api/api";
 
-export type Sniffer = {
+export type SnifferType = {
   name: string;
   id: string;
   downstreamUrl: string;
@@ -15,21 +15,26 @@ export type Sniffer = {
 };
 
 interface SniffersState {
-  sniffers: Sniffer[];
-  loadSniffers: () => Promise<void>;
+  sniffers: SnifferType[];
+  loadSniffers: () => Promise<SnifferType[]>;
   createSniffer: (
-    sniffer: Omit<Omit<Sniffer, "id">, "subdomain">,
+    sniffer: Omit<Omit<SnifferType, "id">, "subdomain">,
   ) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
-  editSniffer: (sniffer: Partial<Omit<Sniffer, "subdomain">>) => Promise<void>;
+  editSniffer: (
+    sniffer: Partial<Omit<SnifferType, "subdomain">>,
+  ) => Promise<void>;
 }
 
 export const useSniffersStore = create<SniffersState>((set) => ({
   sniffers: [],
   loadSniffers: () => {
-    return getSniffers().then((res) => set({ sniffers: res.data }));
+    return getSniffers().then((res) => {
+      set({ sniffers: res.data });
+      return res.data;
+    });
   },
-  createSniffer: (sniffer: Omit<Omit<Sniffer, "id">, "subdomain">) => {
+  createSniffer: (sniffer: Omit<Omit<SnifferType, "id">, "subdomain">) => {
     return createSniffer(sniffer).then(() => {
       getSniffers().then((res) => set({ sniffers: res.data }));
     });
@@ -39,7 +44,7 @@ export const useSniffersStore = create<SniffersState>((set) => ({
       getSniffers().then((res) => set({ sniffers: res.data }));
     });
   },
-  editSniffer: (sniffer: Partial<Omit<Sniffer, "subdomain">>) => {
+  editSniffer: (sniffer: Partial<Omit<SnifferType, "subdomain">>) => {
     return editSniffer(sniffer).then(() => {
       getSniffers().then((res) => set({ sniffers: res.data }));
     });

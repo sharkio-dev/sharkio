@@ -8,15 +8,15 @@ import {
   Repository,
 } from "typeorm";
 import { useLog } from "../../lib/log";
-import { InterceptedResponse } from "../response/response.model";
+import { Response } from "../response/response.model";
 
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
 });
 
-@Entity({ name: "invocation" })
-export class Invocation {
+@Entity({ name: "request" })
+export class Request {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -32,8 +32,8 @@ export class Invocation {
   @Column({ name: "sniffer_id" })
   snifferId: string;
 
-  @Column({ name: "request_id" })
-  requestId: string;
+  @Column({ name: "endpoint_id" })
+  endpointId: string;
 
   @Column()
   url: string;
@@ -47,15 +47,18 @@ export class Invocation {
   @Column({ type: "varchar" })
   headers: Record<string, any>;
 
-  @OneToMany("InterceptedResponse", "invocation")
+  @OneToMany("response", "request")
   @JoinColumn({ name: "id" })
-  response: InterceptedResponse[];
+  response: Response[];
+
+  @Column({ name: "test_execution_id" })
+  testExecutionId?: string;
 }
 
-export class InvocationRepository {
-  repository: Repository<Invocation>;
+export class RequestRepository {
+  repository: Repository<Request>;
 
   constructor(private readonly appDataSource: DataSource) {
-    this.repository = appDataSource.manager.getRepository(Invocation);
+    this.repository = appDataSource.manager.getRepository(Request);
   }
 }

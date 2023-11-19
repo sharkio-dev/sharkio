@@ -3,10 +3,13 @@ import { Sniffer } from "../model/sniffer/sniffers.model";
 import { ApiKey } from "../model/apikeys/apiKeys.model";
 import { Endpoint } from "../model/endpoint/endpoint.model";
 import { User } from "../model/user/user.model";
-import { Invocation } from "../model/invocation/invocation.model";
-import { InterceptedResponse } from "../model/response/response.model";
 import { Chat } from "../model/chat/chat.model";
 import { Message } from "../model/chat/message.model";
+import { Request } from "../model/request/request.model";
+import { Response } from "../model/response/response.model";
+import { TestSuite } from "../model/testSuite/testSuite.model";
+import { Test } from "../model/testSuite/test.model";
+import { TestExecution } from "../model/testSuite/testExecution.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -22,10 +25,14 @@ export const getAppDataSource = async () => {
         ApiKey,
         Endpoint,
         User,
-        Invocation,
-        InterceptedResponse,
         Chat,
         Message,
+        Request,
+        Response,
+        TestSuite,
+        TestExecution,
+        Test,
+        Response,
       ],
       subscribers: [],
       migrations: [],

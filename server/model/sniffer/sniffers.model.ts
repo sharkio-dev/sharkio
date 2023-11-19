@@ -23,7 +23,6 @@ export class SnifferRepository {
     return this.repository.findBy({ userId });
   }
   findBySubdomain(subdomain: string) {
-    //TODO change this to subdomain field
     return this.repository.findOneBy({ subdomain });
   }
 

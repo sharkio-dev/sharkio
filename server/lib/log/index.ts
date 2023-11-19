@@ -6,7 +6,7 @@ const logLevel = process.env.LOG_LEVEL;
 const customFormat = format.printf(
   ({ level, message, timestamp, metadata, ...rest }) => {
     const formattedMessage = `[${timestamp}][${level}]: ${message}${
-      logLevel === "debug" ? "\n" + JSON.stringify(rest, null, 2) : ""
+      logLevel === "debug" ? "\n" : ""
     }`;
 
     return formattedMessage;

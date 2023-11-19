@@ -50,7 +50,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
         onClose={onClose}
         className="flex justify-center items-center border-0"
       >
-        <Paper className="flex flex-col p-4 w-96 rounded-sm">
+        <Paper className="flex flex-col p-4 w-96 rounded-sm border-0">
           <div className="text-2xl font-bold">Add Sniffer</div>
           <div className="w-full border-b-[0.05px] my-4" />
           <div className="flex flex-col space-y-2">

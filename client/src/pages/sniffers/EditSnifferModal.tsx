@@ -2,12 +2,12 @@ import { useState, useCallback } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
-import { Sniffer, useSniffersStore } from "../../stores/sniffersStores";
+import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 
 type EdirSnifferModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  sniffer: Sniffer;
+  sniffer: SnifferType;
 };
 export const EditSnifferModal = ({
   isOpen,

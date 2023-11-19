@@ -22,7 +22,8 @@ export class SnifferController {
     private readonly snifferManager: SnifferService,
     private readonly requestService: EndpointService,
     private readonly snifferDocGenerator: SnifferDocGenerator,
-    private readonly baseUrl: string = "/sharkio/sniffer",
+    private readonly endpointService: EndpointService,
+    private readonly baseUrl: string = "/sharkio/sniffer"
   ) {}
 
   getRouter(): IRouterConfig {
@@ -46,7 +47,7 @@ export class SnifferController {
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
           res.json(await this.snifferManager.getUserSniffers(userId));
-        },
+        }
       )
       .post(
         requestValidator({ body: CreateSnifferValidator }),
@@ -106,7 +107,7 @@ export class SnifferController {
             });
             return res.sendStatus(500);
           }
-        },
+        }
       );
 
     router
@@ -168,7 +169,7 @@ export class SnifferController {
             });
             return res.sendStatus(500);
           }
-        },
+        }
       )
       .delete(
         /**
@@ -212,7 +213,7 @@ export class SnifferController {
             });
             return res.sendStatus(500);
           }
-        },
+        }
       )
       .get(
         /**
@@ -238,11 +239,11 @@ export class SnifferController {
           const userId = res.locals.auth.user.id;
           const sniffer = await this.snifferManager.getSniffer(
             userId,
-            snifferId,
+            snifferId
           );
 
           res.json(sniffer);
-        },
+        }
       );
 
     router.route("/:id/request").get(
@@ -274,13 +275,13 @@ export class SnifferController {
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
-        const snifferRequests = await this.requestService.getBySnifferId(
+        const snifferRequests = await this.endpointService.getBySnifferId(
           userId,
-          id,
+          id
         );
 
         res.json(snifferRequests);
-      },
+      }
     );
 
     router.route("/:id/invocation").get(
@@ -313,10 +314,10 @@ export class SnifferController {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
         const snifferInvocations =
-          await this.requestService.getInvocationsBySnifferId(userId, id);
+          await this.endpointService.getInvocationsBySnifferId(userId, id);
 
         res.json(snifferInvocations);
-      },
+      }
     );
 
     router.route("/:id/openapi").get(
@@ -348,15 +349,15 @@ export class SnifferController {
       async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = res.locals.auth.user.id;
-        const snifferRequests = await this.requestService.getBySnifferId(
+        const snifferRequests = await this.endpointService.getBySnifferId(
           userId,
-          id,
+          id
         );
 
         const generatedSwagger = generateOpenApi(snifferRequests);
 
         res.json(generatedSwagger);
-      },
+      }
     );
 
     router.use(
@@ -367,10 +368,15 @@ export class SnifferController {
         const userId = res.locals.auth.user.id;
         const generatedDoc =
           await this.snifferDocGenerator.generateDocForSniffer(userId, id);
+        const sniffer = await this.snifferManager.getSniffer(userId, id);
+        const snifferRequests = await this.endpointService.getBySnifferId(
+          userId,
+          id
+        );
 
         const html = swaggerUi.generateHTML(generatedDoc);
         res.send(html).status(200);
-      },
+      }
     );
 
     return {
