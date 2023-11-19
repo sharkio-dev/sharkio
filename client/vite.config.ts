@@ -6,7 +6,7 @@ export default () => {
   return defineConfig({
     plugins: [react(), basicSsl()],
     server: {
-      port: 444,
+      port: +(process.env.VITE_SERVER_PORT ?? 8123),
     },
   });
 };
