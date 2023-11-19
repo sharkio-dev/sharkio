@@ -15,7 +15,7 @@ export class ProxyMiddleware {
 
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestInterceptor: RequestInterceptor,
+    private readonly requestInterceptor: RequestInterceptor
   ) {
     this.proxyMiddleware = createProxyMiddleware({
       router: this.chooseRoute.bind(this),
@@ -24,7 +24,8 @@ export class ProxyMiddleware {
       autoRewrite: true,
       changeOrigin: true,
       followRedirects: true,
-      onProxyRes: async (proxyRes, req, res) => {
+      selfHandleResponse: true,
+      onProxyRes: (proxyRes, req, res) => {
         const invocationId = req.headers["x-sharkio-invocation-id"];
         const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
         const userId = req.headers["x-sharkio-user-id"] as string;
@@ -32,24 +33,44 @@ export class ProxyMiddleware {
           "x-sharkio-test-execution-id"
         ] as string;
 
-        console.log({ testExecutionId });
-
         try {
-          if (invocationId != null && typeof invocationId === "string") {
-            const parsedRes = await this.adaptIncomingResponse(proxyRes);
+          let body: any = [];
+          proxyRes.on("data", function (chunk) {
+            body.push(chunk);
+          });
 
-            await this.requestInterceptor.interceptResponse(
-              userId,
-              snifferId,
-              invocationId,
-              parsedRes,
-              testExecutionId,
-            );
-          }
+          proxyRes.on(
+            "end",
+            function (this: ProxyMiddleware) {
+              if (invocationId != null && typeof invocationId === "string") {
+                this.requestInterceptor
+                  .interceptResponse(
+                    userId,
+                    snifferId,
+                    invocationId,
+                    {
+                      body,
+                      headers: proxyRes.headers,
+                      statusCode: proxyRes.statusCode,
+                    },
+                    testExecutionId
+                  )
+                  .then((data) => {
+                    res.end(Buffer.from(JSON.stringify(body)));
+                  })
+                  .catch((e) => {
+                    logger.error(e.message);
+                    res.sendStatus(500).end();
+                  });
+              } else {
+                res.end(body);
+              }
+            }.bind(this)
+          );
         } catch (e) {
           logger.error(
             "failed to capture response for invocation id" + invocationId,
-            e,
+            e
           );
         }
       },
@@ -59,8 +80,9 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain
+    );
     req.headers["x-sharkio-port"] = selectedSniffer?.port.toString();
 
     if (selectedSniffer != null) {

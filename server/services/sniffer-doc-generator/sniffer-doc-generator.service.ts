@@ -6,14 +6,14 @@ import swaggerUi from "swagger-ui-express";
 export class SnifferDocGenerator {
   constructor(
     private readonly snifferManager: SnifferService,
-    private readonly requestService: EndpointService,
+    private readonly requestService: EndpointService
   ) {}
 
   async generateDocForSniffer(userId: string, snifferId: string) {
     const sniffer = await this.snifferManager.getSniffer(userId, snifferId);
     const snifferRequests = await this.requestService.getBySnifferId(
       userId,
-      snifferId,
+      snifferId
     );
 
     const generatedSwagger = generateOpenApi(snifferRequests);

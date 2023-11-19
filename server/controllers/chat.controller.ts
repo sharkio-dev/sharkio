@@ -32,7 +32,7 @@ export class ChatController {
   constructor(
     private readonly snifferManager: SnifferService,
     private readonly requestService: EndpointService,
-    private readonly chatService: ChatService,
+    private readonly chatService: ChatService
   ) {
     this.openai = new OpenAI({
       apiKey: process.env.OPEN_AI_KEY ?? "",
@@ -61,7 +61,7 @@ export class ChatController {
         await this.chatService.addSystemMessage(
           userId,
           chat.id,
-          completionMessage,
+          completionMessage
         );
         res.status(200).json({ chatId: chat.id, content: completionMessage });
       } else {
@@ -95,7 +95,7 @@ export class ChatController {
           await this.chatService.addSystemMessage(
             userId,
             chatId,
-            completionMessage,
+            completionMessage
           );
           res.status(200).json({ chatId, content: completionMessage });
         } else {
