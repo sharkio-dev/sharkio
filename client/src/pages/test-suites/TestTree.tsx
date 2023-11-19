@@ -100,7 +100,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId,
+          nodeId
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -134,33 +134,31 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
       >
         {label}
       </Typography>
-      {selected && (
-        <div className="flex flex-row items-center space-x-2 px-2">
-          {type === "test" && (
-            <AiOutlineDelete
-              className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
-                isDeleteClicked && "text-red-500"
-              }`}
-              onClick={handleDeleteClick}
+      <div className="flex flex-row items-center space-x-2 px-2">
+        {handleDeleteClick && (
+          <AiOutlineDelete
+            className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
+              isDeleteClicked && "text-red-500"
+            }`}
+            onClick={handleDeleteClick}
+          />
+        )}
+        {type === "endpoint" && (
+          <AiOutlinePlus
+            className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+            onClick={() => setAddTestModalOpen(true)}
+          />
+        )}
+        {onClickPlay &&
+          (!executedTests[nodeId] ? (
+            <AiOutlinePlayCircle
+              className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+              onClick={onClickPlay}
             />
-          )}
-          {type === "endpoint" && (
-            <AiOutlinePlus
-              className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
-              onClick={() => setAddTestModalOpen(true)}
-            />
-          )}
-          {type === "test" &&
-            (!executedTests[nodeId] ? (
-              <AiOutlinePlayCircle
-                className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
-                onClick={onClickPlay}
-              />
-            ) : (
-              <LoadingIcon />
-            ))}
-        </div>
-      )}
+          ) : (
+            <LoadingIcon />
+          ))}
+      </div>
       <AddTestModal
         open={addTestModalOpen}
         onClose={() => setAddTestModalOpen(false)}
@@ -202,6 +200,7 @@ export function TestTree() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const { executeTest, loadTests, deleteTest, tests, resetTests } =
     useTestStore();
+  const navigator = useNavigate();
 
   const fetchTestTree = () => {
     if (!testSuiteId) {
@@ -273,18 +272,49 @@ export function TestTree() {
               nodeId={i.toString()}
               label={url}
               endpointId={i.toString()}
+              onDelete={() => {
+                tests[url].forEach((test: TestType) => {
+                  onDeleteClicked(test.id);
+                });
+                navigator("/test-suites/" + testSuiteId);
+              }}
+              onExecute={() => {
+                return Promise.all(
+                  tests[url].map((test: TestType) => {
+                    return execute(test.id);
+                  })
+                ).then(() => {
+                  navigator("/test-suites/" + testSuiteId + "/endpoints/" + i);
+                });
+              }}
               type="endpoint"
             >
               {tests[url].map((test: TestType) => {
                 return (
                   <CustomTreeItem
                     endpointId={i.toString()}
-                    onDelete={() => onDeleteClicked(test.id)}
+                    onDelete={() => {
+                      onDeleteClicked(test.id);
+                      navigator(
+                        "/test-suites/" + testSuiteId + "/endpoints/" + i
+                      );
+                    }}
                     key={test.id}
                     nodeId={test.id}
                     label={test.name}
                     type="test"
-                    onExecute={() => execute(test.id)}
+                    onExecute={() => {
+                      return execute(test.id).then(() => {
+                        navigator(
+                          "/test-suites/" +
+                            testSuiteId +
+                            "/endpoints/" +
+                            i +
+                            "/tests/" +
+                            test.id
+                        );
+                      });
+                    }}
                   />
                 );
               })}
