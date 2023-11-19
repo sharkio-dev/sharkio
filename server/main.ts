@@ -61,7 +61,7 @@ async function main() {
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
-    invocationRepository
+    invocationRepository,
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -71,7 +71,7 @@ async function main() {
   const testService = new TestService(testRepository);
   const requestService = new RequestService(invocationRepository);
   const testExecutionService = new TestExecutionService(
-    testExecutionRepository
+    testExecutionRepository,
   );
 
   /* Controllers */
@@ -80,24 +80,24 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService
+    snifferService,
   );
   const snifferController = new SnifferController(
     snifferService,
     endpointService,
     docGenerator,
-    endpointService
+    endpointService,
   );
   const endpointController = new EndpointController(
     endpointService,
     snifferService,
-    requestService
+    requestService,
   );
   const invocationController = new InvocationController(endpointService);
   const chatController = new ChatController(
     snifferService,
     endpointService,
-    chatService
+    chatService,
   );
   const swaggerUi = new SwaggerUiController();
   const testSuiteController = new TestSuiteController(
@@ -106,24 +106,24 @@ async function main() {
     testService,
     requestService,
     snifferService,
-    testExecutionService
+    testExecutionService,
   );
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     endpointService,
-    responseService
+    responseService,
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware
+    requestInterceptorMiddleware,
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware
+    requestInterceptorMiddleware,
   );
   const snifferManagerServer = new Server(
     [
@@ -136,7 +136,7 @@ async function main() {
       chatController.getRouter(),
       testSuiteController.getRouter(),
     ],
-    swaggerUi
+    swaggerUi,
   );
 
   // /* Start Servers */
