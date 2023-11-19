@@ -47,6 +47,7 @@ interface TestStore {
   resetTests: () => void;
   executeTest: (testSuiteId: string, testId: string) => Promise<void>;
   getExecutions: (testSuiteId: string, testId: string) => Promise<any>;
+  getExecutionByEndpoint: (testSuiteId: string, url: string) => Promise<any>;
 }
 
 export const useTestStore = create<TestStore>((set, get) => ({
@@ -157,6 +158,23 @@ export const useTestStore = create<TestStore>((set, get) => ({
     return BackendAxios.get(
       `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
     ).then((res) => {
+      set((state) => ({
+        ...state,
+        executions: res.data,
+      }));
+      return res.data;
+    });
+  },
+  getExecutionByEndpoint: async (testSuiteId: string, url: string) => {
+    set((state) => ({
+      ...state,
+      executions: [],
+    }));
+    return BackendAxios.get(`/test-suites/${testSuiteId}/test-executions`, {
+      params: {
+        url,
+      },
+    }).then((res) => {
       set((state) => ({
         ...state,
         executions: res.data,

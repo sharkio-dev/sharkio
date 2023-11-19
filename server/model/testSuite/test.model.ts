@@ -22,6 +22,10 @@ export class TestRepository {
     return this.repository.find({ where: { testSuiteId } });
   }
 
+  getByUrl(testSuiteId: string, url: string) {
+    return this.repository.find({ where: { url, testSuiteId } });
+  }
+
   updateById(
     id: string,
     test: {
@@ -31,7 +35,7 @@ export class TestRepository {
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
-    },
+    }
   ) {
     console.log("test", test);
     return this.repository.update(id, test);
@@ -45,7 +49,7 @@ export class TestRepository {
     body: Record<string, any>,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[],
+    rules?: Rule[]
   ): Promise<Test> {
     const newTest = this.repository.create({
       name,

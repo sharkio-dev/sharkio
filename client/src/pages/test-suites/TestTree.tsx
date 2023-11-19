@@ -100,7 +100,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId
+          nodeId,
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);

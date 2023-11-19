@@ -13,19 +13,30 @@ import { ExecutionRow } from "./ExecutionRowProps";
 import { useTestStore } from "../../stores/testStore";
 
 export const ExecutionHistory = () => {
-  const { testSuiteId, testId } = useParams();
+  const { testSuiteId, testId, endpointId } = useParams();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const { getExecutions, executions } = useTestStore();
+  const { getExecutions, executions, getExecutionByEndpoint, tests } =
+    useTestStore();
+  console.log({ tests });
 
   React.useEffect(() => {
+    if (testSuiteId && endpointId && !testId) {
+      setLoading(true);
+      const url = Object.keys(tests)[+endpointId];
+      getExecutionByEndpoint(testSuiteId, url).finally(() => {
+        setLoading(false);
+      });
+      return;
+    }
     if (!testSuiteId || !testId) {
       return;
     }
     setLoading(true);
+
     getExecutions(testSuiteId, testId).finally(() => {
       setLoading(false);
     });
-  }, [testSuiteId, testId]);
+  }, [testSuiteId, testId, endpointId]);
 
   return (
     <TableContainer className="border-[1px] border-primary rounded-lg">

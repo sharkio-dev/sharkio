@@ -2,6 +2,7 @@ import {
   Column,
   DataSource,
   Entity,
+  In,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -46,9 +47,9 @@ export class TextExecutionRepository {
     });
   }
 
-  getByTestId(testId: string) {
+  getByTestId(testIds: string[]) {
     return this.repository.find({
-      where: { testId },
+      where: { testId: In(testIds) },
       relations: {
         test: true,
         request: {

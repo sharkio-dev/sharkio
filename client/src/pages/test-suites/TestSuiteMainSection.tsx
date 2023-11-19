@@ -15,7 +15,7 @@ export const TestSuiteMainSection = () => {
   const [value, setValue] = React.useState("1");
   const [saveLoading, setSaveLoading] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
-  const { testSuiteId, testId } = useParams();
+  const { testSuiteId, testId, endpointId } = useParams();
   const [statusCodeRule, setStatusCodeRule] = React.useState<Rule>({
     type: "status_code",
     expectedValue: "200",
@@ -27,7 +27,7 @@ export const TestSuiteMainSection = () => {
     comparator: "equals",
   });
   const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
-  const [showConfig, setShowConfig] = React.useState<boolean>(true);
+  const [showConfig, setShowConfig] = React.useState<boolean>(false);
   const { getTest, editTest } = useTestStore();
 
   const hadnleSave = React.useCallback(() => {
@@ -88,6 +88,8 @@ export const TestSuiteMainSection = () => {
       extractHeaders(data);
     });
   }, [testSuiteId, testId]);
+
+  console.log({ s: testSuiteId, t: testId, e: endpointId });
 
   return (
     <>
@@ -153,6 +155,7 @@ export const TestSuiteMainSection = () => {
             ))}
         </>
       )}
+      {testSuiteId && !testId && endpointId && <ExecutionHistory />}
     </>
   );
 };
