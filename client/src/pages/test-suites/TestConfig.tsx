@@ -183,7 +183,7 @@ export const TestConfig = ({
                 setTest({
                   ...test,
                   headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index)
+                    Object.entries(test.headers).filter((_, i) => i !== index),
                   ),
                 })
               }

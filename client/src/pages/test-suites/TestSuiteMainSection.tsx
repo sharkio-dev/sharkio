@@ -27,7 +27,7 @@ export const TestSuiteMainSection = () => {
     comparator: "equals",
   });
   const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
-  const [showConfig, setShowConfig] = React.useState<boolean>(false);
+  const [showConfig, setShowConfig] = React.useState<boolean>(true);
   const { getTest, editTest } = useTestStore();
 
   const hadnleSave = React.useCallback(() => {
