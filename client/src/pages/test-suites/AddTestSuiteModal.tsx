@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useTestSuiteStore } from "../../stores/testSuitesStore";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type AddTestSuiteModalProps = {
   open: boolean;
@@ -23,6 +23,7 @@ export const AddTestSuiteModal = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { createTestSuite } = useTestSuiteStore();
   const { show, component: snackBar } = useSnackbar();
+  const navigator = useNavigate();
 
   const onClickAdd = () => {
     if (name === "") {
@@ -32,7 +33,9 @@ export const AddTestSuiteModal = ({
     setIsLoading(true);
 
     createTestSuite(name)
-      .then(() => {
+      .then((res) => {
+        console.log(res.id);
+        navigator(`/test-suites/${res.id}`, { replace: true });
         show("Test Suite created successfully", "success");
         resetState();
         onClose();

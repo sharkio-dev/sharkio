@@ -19,7 +19,7 @@ type TestSuiteType = {
 interface TestSuiteStore {
   testSuites: TestSuiteType[];
   loadTestSuites: () => Promise<TestSuiteType[]>;
-  createTestSuite: (name: string) => Promise<void>;
+  createTestSuite: (name: string) => Promise<any>;
   editTestSuite: (id: string, name: string) => Promise<void>;
   deleteTestSuite: (id: string) => Promise<void>;
 }
@@ -33,8 +33,9 @@ export const useTestSuiteStore = create<TestSuiteStore>((set, get) => ({
     });
   },
   createTestSuite: async (name: string) => {
-    return postTestSuite(name).then(() => {
+    return postTestSuite(name).then((res) => {
       get().loadTestSuites();
+      return res.data;
     });
   },
   editTestSuite: async (id: string, name: string) => {

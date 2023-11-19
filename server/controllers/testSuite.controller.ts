@@ -162,26 +162,32 @@ export class TestSuiteController {
       })
     );
 
-    router.put("/:testSuiteId", async (req: Request, res: Response) => {
-      const { testSuiteId } = req.params;
-      const testSuite = await this.testSuiteService.getById(testSuiteId);
-      if (!testSuite) {
-        return res.status(404).send();
-      }
-      const { name } = req.body;
-      await this.testSuiteService.update(testSuiteId, name);
-      res.status(204).send();
-    });
+    router.put(
+      "/:testSuiteId",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId } = req.params;
+        const testSuite = await this.testSuiteService.getById(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+        const { name } = req.body;
+        await this.testSuiteService.update(testSuiteId, name);
+        res.status(204).send();
+      })
+    );
 
-    router.delete("/:testSuiteId", async (req: Request, res: Response) => {
-      const { testSuiteId } = req.params;
-      const testSuite = await this.testSuiteService.getById(testSuiteId);
-      if (!testSuite) {
-        return res.status(404).send();
-      }
-      await this.testSuiteService.deleteById(testSuiteId);
-      res.status(204).send();
-    });
+    router.delete(
+      "/:testSuiteId",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId } = req.params;
+        const testSuite = await this.testSuiteService.getById(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+        await this.testSuiteService.deleteById(testSuiteId);
+        res.status(204).send();
+      })
+    );
 
     router.put(
       "/:testSuiteId/tests/:testId",

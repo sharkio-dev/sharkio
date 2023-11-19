@@ -211,33 +211,38 @@ export function TestTree() {
   const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
     {}
   );
+  const [testModalOpen, setTestModalOpen] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const fetchTestTree = () => {
     if (!testSuiteId) {
+      setTestTree({});
       return;
     }
-    getTestByTestSuiteId(testSuiteId).then((res) => {
-      const a = res.data.reduce(
-        (acc: Record<string, TestType[]>, test: TestType) => {
-          const url = test.url;
-          if (Object.hasOwnProperty.call(acc, url)) {
-            acc[url] = [...acc[url], test];
-          } else {
-            acc[url] = [test];
-          }
-          return acc;
-        },
-        {}
-      );
-      setTestTree(a);
-    });
+    setLoading(true);
+    getTestByTestSuiteId(testSuiteId)
+      .then((res) => {
+        const a = res.data.reduce(
+          (acc: Record<string, TestType[]>, test: TestType) => {
+            const url = test.url;
+            if (Object.hasOwnProperty.call(acc, url)) {
+              acc[url] = [...acc[url], test];
+            } else {
+              acc[url] = [test];
+            }
+            return acc;
+          },
+          {}
+        );
+        setTestTree(a);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   React.useEffect(() => {
-    if (!testSuiteId) {
-      return;
-    }
     fetchTestTree();
   }, [testSuiteId]);
 
@@ -269,37 +274,62 @@ export function TestTree() {
   };
 
   return (
-    <TreeView
-      aria-label="icon expansion"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-    >
-      {snackBar}
-      {Object.keys(testTree).map((url, i) => {
-        return (
-          <CustomTreeItem
-            key={url}
-            nodeId={i.toString()}
-            label={url}
-            endpointId={i.toString()}
-            type="endpoint"
+    <>
+      {Object.keys(testTree).length === 0 && !loading && (
+        <div className="flex flex-col h-full justify-center items-center ">
+          <div
+            className="flex flex-row items-center space-x-2 px-2 hover:text-blue-400 cursor-pointer"
+            onClick={() => setTestModalOpen(true)}
           >
-            {testTree[url].map((test: any) => {
-              return (
-                <CustomTreeItem
-                  endpointId={i.toString()}
-                  onDelete={() => onDeleteClicked(test.id)}
-                  key={test.id}
-                  nodeId={test.id}
-                  label={test.name}
-                  type="test"
-                  onExecute={() => executeTest(test.id)}
-                />
-              );
-            })}
-          </CustomTreeItem>
-        );
-      })}
-    </TreeView>
+            <p className=" text-lg">Add Test</p>
+
+            <AiOutlinePlus
+              className=" text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+              onClick={() => setTestModalOpen(true)}
+            />
+          </div>
+        </div>
+      )}
+      <TreeView
+        aria-label="icon expansion"
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+      >
+        {snackBar}
+
+        {Object.keys(testTree).map((url, i) => {
+          return (
+            <CustomTreeItem
+              key={url}
+              nodeId={i.toString()}
+              label={url}
+              endpointId={i.toString()}
+              type="endpoint"
+            >
+              {testTree[url].map((test: any) => {
+                return (
+                  <CustomTreeItem
+                    endpointId={i.toString()}
+                    onDelete={() => onDeleteClicked(test.id)}
+                    key={test.id}
+                    nodeId={test.id}
+                    label={test.name}
+                    type="test"
+                    onExecute={() => executeTest(test.id)}
+                  />
+                );
+              })}
+            </CustomTreeItem>
+          );
+        })}
+        <AddTestModal
+          open={testModalOpen}
+          onClose={() => {
+            setTestModalOpen(false);
+            fetchTestTree();
+          }}
+        />
+      </TreeView>
+    </>
   );
 }

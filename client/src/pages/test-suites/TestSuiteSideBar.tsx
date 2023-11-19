@@ -3,7 +3,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { TestTree } from "./TestTree";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useTestSuiteStore } from "../../stores/testSuitesStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Sniffer } from "../sniffers/SniffersSideBar";
 import { LuTestTube2 } from "react-icons/lu";
 import {
@@ -25,10 +25,25 @@ export const TestSuiteSideBar = () => {
   const selectedTestSuite = testSuites.find(
     (testSuite) => testSuite.id === selectValue
   );
+  const { testSuiteId } = useParams();
+
+  const loadTS = () => {
+    loadTestSuites().then(() => {
+      if (testSuiteId) {
+        setSelectValue(testSuiteId);
+      }
+    });
+  };
 
   React.useEffect(() => {
-    loadTestSuites();
+    loadTS();
   }, []);
+
+  React.useEffect(() => {
+    if (testSuiteId) {
+      setSelectValue(testSuiteId);
+    }
+  }, [testSuiteId]);
 
   return (
     <>
@@ -51,7 +66,7 @@ export const TestSuiteSideBar = () => {
                 key={i}
                 onClick={() => {
                   setSelectValue(testSuite.id);
-                  navigator("/test-suites/" + testSuite.id, { replace: true });
+                  navigator("/test-suites/" + testSuite.id);
                 }}
                 value={testSuite.id}
               >
@@ -62,7 +77,7 @@ export const TestSuiteSideBar = () => {
                     setEditTestSuiteModalOpen(true);
                   }}
                   onDeleteSniffer={() => {
-                    setSelectValue(testSuite.id);
+                    navigator("/test-suites/");
                     setDeleteTestSuiteModalOpen(true);
                   }}
                   name={testSuite.name}
@@ -72,21 +87,24 @@ export const TestSuiteSideBar = () => {
           </Select>
         </FormControl>
       </div>
-      <div className="flex flex-col space-y-2 mt-4">
-        <TestTree />
+      <div className="flex flex-col space-y-2 mt-4 h-full">
+        {!testSuiteId && (
+          <div className="flex flex-col items-center justify-center h-full w-full">
+            <p className="text-gray-500 text-center">Select a test suite</p>
+          </div>
+        )}
+        {testSuiteId && <TestTree />}
       </div>
       <AddTestSuiteModal
         open={addTestSuiteModalOpen}
         onClose={() => {
           setAddTestSuiteModalOpen(false);
-          navigator("#", { replace: true });
         }}
       />
       <EditTestSuiteModal
         open={editTestSuiteModalOpen}
         onClose={() => {
           setEditTestSuiteModalOpen(false);
-          navigator("#", { replace: true });
         }}
         name={selectedTestSuite?.name ?? ""}
       />
@@ -95,7 +113,6 @@ export const TestSuiteSideBar = () => {
           isOpen={deleteTestSuiteModalOpen}
           onClose={() => {
             setDeleteTestSuiteModalOpen(false);
-            navigator("#", { replace: true });
           }}
           testSuite={selectedTestSuite}
         />
