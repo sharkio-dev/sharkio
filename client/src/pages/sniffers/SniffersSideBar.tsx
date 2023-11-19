@@ -18,7 +18,7 @@ import { LoadingIcon } from "./LoadingIcon";
 
 export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
+    null
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -163,7 +163,7 @@ export const SniffersSideBar = () => {
 };
 
 type SnifferProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
   onClick?: () => void;
   onEditSniffer?: () => void;
   onDeleteSniffer?: () => void;
@@ -172,7 +172,7 @@ type SnifferProps = {
 };
 
 export const Sniffer = ({
-  isSelected,
+  isSelected = false,
   onClick,
   onEditSniffer,
   onDeleteSniffer,

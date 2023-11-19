@@ -10,4 +10,16 @@ export class TestSuiteService {
   async create(name: string, userId: string) {
     return this.testSuiteRepository.create(name, userId);
   }
+
+  async update(id: string, name: string) {
+    return this.testSuiteRepository.update(id, name);
+  }
+
+  async getById(id: string) {
+    return this.testSuiteRepository.getById(id);
+  }
+
+  async deleteById(id: string) {
+    return this.testSuiteRepository.deleteById(id);
+  }
 }

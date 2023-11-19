@@ -17,7 +17,8 @@ import {
   deleteTest,
   getTestByTestSuiteId,
 } from "../../stores/testStore";
-import { AddTestSuiteModal } from "./TestSuiteSideBar";
+import { AddTestSuiteModal } from "./AddTestSuiteModal";
+import { AddTestModal } from "./AddTestModal";
 import { BackendAxios } from "../../api/backendAxios";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
@@ -105,7 +106,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId,
+          nodeId
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -171,10 +172,9 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
             ))}
         </div>
       )}
-      <AddTestSuiteModal
+      <AddTestModal
         open={addTestModalOpen}
         onClose={() => setAddTestModalOpen(false)}
-        type="Test Endpoint"
       />
     </div>
   );
@@ -209,7 +209,7 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 export function TestTree() {
   const { testSuiteId } = useParams();
   const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
-    {},
+    {}
   );
   const { show, component: snackBar } = useSnackbar();
 
@@ -228,7 +228,7 @@ export function TestTree() {
           }
           return acc;
         },
-        {},
+        {}
       );
       setTestTree(a);
     });
@@ -258,7 +258,7 @@ export function TestTree() {
 
   const executeTest = (testId: string) => {
     return BackendAxios.post(
-      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run",
+      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run"
     )
       .then(() => {
         show("Test executed successfully", "success");
