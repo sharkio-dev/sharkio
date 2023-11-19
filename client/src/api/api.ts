@@ -157,3 +157,15 @@ export const executeInvocation = (
     body,
   });
 };
+
+export const loadChat = (chatId: string) => {
+  return BackendAxios.get(`/chat/${chatId}`);
+};
+
+export const newChat = (content: string) => {
+  return BackendAxios.post(`/chat`, { content });
+};
+
+export const newMessage = (chatId: string, content: string) => {
+  return BackendAxios.post(`/chat/${chatId}/message`, { content });
+};

@@ -17,7 +17,8 @@ const log = useLog({
 });
 
 export class ProxyServer {
-  private readonly port: number = 443;
+  private readonly httpPort: number = +(process.env.PROXY_HTTP_PORT ?? 80);
+  private readonly httpsPort: number = +(process.env.PROXY_HTTPS_PORT ?? 443);
   private app: Express;
   private httpServer?: http.Server;
   private httpsServer?: http.Server;
@@ -39,8 +40,8 @@ export class ProxyServer {
   }
 
   private startHttpServer() {
-    return this.app.listen(80, () => {
-      log.info(`http proxy server started listening on port 80`);
+    return this.app.listen(this.httpPort, () => {
+      log.info(`http proxy server started listening on port ${this.httpPort}`);
     });
   }
 
@@ -51,8 +52,10 @@ export class ProxyServer {
         cert: fs.readFileSync(process.env.PROXY_CERT_FILE ?? ""),
       };
       const server = https.createServer(options, this.app);
-      return server.listen(443, () => {
-        log.info(`https proxy server started listening on port ${this.port}`);
+      return server.listen(this.httpsPort, () => {
+        log.info(
+          `https proxy server started listening on port ${this.httpsPort}`,
+        );
       });
     } catch (err) {
       log.error("Couldn't start HTTPS server!", { err });

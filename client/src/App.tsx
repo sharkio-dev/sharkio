@@ -12,6 +12,7 @@ import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
 import SniffersPage from "./pages/sniffers/SniffersPage";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
+import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
 
 function App(): React.JSX.Element {
@@ -32,6 +33,7 @@ function App(): React.JSX.Element {
       { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
       { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
       { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
+      { path: routes.CHAT, element: <ChatPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },

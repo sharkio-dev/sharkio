@@ -3,6 +3,8 @@ import { Sniffer } from "../model/sniffer/sniffers.model";
 import { ApiKey } from "../model/apikeys/apiKeys.model";
 import { Endpoint } from "../model/endpoint/endpoint.model";
 import { User } from "../model/user/user.model";
+import { Chat } from "../model/chat/chat.model";
+import { Message } from "../model/chat/message.model";
 import { Request } from "../model/request/request.model";
 import { Response } from "../model/response/response.model";
 import { TestSuite } from "../model/testSuite/testSuite.model";
@@ -23,6 +25,8 @@ export const getAppDataSource = async () => {
         ApiKey,
         Endpoint,
         User,
+        Chat,
+        Message,
         Request,
         Response,
         TestSuite,
