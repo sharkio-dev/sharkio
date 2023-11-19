@@ -13,8 +13,8 @@
     "docker:build": "docker build . -t sharkio-server",
     "docker:run": "docker run -p 5012:5012 --name sharkio-sniffer -d sharkio-server",
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
   },
   "nodemonConfig": {
