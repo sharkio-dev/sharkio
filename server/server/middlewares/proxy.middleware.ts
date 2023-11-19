@@ -59,9 +59,8 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain,
-    );
+    const selectedSniffer =
+      await this.snifferService.findBySubdomain(subdomain);
     req.headers["x-sharkio-port"] = selectedSniffer?.port.toString();
 
     if (selectedSniffer != null) {
@@ -71,7 +70,6 @@ export class ProxyMiddleware {
   }
 
   async adaptIncomingResponse(incomingResponse: http.IncomingMessage) {
-    // Body Parsing (assuming JSON for simplicity)
     const body = await new Promise((resolve, reject) => {
       let bodyChunks: Uint8Array[] = [];
       incomingResponse
