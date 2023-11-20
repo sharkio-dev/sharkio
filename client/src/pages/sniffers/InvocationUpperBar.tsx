@@ -45,24 +45,28 @@ export const InvocationUpperBar = ({
   return (
     <>
       {activeSniffer && (
-        <Tooltip
-          onClick={() =>
-            navigator.clipboard.writeText(domainPath(activeSniffer.subdomain))
-          }
-          title="Copy Sniffer's domain"
-          placement="top"
-          arrow
-        >
-          <div className="flex flex-row items-center space-x-4 mb-4 cursor-pointer">
-            <MdDomain className="text-blue-500 text-2xl p-1" />
-            <div className="text-sm text-gray-500">
-              <span className="text-white ">Sniffer's Domain: </span>
-              {domainPath(activeSniffer.subdomain)}
+        <div className="flex flex-row items-center space-x-4 mb-4">
+          <MdDomain className="text-blue-500 text-2xl p-1" />
+          <TextField
+            style={{ width: "50%" }}
+            label="Sniffer's Domain:"
+            size="small"
+            disabled
+            value={domainPath(activeSniffer.subdomain)}
+          />
+          <Tooltip title="Copy to clipboard" arrow placement="top">
+            <div>
+              <AiOutlineCopy
+                className="cursor-pointer"
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    domainPath(activeSniffer.subdomain)
+                  )
+                }
+              />
             </div>
-            <AiOutlineCopy title="Copy domain" />
-          </div>
-        </Tooltip>
-
+          </Tooltip>
+        </div>
         //you want click to copy only on the icon or the text
       )}
 
