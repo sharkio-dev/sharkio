@@ -26,7 +26,7 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
   const handleEditedProjectSave = () => {
     console.log(
       "try edit - " + "to edit:" + ProjectToEditName,
-      "edited:" + editedProjectName
+      "edited:" + editedProjectName,
     );
     if (editedProjectName === "" || ProjectToEditName === editedProjectName) {
       showSnackbar("Name cannot be empty or the same", "error");
