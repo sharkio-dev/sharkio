@@ -1,4 +1,4 @@
-import { AiOutlineCopy, AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { ProjectType } from "../../api/api";
 
 interface projectItemProps {

@@ -170,10 +170,10 @@ export const getProjects = (): ProjectType[] => {
   return projectsArray;
 };
 
-export const getChangeBetweenProjects = async (projectNameClicked: string) => {
+export const getChangeBetweenProjects = async (projectClick: String) => {
   // Change between projects logic here
-  console.log("move to project", projectNameClicked);
-  return await BackendAxios.get(`/project/${projectNameClicked}`); 
+  console.log("move to project", projectClick);
+  return await BackendAxios.get(`/project/${projectClick}`);
 };
 
 //Delete project

@@ -5,7 +5,7 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { putEditProject } from "../../api/api";
 
@@ -23,7 +23,6 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
   const [editedProjectName, setEditedProjectName] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const handleEditedProjectSave = () => {
     console.log(
       "try edit - " + "to edit:" + ProjectToEditName,
@@ -39,8 +38,11 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
       .then(() => onCancel)
       .catch(() => showSnackbar("Error editing project", "error"))
       .finally(() => setIsLoading(false));
-      setEditedProjectName("");
   };
+
+  useEffect(() => {
+    setEditedProjectName(ProjectToEditName);
+  }, [ProjectToEditName]);
 
   return (
     <>
@@ -72,7 +74,7 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
             >
               {isLoading ? <CircularProgress size={24} /> : "Save"}
             </Button>
-            <Button onClick={onCancel}  variant="outlined">
+            <Button onClick={onCancel} variant="outlined">
               {isLoading ? <CircularProgress size={24} /> : "Cancel"}
             </Button>
           </div>

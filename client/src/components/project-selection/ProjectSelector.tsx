@@ -17,7 +17,9 @@ import EditProjectModal from "./EditProjectModal";
 import NewProjectItem from "./NewProjectItem";
 import { DeleteProjectModal } from "./DeleteProjectModal";
 const ProjectSelector = () => {
-  // const [projects] = useState<ProjectType[]>(getProjects());
+  // const [projects] = useState<ProjectType[]>(getProjects()); if i want to check if the project name already exist from the frontend i need to add this state
+
+  //for now all the logic happen with the name if needed can be change to the id
 
   const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
   const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState(false);
@@ -28,11 +30,6 @@ const ProjectSelector = () => {
   const [selectedProjectName, setSelectedProjectName] = useState(
     getProjects().find((project) => project.isOpen)?.name || ""
   );
-
-
-  //remove from selected project edit and delete?
-  // when remove project open pop up window for confirm delete
-  // add id to every project?
 
   const handleChangeProject = (projectClick: SelectChangeEvent<string>) => {
     setSelectedProjectName(projectClick.target.value);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
@@ -36,6 +36,10 @@ export const DeleteProjectModal = ({
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    setVerifyDelete(" ");
+  }, [projectName]);
 
   return (
     <>
