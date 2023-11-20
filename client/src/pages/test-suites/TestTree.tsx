@@ -19,6 +19,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 type CustomContentProps = {
   onExecute?: () => Promise<void>;
   type: "endpoint" | "test";
+  childrenIds?: string[];
   endpointId?: string;
   onDelete?: () => void;
   className?: string;
@@ -39,6 +40,7 @@ type CustomContentProps = {
 };
 function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const {
+    childrenIds,
     endpointId,
     onExecute,
     classes,
@@ -67,7 +69,8 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const navigator = useNavigate();
   const { testSuiteId } = useParams();
   const ref1 = React.useRef<any>(null);
-  const { executedTests } = useTestStore();
+  const { executedTests, getExecutionByEndpoint, getExecutions } =
+    useTestStore();
 
   const handleDeleteClick = () => {
     if (isDeleteClicked) {
@@ -109,8 +112,21 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   };
 
   const onClickPlay = () => {
-    onExecute && onExecute();
+    if (onExecute) {
+      onExecute().then(() => {
+        if (type === "test") {
+          getExecutions(testSuiteId as string, nodeId as string);
+        } else if (type === "endpoint") {
+          getExecutionByEndpoint(testSuiteId as string, label as string);
+        }
+      });
+    }
   };
+
+  const isLoading =
+    type === "test"
+      ? executedTests[nodeId]
+      : (childrenIds || []).some((id) => executedTests[id]);
 
   return (
     <div
@@ -150,7 +166,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           />
         )}
         {onClickPlay &&
-          (!executedTests[nodeId] ? (
+          (!isLoading ? (
             <AiOutlinePlayCircle
               className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
               onClick={onClickPlay}
@@ -170,6 +186,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
 const CustomContentRef = React.forwardRef(CustomContent);
 
 type CustomTreeItemProps = {
+  childrenIds?: string[];
   onExecute?: () => Promise<void>;
   endpointId?: string;
   type: "endpoint" | "test";
@@ -269,6 +286,7 @@ export function TestTree() {
           return (
             <CustomTreeItem
               key={url}
+              childrenIds={tests[url].map((test: TestType) => test.id)}
               nodeId={i.toString()}
               label={url}
               endpointId={i.toString()}
