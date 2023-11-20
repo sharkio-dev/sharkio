@@ -2,6 +2,7 @@ import {
   Column,
   DataSource,
   Entity,
+  In,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -9,6 +10,7 @@ import {
   Repository,
 } from "typeorm";
 import { Test } from "./test.model";
+import { Request } from "../request/request.model";
 
 @Entity()
 export class TestExecution {
@@ -27,6 +29,9 @@ export class TestExecution {
   @ManyToOne(() => Test, (test) => test.id)
   @JoinColumn({ name: "test_id" })
   test: Test;
+
+  @OneToMany(() => Request, (request) => request.testExecution)
+  request: Request[];
 }
 
 export class TextExecutionRepository {
@@ -42,16 +47,26 @@ export class TextExecutionRepository {
     });
   }
 
-  getByTestId(testId: string) {
+  getByTestId(testIds: string[]) {
     return this.repository.find({
-      where: { testId },
+      where: { testId: In(testIds) },
       relations: {
         test: true,
+        request: {
+          response: true,
+        },
+      },
+      order: {
+        createdAt: "DESC",
       },
     });
   }
 
   deleteByTestId(testId: string) {
     return this.repository.delete({ testId });
+  }
+
+  update(testId: string, checks: any) {
+    return this.repository.update({ id: testId }, { checks });
   }
 }

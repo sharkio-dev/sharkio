@@ -35,7 +35,7 @@ export class ChatController {
     private readonly chatService: ChatService,
   ) {
     this.openai = new OpenAI({
-      apiKey: process.env.OPEN_AI_KEY ?? "",
+      apiKey: process.env.OPEN_API_KEY ?? "",
     });
   }
 

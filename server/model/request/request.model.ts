@@ -3,12 +3,14 @@ import {
   DataSource,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
 import { useLog } from "../../lib/log";
 import { Response } from "../response/response.model";
+import { TestExecution } from "../testSuite/testExecution.model";
 
 const log = useLog({
   dirname: __dirname,
@@ -50,6 +52,10 @@ export class Request {
   @OneToMany("response", "request")
   @JoinColumn({ name: "id" })
   response: Response[];
+
+  @ManyToOne(() => TestExecution, (testExecution) => testExecution.request)
+  @JoinColumn({ name: "test_execution_id" })
+  testExecution: TestExecution;
 
   @Column({ name: "test_execution_id" })
   testExecutionId?: string;

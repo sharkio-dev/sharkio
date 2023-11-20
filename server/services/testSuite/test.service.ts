@@ -30,6 +30,10 @@ export class TestService {
     return this.testRepository.getByTestSuiteId(id);
   }
 
+  getByUrl(testSuiteId: string, url: string) {
+    return this.testRepository.getByUrl(testSuiteId, url);
+  }
+
   getById(id: string) {
     return this.testRepository.getById(id);
   }

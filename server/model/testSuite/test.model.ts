@@ -22,6 +22,10 @@ export class TestRepository {
     return this.repository.find({ where: { testSuiteId } });
   }
 
+  getByUrl(testSuiteId: string, url: string) {
+    return this.repository.find({ where: { url, testSuiteId } });
+  }
+
   updateById(
     id: string,
     test: {
