@@ -28,6 +28,7 @@
   "author": "Ido David",
   "license": "ISC",
   "dependencies": {
+    "@mui/x-tree-view": "^6.17.0",
     "@types/cors": "^2.8.14",
     "axios": "^1.4.0",
     "client": "file:client",

@@ -169,3 +169,5 @@ export const newChat = (content: string) => {
 export const newMessage = (chatId: string, content: string) => {
   return BackendAxios.post(`/chat/${chatId}/message`, { content });
 };
+
+

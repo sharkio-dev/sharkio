@@ -27,11 +27,10 @@ export const SideBar: React.FC = () => {
       <Logo />
       <div className="flex flex-col justify-center items-center py-4 space-y-4">
         {menus.map(({ Icon, to, title }, index) => (
-          <div key={index} className="flex flex-col items-center space-y-1">
+          <div onClick={() => onIconClicked(to)} key={index} className=" cursor-pointer flex flex-col items-center space-y-1">
             <Icon
               key={index}
               className={`text-2xl cursor-pointer hover:scale-110 rounded-md hover:cursor-pointer active:scale-100 w-full text-blue-400`}
-              onClick={() => onIconClicked(to)}
               color="text-blue-400"
             />
             <span className="text-white text-[9px]">{title}</span>

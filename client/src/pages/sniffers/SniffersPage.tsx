@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
-import { useSniffersStore } from "../../stores/sniffersStores";
+import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
 import { SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
+import UrlPage from "./SniffersPage/UrlPage";
 
 const SniffersPage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
@@ -43,11 +44,13 @@ const SniffersPage = () => {
           <SniffersSideBar />
         )}
       </div>
+
       <div
         className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(vh-96px)] w-full`}
       >
         {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
         {!sniffer && !endpointId && <LivePage />}
+        {sniffer && !endpointId && <UrlPage sniffer={sniffer} />}
       </div>
     </div>
   );
