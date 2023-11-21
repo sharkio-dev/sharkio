@@ -19,6 +19,7 @@ import {
 } from "./AddTestSuiteModal";
 import { VscChecklist } from "react-icons/vsc";
 import { useTestStore } from "../../stores/testStore";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 export const TestSuiteSideBar = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =
@@ -35,6 +36,7 @@ export const TestSuiteSideBar = () => {
   );
   const { testSuiteId } = useParams();
   const { tests, executeTest } = useTestStore();
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const loadTS = () => {
     loadTestSuites().then(() => {
@@ -42,6 +44,26 @@ export const TestSuiteSideBar = () => {
         setSelectValue(testSuiteId);
       }
     });
+  };
+
+  const executeAllTests = () => {
+    if (!testSuiteId) {
+      return;
+    }
+    const combinedArray = Object.values(tests).reduce(
+      (acc, array) => [...acc, ...array],
+      []
+    );
+    setLoading(true);
+    return Promise.all(
+      combinedArray.map((test) => executeTest(testSuiteId, test.id))
+    )
+      .then(() => {
+        navigator("/test-suites/" + testSuiteId);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   React.useEffect(() => {
@@ -106,23 +128,14 @@ export const TestSuiteSideBar = () => {
           />
         </Tooltip>
         <Tooltip title="Execute all tests in this test suite">
-          <AiOutlinePlayCircle
-            className="flex text-xl text-green-400 cursor-pointer hover:scale-105 active:scale-100 transition-transform"
-            onClick={() => {
-              if (!testSuiteId) {
-                return;
-              }
-              const combinedArray = Object.values(tests).reduce(
-                (acc, array) => [...acc, ...array],
-                []
-              );
-              return Promise.all(
-                combinedArray.map((test) => executeTest(testSuiteId, test.id))
-              ).then(() => {
-                navigator("/test-suites/" + testSuiteId);
-              });
-            }}
-          />
+          {loading ? (
+            <LoadingIcon />
+          ) : (
+            <AiOutlinePlayCircle
+              className="flex text-xl text-green-400 cursor-pointer hover:scale-105 active:scale-100 transition-transform"
+              onClick={executeAllTests}
+            />
+          )}
         </Tooltip>
       </div>
       <div className="flex flex-col space-y-2 mt-4 h-full">
