@@ -49,14 +49,14 @@ export class ProxyMiddleware {
                     snifferId,
                     invocationId,
                     {
-                      body,
+                      body: body.toString(),
                       headers: proxyRes.headers,
                       statusCode: proxyRes.statusCode,
                     },
                     testExecutionId,
                   )
                   .then((data) => {
-                    res.end(Buffer.from(JSON.stringify(body)));
+                    res.end(body.toString());
                   })
                   .catch((e) => {
                     logger.error(e.message);
@@ -80,9 +80,8 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain,
-    );
+    const selectedSniffer =
+      await this.snifferService.findBySubdomain(subdomain);
     req.headers["x-sharkio-port"] = selectedSniffer?.port.toString();
 
     if (selectedSniffer != null) {
