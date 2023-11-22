@@ -50,7 +50,7 @@ const SniffersPage = () => {
       >
         {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
         {!sniffer && !endpointId && <LivePage />}
-        {sniffer && !endpointId && <UrlPage sniffer={sniffer} />}
+        {sniffer && !endpointId && <UrlPage SnifferDetails={sniffer} />}
       </div>
     </div>
   );
