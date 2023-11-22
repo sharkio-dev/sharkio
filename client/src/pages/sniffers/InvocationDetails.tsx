@@ -45,12 +45,14 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
   return (
     <div className="flex flex-col w-full">
       <TabContext value={value}>
-        <TabList onChange={handleChange} aria-label="lab API tabs example">
-          <Tab label="Body" value="1" />
-          <Tab label="Headers" value="2" />
-          <Tab label="Response" value="3" />
-          <Tab label="Code" value="4" />
-        </TabList>
+        <div className="flex flex-row items-center justify-between border-b border-border-color">
+          <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <Tab label="Body" value="1" />
+            <Tab label="Headers" value="2" />
+            <Tab label="Response" value="3" />
+            <Tab label="Code" value="4" />
+          </TabList>
+        </div>
         <TabPanel value="1" style={{ padding: 0, paddingTop: 16 }}>
           <div className="flex flex-1 bg-secondary p-2 rounded-md">
             <Editor
@@ -92,7 +94,7 @@ export function InvocationDetails({ invocation }: InvocationDetailsProps) {
               value={JSON.stringify(
                 responseData(invocation?.response),
                 null,
-                2,
+                2
               )}
               className="rounded-md"
               options={{

@@ -20,14 +20,17 @@ export class TestSuiteController {
     private readonly testService: TestService,
     private readonly requestService: RequestService,
     private readonly snifferService: SnifferService,
-    private readonly testExecutionService: TestExecutionService,
+    private readonly testExecutionService: TestExecutionService
   ) {}
 
   getRouter() {
     const router = Router();
     const catchAsync =
       (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
-        Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+        Promise.resolve(fn(req, res, next)).catch((err) => {
+          log.error(err);
+          next(err);
+        });
       };
 
     router.get(
@@ -36,7 +39,7 @@ export class TestSuiteController {
         const userId = res.locals.auth.user.id;
         const testSuites = await this.testSuiteService.getByUserId(userId);
         res.json(testSuites);
-      }),
+      })
     );
 
     router.post(
@@ -46,7 +49,7 @@ export class TestSuiteController {
         const { name } = req.body;
         const testSuite = await this.testSuiteService.create(name, userId);
         res.status(201).json(testSuite);
-      }),
+      })
     );
 
     router.post(
@@ -58,7 +61,7 @@ export class TestSuiteController {
           const { invocationId, testSuiteId } = req.params;
           const invocation = await this.endpointService.getInvocationById(
             invocationId,
-            userId,
+            userId
           );
 
           if (!invocation) {
@@ -67,7 +70,7 @@ export class TestSuiteController {
 
           const headerRules: Rule[] = Object.entries(
             // @ts-ignore
-            invocation?.response?.headers || {},
+            invocation?.response?.headers || {}
           ).map(([key, value]) => ({
             type: "header",
             comparator: "equals",
@@ -97,14 +100,14 @@ export class TestSuiteController {
                 targetPath: "",
               },
               ...headerRules,
-            ],
+            ]
           );
           res.status(201).json(test);
         } catch (error) {
           console.log(error);
           res.status(500).send();
         }
-      }),
+      })
     );
 
     router.delete(
@@ -113,7 +116,7 @@ export class TestSuiteController {
         try {
           const { testSuiteId, testId } = req.params;
           const testSuite = await this.testService.getByTestSuiteId(
-            testSuiteId,
+            testSuiteId
           );
           if (!testSuite) {
             return res.status(404).send();
@@ -131,7 +134,7 @@ export class TestSuiteController {
           log.error(e);
           res.status(500).send();
         }
-      }),
+      })
     );
 
     router.get(
@@ -147,7 +150,7 @@ export class TestSuiteController {
           return res.status(404).send();
         }
         res.json(test);
-      }),
+      })
     );
 
     router.get(
@@ -159,7 +162,7 @@ export class TestSuiteController {
           return res.status(404).send();
         }
         res.json(testSuite);
-      }),
+      })
     );
 
     router.put(
@@ -173,7 +176,7 @@ export class TestSuiteController {
         const { name } = req.body;
         await this.testSuiteService.update(testSuiteId, name);
         res.status(204).send();
-      }),
+      })
     );
 
     router.delete(
@@ -186,7 +189,7 @@ export class TestSuiteController {
         }
         await this.testSuiteService.deleteById(testSuiteId);
         res.status(204).send();
-      }),
+      })
     );
 
     router.put(
@@ -212,7 +215,7 @@ export class TestSuiteController {
           method,
         });
         res.status(204).send();
-      }),
+      })
     );
 
     router.post(
@@ -221,8 +224,9 @@ export class TestSuiteController {
         try {
           const { testSuiteId, testId } = req.params;
           const userId = res.locals.auth.user.id;
+
           const testSuite = await this.testService.getByTestSuiteId(
-            testSuiteId,
+            testSuiteId
           );
           if (!testSuite) {
             return res.status(404).send();
@@ -234,7 +238,7 @@ export class TestSuiteController {
 
           const sniffer = await this.snifferService.getSniffer(
             userId,
-            test.snifferId,
+            test.snifferId
           );
           if (!sniffer) {
             return res.status(404).send();
@@ -255,7 +259,7 @@ export class TestSuiteController {
             subdomain: sniffer.subdomain,
           });
           const request = await this.requestService.getByTestExecutionId(
-            testExecution.id,
+            testExecution.id
           );
           const response = request?.response[0];
 
@@ -302,7 +306,7 @@ export class TestSuiteController {
           log.error(e);
           res.status(500).send();
         }
-      }),
+      })
     );
 
     router.get(
@@ -314,7 +318,7 @@ export class TestSuiteController {
           (await this.testService.getByUrl(testSuiteId, url as string)) || [];
 
         const testExecutions = await this.testExecutionService.getByTestId(
-          tests.map((test) => test.id),
+          tests.map((test) => test.id)
         );
 
         if (!testExecutions) {
@@ -324,6 +328,12 @@ export class TestSuiteController {
         let results: any = [];
         for (const testExecution of testExecutions) {
           const result: any = {};
+          if (
+            !testExecution.request[0] ||
+            !testExecution.request[0].response[0]
+          ) {
+            continue;
+          }
           result["request"] = testExecution.request[0];
           result["response"] = testExecution.request[0].response[0];
           result["testExecution"] = { ...testExecution, test: undefined };
@@ -334,7 +344,7 @@ export class TestSuiteController {
         }
 
         res.json(results);
-      }),
+      })
     );
 
     router.get(
@@ -361,6 +371,12 @@ export class TestSuiteController {
 
         let results: any = [];
         for (const testExecution of testExecutions) {
+          if (
+            !testExecution.request[0] ||
+            !testExecution.request[0].response[0]
+          ) {
+            continue;
+          }
           const result: any = {};
           result["request"] = testExecution.request[0];
           result["response"] = testExecution.request[0].response[0];
@@ -372,7 +388,7 @@ export class TestSuiteController {
         }
 
         res.json(results);
-      }),
+      })
     );
 
     return { path: "/sharkio/test-suites", router };

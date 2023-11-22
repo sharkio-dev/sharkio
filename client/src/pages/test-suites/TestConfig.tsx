@@ -60,7 +60,7 @@ export const TestConfig = ({
 
   return (
     <TabContext value={tabNumber}>
-      <div className="flex flex-row items-center justify-between ">
+      <div className="flex flex-row items-center justify-between border-b border-border-color">
         <TabList onChange={handleChange} aria-label="lab API tabs example">
           <Tab label="Assertions" value="1" />
           <Tab label="Request" value="2" />
@@ -75,13 +75,13 @@ export const TestConfig = ({
           className="flex flex-row w-full items-center justify-center mb-8"
           value={testType}
         >
-          <ToggleButton value="Status" className="w-24">
+          <ToggleButton value="Status" className="w-24 h-6">
             Status
           </ToggleButton>
-          <ToggleButton value="Body" className="w-24">
+          <ToggleButton value="Body" className="w-24 h-6">
             Body
           </ToggleButton>
-          <ToggleButton value="Headers" className="w-24">
+          <ToggleButton value="Headers" className="w-24 h-6">
             {" "}
             Headers
           </ToggleButton>
@@ -161,8 +161,12 @@ export const TestConfig = ({
             className="flex flex-row w-full items-center justify-center mb-8"
             value={requestPart}
           >
-            <ToggleButton value="Body">Body</ToggleButton>
-            <ToggleButton value="Headers">Headers</ToggleButton>
+            <ToggleButton value="Body" className="w-24 h-6">
+              Body
+            </ToggleButton>
+            <ToggleButton value="Headers" className="w-24 h-6">
+              Headers
+            </ToggleButton>
           </ToggleButtonGroup>
           {requestPart === "Headers" && (
             <HeaderSection
@@ -183,7 +187,7 @@ export const TestConfig = ({
                 setTest({
                   ...test,
                   headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index),
+                    Object.entries(test.headers).filter((_, i) => i !== index)
                   ),
                 })
               }
