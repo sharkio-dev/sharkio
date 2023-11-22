@@ -9,7 +9,7 @@ export class ResponseService {
   async addResponse(interceptedResponse: Partial<Response>) {
     const response =
       this.responseRepository.repository.create(interceptedResponse);
-    await this.responseRepository.repository.save(response);
+    return await this.responseRepository.repository.save(response);
   }
 }
 

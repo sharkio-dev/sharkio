@@ -9,11 +9,15 @@ export class TestExecutionService {
     return this.testExecutionRepository.create(testId);
   }
 
-  async getByTestId(testId: string) {
-    return this.testExecutionRepository.getByTestId(testId);
+  async getByTestId(testIds: string[]) {
+    return this.testExecutionRepository.getByTestId(testIds);
   }
 
   async deleteByTestId(testId: string) {
     return this.testExecutionRepository.deleteByTestId(testId);
+  }
+
+  async update(testId: string, checks: any) {
+    return this.testExecutionRepository.update(testId, checks);
   }
 }

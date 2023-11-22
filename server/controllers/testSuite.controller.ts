@@ -112,8 +112,9 @@ export class TestSuiteController {
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
-          const testSuite =
-            await this.testService.getByTestSuiteId(testSuiteId);
+          const testSuite = await this.testService.getByTestSuiteId(
+            testSuiteId,
+          );
           if (!testSuite) {
             return res.status(404).send();
           }
@@ -162,6 +163,33 @@ export class TestSuiteController {
     );
 
     router.put(
+      "/:testSuiteId",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId } = req.params;
+        const testSuite = await this.testSuiteService.getById(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+        const { name } = req.body;
+        await this.testSuiteService.update(testSuiteId, name);
+        res.status(204).send();
+      }),
+    );
+
+    router.delete(
+      "/:testSuiteId",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId } = req.params;
+        const testSuite = await this.testSuiteService.getById(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+        await this.testSuiteService.deleteById(testSuiteId);
+        res.status(204).send();
+      }),
+    );
+
+    router.put(
       "/:testSuiteId/tests/:testId",
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
@@ -193,8 +221,9 @@ export class TestSuiteController {
         try {
           const { testSuiteId, testId } = req.params;
           const userId = res.locals.auth.user.id;
-          const testSuite =
-            await this.testService.getByTestSuiteId(testSuiteId);
+          const testSuite = await this.testService.getByTestSuiteId(
+            testSuiteId,
+          );
           if (!testSuite) {
             return res.status(404).send();
           }
@@ -225,49 +254,12 @@ export class TestSuiteController {
             body: test.body,
             subdomain: sniffer.subdomain,
           });
-
-          res.status(204).send();
-        } catch (e) {
-          log.error(e);
-          res.status(500).send();
-        }
-      }),
-    );
-
-    router.get(
-      "/:testSuiteId/tests/:testId/test-executions",
-      catchAsync(async (req: Request, res: Response) => {
-        const { testSuiteId, testId } = req.params;
-        const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
-        if (!testSuite) {
-          return res.status(404).send();
-        }
-
-        const test = await this.testService.getById(testId);
-        if (!test) {
-          return res.status(404).send();
-        }
-
-        const testExecutions =
-          await this.testExecutionService.getByTestId(testId);
-        if (!testExecutions) {
-          return res.status(404).send();
-        }
-
-        const rules = test.rules;
-
-        let results: any = [];
-        for (const testExecution of testExecutions) {
-          let result: any = {};
           const request = await this.requestService.getByTestExecutionId(
             testExecution.id,
           );
           const response = request?.response[0];
-          result["request"] = { ...request };
-          result["response"] = { ...response };
-          result["testExecution"] = { ...testExecution };
 
-          result["checks"] = rules.map((rule) => {
+          const checks = test.rules.map((rule) => {
             const { type, comparator, expectedValue, targetPath } = rule;
             if (type === "status_code") {
               return {
@@ -302,9 +294,83 @@ export class TestSuiteController {
               };
             }
           });
+          console.log({ checks });
+          await this.testExecutionService.update(testExecution.id, checks);
+
+          res.status(204).send();
+        } catch (e) {
+          log.error(e);
+          res.status(500).send();
+        }
+      }),
+    );
+
+    router.get(
+      "/:testSuiteId/test-executions",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId } = req.params;
+        const { url } = req.query;
+        const tests =
+          (await this.testService.getByUrl(testSuiteId, url as string)) || [];
+
+        const testExecutions = await this.testExecutionService.getByTestId(
+          tests.map((test) => test.id),
+        );
+
+        if (!testExecutions) {
+          return res.status(404).send();
+        }
+
+        let results: any = [];
+        for (const testExecution of testExecutions) {
+          const result: any = {};
+          result["request"] = testExecution.request[0];
+          result["response"] = testExecution.request[0].response[0];
+          result["testExecution"] = { ...testExecution, test: undefined };
+          result["test"] = testExecution.test;
+          result["checks"] = testExecution.checks || [];
+
           results.push(result);
         }
-        console.log({ results });
+
+        res.json(results);
+      }),
+    );
+
+    router.get(
+      "/:testSuiteId/tests/:testId/test-executions",
+      catchAsync(async (req: Request, res: Response) => {
+        const { testSuiteId, testId } = req.params;
+        const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
+        if (!testSuite) {
+          return res.status(404).send();
+        }
+
+        const test = await this.testService.getById(testId);
+        if (!test) {
+          return res.status(404).send();
+        }
+
+        const testExecutions = await this.testExecutionService.getByTestId([
+          testId,
+        ]);
+
+        if (!testExecutions) {
+          return res.status(404).send();
+        }
+
+        let results: any = [];
+        for (const testExecution of testExecutions) {
+          const result: any = {};
+          result["request"] = testExecution.request[0];
+          result["response"] = testExecution.request[0].response[0];
+          result["testExecution"] = { ...testExecution, test: undefined };
+          result["test"] = test;
+          result["checks"] = testExecution.checks || [];
+
+          results.push(result);
+        }
+
         res.json(results);
       }),
     );

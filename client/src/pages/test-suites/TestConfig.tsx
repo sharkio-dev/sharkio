@@ -6,7 +6,8 @@ import { SelectComponent } from "./SelectComponent";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import { Rule, TestType } from "../../stores/testStore";
-import { TextField } from "@mui/material";
+import { TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import React from "react";
 
 type TestConfigProps = {
   tabNumber: string;
@@ -32,7 +33,9 @@ export const TestConfig = ({
   test,
   setTest,
 }: TestConfigProps) => {
-  console.log({ test });
+  const [testType, setTestType] = React.useState<string>("Status");
+  const [requestPart, setRequestPart] = React.useState<string>("Body");
+
   const handleChange = (_: any, newValue: string) => {
     setTubNumber(newValue);
   };
@@ -55,7 +58,6 @@ export const TestConfig = ({
     setHeaderRules(headers);
   };
 
-  console.log({ body: test.body, ev: bodyRule.expectedValue });
   return (
     <TabContext value={tabNumber}>
       <div className="flex flex-row items-center justify-between ">
@@ -65,16 +67,34 @@ export const TestConfig = ({
         </TabList>
         <div className="flex w-1/4 items-center self-end"></div>
       </div>
-      <TabPanel value="1" style={{ padding: 0, paddingTop: 16 }}>
-        <div className="flex flex-col space-y-4">
-          <div className="text-[#fff] text-xl">Status Code</div>
-          <div className="flex flex-row w-1/2">
+      <TabPanel value="1" style={{ padding: 0, paddingTop: 0 }}>
+        <ToggleButtonGroup
+          color="primary"
+          exclusive
+          onChange={(_, value) => setTestType(value)}
+          className="flex flex-row w-full items-center justify-center mb-8"
+          value={testType}
+        >
+          <ToggleButton value="Status" className="w-24">
+            Status
+          </ToggleButton>
+          <ToggleButton value="Body" className="w-24">
+            Body
+          </ToggleButton>
+          <ToggleButton value="Headers" className="w-24">
+            {" "}
+            Headers
+          </ToggleButton>
+        </ToggleButtonGroup>
+        {testType === "Status" && (
+          <div className="flex flex-row w-full">
             <StatusCodeSelector
               value={statusCodeRule.expectedValue?.toString() || ""}
               setValue={onChangeStatusCodeValue}
             />
           </div>
-          <div className="text-[#fff] text-xl">Headers</div>
+        )}
+        {testType === "Headers" && (
           <HeaderSection
             headers={headerRules.map((rule) => ({
               name: (rule.targetPath as string) || "",
@@ -96,12 +116,13 @@ export const TestConfig = ({
               setHeaderRules(headerRules.filter((_, i) => i !== index))
             }
           />
-          <div className="text-[#fff] text-xl">Body</div>
+        )}
+        {testType === "Body" && (
           <BodySection
             body={bodyRule.expectedValue}
             setBody={onChangeBodyValue}
           />
-        </div>
+        )}
       </TabPanel>
       <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
         <div className="flex flex-col space-y-4">
@@ -133,35 +154,47 @@ export const TestConfig = ({
               }}
             />
           </div>
-          <div className="text-[#fff] text-xl">Headers</div>
-          <HeaderSection
-            headers={Object.entries(test.headers).map((entry) => {
-              return { name: entry[0], value: entry[1] };
-            })}
-            setHeaders={(_, value, targetPath) => {
-              setTest({
-                ...test,
-                headers: { ...test.headers, [targetPath]: value },
-              });
-            }}
-            addHeader={() =>
-              // setTest({ ...test, headers: [...test.headers, ""] })
-              console.log("add")
-            }
-            deleteHeader={(index) =>
-              setTest({
-                ...test,
-                headers: Object.fromEntries(
-                  Object.entries(test.headers).filter((_, i) => i !== index),
-                ),
-              })
-            }
-          />
-          <div className="text-[#fff] text-xl">Body</div>
-          <BodySection
-            body={test.body}
-            setBody={(val) => setTest({ ...test, body: val })}
-          />
+          <ToggleButtonGroup
+            color="primary"
+            exclusive
+            onChange={(_, value) => setRequestPart(value)}
+            className="flex flex-row w-full items-center justify-center mb-8"
+            value={requestPart}
+          >
+            <ToggleButton value="Body">Body</ToggleButton>
+            <ToggleButton value="Headers">Headers</ToggleButton>
+          </ToggleButtonGroup>
+          {requestPart === "Headers" && (
+            <HeaderSection
+              headers={Object.entries(test.headers).map((entry) => {
+                return { name: entry[0], value: entry[1] };
+              })}
+              setHeaders={(_, value, targetPath) => {
+                setTest({
+                  ...test,
+                  headers: { ...test.headers, [targetPath]: value },
+                });
+              }}
+              addHeader={() =>
+                // setTest({ ...test, headers: [...test.headers, ""] })
+                console.log("add")
+              }
+              deleteHeader={(index) =>
+                setTest({
+                  ...test,
+                  headers: Object.fromEntries(
+                    Object.entries(test.headers).filter((_, i) => i !== index),
+                  ),
+                })
+              }
+            />
+          )}
+          {requestPart === "Body" && (
+            <BodySection
+              body={test.body}
+              setBody={(val) => setTest({ ...test, body: val })}
+            />
+          )}
         </div>
       </TabPanel>
     </TabContext>

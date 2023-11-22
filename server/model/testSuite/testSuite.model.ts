@@ -9,7 +9,7 @@ import {
 @Entity()
 export class TestSuite {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   name: string;
@@ -35,5 +35,30 @@ export class TestSuiteRepository {
   async create(name: string, userId: string): Promise<TestSuite> {
     const newTestSuite = this.repository.create({ name, userId });
     return this.repository.save(newTestSuite);
+  }
+
+  async update(id: string, name: string): Promise<TestSuite> {
+    const testSuite = await this.repository.findOne({ where: { id } });
+    if (!testSuite) {
+      throw new Error("Test suite not found");
+    }
+    testSuite.name = name;
+    return this.repository.save(testSuite);
+  }
+
+  async getById(id: string): Promise<TestSuite> {
+    const testSuite = await this.repository.findOne({ where: { id } });
+    if (!testSuite) {
+      throw new Error("Test suite not found");
+    }
+    return testSuite;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    const testSuite = await this.repository.findOne({ where: { id } });
+    if (!testSuite) {
+      throw new Error("Test suite not found");
+    }
+    await this.repository.delete(id);
   }
 }

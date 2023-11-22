@@ -60,8 +60,6 @@ export class RequestInterceptor {
       testExecutionId,
     });
 
-    console.log("intercepted request");
-
     return invocation;
   }
 
@@ -76,7 +74,7 @@ export class RequestInterceptor {
     },
     testExecutionId?: string,
   ) {
-    await this.responseService.addResponse({
+    return await this.responseService.addResponse({
       userId,
       snifferId,
       requestId: invocationId,
@@ -85,6 +83,5 @@ export class RequestInterceptor {
       status: res.statusCode,
       testExecutionId,
     });
-    console.log("intercepted response");
   }
 }

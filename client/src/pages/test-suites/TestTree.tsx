@@ -12,18 +12,14 @@ import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem, useTreeItem } from "@mui/x-tree-view/TreeItem";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import {
-  TestType,
-  deleteTest,
-  getTestByTestSuiteId,
-} from "../../stores/testStore";
-import { AddTestSuiteModal } from "./TestSuiteSideBar";
-import { BackendAxios } from "../../api/backendAxios";
+import { TestType, useTestStore } from "../../stores/testStore";
+import { AddTestModal } from "./AddTestModal";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type CustomContentProps = {
   onExecute?: () => Promise<void>;
   type: "endpoint" | "test";
+  childrenIds?: string[];
   endpointId?: string;
   onDelete?: () => void;
   className?: string;
@@ -44,6 +40,7 @@ type CustomContentProps = {
 };
 function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const {
+    childrenIds,
     endpointId,
     onExecute,
     classes,
@@ -71,8 +68,9 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
   const [isDeleteClicked, setIsDeleteClicked] = React.useState<boolean>(false);
   const navigator = useNavigate();
   const { testSuiteId } = useParams();
-  const [loading, setLoading] = React.useState<boolean>(false);
   const ref1 = React.useRef<any>(null);
+  const { executedTests, getExecutionByEndpoint, getExecutions } =
+    useTestStore();
 
   const handleDeleteClick = () => {
     if (isDeleteClicked) {
@@ -115,12 +113,20 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
 
   const onClickPlay = () => {
     if (onExecute) {
-      setLoading(true);
-      onExecute().finally(() => {
-        setLoading(false);
+      onExecute().then(() => {
+        if (type === "test") {
+          getExecutions(testSuiteId as string, nodeId as string);
+        } else if (type === "endpoint") {
+          getExecutionByEndpoint(testSuiteId as string, label as string);
+        }
       });
     }
   };
+
+  const isLoading =
+    type === "test"
+      ? executedTests[nodeId]
+      : (childrenIds || []).some((id) => executedTests[id]);
 
   return (
     <div
@@ -144,37 +150,34 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
       >
         {label}
       </Typography>
-      {selected && (
-        <div className="flex flex-row items-center space-x-2 px-2">
-          {type === "test" && (
-            <AiOutlineDelete
-              className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
-                isDeleteClicked && "text-red-500"
-              }`}
-              onClick={handleDeleteClick}
+      <div className="flex flex-row items-center space-x-2 px-2">
+        {handleDeleteClick && (
+          <AiOutlineDelete
+            className={`text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100 ${
+              isDeleteClicked && "text-red-500"
+            }`}
+            onClick={handleDeleteClick}
+          />
+        )}
+        {type === "endpoint" && (
+          <AiOutlinePlus
+            className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+            onClick={() => setAddTestModalOpen(true)}
+          />
+        )}
+        {onClickPlay &&
+          (!isLoading ? (
+            <AiOutlinePlayCircle
+              className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+              onClick={onClickPlay}
             />
-          )}
-          {type === "endpoint" && (
-            <AiOutlinePlus
-              className="text-[#fff] text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
-              onClick={() => setAddTestModalOpen(true)}
-            />
-          )}
-          {type === "test" &&
-            (!loading ? (
-              <AiOutlinePlayCircle
-                className="text-green-400 text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
-                onClick={onClickPlay}
-              />
-            ) : (
-              <LoadingIcon />
-            ))}
-        </div>
-      )}
-      <AddTestSuiteModal
+          ) : (
+            <LoadingIcon />
+          ))}
+      </div>
+      <AddTestModal
         open={addTestModalOpen}
         onClose={() => setAddTestModalOpen(false)}
-        type="Test Endpoint"
       />
     </div>
   );
@@ -183,6 +186,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
 const CustomContentRef = React.forwardRef(CustomContent);
 
 type CustomTreeItemProps = {
+  childrenIds?: string[];
   onExecute?: () => Promise<void>;
   endpointId?: string;
   type: "endpoint" | "test";
@@ -208,36 +212,25 @@ const CustomTreeItem = React.forwardRef(CustomTreeItemRef);
 
 export function TestTree() {
   const { testSuiteId } = useParams();
-  const [testTree, setTestTree] = React.useState<Record<string, TestType[]>>(
-    {},
-  );
+  const [testModalOpen, setTestModalOpen] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const { executeTest, loadTests, deleteTest, tests, resetTests } =
+    useTestStore();
+  const navigator = useNavigate();
 
   const fetchTestTree = () => {
     if (!testSuiteId) {
+      resetTests();
       return;
     }
-    getTestByTestSuiteId(testSuiteId).then((res) => {
-      const a = res.data.reduce(
-        (acc: Record<string, TestType[]>, test: TestType) => {
-          const url = test.url;
-          if (Object.hasOwnProperty.call(acc, url)) {
-            acc[url] = [...acc[url], test];
-          } else {
-            acc[url] = [test];
-          }
-          return acc;
-        },
-        {},
-      );
-      setTestTree(a);
+    setLoading(true);
+    loadTests(testSuiteId).finally(() => {
+      setLoading(false);
     });
   };
 
   React.useEffect(() => {
-    if (!testSuiteId) {
-      return;
-    }
     fetchTestTree();
   }, [testSuiteId]);
 
@@ -256,10 +249,8 @@ export function TestTree() {
       });
   };
 
-  const executeTest = (testId: string) => {
-    return BackendAxios.post(
-      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run",
-    )
+  const execute = (testId: string) => {
+    return executeTest(testSuiteId as string, testId)
       .then(() => {
         show("Test executed successfully", "success");
       })
@@ -269,37 +260,92 @@ export function TestTree() {
   };
 
   return (
-    <TreeView
-      aria-label="icon expansion"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-    >
-      {snackBar}
-      {Object.keys(testTree).map((url, i) => {
-        return (
-          <CustomTreeItem
-            key={url}
-            nodeId={i.toString()}
-            label={url}
-            endpointId={i.toString()}
-            type="endpoint"
+    <>
+      {Object.keys(tests).length === 0 && !loading && (
+        <div className="flex flex-col h-full justify-center items-center ">
+          <div
+            className="flex flex-row items-center space-x-2 px-2 hover:text-blue-400 cursor-pointer"
+            onClick={() => setTestModalOpen(true)}
           >
-            {testTree[url].map((test: any) => {
-              return (
-                <CustomTreeItem
-                  endpointId={i.toString()}
-                  onDelete={() => onDeleteClicked(test.id)}
-                  key={test.id}
-                  nodeId={test.id}
-                  label={test.name}
-                  type="test"
-                  onExecute={() => executeTest(test.id)}
-                />
-              );
-            })}
-          </CustomTreeItem>
-        );
-      })}
-    </TreeView>
+            <p className=" text-lg">Add Test</p>
+
+            <AiOutlinePlus
+              className=" text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100"
+              onClick={() => setTestModalOpen(true)}
+            />
+          </div>
+        </div>
+      )}
+      <TreeView
+        aria-label="icon expansion"
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+      >
+        {snackBar}
+        {Object.keys(tests).map((url, i) => {
+          return (
+            <CustomTreeItem
+              key={url}
+              childrenIds={tests[url].map((test: TestType) => test.id)}
+              nodeId={i.toString()}
+              label={url}
+              endpointId={i.toString()}
+              onDelete={() => {
+                tests[url].forEach((test: TestType) => {
+                  onDeleteClicked(test.id);
+                });
+                navigator("/test-suites/" + testSuiteId);
+              }}
+              onExecute={() => {
+                return Promise.all(
+                  tests[url].map((test: TestType) => {
+                    return execute(test.id);
+                  }),
+                ).then(() => {
+                  navigator("/test-suites/" + testSuiteId + "/endpoints/" + i);
+                });
+              }}
+              type="endpoint"
+            >
+              {tests[url].map((test: TestType) => {
+                return (
+                  <CustomTreeItem
+                    endpointId={i.toString()}
+                    onDelete={() => {
+                      onDeleteClicked(test.id);
+                      navigator(
+                        "/test-suites/" + testSuiteId + "/endpoints/" + i,
+                      );
+                    }}
+                    key={test.id}
+                    nodeId={test.id}
+                    label={test.name}
+                    type="test"
+                    onExecute={() => {
+                      return execute(test.id).then(() => {
+                        navigator(
+                          "/test-suites/" +
+                            testSuiteId +
+                            "/endpoints/" +
+                            i +
+                            "/tests/" +
+                            test.id,
+                        );
+                      });
+                    }}
+                  />
+                );
+              })}
+            </CustomTreeItem>
+          );
+        })}
+        <AddTestModal
+          open={testModalOpen}
+          onClose={() => {
+            setTestModalOpen(false);
+          }}
+        />
+      </TreeView>
+    </>
   );
 }
