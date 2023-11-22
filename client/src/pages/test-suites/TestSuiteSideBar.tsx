@@ -1,7 +1,13 @@
 import React from "react";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlayCircle, AiOutlinePlus } from "react-icons/ai";
 import { TestTree } from "./TestTree";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tooltip,
+} from "@mui/material";
 import { useTestSuiteStore } from "../../stores/testSuitesStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { Sniffer } from "../sniffers/SniffersSideBar";
@@ -11,6 +17,9 @@ import {
   EditTestSuiteModal,
   DeleteTestSuiteModal,
 } from "./AddTestSuiteModal";
+import { VscChecklist } from "react-icons/vsc";
+import { useTestStore } from "../../stores/testStore";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 export const TestSuiteSideBar = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =
@@ -23,9 +32,11 @@ export const TestSuiteSideBar = () => {
   const navigator = useNavigate();
   const [selectValue, setSelectValue] = React.useState<string>("");
   const selectedTestSuite = testSuites.find(
-    (testSuite) => testSuite.id === selectValue,
+    (testSuite) => testSuite.id === selectValue
   );
   const { testSuiteId } = useParams();
+  const { tests, executeTest } = useTestStore();
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const loadTS = () => {
     loadTestSuites().then(() => {
@@ -33,6 +44,26 @@ export const TestSuiteSideBar = () => {
         setSelectValue(testSuiteId);
       }
     });
+  };
+
+  const executeAllTests = () => {
+    if (!testSuiteId) {
+      return;
+    }
+    const combinedArray = Object.values(tests).reduce(
+      (acc, array) => [...acc, ...array],
+      []
+    );
+    setLoading(true);
+    return Promise.all(
+      combinedArray.map((test) => executeTest(testSuiteId, test.id))
+    )
+      .then(() => {
+        navigator("/test-suites/" + testSuiteId);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   React.useEffect(() => {
@@ -88,6 +119,24 @@ export const TestSuiteSideBar = () => {
             ))}
           </Select>
         </FormControl>
+        <Tooltip title="Show test suite details">
+          <VscChecklist
+            className="flex text-xl cursor-pointer hover:scale-105 active:scale-100 transition-transform"
+            onClick={() => {
+              navigator("/test-suites/" + selectValue);
+            }}
+          />
+        </Tooltip>
+        <Tooltip title="Execute all tests in this test suite">
+          {loading ? (
+            <LoadingIcon />
+          ) : (
+            <AiOutlinePlayCircle
+              className="flex text-xl text-green-400 cursor-pointer hover:scale-105 active:scale-100 transition-transform"
+              onClick={executeAllTests}
+            />
+          )}
+        </Tooltip>
       </div>
       <div className="flex flex-col space-y-2 mt-4 h-full">
         {!testSuiteId && (
