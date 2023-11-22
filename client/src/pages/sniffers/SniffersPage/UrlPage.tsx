@@ -97,7 +97,7 @@ const UrlPage: React.FC<UrlPageProps> = ({ sniffer }) => {
                               className="cursor-pointer text-2xl"
                               onClick={() =>
                                 navigator.clipboard.writeText(
-                                  sniffer.downstreamUrl
+                                  sniffer.downstreamUrl,
                                 )
                               }
                             />

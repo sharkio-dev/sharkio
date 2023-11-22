@@ -100,7 +100,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId
+          nodeId,
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -282,7 +282,7 @@ export function TestTree() {
                 return Promise.all(
                   tests[url].map((test: TestType) => {
                     return execute(test.id);
-                  })
+                  }),
                 ).then(() => {
                   navigator("/test-suites/" + testSuiteId + "/endpoints/" + i);
                 });
@@ -296,7 +296,7 @@ export function TestTree() {
                     onDelete={() => {
                       onDeleteClicked(test.id);
                       navigator(
-                        "/test-suites/" + testSuiteId + "/endpoints/" + i
+                        "/test-suites/" + testSuiteId + "/endpoints/" + i,
                       );
                     }}
                     key={test.id}
@@ -311,7 +311,7 @@ export function TestTree() {
                             "/endpoints/" +
                             i +
                             "/tests/" +
-                            test.id
+                            test.id,
                         );
                       });
                     }}
