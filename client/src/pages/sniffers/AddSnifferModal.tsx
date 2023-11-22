@@ -1,9 +1,13 @@
+import {
+  Button,
+  CircularProgress,
+  Modal,
+  Paper,
+  TextField,
+} from "@mui/material";
 import { useState } from "react";
-import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { CircularProgress } from "@mui/material";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { useNavigate } from "react-router-dom";
 
 type AddSnifferModalProps = {
   isOpen: boolean;
@@ -16,7 +20,6 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { createSniffer } = useSniffersStore();
-  const navigator = useNavigate();
 
   const handleAddSniffer = () => {
     if (name === "") {

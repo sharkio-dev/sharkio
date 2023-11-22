@@ -14,12 +14,16 @@ const serverVarsValidator = z.object({
   VITE_SUPABASE_ANON: z.string(),
   SUPABASE_TOKEN: z.string(),
   LOG_LEVEL: z.string(),
-  LOG_SQL: z.string().transform((str) => {
-    return str.toLowerCase() === "true";
-  }),
-  PROXY_PRIVATE_KEY_FILE: z.string(),
-  PROXY_CERT_FILE: z.string(),
-  OPEN_AI_KEY: z.string(),
+  LOG_SQL: z
+    .string()
+    .transform((str) => {
+      return str.toLowerCase() === "true";
+    })
+    .optional(),
+  PROXY_SERVER_DOMAIN: z.string(),
+  OPEN_AI_KEY: z.string().optional(),
+  PROXY_PRIVATE_KEY_FILE: z.string().optional(),
+  PROXY_CERT_FILE: z.string().optional(),
 });
 
 export class EnvValidator {
