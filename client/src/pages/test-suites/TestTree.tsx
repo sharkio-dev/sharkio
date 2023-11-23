@@ -103,7 +103,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId,
+          nodeId
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -201,7 +201,7 @@ type CustomTreeItemProps = {
 const CustomTreeItemRef = (props: CustomTreeItemProps, ref: React.Ref<any>) => {
   return (
     <TreeItem
-      ContentComponent={(p) => <CustomContentRef {...props} {...p} />}
+      ContentComponent={(p: any) => <CustomContentRef {...props} {...p} />}
       {...props}
       ref={ref}
     />
@@ -300,7 +300,7 @@ export function TestTree() {
                 return Promise.all(
                   tests[url].map((test: TestType) => {
                     return execute(test.id);
-                  }),
+                  })
                 ).then(() => {
                   navigator("/test-suites/" + testSuiteId + "/endpoints/" + i);
                 });
@@ -314,7 +314,7 @@ export function TestTree() {
                     onDelete={() => {
                       onDeleteClicked(test.id);
                       navigator(
-                        "/test-suites/" + testSuiteId + "/endpoints/" + i,
+                        "/test-suites/" + testSuiteId + "/endpoints/" + i
                       );
                     }}
                     key={test.id}
@@ -329,7 +329,7 @@ export function TestTree() {
                             "/endpoints/" +
                             i +
                             "/tests/" +
-                            test.id,
+                            test.id
                         );
                       });
                     }}
