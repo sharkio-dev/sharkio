@@ -7,8 +7,9 @@ import UrlItem from "../UrlItem";
 interface UrlPageProps {
   SnifferDetails: SnifferType;
 }
-
 const UrlPage: React.FC<UrlPageProps> = ({ SnifferDetails }) => {
+
+  const FullSnifferUrl = `https://${SnifferDetails.subdomain}.sniffer.sharkio.dev`;
   return (
     <div className="flex flex-col w-full items-center space-y-4 justify-center ">
       <List
@@ -20,7 +21,7 @@ const UrlPage: React.FC<UrlPageProps> = ({ SnifferDetails }) => {
         }}
       >
         <UrlItem
-          SnifferURL={SnifferDetails.subdomain}
+          SnifferURL={FullSnifferUrl}
           Icon={AiOutlineDatabase}
           Label="Sniffer's Domain"
           Title="Copy Sniffer Domain to clipboard"
@@ -37,3 +38,6 @@ const UrlPage: React.FC<UrlPageProps> = ({ SnifferDetails }) => {
 };
 
 export default UrlPage;
+
+//full domain - https // domain // proxy
+//when click add effect

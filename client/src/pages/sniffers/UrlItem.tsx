@@ -5,6 +5,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import { InputAdornment, Tooltip } from "@mui/material";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 interface UrlItemProps {
   SnifferURL: string;
@@ -18,8 +19,10 @@ const UrlItem: React.FC<UrlItemProps> = ({
   Label,
   Title,
 }) => {
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
   return (
     <ListItem>
+      {snackBar}
       <ListItemAvatar>
         <Avatar sx={{ bgcolor: "#3b82f6" }}>
           <Icon style={{ color: "#f0fdf4" }} />
@@ -42,9 +45,16 @@ const UrlItem: React.FC<UrlItemProps> = ({
                     <Tooltip title={Title} arrow placement="top">
                       <div>
                         <AiOutlineCopy
-                          className="cursor-pointer text-2xl ml-1"
+                          className="cursor-pointer text-2xl ml-1 active:contrast-50 hover:scale-110"
                           onClick={() =>
-                            navigator.clipboard.writeText(SnifferURL)
+                            navigator.clipboard
+                              .writeText(SnifferURL)
+                              .then(() => {
+                                showSnackbar("Copied to clipboard", "success");
+                              })
+                              .catch(() => {
+                                showSnackbar("Failed to copy", "error");
+                              })
                           }
                         />
                       </div>
