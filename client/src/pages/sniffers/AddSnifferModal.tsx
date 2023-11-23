@@ -3,6 +3,7 @@ import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { useSniffersStore } from "../../stores/sniffersStores";
+import randomString from "random-string";
 
 type AddSnifferModalProps = {
   isOpen: boolean;
@@ -11,9 +12,12 @@ type AddSnifferModalProps = {
 export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const [name, setName] = useState<string>("");
   const [downstreamUrl, setDownstreamUrl] = useState<string>("");
-  const [port, setPort] = useState<number>();
+
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [subdomain, setSubdomain] = useState<string>(
+    randomString({ length: 5 }).toLowerCase()
+  );
   const { createSniffer } = useSniffersStore();
 
   const handleAddSniffer = () => {
@@ -27,7 +31,12 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
     }
 
     setIsLoading(true);
-    createSniffer({ name, downstreamUrl, port: Number(port) || 1 })
+    createSniffer({
+      name,
+      downstreamUrl,
+      port: 0,
+      subdomain: `${name}-${subdomain}`,
+    })
       .then(() => {
         setName("");
         setDownstreamUrl("");
@@ -67,11 +76,11 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
               onChange={(event) => setDownstreamUrl(event.target.value)}
             />
             <TextField
-              label={"Port"}
-              placeholder="Port"
-              value={port}
-              type="number"
-              onChange={(event) => setPort(parseInt(event.target.value))}
+              label={"Subdomain"}
+              placeholder="Subdomain"
+              value={name + "-" + subdomain}
+              disabled={true}
+              onChange={(event) => setSubdomain(event.target.value)}
             />
           </div>
 

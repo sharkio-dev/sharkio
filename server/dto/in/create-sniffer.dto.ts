@@ -11,4 +11,5 @@ export const CreateSnifferValidator = z.object({
   name: z.string(),
   downstreamUrl: z.string().url(),
   port: z.number().optional(),
+  subdomain: z.string().optional(),
 });
