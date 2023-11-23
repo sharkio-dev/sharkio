@@ -201,7 +201,7 @@ type CustomTreeItemProps = {
 const CustomTreeItemRef = (props: CustomTreeItemProps, ref: React.Ref<any>) => {
   return (
     <TreeItem
-      ContentComponent={(p) => <CustomContentRef {...props} {...p} />}
+      ContentComponent={(p: any) => <CustomContentRef {...props} {...p} />}
       {...props}
       ref={ref}
     />
