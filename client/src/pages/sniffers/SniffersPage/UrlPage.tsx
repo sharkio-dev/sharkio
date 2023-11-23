@@ -1,9 +1,6 @@
 import React from "react";
 import { SnifferType } from "../../../stores/sniffersStores";
-import {
-  AiOutlineBank,
-  AiOutlineDatabase,
-} from "react-icons/ai";
+import { AiOutlineBank, AiOutlineDatabase } from "react-icons/ai";
 import List from "@mui/material/List";
 import UrlItem from "../UrlItem";
 

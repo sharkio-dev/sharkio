@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
-import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
+import {  useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
 import { SnifferData } from "./SniffersPage/SnifferData";
