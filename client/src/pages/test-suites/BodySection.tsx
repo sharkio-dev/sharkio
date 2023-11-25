@@ -5,10 +5,7 @@ type BodySectionProps = {
   onChangeBody: (body: any) => void;
 };
 
-export const BodySection = ({
-  body,
-  onChangeBody,
-}: BodySectionProps) => {
+export const BodySection = ({ body, onChangeBody }: BodySectionProps) => {
   // console.log({ body, type: typeof body });
 
   const onChangeBodyValue = (value: any, event: any) => {
@@ -19,7 +16,6 @@ export const BodySection = ({
     //  console.log({ value, event });
     const res = JSON.parse(value);
     onChangeBody(res);
-    
   };
 
   return (

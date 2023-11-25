@@ -52,7 +52,7 @@ export const TestConfig = ({
       Object.entries(test?.headers || []).map((h: any) => ({
         name: h[0],
         value: h[1],
-      }))
+      })),
     );
   }, [test]);
 
@@ -124,7 +124,7 @@ export const TestConfig = ({
             }}
             deleteHeader={(index) =>
               onAssertionHeadersChange(
-                headerRules.filter((_, i) => i !== index)
+                headerRules.filter((_, i) => i !== index),
               )
             }
           />
@@ -183,7 +183,10 @@ export const TestConfig = ({
           </ToggleButtonGroup>
           {requestPart === "Headers" && (
             <HeaderSection
-              headers={headers}
+              headers={headers.map((header: any) => ({
+                name: header.name,
+                value: header.value,
+              }))}
               setHeaders={(index, value, targetPath) => {
                 setHeaders((prevHeaders) => {
                   const newHeaders = [...prevHeaders];
@@ -195,20 +198,23 @@ export const TestConfig = ({
                 });
               }}
               addHeader={() => {
-                //  setHeaders([
-                //   ...headers,
-                //   {
-                //     name: "",
-                //     value: "",
-                //   }])
-                onTestMethodChange({
-                  ...test,
-                  headers: {
-                    ...test.headers,
-                    headers,
-                  },
-                });
-                console.log("request headers");
+                const newHeader = {
+                  name: "",
+                  value: "",
+                };
+              
+                // Update local state
+                setHeaders([...headers, newHeader]);
+              
+                // Update test object and call onTestMethodChange
+                // onTestMethodChange({
+                //   ...test,
+                //   headers: {
+                //     ...test.headers,
+                //     headers: [...headers, newHeader], // Include the new header
+                //   },
+                // });
+                console.log("req headers");
               }}
               deleteHeader={(index) => {
                 setHeaders((prevHeaders) => {
@@ -219,7 +225,7 @@ export const TestConfig = ({
                 onTestMethodChange({
                   ...test,
                   headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index)
+                    Object.entries(test.headers).filter((_, i) => i !== index),
                   ),
                 });
               }}
