@@ -21,7 +21,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [subdomain, setSubdomain] = useState<string>(
-    randomString({ length: 5 }).toLowerCase()
+    randomString({ length: 5 }).toLowerCase(),
   );
   const { createSniffer } = useSniffersStore();
 
