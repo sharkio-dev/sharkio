@@ -33,10 +33,10 @@ export function InvocationDetails({
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [headers, setHeaders] = React.useState<{ name: string; value: any }[]>(
-    [],
+    []
   );
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status",
+    "Status"
   );
 
   React.useEffect(() => {
@@ -44,7 +44,7 @@ export function InvocationDetails({
       Object.entries(invocation?.headers || {}).map(([key, value]) => ({
         name: key,
         value,
-      })),
+      }))
     );
   }, [invocation]);
 
@@ -73,13 +73,10 @@ export function InvocationDetails({
     setHeaders(headers);
     setInvocation({
       ...invocation,
-      headers: headers.reduce(
-        (acc, header) => {
-          acc[header.name] = header.value;
-          return acc;
-        },
-        {} as { [key: string]: any },
-      ),
+      headers: headers.reduce((acc, header) => {
+        acc[header.name] = header.value;
+        return acc;
+      }, {} as { [key: string]: any }),
     });
   };
 
@@ -128,8 +125,8 @@ export function InvocationDetails({
                           name: targetPath,
                           value,
                         }
-                      : header,
-                  ),
+                      : header
+                  )
                 );
               }}
             />
@@ -166,7 +163,7 @@ export function InvocationDetails({
             {section === "Headers" && (
               <HeaderSection
                 headers={Object.entries(
-                  responseData(invocation?.response).headers,
+                  responseData(invocation?.response).headers || {}
                 ).map(([key, value]) => ({
                   name: key,
                   value,

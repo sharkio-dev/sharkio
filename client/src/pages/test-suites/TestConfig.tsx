@@ -89,6 +89,7 @@ export const TestConfig = ({
         {testType === "Status" && (
           <div className="flex flex-row w-full">
             <StatusCodeSelector
+              title="Expected Status Code"
               value={statusCodeRule.expectedValue?.toString() || ""}
               setValue={onChangeStatusCodeValue}
             />
@@ -184,7 +185,7 @@ export const TestConfig = ({
                 setTest({
                   ...test,
                   headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index),
+                    Object.entries(test.headers).filter((_, i) => i !== index)
                   ),
                 })
               }
@@ -205,9 +206,11 @@ export const TestConfig = ({
 export const StatusCodeSelector = ({
   value,
   setValue,
+  title,
 }: {
   value: string;
   setValue?: (value: string) => void;
+  title?: string;
 }) => {
   const options = [
     { value: "100", label: "100 Continue" },
@@ -278,7 +281,7 @@ export const StatusCodeSelector = ({
   return (
     <SelectComponent
       options={options}
-      title="Expected Status Code"
+      title={title || "Status Code"}
       value={value}
       setValue={setValue}
       disabled={!setValue}
