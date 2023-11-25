@@ -1,7 +1,12 @@
+import {
+  Button,
+  CircularProgress,
+  Modal,
+  Paper,
+  TextField,
+} from "@mui/material";
 import { useState } from "react";
-import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { CircularProgress } from "@mui/material";
 import { useSniffersStore } from "../../stores/sniffersStores";
 
 type AddSnifferModalProps = {
@@ -61,7 +66,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
               onChange={(event) => setName(event.target.value)}
             />
             <TextField
-              label={"Downstream Url"}
+              label={"Target Url"}
               placeholder="http://example.com"
               value={downstreamUrl}
               onChange={(event) => setDownstreamUrl(event.target.value)}

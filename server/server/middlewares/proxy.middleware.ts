@@ -49,14 +49,14 @@ export class ProxyMiddleware {
                     snifferId,
                     invocationId,
                     {
-                      body,
+                      body: body.toString(),
                       headers: proxyRes.headers,
                       statusCode: proxyRes.statusCode,
                     },
                     testExecutionId,
                   )
                   .then((data) => {
-                    res.end(Buffer.from(JSON.stringify(body)));
+                    res.end(body.toString());
                   })
                   .catch((e) => {
                     logger.error(e.message);

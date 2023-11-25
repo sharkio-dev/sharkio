@@ -17,7 +17,6 @@ export const ExecutionHistory = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const { getExecutions, executions, getExecutionByEndpoint, tests } =
     useTestStore();
-  console.log({ tests });
 
   React.useEffect(() => {
     if (testSuiteId && endpointId && !testId) {
@@ -37,6 +36,8 @@ export const ExecutionHistory = () => {
       setLoading(false);
     });
   }, [testSuiteId, testId, endpointId]);
+
+  console.log({ executions });
 
   return (
     <TableContainer className="border-[1px] border-primary rounded-lg">
@@ -58,7 +59,7 @@ export const ExecutionHistory = () => {
               </TableCell>
             </TableRow>
           )}
-          {executions.map((i) => (
+          {executions.map((i, index) => (
             <ExecutionRow
               title={i.request.method + " " + i.request.url}
               status={
@@ -69,7 +70,7 @@ export const ExecutionHistory = () => {
               executionDate={i.testExecution.createdAt}
               passed={i.checks.filter((check: any) => check.isPassed).length}
               failed={i.checks.filter((check: any) => !check.isPassed).length}
-              key={i}
+              key={index}
               checks={i.checks}
             />
           ))}
