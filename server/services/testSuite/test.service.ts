@@ -9,10 +9,10 @@ export class TestService {
     testSuiteId: string,
     snifferId: string,
     url: string,
-    body: Record<string, any>,
+    body: string,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[],
+    rules?: Rule[]
   ) {
     return this.testRepository.create(
       name,
@@ -22,7 +22,7 @@ export class TestService {
       body,
       headers,
       method,
-      rules,
+      rules
     );
   }
 
@@ -47,11 +47,11 @@ export class TestService {
     test: {
       name?: string;
       url?: string;
-      body?: Record<string, any>;
+      body?: string;
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
-    },
+    }
   ) {
     return this.testRepository.updateById(id, test);
   }

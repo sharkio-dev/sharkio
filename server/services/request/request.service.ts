@@ -21,7 +21,7 @@ export class RequestService {
     await axios
       .request({
         method,
-        url: `http://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
+        url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers,
         data: body,
       })

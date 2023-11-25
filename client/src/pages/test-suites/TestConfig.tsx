@@ -184,7 +184,7 @@ export const TestConfig = ({
                 setTest({
                   ...test,
                   headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index),
+                    Object.entries(test.headers).filter((_, i) => i !== index)
                   ),
                 })
               }
@@ -202,12 +202,12 @@ export const TestConfig = ({
   );
 };
 
-const StatusCodeSelector = ({
+export const StatusCodeSelector = ({
   value,
   setValue,
 }: {
   value: string;
-  setValue: (value: string) => void;
+  setValue?: (value: string) => void;
 }) => {
   const options = [
     { value: "100", label: "100 Continue" },
@@ -281,6 +281,7 @@ const StatusCodeSelector = ({
       title="Expected Status Code"
       value={value}
       setValue={setValue}
+      disabled={!setValue}
     />
   );
 };

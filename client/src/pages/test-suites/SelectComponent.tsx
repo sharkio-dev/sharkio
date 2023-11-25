@@ -7,7 +7,7 @@ type SelectComponentProps = {
   options: { value: string; label: string }[];
   title: string;
   value: string;
-  setValue: (value: string) => void;
+  setValue?: (value: string) => void;
   disabled?: boolean;
 };
 
@@ -24,7 +24,7 @@ export function SelectComponent({
       <Select
         value={value}
         label={title}
-        onChange={(event) => setValue(event.target.value)}
+        onChange={(event) => setValue && setValue(event.target.value)}
       >
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>

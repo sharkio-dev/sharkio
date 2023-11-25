@@ -5,7 +5,7 @@ import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { SnifferType } from "../../stores/sniffersStores";
 import { executeInvocation } from "../../api/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 
 type InvocationUpperBarProps = {
@@ -19,12 +19,18 @@ export const InvocationUpperBar = ({
   onExecuteRequest,
 }: InvocationUpperBarProps) => {
   const [loading, setLoading] = useState(false);
+  const [editedInvocation, setEditedInvocation] = useState<InvocationType>();
+
+  useEffect(() => {
+    activeInvocation && setEditedInvocation(activeInvocation);
+  }, [activeInvocation]);
+
   const executeRequest = () => {
-    if (!activeInvocation) {
+    if (!editedInvocation) {
       return;
     }
     setLoading(true);
-    executeInvocation(activeInvocation)
+    executeInvocation(editedInvocation)
       .then(() => {
         onExecuteRequest && onExecuteRequest();
       })
@@ -38,9 +44,9 @@ export const InvocationUpperBar = ({
   return (
     <>
       <div className="flex flex-row items-center space-x-4">
-        {selectIconByMethod(activeInvocation?.method || "GET")}
+        {selectIconByMethod(editedInvocation?.method || "GET")}
         <TextField
-          label={activeInvocation?.url}
+          label={editedInvocation?.url}
           variant="outlined"
           size="small"
           style={{ width: "100%" }}
@@ -55,8 +61,13 @@ export const InvocationUpperBar = ({
           />
         )}
       </div>
-      <div className="flex flex-row space-x-4 mt-4 flex-1">
-        <InvocationDetails invocation={activeInvocation} />
+      <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
+        {editedInvocation && (
+          <InvocationDetails
+            invocation={editedInvocation}
+            setInvocation={setEditedInvocation}
+          />
+        )}
       </div>
     </>
   );

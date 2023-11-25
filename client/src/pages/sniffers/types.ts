@@ -8,11 +8,11 @@ export type InvocationType = {
   snifferId: string;
   response: {
     status: number;
-    body: object | string;
+    body: string;
     headers: object;
   };
   url: string;
-  body: object | string;
+  body: string;
   headers: {
     [key: string]: string;
   };

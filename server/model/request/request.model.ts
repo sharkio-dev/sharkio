@@ -43,8 +43,8 @@ export class Request {
   @Column()
   method: string;
 
-  @Column({ type: "varchar" })
-  body: Record<string, any>;
+  @Column()
+  body: string;
 
   @Column({ type: "varchar" })
   headers: Record<string, any>;
