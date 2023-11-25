@@ -4,9 +4,12 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . .
-ENV VITE_SERVER_URL=https://sharkio-admin-server-jrhqpiiv4a-zf.a.run.app
+
+ENV VITE_PROXY_DOMAIN=sniffer.sharkio.dev
+ENV VITE_SERVER_URL=https://server.sharkio.dev
 ENV VITE_SUPABASE_PROJECT_URL='https://rlhmecfbrihwgltuacbn.supabase.co'
 ENV VITE_SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8'
+
 
 RUN npm run build
 
