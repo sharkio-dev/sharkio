@@ -2,14 +2,10 @@ import {
   Column,
   DataSource,
   Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
 import { Rule } from "./types";
-import { TestExecution } from "./testExecution.model";
 
 export class TestRepository {
   private readonly repository: Repository<Test>;
@@ -31,11 +27,11 @@ export class TestRepository {
     test: {
       name?: string;
       url?: string;
-      body?: Record<string, any>;
+      body?: string;
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
-    }
+    },
   ) {
     return this.repository.update(id, test);
   }
@@ -45,10 +41,10 @@ export class TestRepository {
     testSuiteId: string,
     snifferId: string,
     url: string,
-    body: Record<string, any>,
+    body: string,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[]
+    rules?: Rule[],
   ): Promise<Test> {
     const newTest = this.repository.create({
       name,
@@ -92,8 +88,8 @@ export class Test {
   @Column()
   url: string;
 
-  @Column({ type: "varchar" })
-  body: Record<string, any>;
+  @Column()
+  body: string;
 
   @Column({ type: "varchar" })
   headers: Record<string, any>;

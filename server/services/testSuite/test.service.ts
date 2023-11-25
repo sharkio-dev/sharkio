@@ -9,7 +9,7 @@ export class TestService {
     testSuiteId: string,
     snifferId: string,
     url: string,
-    body: Record<string, any>,
+    body: string,
     headers: Record<string, any>,
     method: string,
     rules?: Rule[],
@@ -47,7 +47,7 @@ export class TestService {
     test: {
       name?: string;
       url?: string;
-      body?: Record<string, any>;
+      body?: string;
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
