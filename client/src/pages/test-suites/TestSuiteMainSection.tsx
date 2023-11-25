@@ -26,11 +26,147 @@ export const TestSuiteMainSection = () => {
     expectedValue: "",
     comparator: "equals",
   });
+
+  // const handleSaveOperation = (saveFunction: () => Promise<void>) => {
+  //   setSaveLoading(true);
+  //   saveFunction()
+  //     .catch(() => {
+  //       show("Error saving test", "error");
+  //     })
+  //     .finally(() => {
+  //       setSaveLoading(false);
+  //     });
+  // };
+
   const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
   const [showConfig, setShowConfig] = React.useState<boolean>(true);
   const { getTest, editTest } = useTestStore();
+  let debounceTimeout: any;
 
-  const hadnleSave = React.useCallback(() => {
+  const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
+    setHeaderRules(newHeaders);
+    handleHeaderSave(newHeaders);
+  };
+
+  const handleStatusCodeChange = (newStatusCode: string) => {
+    handleSaveStatusCode(newStatusCode);
+    setStatusCodeRule({ ...statusCodeRule, expectedValue: newStatusCode });
+  };
+
+  const handleBodyChange = (newBody: string) => {
+    console.log("try value -->", value);
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+    debounceTimeout = setTimeout(() => {
+      console.log("debouce body: " + { value });
+      setBodyRule({ ...bodyRule, expectedValue: newBody });
+      handleBodySave(newBody);
+    }, 2000);
+  };
+
+  const handleTestMethodChange = (newTest: TestType) => {
+    setTest(newTest);
+    handleTestSave(newTest);
+  };
+  const handleTestChange = (newTest: TestType) => {
+    console.log("try value test-->", newTest);
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+    debounceTimeout = setTimeout(() => {
+      console.log("debouce test method: " + { newTest });
+      setTest(newTest);
+      handleTestSave(newTest);
+    }, 2000);
+  };
+
+  const handleHeaderSave = (newHeaders: Rule[]) => {
+    console.log("header assertions save");
+    if (!testSuiteId || !testId || !test) {
+      return;
+    }
+    setSaveLoading(true);
+    editTest(testSuiteId, testId, {
+      ...test,
+      rules: [...headerRules, ...newHeaders],
+    })
+      .then(() => {
+        show("Test saved successfully", "success");
+      })
+      .catch(() => {
+        show("Error saving test", "error");
+      })
+      .finally(() => {
+        setSaveLoading(false);
+      });
+  };
+
+  const handleSaveStatusCode = (newStatusCode: string) => {
+    console.log("status save");
+    if (!testSuiteId || !testId || !test) {
+      return;
+    }
+    setSaveLoading(true);
+    editTest(testSuiteId, testId, {
+      ...test,
+      rules: [{ ...statusCodeRule, expectedValue: newStatusCode }],
+    })
+      .then(() => {
+        show("Test saved successfully", "success");
+      })
+      .catch(() => {
+        show("Error saving test", "error");
+      })
+      .finally(() => {
+        setSaveLoading(false);
+      });
+  };
+
+  const handleTestSave = (newTest: TestType) => {
+    console.log("test save");
+    if (!testSuiteId || !testId || !test) {
+      return;
+    }
+    setSaveLoading(true);
+    editTest(testSuiteId, testId, newTest)
+      .then(() => {
+        show("Test saved successfully", "success");
+      })
+      .catch(() => {
+        show("Error saving test", "error");
+      })
+      .finally(() => {
+        setSaveLoading(false);
+      });
+  };
+
+  const handleBodySave = (newBody: string) => {
+    console.log("body save");
+    console.log({ ...bodyRule, expectedValue: newBody });
+    if (!testSuiteId || !testId || !test) {
+      return;
+    }
+    setSaveLoading(true);
+
+    editTest(testSuiteId, testId, {
+      ...test,
+      rules: [{ ...bodyRule, expectedValue: newBody }],
+    })
+      .then(() => {
+        show("Test saved successfully", "success");
+      })
+      .catch(() => {
+        show("Error saving test", "error");
+      })
+      .finally(() => {
+        setSaveLoading(false);
+      });
+  };
+
+  const hadnleSaveAll = React.useCallback(() => {
+    console.log("save all");
+
     if (!testSuiteId || !testId || !test) {
       return;
     }
@@ -82,14 +218,14 @@ export const TestSuiteMainSection = () => {
       return;
     }
     getTest(testSuiteId, testId).then((data) => {
-      setTest(data);
+      handleTestChange(data);
       extractStatusCode(data);
       extractBody(data);
       extractHeaders(data);
     });
   }, [testSuiteId, testId]);
 
-  console.log({ s: testSuiteId, t: testId, e: endpointId });
+  // console.log({ s: testSuiteId, t: testId, e: endpointId });
 
   return (
     <>
@@ -105,7 +241,7 @@ export const TestSuiteMainSection = () => {
                     <div>
                       <CiSaveDown2
                         className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                        onClick={hadnleSave}
+                        onClick={hadnleSaveAll}
                       />
                     </div>
                   </Tooltip>
@@ -140,15 +276,16 @@ export const TestSuiteMainSection = () => {
             (showConfig ? (
               <TestConfig
                 test={test}
-                setTest={setTest}
+                onTestChange={handleTestChange}
+                onTestMethodChange={handleTestMethodChange}
                 tabNumber={value}
                 setTubNumber={setValue}
                 statusCodeRule={statusCodeRule}
-                setStatusCodeRule={setStatusCodeRule}
+                onStatusCodeChange={handleStatusCodeChange}
                 bodyRule={bodyRule}
-                setBodyRule={setBodyRule}
+                onBodyChange={handleBodyChange}
                 headerRules={headerRules}
-                setHeaderRules={setHeaderRules}
+                onAssertionHeadersChange={handleAssertionHeadersChange}
               />
             ) : (
               <ExecutionHistory />

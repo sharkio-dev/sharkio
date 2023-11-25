@@ -7,7 +7,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
 import { SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
-import Sniffer from "./SniffersPage/UrlPage";
+import SnifferDetails from "./SniffersPage/SnifferDetails";
 
 const SniffersPage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
@@ -50,7 +50,7 @@ const SniffersPage = () => {
       >
         {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
         {!sniffer && !endpointId && <LivePage />}
-        {sniffer && !endpointId && <Sniffer Sniffer={sniffer} />}
+        {sniffer && !endpointId && <SnifferDetails Sniffer={sniffer} />}
       </div>
     </div>
   );
