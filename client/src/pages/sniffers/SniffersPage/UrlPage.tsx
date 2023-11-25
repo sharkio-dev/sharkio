@@ -5,10 +5,13 @@ import List from "@mui/material/List";
 import UrlItem from "../UrlItem";
 
 interface UrlPageProps {
-  SnifferDetails: SnifferType;
+  Sniffer: SnifferType;
 }
 
-const UrlPage: React.FC<UrlPageProps> = ({ SnifferDetails }) => {
+const Sniffer: React.FC<UrlPageProps> = ({ Sniffer }) => {
+  const FullSnifferUrl = `https://${Sniffer.subdomain}.${
+    import.meta.env.VITE_PROXY_DOMAIN
+  }`;
   return (
     <div className="flex flex-col w-full items-center space-y-4 justify-center ">
       <List
@@ -20,13 +23,13 @@ const UrlPage: React.FC<UrlPageProps> = ({ SnifferDetails }) => {
         }}
       >
         <UrlItem
-          SnifferURL={SnifferDetails.subdomain}
+          SnifferURL={FullSnifferUrl}
           Icon={AiOutlineDatabase}
           Label="Sniffer's Domain"
           Title="Copy Sniffer Domain to clipboard"
         />
         <UrlItem
-          SnifferURL={SnifferDetails.downstreamUrl}
+          SnifferURL={Sniffer.downstreamUrl}
           Icon={AiOutlineBank}
           Label="Server's Domain"
           Title="Copy Server Domain to clipboard"
@@ -36,4 +39,4 @@ const UrlPage: React.FC<UrlPageProps> = ({ SnifferDetails }) => {
   );
 };
 
-export default UrlPage;
+export default Sniffer;

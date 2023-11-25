@@ -27,7 +27,10 @@ export class TestSuiteController {
     const router = Router();
     const catchAsync =
       (fn: Function) => (req: Request, res: Response, next: NextFunction) => {
-        Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+        Promise.resolve(fn(req, res, next)).catch((err) => {
+          log.error(err);
+          next(err);
+        });
       };
 
     router.get(
@@ -221,6 +224,7 @@ export class TestSuiteController {
         try {
           const { testSuiteId, testId } = req.params;
           const userId = res.locals.auth.user.id;
+
           const testSuite = await this.testService.getByTestSuiteId(
             testSuiteId,
           );
@@ -324,6 +328,12 @@ export class TestSuiteController {
         let results: any = [];
         for (const testExecution of testExecutions) {
           const result: any = {};
+          if (
+            !testExecution.request[0] ||
+            !testExecution.request[0].response[0]
+          ) {
+            continue;
+          }
           result["request"] = testExecution.request[0];
           result["response"] = testExecution.request[0].response[0];
           result["testExecution"] = { ...testExecution, test: undefined };
@@ -361,9 +371,17 @@ export class TestSuiteController {
 
         let results: any = [];
         for (const testExecution of testExecutions) {
+          if (
+            !testExecution.request[0] ||
+            !testExecution.request[0].response[0]
+          ) {
+            continue;
+          }
           const result: any = {};
           result["request"] = testExecution.request[0];
-          result["response"] = testExecution.request[0].response[0];
+          if (testExecution.request[0].response != null) {
+            result["response"] = testExecution.request[0].response[0];
+          }
           result["testExecution"] = { ...testExecution, test: undefined };
           result["test"] = test;
           result["checks"] = testExecution.checks || [];

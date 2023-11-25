@@ -98,6 +98,7 @@ export class SnifferController {
               ...config,
               userId,
             });
+            console.log({ createdSniffer });
             return res.status(201).json(createdSniffer);
           } catch (e) {
             log.error("An unexpected error occured", {
