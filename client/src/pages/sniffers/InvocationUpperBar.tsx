@@ -1,9 +1,8 @@
-import { TextField, Tooltip } from "@mui/material";
+import { TextField } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { selectIconByMethod } from "./selectIconByMethod";
 import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
-import { MdDomain } from "react-icons/md";
 import { SnifferType } from "../../stores/sniffersStores";
 import { executeInvocation } from "../../api/api";
 import { useState } from "react";
@@ -15,13 +14,8 @@ type InvocationUpperBarProps = {
   onExecuteRequest?: () => void;
 };
 
-const domainPath = (subdomain: string) => {
-  return `https://${subdomain}.localhost.sharkio.dev`;
-};
-
 export const InvocationUpperBar = ({
   activeInvocation,
-  activeSniffer,
   onExecuteRequest,
 }: InvocationUpperBarProps) => {
   const [loading, setLoading] = useState(false);
@@ -43,16 +37,6 @@ export const InvocationUpperBar = ({
   };
   return (
     <>
-      {activeSniffer && (
-        <Tooltip title="Sniffer's domain" placement="top" arrow>
-          <div className="flex flex-row items-center space-x-4 mb-4">
-            <MdDomain className="text-blue-500 text-2xl p-1" />
-            <div className="text-sm text-gray-500">
-              {domainPath(activeSniffer.subdomain)}
-            </div>
-          </div>
-        </Tooltip>
-      )}
       <div className="flex flex-row items-center space-x-4">
         {selectIconByMethod(activeInvocation?.method || "GET")}
         <TextField
