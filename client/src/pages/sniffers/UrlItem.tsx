@@ -52,9 +52,6 @@ const UrlItem: React.FC<UrlItemProps> = ({
                               .then(() => {
                                 showSnackbar("Copied to clipboard", "success");
                               })
-                              .catch(() => {
-                                showSnackbar("Failed to copy", "error");
-                              })
                           }
                         />
                       </div>
