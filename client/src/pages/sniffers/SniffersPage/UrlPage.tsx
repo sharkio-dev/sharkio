@@ -9,7 +9,9 @@ interface UrlPageProps {
 }
 
 const Sniffer: React.FC<UrlPageProps> = ({ Sniffer }) => {
-  const FullSnifferUrl = `https://${Sniffer.subdomain}.${import.meta.env.VITE_PROXY_DOMAIN}`;
+  const FullSnifferUrl = `https://${Sniffer.subdomain}.${
+    import.meta.env.VITE_PROXY_DOMAIN
+  }`;
   return (
     <div className="flex flex-col w-full items-center space-y-4 justify-center ">
       <List
