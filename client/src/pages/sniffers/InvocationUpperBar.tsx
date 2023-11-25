@@ -7,6 +7,7 @@ import { SnifferType } from "../../stores/sniffersStores";
 import { executeInvocation } from "../../api/api";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
+import { SelectComponent } from "../test-suites/SelectComponent";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
@@ -44,13 +45,40 @@ export const InvocationUpperBar = ({
   return (
     <>
       <div className="flex flex-row items-center space-x-4">
-        {selectIconByMethod(editedInvocation?.method || "GET")}
+        <div className="flex flex-row items-center w-40">
+          <SelectComponent
+            options={[
+              { value: "GET", label: "GET" },
+              { value: "POST", label: "POST" },
+              { value: "PUT", label: "PUT" },
+              { value: "PATCH", label: "PATCH" },
+              { value: "DELETE", label: "DELETE" },
+            ]}
+            title="Method"
+            value={editedInvocation?.method || ""}
+            setValue={(value) => {
+              if (editedInvocation) {
+                setEditedInvocation({
+                  ...editedInvocation,
+                  method: value,
+                });
+              }
+            }}
+          />
+        </div>
         <TextField
-          label={editedInvocation?.url}
+          value={editedInvocation?.url}
+          onChange={(e: any) => {
+            if (editedInvocation) {
+              setEditedInvocation({
+                ...editedInvocation,
+                url: e.target.value,
+              });
+            }
+          }}
           variant="outlined"
           size="small"
           style={{ width: "100%" }}
-          disabled
         />
         {loading ? (
           <LoadingIcon />

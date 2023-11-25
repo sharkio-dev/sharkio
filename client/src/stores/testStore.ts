@@ -36,12 +36,12 @@ interface TestStore {
   editTest: (
     testSuiteId: string,
     testId: string,
-    test: TestType
+    test: TestType,
   ) => Promise<void>;
   importTest: (
     testSuiteId: string,
     invocationId: string,
-    name: string
+    name: string,
   ) => Promise<void>;
   getTest: (testSuiteId: string, testId: string) => Promise<TestType>;
   resetTests: () => void;
@@ -66,7 +66,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
           }
           return acc;
         },
-        {}
+        {},
       );
       set({ tests: a });
       return res.data;
@@ -77,7 +77,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
       (res) => {
         get().loadTests(testSuiteId);
         return res.data;
-      }
+      },
     );
   },
   editTest: async (testSuiteId: string, testId: string, test: TestType) => {
@@ -97,13 +97,13 @@ export const useTestStore = create<TestStore>((set, get) => ({
   importTest: async (
     testSuiteId: string,
     invocationId: string,
-    name: string
+    name: string,
   ) => {
     return BackendAxios.post(
       `/test-suites/${testSuiteId}/import/${invocationId}`,
       {
         name,
-      }
+      },
     ).then((res) => {
       get().loadTests(testSuiteId);
       return res.data;
@@ -111,14 +111,14 @@ export const useTestStore = create<TestStore>((set, get) => ({
   },
   deleteTest: async (testSuiteId: string, testId: string) => {
     return BackendAxios.delete(
-      `/test-suites/${testSuiteId}/tests/${testId}`
+      `/test-suites/${testSuiteId}/tests/${testId}`,
     ).then(() => {
       get().loadTests(testSuiteId);
     });
   },
   getTest: async (testSuiteId: string, testId: string) => {
     return BackendAxios.get<TestType>(
-      `/test-suites/${testSuiteId}/tests/${testId}`
+      `/test-suites/${testSuiteId}/tests/${testId}`,
     ).then((res) => {
       return res.data;
     });
@@ -135,7 +135,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
       },
     }));
     return BackendAxios.post(
-      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run"
+      "/test-suites/" + testSuiteId + "/tests/" + testId + "/run",
     )
       .finally(() => {
         set((state) => ({
@@ -156,7 +156,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
       executions: [],
     }));
     return BackendAxios.get(
-      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`
+      `/test-suites/${testSuiteId}/tests/${testId}/test-executions`,
     ).then((res) => {
       set((state) => ({
         ...state,

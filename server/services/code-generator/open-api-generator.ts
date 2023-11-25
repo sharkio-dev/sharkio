@@ -17,7 +17,7 @@ export function generateOpenApi(
   requests: InterceptedRequest[],
   apiName = "",
   apiVersion = "",
-  description = ""
+  description = "",
 ) {
   const openApiDocument = {
     openapi: "3.0.0",
@@ -36,7 +36,7 @@ export function generateOpenApi(
 
 function handleRequests(
   openApiDocument: OpenAPIDocument,
-  requests: InterceptedRequest[]
+  requests: InterceptedRequest[],
 ) {
   requests.forEach((request) => {
     const { url, method } = request;
