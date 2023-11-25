@@ -15,5 +15,12 @@ export default () => {
     server: {
       port: +(process.env.VITE_SERVER_PORT ?? 8123),
     },
+    define: {
+      VITE_SUPABASE_PROJECT_URL: process.env.VITE_SUPABASE_PROJECT_URL,
+      VITE_SUPABASE_ANON: process.env.VITE_SUPABASE_ANON,
+      VITE_DISABLE_SUPABASE: process.env.VITE_DISABLE_SUPABASE,
+      VITE_SERVER_URL: process.env.VITE_SERVER_URL,
+      VITE_PROXY_DOMAIN: process.env.VITE_PROXY_DOMAIN,
+    },
   });
 };

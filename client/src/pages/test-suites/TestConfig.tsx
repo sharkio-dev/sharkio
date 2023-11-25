@@ -174,10 +174,7 @@ export const TestConfig = ({
                 return { name: entry[0], value: entry[1] };
               })}
               setHeaders={(_, value, targetPath) => {
-                setTest({
-                  ...test,
-                  headers: { ...test.headers, [targetPath]: value },
-                });
+                console.log("setHeaders", value, targetPath);
               }}
               addHeader={() =>
                 // setTest({ ...test, headers: [...test.headers, ""] })

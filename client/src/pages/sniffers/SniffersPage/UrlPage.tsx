@@ -40,6 +40,3 @@ const Sniffer: React.FC<UrlPageProps> = ({ Sniffer }) => {
 };
 
 export default Sniffer;
-
-//full domain - https // domain // proxy
-//when click add effect

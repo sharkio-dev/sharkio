@@ -17,13 +17,9 @@ export type SnifferType = {
 interface SniffersState {
   sniffers: SnifferType[];
   loadSniffers: () => Promise<SnifferType[]>;
-  createSniffer: (
-    sniffer: Omit<Omit<SnifferType, "id">, "subdomain">,
-  ) => Promise<void>;
+  createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
-  editSniffer: (
-    sniffer: Partial<Omit<SnifferType, "subdomain">>,
-  ) => Promise<void>;
+  editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
 }
 
 export const useSniffersStore = create<SniffersState>((set) => ({
@@ -34,7 +30,7 @@ export const useSniffersStore = create<SniffersState>((set) => ({
       return res.data;
     });
   },
-  createSniffer: (sniffer: Omit<Omit<SnifferType, "id">, "subdomain">) => {
+  createSniffer: (sniffer: Omit<SnifferType, "id">) => {
     return createSniffer(sniffer).then(() => {
       getSniffers().then((res) => set({ sniffers: res.data }));
     });
@@ -44,7 +40,7 @@ export const useSniffersStore = create<SniffersState>((set) => ({
       getSniffers().then((res) => set({ sniffers: res.data }));
     });
   },
-  editSniffer: (sniffer: Partial<Omit<SnifferType, "subdomain">>) => {
+  editSniffer: (sniffer: Partial<SnifferType>) => {
     return editSniffer(sniffer).then(() => {
       getSniffers().then((res) => set({ sniffers: res.data }));
     });

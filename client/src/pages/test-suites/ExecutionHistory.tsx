@@ -37,8 +37,6 @@ export const ExecutionHistory = () => {
     });
   }, [testSuiteId, testId, endpointId]);
 
-  console.log({ executions });
-
   return (
     <TableContainer className="border-[1px] border-primary rounded-lg">
       <Table>
