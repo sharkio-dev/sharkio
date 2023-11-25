@@ -89,8 +89,6 @@ export const TestSuiteMainSection = () => {
     });
   }, [testSuiteId, testId]);
 
-  console.log({ s: testSuiteId, t: testId, e: endpointId });
-
   return (
     <>
       {testId && (

@@ -34,7 +34,6 @@ export const AddTestSuiteModal = ({
 
     createTestSuite(name)
       .then((res) => {
-        console.log(res.id);
         navigator(`/test-suites/${res.id}`, { replace: true });
         show("Test Suite created successfully", "success");
         resetState();
