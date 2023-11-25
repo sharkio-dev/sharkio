@@ -6,7 +6,7 @@ type BodySectionProps = {
 };
 
 export const BodySection = ({ body, setBody }: BodySectionProps) => {
-  const onChangeBodyValue = (value: any, event: any) => {
+  const onChangeBodyValue = (value: any, _: any) => {
     if (typeof value !== "string" && value.includes("html")) {
       setBody(value);
       return;

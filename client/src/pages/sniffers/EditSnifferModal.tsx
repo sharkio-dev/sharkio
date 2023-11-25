@@ -47,7 +47,7 @@ export const EditSnifferModal = ({
         setSubdomain("");
         onClose();
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Error creating sniffer", "error");
       })
       .finally(() => {

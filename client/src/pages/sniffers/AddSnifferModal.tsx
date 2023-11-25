@@ -47,7 +47,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
         setDownstreamUrl("");
         onClose();
       })
-      .catch((err) => {
+      .catch(() => {
         showSnackbar("Error updating sniffer", "error");
       })
       .finally(() => {
