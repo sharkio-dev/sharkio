@@ -1,15 +1,16 @@
 import ChatRepository from "../../model/chat/chat.model";
 import MessageRepository from "../../model/chat/message.model";
+
 import { v4 } from "uuid";
 
 export class ChatService {
   constructor(
     private readonly chatRepository: ChatRepository,
-    private readonly messageRepository: MessageRepository,
+    private readonly messageRepository: MessageRepository
   ) {}
 
   async loadMessagesByChatId(chatId: string) {
-    return this.messageRepository.getByChatId(chatId);
+    return await this.messageRepository.getByChatId(chatId);
   }
 
   async newChat(userId: string) {
