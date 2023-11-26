@@ -76,7 +76,9 @@ export class ChatController {
         const { chatId } = req.params;
         const { content } = req.body;
 
-        const messages = await this.chatService.loadMessagesByChatId(chatId);
+        const messages = await this.chatService.loadMessagesByChatId(
+          chatId as string,
+        );
         await this.chatService.addUserMessage(userId, chatId, content);
 
         const userMessage: ChatCompletionMessageParam = {

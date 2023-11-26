@@ -1,6 +1,5 @@
 import { TextField } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
-import { selectIconByMethod } from "./selectIconByMethod";
 import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { SnifferType } from "../../stores/sniffersStores";
