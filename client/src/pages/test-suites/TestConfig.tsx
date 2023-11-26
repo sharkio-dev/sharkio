@@ -7,7 +7,7 @@ import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import { Rule, TestType } from "../../stores/testStore";
 import { TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 type TestConfigProps = {
   tabNumber: string;
@@ -21,6 +21,7 @@ type TestConfigProps = {
   test: TestType;
   onTestChange: (test: TestType) => void;
   onTestMethodChange: (test: TestType) => void;
+  onRequestHeadersChange: (header: Array<[string, string]>) => void;
 };
 export const TestConfig = ({
   tabNumber,
@@ -34,27 +35,28 @@ export const TestConfig = ({
   test,
   onTestChange,
   onTestMethodChange,
+  onRequestHeadersChange,
 }: TestConfigProps) => {
-  const [testType, setTestType] = React.useState<string>("Status");
-  const [requestPart, setRequestPart] = React.useState<string>("Body");
-  const [testUrl, setTestUrl] = React.useState<string>(test.url);
+  const [testType, setTestType] = useState<string>("Status");
+  const [requestPart, setRequestPart] = useState<string>("Body");
+  const [testUrl, setTestUrl] = useState<string>(test.url);
   const handleChange = (_: any, newValue: string) => {
     setTubNumber(newValue);
   };
-  const [headers, setHeaders] = React.useState<any[]>([]);
-
-  useEffect(() => {
-    if (!test?.headers) {
-      setHeaders([]);
-      return;
-    }
-    setHeaders(
-      Object.entries(test?.headers || []).map((h: any) => ({
-        name: h[0],
-        value: h[1],
-      })),
-    );
-  }, [test]);
+  const [requestHeaders, setRequestHeaders] = useState<any[]>([]);
+  // useEffect(() => {
+  //   console.log("test changed", test.headers.headers);
+  //   if (!test?.headers.headers) {
+  //     setRequestHeaders([]);
+  //     return;
+  //   }
+  //   setRequestHeaders(
+  //     Object.entries(test?.headers.headers || []).map((h: any) => ({
+  //       name: h[0],
+  //       value: h[1],
+  //     })),
+  //   );
+  // }, [test]);
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {
     const headers = [...headerRules];
@@ -65,6 +67,24 @@ export const TestConfig = ({
     };
     //call to debounce function
     onAssertionHeadersChange(headers);
+  };
+
+  const onChangeRequestHeader = (
+    index: number,
+    value: any,
+    targetPath: string
+  ) => {
+    console.log("change request header");
+    const headers = [...requestHeaders];
+    headers[index] = {
+      ...headers[index],
+      name: targetPath,
+      value: value,
+    };
+    //call to debounce function
+    setRequestHeaders(headers);
+    // should be this below
+    // onRequestHeadersChange(headers);
   };
 
   return (
@@ -124,7 +144,7 @@ export const TestConfig = ({
             }}
             deleteHeader={(index) =>
               onAssertionHeadersChange(
-                headerRules.filter((_, i) => i !== index),
+                headerRules.filter((_, i) => i !== index)
               )
             }
           />
@@ -183,52 +203,29 @@ export const TestConfig = ({
           </ToggleButtonGroup>
           {requestPart === "Headers" && (
             <HeaderSection
-              headers={headers.map((header: any) => ({
+              //should be test.headers.headers
+              headers={requestHeaders.map((header: any) => ({
                 name: header.name,
                 value: header.value,
               }))}
-              setHeaders={(index, value, targetPath) => {
-                setHeaders((prevHeaders) => {
-                  const newHeaders = [...prevHeaders];
-                  newHeaders[index] = {
-                    name: targetPath,
-                    value: value,
-                  };
-                  return newHeaders;
-                });
-              }}
+              setHeaders={onChangeRequestHeader}
               addHeader={() => {
                 const newHeader = {
                   name: "",
                   value: "",
                 };
-              
-                // Update local state
-                setHeaders([...headers, newHeader]);
-              
-                // Update test object and call onTestMethodChange
-                // onTestMethodChange({
-                //   ...test,
-                //   headers: {
-                //     ...test.headers,
-                //     headers: [...headers, newHeader], // Include the new header
-                //   },
-                // });
-                console.log("req headers");
+                console.log(test.headers);
+                setRequestHeaders([...requestHeaders, newHeader]);
+                //should be this below
+                // onRequestHeadersChange([...test.headers.headers, newHeader]);
               }}
-              deleteHeader={(index) => {
-                setHeaders((prevHeaders) => {
-                  const newHeaders = [...prevHeaders];
-                  newHeaders.splice(index, 1);
-                  return newHeaders;
-                });
-                onTestMethodChange({
-                  ...test,
-                  headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index),
-                  ),
-                });
-              }}
+              deleteHeader={(index) =>
+                //should be this below
+                // onRequestHeadersChange(
+                //   test.headers.headers.filter((_, i) => i !== index)
+                // )
+                setRequestHeaders(requestHeaders.filter((_, i) => i !== index))
+              }
             />
           )}
           {requestPart === "Body" && (

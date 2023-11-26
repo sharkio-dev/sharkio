@@ -27,73 +27,101 @@ export const TestSuiteMainSection = () => {
     comparator: "equals",
   });
 
-  // const handleSaveOperation = (saveFunction: () => Promise<void>) => {
-  //   setSaveLoading(true);
-  //   saveFunction()
-  //     .catch(() => {
-  //       show("Error saving test", "error");
-  //     })
-  //     .finally(() => {
-  //       setSaveLoading(false);
-  //     });
-  // };
-
   const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
   const [showConfig, setShowConfig] = React.useState<boolean>(true);
   const { getTest, editTest } = useTestStore();
-  let debounceTimeout: any;
+  const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
+  const DEBOUNCE_TIME_WAIT: number = 2000;
 
+  //pretty similar maybe can put them together
   const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
-    setHeaderRules(newHeaders);
-    handleHeaderSave(newHeaders);
-  };
-
-  const handleStatusCodeChange = (newStatusCode: string) => {
-    handleSaveStatusCode(newStatusCode);
-    setStatusCodeRule({ ...statusCodeRule, expectedValue: newStatusCode });
-  };
-
-  const handleBodyChange = (newBody: string) => {
-    console.log("try value -->", value);
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
+    console.log("headers ass try");
+    setHeaderRules([...newHeaders]);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
-    debounceTimeout = setTimeout(() => {
-      console.log("debouce body: " + { value });
+    debounceTimeout.current = setTimeout(() => {
+      console.log("headers ass CHANGE");
+      console.log(...newHeaders);
+      console.log(headerRules);
+      handleAssertionsSave([statusCodeRule, bodyRule, ...newHeaders]);
+    }, DEBOUNCE_TIME_WAIT);
+  };
+
+  const handleAssertionStatusCodeChange = (newStatusCode: string) => {
+    setStatusCodeRule({ ...statusCodeRule, expectedValue: newStatusCode });
+    handleAssertionsSave([
+      { ...statusCodeRule, expectedValue: newStatusCode },
+      bodyRule,
+      ...headerRules,
+    ]);
+  };
+
+  const handleAssertionBodyChange = (newBody: string) => {
+    console.log("try value debounce body assertion-->", value);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+    debounceTimeout.current = setTimeout(() => {
       setBodyRule({ ...bodyRule, expectedValue: newBody });
-      handleBodySave(newBody);
+      //handleBodySave(newBody);
+      handleAssertionsSave([
+        statusCodeRule,
+        { ...bodyRule, expectedValue: newBody },
+        ...headerRules,
+      ]);
     }, 2000);
   };
 
-  const handleTestMethodChange = (newTest: TestType) => {
-    setTest(newTest);
-    handleTestSave(newTest);
+  const handleRequestHeadersChange = (headersReq: any[]) => {
+    console.log("headersReq", headersReq);
+    console.log("headers test", test?.headers.headers);
+    //not working
+    setTest((prevTest) => {
+      if (!prevTest) {
+        return null;
+      }
+      const newHeaders = headersReq.reduce((acc, header, index) => {
+        const headerName = header.name || `header${index + 1}`;
+        return { ...acc, [headerName]: header.value };
+      }, {});
+      console.log("newHeaders", newHeaders);
+      return {
+        ...prevTest,
+        headers: newHeaders,
+      };
+    });
   };
-  const handleTestChange = (newTest: TestType) => {
-    console.log("try value test-->", newTest);
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
+
+  const handleRequestChange = (newTest: TestType) => {
+    console.log("try value test request no debounce-->", newTest);
+    setTest(newTest);
+    handleRequestSave(newTest);
+  };
+
+  const handleDebounceRequestChange = (newTest: TestType) => {
+    console.log("try value test change debounce-->", newTest);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
-    debounceTimeout = setTimeout(() => {
+    debounceTimeout.current = setTimeout(() => {
       console.log("debouce test method: " + { newTest });
       setTest(newTest);
-      handleTestSave(newTest);
+      handleRequestSave(newTest);
     }, 2000);
   };
 
-  const handleHeaderSave = (newHeaders: Rule[]) => {
-    console.log("header assertions save");
+  const handleAssertionsSave = (newAssertions: Rule[]) => {
+    console.log("assertions save");
+    console.log(newAssertions);
     if (!testSuiteId || !testId || !test) {
       return;
     }
     setSaveLoading(true);
     editTest(testSuiteId, testId, {
       ...test,
-      rules: [...headerRules, ...newHeaders],
+      rules: newAssertions,
     })
-      .then(() => {
-        show("Test saved successfully", "success");
-      })
       .catch(() => {
         show("Error saving test", "error");
       })
@@ -102,60 +130,13 @@ export const TestSuiteMainSection = () => {
       });
   };
 
-  const handleSaveStatusCode = (newStatusCode: string) => {
-    console.log("status save");
-    if (!testSuiteId || !testId || !test) {
-      return;
-    }
-    setSaveLoading(true);
-    editTest(testSuiteId, testId, {
-      ...test,
-      rules: [{ ...statusCodeRule, expectedValue: newStatusCode }],
-    })
-      .then(() => {
-        show("Test saved successfully", "success");
-      })
-      .catch(() => {
-        show("Error saving test", "error");
-      })
-      .finally(() => {
-        setSaveLoading(false);
-      });
-  };
-
-  const handleTestSave = (newTest: TestType) => {
+  const handleRequestSave = (newTest: TestType) => {
     console.log("test save");
     if (!testSuiteId || !testId || !test) {
       return;
     }
     setSaveLoading(true);
     editTest(testSuiteId, testId, newTest)
-      .then(() => {
-        show("Test saved successfully", "success");
-      })
-      .catch(() => {
-        show("Error saving test", "error");
-      })
-      .finally(() => {
-        setSaveLoading(false);
-      });
-  };
-
-  const handleBodySave = (newBody: string) => {
-    console.log("body save");
-    console.log({ ...bodyRule, expectedValue: newBody });
-    if (!testSuiteId || !testId || !test) {
-      return;
-    }
-    setSaveLoading(true);
-
-    editTest(testSuiteId, testId, {
-      ...test,
-      rules: [{ ...bodyRule, expectedValue: newBody }],
-    })
-      .then(() => {
-        show("Test saved successfully", "success");
-      })
       .catch(() => {
         show("Error saving test", "error");
       })
@@ -187,6 +168,7 @@ export const TestSuiteMainSection = () => {
       });
   }, [test, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
 
+  
   const extractStatusCode = (test: TestType) => {
     test.rules.forEach((rule) => {
       if (rule.type === "status_code") {
@@ -218,7 +200,7 @@ export const TestSuiteMainSection = () => {
       return;
     }
     getTest(testSuiteId, testId).then((data) => {
-      handleTestChange(data);
+      handleDebounceRequestChange(data);
       extractStatusCode(data);
       extractBody(data);
       extractHeaders(data);
@@ -276,16 +258,17 @@ export const TestSuiteMainSection = () => {
             (showConfig ? (
               <TestConfig
                 test={test}
-                onTestChange={handleTestChange}
-                onTestMethodChange={handleTestMethodChange}
+                onTestChange={handleDebounceRequestChange}
+                onTestMethodChange={handleRequestChange}
                 tabNumber={value}
                 setTubNumber={setValue}
                 statusCodeRule={statusCodeRule}
-                onStatusCodeChange={handleStatusCodeChange}
+                onStatusCodeChange={handleAssertionStatusCodeChange}
                 bodyRule={bodyRule}
-                onBodyChange={handleBodyChange}
+                onBodyChange={handleAssertionBodyChange}
                 headerRules={headerRules}
                 onAssertionHeadersChange={handleAssertionHeadersChange}
+                onRequestHeadersChange={handleRequestHeadersChange}
               />
             ) : (
               <ExecutionHistory />
