@@ -47,7 +47,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/live/invocations/${id}`);
     },
-    [invocationId]
+    [invocationId],
   );
 
   return (
