@@ -2,8 +2,9 @@ export const routes = {
   LOGIN: "/login",
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
   LIVE: "/live",
+  LIVE_INVOCATION: "/live/invocations/:invocationId",
   SNIFFER: "/sniffers/:snifferId",
-  LIVE_INVOCATION: "/invocations/:invocationId",
+  SNIFFER_CREATE_INVOCATION: "/sniffers/:snifferId/invocations/create",
   SNIFFER_ENDPOINT: "/sniffers/:snifferId/endpoints/:endpointId",
   SNIFFER_ENDPOINT_INVOCATION:
     "/sniffers/:snifferId/endpoints/:endpointId/invocations/:invocationId",

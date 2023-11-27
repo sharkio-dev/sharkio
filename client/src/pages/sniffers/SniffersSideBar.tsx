@@ -3,9 +3,6 @@ import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
-import { DeleteSnifferModal } from "./DeleteSnifferModal";
-import { EditSnifferModal } from "./EditSnifferModal";
-import { AddSnifferModal } from "./AddSnifferModal";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { useNavigate, useParams } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -14,11 +11,14 @@ import { EndpointType } from "./types";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { getEnpoints } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "./loadingIcon";
+import { AddSnifferModal } from "./AddSnifferModal";
+import { EditSnifferModal } from "./EditSnifferModal";
+import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
 export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
+    null
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -135,7 +135,10 @@ export const SniffersSideBar = () => {
               <LoadingIcon />
             </div>
           ) : (
-            <EndpointSideBar endpoints={endpoints} />
+            <EndpointSideBar
+              endpoints={endpoints}
+              showAdd={selectValue !== "live"}
+            />
           )}
         </div>
       </div>

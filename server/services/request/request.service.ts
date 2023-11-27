@@ -39,7 +39,7 @@ export class RequestService {
         httpsAgent: agent,
       })
       .catch((e) => {
-        log.error(e);
+        log.error({ e });
       });
     return;
   }

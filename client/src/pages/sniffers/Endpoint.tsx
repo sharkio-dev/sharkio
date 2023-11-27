@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { selectIconByMethod } from "./selectIconByMethod";
+import { selectIconByMethod } from "./SelectIconByMethod";
 
 type EndpointProps = {
   timestamp?: string;

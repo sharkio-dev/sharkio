@@ -2,15 +2,13 @@ import { TextField } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
-import { SnifferType } from "../../stores/sniffersStores";
 import { executeInvocation } from "../../api/api";
 import { useEffect, useState } from "react";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "./loadingIcon";
 import { SelectComponent } from "../test-suites/SelectComponent";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
-  activeSniffer?: SnifferType;
   onExecuteRequest?: () => void;
 };
 
@@ -19,7 +17,12 @@ export const InvocationUpperBar = ({
   onExecuteRequest,
 }: InvocationUpperBarProps) => {
   const [loading, setLoading] = useState(false);
-  const [editedInvocation, setEditedInvocation] = useState<InvocationType>();
+  const [editedInvocation, setEditedInvocation] = useState<InvocationType>({
+    method: "GET",
+    url: "",
+    headers: {},
+    body: "",
+  } as InvocationType);
 
   useEffect(() => {
     activeInvocation && setEditedInvocation(activeInvocation);
@@ -41,6 +44,7 @@ export const InvocationUpperBar = ({
         setLoading(false);
       });
   };
+
   return (
     <>
       <div className="flex flex-row items-center space-x-4">

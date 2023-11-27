@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { InvocationType } from "../types";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { LoadingIcon } from "../LoadingIcon";
+import { LoadingIcon } from "../loadingIcon";
 import { getLiveInvocations } from "../../../api/api";
 import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,7 +21,7 @@ export const LivePage = () => {
         const invocations = res.data;
         setInvocations(invocations);
         if (invocations.length > 0 && !invocationId) {
-          navigator(`/invocations/${invocations[0].id}`, {
+          navigator(`/live/invocations/${invocations[0].id}`, {
             replace: true,
           });
         }
@@ -45,9 +45,9 @@ export const LivePage = () => {
 
   const onInvocationClick = useCallback(
     (id: string) => {
-      navigator(`/invocations/${id}`);
+      navigator(`/live/invocations/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
 
   return (
@@ -56,7 +56,6 @@ export const LivePage = () => {
         <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
           <InvocationUpperBar
             activeInvocation={invocation}
-            activeSniffer={undefined}
             onExecuteRequest={() => loadInvocations()}
           />
         </div>

@@ -5,7 +5,7 @@ import { SiOpenai } from "react-icons/si";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
 import { loadChat, newChat, newMessage } from "../../api/api";
-import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { LoadingIcon } from "../sniffers/loadingIcon";
 
 export const ChatPage = () => {
   const { chatId: paramChatId } = useParams();

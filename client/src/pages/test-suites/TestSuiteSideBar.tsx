@@ -19,7 +19,7 @@ import {
 } from "./AddTestSuiteModal";
 import { VscChecklist } from "react-icons/vsc";
 import { useTestStore } from "../../stores/testStore";
-import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { LoadingIcon } from "../sniffers/loadingIcon";
 
 export const TestSuiteSideBar = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =
@@ -32,7 +32,7 @@ export const TestSuiteSideBar = () => {
   const navigator = useNavigate();
   const [selectValue, setSelectValue] = React.useState<string>("");
   const selectedTestSuite = testSuites.find(
-    (testSuite) => testSuite.id === selectValue,
+    (testSuite) => testSuite.id === selectValue
   );
   const { testSuiteId } = useParams();
   const { tests, executeTest } = useTestStore();
@@ -52,11 +52,11 @@ export const TestSuiteSideBar = () => {
     }
     const combinedArray = Object.values(tests).reduce(
       (acc, array) => [...acc, ...array],
-      [],
+      []
     );
     setLoading(true);
     return Promise.all(
-      combinedArray.map((test) => executeTest(testSuiteId, test.id)),
+      combinedArray.map((test) => executeTest(testSuiteId, test.id))
     )
       .then(() => {
         navigator("/test-suites/" + testSuiteId);
