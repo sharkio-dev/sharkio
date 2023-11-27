@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
