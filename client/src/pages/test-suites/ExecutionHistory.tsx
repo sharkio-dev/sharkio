@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
-import { LoadingIcon } from "../sniffers/loadingIcon";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 import {
   Table,
   TableBody,

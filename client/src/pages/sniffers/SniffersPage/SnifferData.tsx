@@ -4,7 +4,7 @@ import { getInvocations } from "../../../api/api";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { LoadingIcon } from "../loadingIcon";
+import { LoadingIcon } from "../LoadingIcon";
 import { InvocationType } from "../types";
 
 export const SnifferData: React.FC = () => {
@@ -27,7 +27,7 @@ export const SnifferData: React.FC = () => {
         if (invocations.length > 0) {
           navigator(
             `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocations[0].id}`,
-            { replace: true }
+            { replace: true },
           );
         }
       })
@@ -51,7 +51,7 @@ export const SnifferData: React.FC = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`
+      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
     );
   };
 

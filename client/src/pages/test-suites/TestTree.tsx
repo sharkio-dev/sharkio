@@ -14,7 +14,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { TestType, useTestStore } from "../../stores/testStore";
 import { AddTestModal } from "./AddTestModal";
-import { LoadingIcon } from "../sniffers/loadingIcon";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type CustomContentProps = {
   onExecute?: () => Promise<void>;
@@ -103,7 +103,7 @@ function CustomContent(props: CustomContentProps, ref: React.Ref<any>) {
           "/endpoints/" +
           endpointId +
           "/tests/" +
-          nodeId
+          nodeId,
       );
     } else if (type === "endpoint" && isManual) {
       navigator("/test-suites/" + testSuiteId + "/endpoints/" + endpointId);
@@ -300,7 +300,7 @@ export function TestTree() {
                 return Promise.all(
                   tests[url].map((test: TestType) => {
                     return execute(test.id);
-                  })
+                  }),
                 ).then(() => {
                   navigator("/test-suites/" + testSuiteId + "/endpoints/" + i);
                 });
@@ -314,7 +314,7 @@ export function TestTree() {
                     onDelete={() => {
                       onDeleteClicked(test.id);
                       navigator(
-                        "/test-suites/" + testSuiteId + "/endpoints/" + i
+                        "/test-suites/" + testSuiteId + "/endpoints/" + i,
                       );
                     }}
                     key={test.id}
@@ -329,7 +329,7 @@ export function TestTree() {
                             "/endpoints/" +
                             i +
                             "/tests/" +
-                            test.id
+                            test.id,
                         );
                       });
                     }}
