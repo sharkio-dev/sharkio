@@ -177,6 +177,7 @@ export class EndpointController {
             body,
             subdomain: sniffer.subdomain,
           });
+          console.log("done");
 
           res.sendStatus(200);
         } catch (e) {
