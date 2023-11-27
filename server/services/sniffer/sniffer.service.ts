@@ -25,9 +25,8 @@ export class SnifferService {
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
     const snifferEntity =
       this.snifferRepository.repository.create(snifferConfig);
-    const newSniffer = await this.snifferRepository.repository.save(
-      snifferEntity,
-    );
+    const newSniffer =
+      await this.snifferRepository.repository.save(snifferEntity);
     return newSniffer;
   }
 

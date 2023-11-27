@@ -47,6 +47,21 @@ export class ProxyServer {
 
   private startHttpsServer() {
     try {
+      const fs = require("fs");
+      const path = require("path");
+
+      // Replace this with your directory path
+      const directoryPath = path.join(__dirname + "/../.");
+
+      fs.readdir(directoryPath, function (err: any, files: any) {
+        if (err) {
+          return console.log("Unable to scan directory: " + err);
+        }
+
+        files.forEach(function (file: any) {
+          console.log(file);
+        });
+      });
       log.info("process.env.PROXY_PRIVATE_KEY_FILE");
       log.info({ privkey: process.env.PROXY_PRIVATE_KEY_FILE });
       log.info("process.env.PROXY_CERT_FILE");
