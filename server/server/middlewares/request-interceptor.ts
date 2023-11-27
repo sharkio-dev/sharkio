@@ -16,51 +16,61 @@ export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
     private readonly requestService: EndpointService,
-    private readonly responseService: ResponseService,
+    private readonly responseService: ResponseService
   ) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
-    const subdomain = req.hostname.split(".")[0];
-    const sniffer = await this.snifferService.findBySubdomain(subdomain);
+    try {
+      const subdomain = req.hostname.split(".")[0];
+      const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
-    if (sniffer === null) {
-      res.sendStatus(404);
-    } else {
-      const interceptedInvocation = await this.interceptRequest(req);
+      if (sniffer === null) {
+        res.sendStatus(404);
+      } else {
+        const interceptedInvocation = await this.interceptRequest(req);
 
-      if (interceptedInvocation?.id) {
-        req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
-        req.headers["x-sharkio-sniffer-id"] = interceptedInvocation.snifferId;
-        req.headers["x-sharkio-user-id"] = interceptedInvocation.userId;
+        if (interceptedInvocation?.id) {
+          req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
+          req.headers["x-sharkio-sniffer-id"] = interceptedInvocation.snifferId;
+          req.headers["x-sharkio-user-id"] = interceptedInvocation.userId;
+        }
+
+        next();
       }
-
-      next();
+    } catch (e: any) {
+      logger.error(e);
+      res.sendStatus(500);
     }
   }
 
   async interceptRequest(req: Request) {
-    const subdomain = req.hostname.split(".")[0];
-    const sniffer = await this.snifferService.findBySubdomain(subdomain);
+    try {
+      const subdomain = req.hostname.split(".")[0];
+      const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
-    if (sniffer === null) {
+      if (sniffer === null) {
+        return undefined;
+      }
+
+      const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
+        | string
+        | undefined;
+
+      const request = await this.requestService.findOrCreate(
+        req,
+        sniffer.id,
+        sniffer.userId
+      );
+      const invocation = await this.requestService.addInvocation({
+        ...request,
+        testExecutionId,
+      });
+
+      return invocation;
+    } catch (e: any) {
+      logger.error(e);
       return undefined;
     }
-
-    const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
-      | string
-      | undefined;
-
-    const request = await this.requestService.findOrCreate(
-      req,
-      sniffer.id,
-      sniffer.userId,
-    );
-    const invocation = await this.requestService.addInvocation({
-      ...request,
-      testExecutionId,
-    });
-
-    return invocation;
   }
 
   async interceptResponse(
@@ -72,7 +82,7 @@ export class RequestInterceptor {
       statusCode: number | undefined;
       body: any;
     },
-    testExecutionId?: string,
+    testExecutionId?: string
   ) {
     return await this.responseService.addResponse({
       userId,
