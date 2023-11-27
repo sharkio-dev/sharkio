@@ -4,7 +4,7 @@ import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { executeInvocation } from "../../api/api";
 import { useEffect, useState } from "react";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "./loadingIcon";
 import { SelectComponent } from "../test-suites/SelectComponent";
 
 type InvocationUpperBarProps = {
