@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useLog } from "../../lib/log";
 import { RequestRepository } from "../../model/request/request.model";
+import https from "https";
 
 const log = useLog({
   dirname: __dirname,
@@ -15,6 +16,10 @@ type ExecutionType = {
 };
 
 export class RequestService {
+  private agent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+
   constructor(private readonly requestRepository: RequestRepository) {}
 
   async execute({ method, url, headers, body, subdomain }: ExecutionType) {
@@ -24,6 +29,7 @@ export class RequestService {
         url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers,
         data: body,
+        httpsAgent: this.agent,
       })
       .catch((e) => {
         log.error(e);
