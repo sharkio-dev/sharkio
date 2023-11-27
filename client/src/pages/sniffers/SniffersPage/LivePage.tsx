@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { InvocationType } from "../types";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { LoadingIcon } from "../loadingIcon";
+import { LoadingIcon } from "../LoadingIcon";
 import { getLiveInvocations } from "../../../api/api";
 import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";

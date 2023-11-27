@@ -11,7 +11,7 @@ import { EndpointType } from "./types";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { getEnpoints } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { LoadingIcon } from "./loadingIcon";
+import { LoadingIcon } from "./LoadingIcon";
 import { AddSnifferModal } from "./AddSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";

@@ -4,7 +4,7 @@ import { getInvocations } from "../../../api/api";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { LoadingIcon } from "../loadingIcon";
+import { LoadingIcon } from "../LoadingIcon";
 import { InvocationType } from "../types";
 
 export const SnifferData: React.FC = () => {
