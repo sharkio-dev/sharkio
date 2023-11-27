@@ -1,7 +1,11 @@
 import axios from "axios";
+import https from "https";
 
 const ServerAxios = axios.create({
-  baseURL: "http://localhost:5012/sharkio/api",
+  baseURL: "https://server.sharkio.dev/sharkio/api",
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
 });
 
 export default ServerAxios;
