@@ -23,12 +23,19 @@ export class RequestService {
   constructor(private readonly requestRepository: RequestRepository) {}
 
   async execute({ method, url, headers, body, subdomain }: ExecutionType) {
+    console.log("execute", {
+      method,
+      url,
+      headers,
+      body,
+      subdomain,
+    });
     await axios
       .request({
         method,
         url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers,
-        data: body,
+        data: "",
         httpsAgent: agent,
       })
       .catch((e) => {
