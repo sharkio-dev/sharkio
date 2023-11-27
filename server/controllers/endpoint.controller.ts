@@ -119,7 +119,7 @@ export class EndpointController {
             return res.status(404).send("Sniffer not found");
           }
 
-          let newHeaders = !headers ? {} : headers;
+          let newHeaders = headers ?? {};
 
           await this.requestService.execute({
             method,

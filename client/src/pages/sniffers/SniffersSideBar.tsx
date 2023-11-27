@@ -18,7 +18,7 @@ import { LoadingIcon } from "./LoadingIcon";
 
 export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
+    null
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -135,7 +135,10 @@ export const SniffersSideBar = () => {
               <LoadingIcon />
             </div>
           ) : (
-            <EndpointSideBar endpoints={endpoints} />
+            <EndpointSideBar
+              endpoints={endpoints}
+              showAdd={selectValue !== "live"}
+            />
           )}
         </div>
       </div>

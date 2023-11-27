@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Endpoint } from "./Endpoint";
 import { EndpointType } from "./types";
+import { AiOutlinePlus } from "react-icons/ai";
+import { Endpoint } from "./endpoint";
 
 type EndpointSideBarProps = {
   endpoints: EndpointType[];
+  showAdd?: boolean;
 };
-export const EndpointSideBar = ({ endpoints }: EndpointSideBarProps) => {
+export const EndpointSideBar = ({
+  endpoints,
+  showAdd = true,
+}: EndpointSideBarProps) => {
   const [search, _] = useState("");
   const navigate = useNavigate();
   const { snifferId, endpointId } = useParams();
@@ -33,6 +38,18 @@ export const EndpointSideBar = ({ endpoints }: EndpointSideBarProps) => {
         onChange={(e) => setSearch(e.target.value)}
         value={search}
       /> */}
+      {showAdd && (
+        <div
+          className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md p-2`}
+          onClick={() => navigate(`/sniffers/${snifferId}/invocations/create`)}
+        >
+          <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center">
+            <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
+            New
+          </div>
+        </div>
+      )}
+
       {filteredRequests.map((request) => {
         return (
           <Endpoint

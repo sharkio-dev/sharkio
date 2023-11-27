@@ -5,20 +5,22 @@ import { useAuthStore } from "../../stores/authStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
-import { SnifferData } from "./SniffersPage/SnifferData";
+import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
 import Sniffer from "./SniffersPage/UrlPage";
 
-const SniffersPage = () => {
+interface SnifferPageTemplateProps {
+  children?: React.ReactNode;
+}
+const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
+  children,
+}) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadSniffers, sniffers } = useSniffersStore();
+  const { loadSniffers } = useSniffersStore();
 
   const [loadingSniffers, setLoadingSniffers] = useState(false);
 
-  const { snifferId, endpointId } = useParams();
   const userId = useAuthStore((s) => s.user?.id);
-
-  const sniffer = sniffers.find((s) => s.id === snifferId);
 
   useEffect(() => {
     if (!userId) return;
@@ -46,14 +48,44 @@ const SniffersPage = () => {
       </div>
 
       <div
-        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(vh-96px)] w-full`}
+        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)]`}
       >
-        {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
-        {!sniffer && !endpointId && <LivePage />}
-        {sniffer && !endpointId && <Sniffer Sniffer={sniffer} />}
+        {children}
       </div>
     </div>
   );
 };
 
-export default SniffersPage;
+export const SnifferEndpointPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <SnifferData />
+    </SnifferPageTemplate>
+  );
+};
+
+export const CreateInvocationPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <CreateInvocation />
+    </SnifferPageTemplate>
+  );
+};
+
+export const LiveSnifferPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <LivePage />
+    </SnifferPageTemplate>
+  );
+};
+
+export const SnifferPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <Sniffer />
+    </SnifferPageTemplate>
+  );
+};
+
+export default SnifferPageTemplate;
