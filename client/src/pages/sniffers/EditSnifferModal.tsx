@@ -18,7 +18,9 @@ export const EditSnifferModal = ({
   const [downstreamUrl, setDownstreamUrl] = useState<string>(
     sniffer.downstreamUrl,
   );
-  const [port, setPort] = useState<number | undefined>(sniffer.port);
+  const [subdomain, setSubdomain] = useState<string>(
+    sniffer.subdomain.split("-")[1],
+  );
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { editSniffer } = useSniffersStore();
@@ -33,21 +35,25 @@ export const EditSnifferModal = ({
       return;
     }
     setIsLoading(true);
-    editSniffer({ name, downstreamUrl, port: port || 1, id: sniffer.id })
+    editSniffer({
+      name,
+      downstreamUrl,
+      id: sniffer.id,
+      subdomain: name + "-" + subdomain,
+    })
       .then(() => {
         setName("");
         setDownstreamUrl("");
-        setPort(undefined);
+        setSubdomain("");
         onClose();
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         showSnackbar("Error creating sniffer", "error");
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [name, downstreamUrl, sniffer, showSnackbar, onClose, port]);
+  }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
 
   return (
     <>
@@ -74,11 +80,11 @@ export const EditSnifferModal = ({
               onChange={(event) => setDownstreamUrl(event.target.value)}
             />
             <TextField
-              label={"Port"}
-              placeholder="Port"
-              value={port}
-              type="number"
-              onChange={(event) => setPort(Number(event.target.value))}
+              label={"Subdomain"}
+              placeholder="subdomain"
+              value={name + "-" + subdomain}
+              onChange={(event) => setSubdomain(event.target.value)}
+              disabled={true}
             />
           </div>
 

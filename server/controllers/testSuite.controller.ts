@@ -104,7 +104,6 @@ export class TestSuiteController {
           );
           res.status(201).json(test);
         } catch (error) {
-          console.log(error);
           res.status(500).send();
         }
       }),
@@ -298,7 +297,6 @@ export class TestSuiteController {
               };
             }
           });
-          console.log({ checks });
           await this.testExecutionService.update(testExecution.id, checks);
 
           res.status(204).send();

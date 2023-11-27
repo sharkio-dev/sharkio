@@ -10,9 +10,6 @@ export const EndpointSideBar = ({ endpoints }: EndpointSideBarProps) => {
   const [search, _] = useState("");
   const navigate = useNavigate();
   const { snifferId, endpointId } = useParams();
-  console.log("snifferId", snifferId);
-  console.log("endpointId", endpointId);
-  console.log("endpoints", endpoints);
 
   const filteredRequests =
     endpoints?.filter((endpoint) => {

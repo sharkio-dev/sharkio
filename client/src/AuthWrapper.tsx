@@ -75,5 +75,5 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
     return <div>Loading...</div>;
   }
 
-  return children;
+  return <>{children}</>;
 };

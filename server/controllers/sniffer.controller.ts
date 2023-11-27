@@ -121,10 +121,9 @@ export class SnifferController {
             const userId = res.locals.auth.user.id;
 
             const createdSniffer = await this.snifferManager.createSniffer({
-              userId,
               ...config,
+              userId,
             });
-            console.log({ createdSniffer });
             return res.status(201).json(createdSniffer);
           } catch (e) {
             log.error("An unexpected error occured", {

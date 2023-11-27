@@ -7,6 +7,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
 import { SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
+import Sniffer from "./SniffersPage/UrlPage";
 
 const SniffersPage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
@@ -43,11 +44,13 @@ const SniffersPage = () => {
           <SniffersSideBar />
         )}
       </div>
+
       <div
         className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(vh-96px)] w-full`}
       >
         {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
         {!sniffer && !endpointId && <LivePage />}
+        {sniffer && !endpointId && <Sniffer Sniffer={sniffer} />}
       </div>
     </div>
   );
