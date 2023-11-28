@@ -16,7 +16,7 @@ export type TestType = {
   createdAt: Date;
   testSuiteId: string;
   url: string;
-  body: Record<string, any>;
+  body: string;
   headers: Record<string, any>;
   method: string;
   rules: Rule[];

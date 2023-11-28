@@ -2,12 +2,7 @@
   "name": "@idodav/sharkio",
   "version": "0.0.1",
   "description": "Micro service network monitoring and development tool",
-  "main": "index.js",
-  "bin": {
-    "sharkio": "index.mjs"
-  },
   "scripts": {
-    "cli": "node ./index.mjs",
     "dashboard": "cd ./client && npm run dev",
     "sniffer": "cd ./server && npm run dev",
     "build:dashboard": "cd ./client && npm run build",
@@ -16,7 +11,6 @@
     "format:sniffer": "cd ./server && npm run format",
     "build": "concurrently --kill-others \"cd ./server && npm run build\"  \"cd ./client && npm run build\"",
     "dev": "concurrently --kill-others \"cd ./server && npm run dev\"  \"cd ./client && npm run dev\"",
-    "dev2": "concurrently --kill-others \"cd ./server && npm run dev\"  \"cd ./client && npm run dev2\"",
     "demo": "concurrently --kill-others \"nodemon dummy-server.js\" \"npm run dev\"",
     "format": "prettier -w .",
     "test:server": "cd ./server && npm test",
@@ -28,45 +22,8 @@
   "author": "Ido David",
   "license": "ISC",
   "dependencies": {
-    "@mui/x-tree-view": "^6.17.0",
-    "@types/cors": "^2.8.14",
-    "axios": "^1.4.0",
-    "client": "file:client",
-    "concurrently": "^8.2.0",
-    "copy-to-clipboard": "^3.3.3",
-    "cors": "^2.8.5",
-    "kill-port": "^2.0.1",
-    "nodemon": "^3.0.1",
-    "open": "^9.1.0",
-    "ps-tree": "^1.2.0",
-    "server": "file:server",
-    "swagger-jsdoc": "^6.2.8",
-    "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1",
-    "yargs": "^17.7.2"
-  },
-  "files": [
-    "index.js",
-    "package.json",
-    "node_modules",
-    "server",
-    "client"
-  ],
-  "bundleDependencies": [
-    "axios",
-    "kill-port",
-    "client",
-    "server",
-    "yargs"
-  ],
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.33.0",
-    "express": "^4.18.2",
-    "husky": "^8.0.0",
-    "prettier": "^3.0.0",
-    "pretty-quick": "^3.1.3"
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "prettier": "^3.1.0"
   }
 }

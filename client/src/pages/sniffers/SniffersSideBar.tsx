@@ -3,18 +3,16 @@ import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
-import { DeleteSnifferModal } from "./DeleteSnifferModal";
-import { EditSnifferModal } from "./EditSnifferModal";
-import { AddSnifferModal } from "./AddSnifferModal";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { useNavigate, useParams } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { MdOutlineEmergencyRecording } from "react-icons/md";
-import { EndpointType } from "./types";
 import { EndpointSideBar } from "./EndpointSideBar";
-import { getEnpoints } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { LoadingIcon } from "./LoadingIcon";
+import { AddSnifferModal } from "./AddSnifferModal";
+import { EditSnifferModal } from "./EditSnifferModal";
+import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
 export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
@@ -26,30 +24,23 @@ export const SniffersSideBar = () => {
   const { sniffers } = useSniffersStore();
   const [selectValue, setSelectValue] = useState<string>("");
   const navigator = useNavigate();
-  const [endpoints, setEndpoints] = useState<EndpointType[]>([]);
-  const [loadingEndpoints, setLoadingEndpoints] = useState<boolean>(false);
+
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { snifferId } = useParams();
+  const { loadEndpoints, resetEndpoints, loadingEndpoints } =
+    useSniffersStore();
 
   // Populate the endpoints of the screen
   useEffect(() => {
     if (!snifferId) {
-      setEndpoints([]);
+      resetEndpoints();
       setSelectValue("live");
       return;
     }
     setSelectValue(snifferId);
-    setLoadingEndpoints(true);
-    getEnpoints(snifferId)
-      .then((res) => {
-        setEndpoints(res || []);
-      })
-      .catch(() => {
-        showSnackbar("Failed to get endpoints", "error");
-      })
-      .finally(() => {
-        setLoadingEndpoints(false);
-      });
+    loadEndpoints(snifferId).catch(() => {
+      showSnackbar("Failed to get endpoints", "error");
+    });
   }, [snifferId]);
 
   const onAddSnifferModalClose = () => {
@@ -97,7 +88,7 @@ export const SniffersSideBar = () => {
             </MenuItem>
             <MenuItem
               onClick={() => {
-                setEndpoints([]);
+                resetEndpoints();
                 navigator("/live");
                 setSelectValue("live");
               }}
@@ -131,11 +122,11 @@ export const SniffersSideBar = () => {
         </FormControl>
         <div className="flex flex-col w-full overflow-y-auto">
           {loadingEndpoints ? (
-            <div className="flex h-full justify-center items-center">
+            <div className="flex h-[calc(100vh)] justify-center items-center">
               <LoadingIcon />
             </div>
           ) : (
-            <EndpointSideBar endpoints={endpoints} />
+            <EndpointSideBar showAdd={selectValue !== "live"} />
           )}
         </div>
       </div>

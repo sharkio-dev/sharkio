@@ -2,6 +2,7 @@ import {
   Column,
   DataSource,
   Entity,
+  In,
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
@@ -22,12 +23,17 @@ export class SnifferRepository {
   findByUserId(userId: string) {
     return this.repository.findBy({ userId });
   }
+
   findBySubdomain(subdomain: string) {
     return this.repository.findOneBy({ subdomain });
   }
 
   findByName(userId: string, name: string) {
     return this.repository.findOne({ where: { userId, name } });
+  }
+
+  findByPorts(userId: string, ports: number[]) {
+    return this.repository.find({ where: { userId, port: In(ports) } });
   }
 }
 

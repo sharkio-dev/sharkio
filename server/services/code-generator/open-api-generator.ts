@@ -4,30 +4,12 @@ import {
   OpenAPIRequestBody,
 } from "./openapi.interface";
 
-type Invocation = {
-  id: string;
-  timestamp: string;
-  method: string;
-  body: Record<string, string>;
-  headers: Record<string, string>;
-  params: Record<string, string>;
-  response: {
-    id: string;
-    timestamp: string;
-    method: string;
-    body: Record<string, string>;
-    headers: Record<string, string>;
-    params: Record<string, string>;
-    status: number;
-  };
-};
-
 export type InterceptedRequest = {
   id: string;
   snifferId: string;
   url: string;
   method: string;
-  body: Record<string, string>;
+  body: string;
   headers: Record<string, string>;
 };
 
@@ -82,7 +64,7 @@ function createOperation(method: string, request: InterceptedRequest) {
   return operation;
 }
 
-function createBody(invocation: Record<string, string>) {
+function createBody(invocation: string) {
   const arr = parseRequestBodyItems(invocation);
   const requestBody: OpenAPIRequestBody = {
     content: {
@@ -97,7 +79,7 @@ function createBody(invocation: Record<string, string>) {
   return requestBody;
 }
 
-function parseRequestBodyItems(body: Record<string, string>) {
+function parseRequestBodyItems(body: string) {
   const arr: Record<string, { type: string }> = {};
   const keys = Object.keys(body);
   const values = Object.values(body);

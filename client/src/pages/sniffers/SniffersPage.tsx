@@ -1,59 +1,77 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
-import { SnifferData } from "./SniffersPage/SnifferData";
+import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
-import SnifferDetails from "./SniffersPage/Sniffer";
 
-const SniffersPage = () => {
+import Sniffer from "./SniffersPage/Sniffer";
+
+interface SnifferPageTemplateProps {
+  children?: React.ReactNode;
+}
+const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
+  children,
+}) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadSniffers, sniffers } = useSniffersStore();
-
-  const [loadingSniffers, setLoadingSniffers] = useState(false);
-
-  const { snifferId, endpointId } = useParams();
+  const { loadSniffers } = useSniffersStore();
   const userId = useAuthStore((s) => s.user?.id);
-
-  const sniffer = sniffers.find((s) => s.id === snifferId);
 
   useEffect(() => {
     if (!userId) return;
-    setLoadingSniffers(true);
-    loadSniffers()
-      .catch(() => {
-        showSnackbar("Failed to get sniffers", "error");
-      })
-      .finally(() => {
-        setLoadingSniffers(false);
-      });
+    loadSniffers(true).catch(() => {
+      showSnackbar("Failed to get sniffers", "error");
+    });
   }, [userId]);
 
   return (
     <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
       {snackBar}
       <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
-        {loadingSniffers ? (
-          <div className="flex h-full justify-center items-center">
-            <LoadingIcon />
-          </div>
-        ) : (
-          <SniffersSideBar />
-        )}
+        <SniffersSideBar />
       </div>
 
       <div
-        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(vh-96px)] w-full`}
+        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)]`}
       >
-        {sniffer && endpointId && <SnifferData sniffer={sniffer} />}
-        {!sniffer && !endpointId && <LivePage />}
-        {sniffer && !endpointId && <SnifferDetails Sniffer={sniffer} />}
+
+        {children}
       </div>
     </div>
   );
 };
 
-export default SniffersPage;
+export const SnifferEndpointPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <SnifferData />
+    </SnifferPageTemplate>
+  );
+};
+
+export const CreateInvocationPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <CreateInvocation />
+    </SnifferPageTemplate>
+  );
+};
+
+export const LiveSnifferPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <LivePage />
+    </SnifferPageTemplate>
+  );
+};
+
+export const SnifferPage = () => {
+  return (
+    <SnifferPageTemplate>
+      <Sniffer />
+    </SnifferPageTemplate>
+  );
+};
+
+export default SnifferPageTemplate;

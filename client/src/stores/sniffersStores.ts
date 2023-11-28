@@ -3,8 +3,12 @@ import {
   createSniffer,
   deleteSniffer,
   editSniffer,
+  getEnpoints,
+  getInvocations,
+  getLiveInvocations,
   getSniffers,
 } from "../api/api";
+import { EndpointType, InvocationType } from "../pages/sniffers/types";
 
 export type SnifferType = {
   name: string;
@@ -16,37 +20,119 @@ export type SnifferType = {
 
 interface SniffersState {
   sniffers: SnifferType[];
-  loadSniffers: () => Promise<SnifferType[]>;
-  createSniffer: (
-    sniffer: Omit<Omit<SnifferType, "id">, "subdomain">,
-  ) => Promise<void>;
+  endpoints: EndpointType[];
+  endpointsCache: Record<string, EndpointType[]>;
+  invocations: InvocationType[];
+  invocationCache: Record<string, InvocationType[]>;
+  loadingInvocations: boolean;
+  loadingSniffers: boolean;
+  loadingEndpoints: boolean;
+  loadSniffers: (force?: boolean) => Promise<SnifferType[]>;
+  createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
-  editSniffer: (
-    sniffer: Partial<Omit<SnifferType, "subdomain">>,
-  ) => Promise<void>;
+  editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
+  loadEndpoints: (
+    snifferId: string,
+    force?: boolean,
+  ) => Promise<EndpointType[]>;
+  resetEndpoints: () => void;
+  loadInvocations: (
+    endpointId: string,
+    force?: boolean,
+  ) => Promise<InvocationType[]>;
+  resetInvocations: () => void;
+  loadLiveInvocations: () => Promise<InvocationType[]>;
 }
 
-export const useSniffersStore = create<SniffersState>((set) => ({
+export const useSniffersStore = create<SniffersState>((set, get) => ({
   sniffers: [],
-  loadSniffers: () => {
-    return getSniffers().then((res) => {
-      set({ sniffers: res.data });
-      return res.data;
-    });
+  endpoints: [],
+  endpointsCache: {},
+  invocations: [],
+  invocationCache: {},
+  loadingInvocations: false,
+  loadingSniffers: false,
+  loadingEndpoints: false,
+  loadSniffers: (force = false) => {
+    if (get().sniffers.length && !force) {
+      return Promise.resolve(get().sniffers);
+    }
+    set({ loadingSniffers: true });
+    return getSniffers()
+      .then((res) => {
+        set({ sniffers: res.data });
+        return res.data;
+      })
+      .finally(() => set({ loadingSniffers: false }));
   },
-  createSniffer: (sniffer: Omit<Omit<SnifferType, "id">, "subdomain">) => {
+  createSniffer: (sniffer: Omit<SnifferType, "id">) => {
     return createSniffer(sniffer).then(() => {
-      getSniffers().then((res) => set({ sniffers: res.data }));
+      get()
+        .loadSniffers(true)
+        .then((res) => set({ sniffers: res }));
     });
   },
   deleteSniffer: (snifferId: string) => {
     return deleteSniffer(snifferId).then(() => {
-      getSniffers().then((res) => set({ sniffers: res.data }));
+      get()
+        .loadSniffers(true)
+        .then((res) => set({ sniffers: res }));
     });
   },
-  editSniffer: (sniffer: Partial<Omit<SnifferType, "subdomain">>) => {
+  editSniffer: (sniffer: Partial<SnifferType>) => {
     return editSniffer(sniffer).then(() => {
-      getSniffers().then((res) => set({ sniffers: res.data }));
+      get()
+        .loadSniffers(true)
+        .then((res) => set({ sniffers: res }));
     });
+  },
+  loadEndpoints: (snifferId: string, force = false) => {
+    if (get().endpointsCache[snifferId] && !force) {
+      set({ endpoints: get().endpointsCache[snifferId] });
+      return Promise.resolve(get().endpointsCache[snifferId]);
+    }
+    set({ loadingEndpoints: true });
+    return getEnpoints(snifferId)
+      .then((res) => {
+        set({
+          endpoints: res || [],
+          endpointsCache: { ...get().endpointsCache, [snifferId]: res },
+        });
+        return res;
+      })
+      .finally(() => set({ loadingEndpoints: false }));
+  },
+  resetEndpoints: () => {
+    set({ endpoints: [] });
+  },
+  loadInvocations: (endpointId: string, force = false) => {
+    if (get().invocationCache[endpointId] && !force) {
+      set({ invocations: get().invocationCache[endpointId] });
+      return Promise.resolve(get().invocationCache[endpointId]);
+    }
+    set({ loadingInvocations: true });
+    return getInvocations(endpointId)
+      .then((res) => {
+        set({
+          invocations: res || [],
+          invocationCache: { ...get().invocationCache, [endpointId]: res },
+        });
+        return res;
+      })
+      .finally(() => set({ loadingInvocations: false }));
+  },
+  resetInvocations: () => {
+    set({ invocations: [] });
+  },
+  loadLiveInvocations: () => {
+    set({ loadingInvocations: true });
+    return getLiveInvocations()
+      .then((res) => {
+        set({ invocations: res });
+        return res;
+      })
+      .finally(() => {
+        set({ loadingInvocations: false });
+      });
   },
 }));

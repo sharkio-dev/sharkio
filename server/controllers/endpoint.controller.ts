@@ -78,52 +78,6 @@ export class EndpointController {
       },
     );
 
-    router.route("/:requestId/execute").post(
-      /**
-       * @openapi
-       * /sharkio/request/{requestId}/execute:
-       *   get:
-       *     tags:
-       *      - request
-       *     parameters:
-       *       - name: requestId
-       *         in: path
-       *         schema:
-       *           type: string
-       *         description: Request id
-       *         required: true
-       *     description: executes a request
-       *     responses:
-       *       200:
-       *         description: request was successfully executed
-       *       500:
-       *         description: Server error
-       */
-      async (req, res) => {
-        const request = await this.endpointService.getById(
-          req.params.requestId,
-        );
-        if (request == null) {
-          return res.status(404).send("Request not found");
-        }
-        const userId = res.locals.auth.userId;
-        const sniffer = await this.snifferService.getSniffer(
-          userId,
-          request.snifferId,
-        );
-        if (sniffer == null) {
-          return res.status(404).send("Sniffer not found");
-        }
-        await this.requestService.execute({
-          method: request.method,
-          url: request.url,
-          headers: request.headers,
-          body: request.body,
-          subdomain: sniffer.subdomain,
-        });
-      },
-    );
-
     router.route("/execute").post(
       /**
        * @openapi
@@ -156,7 +110,7 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
-          const { method, headers, body, url, snifferId, testId } = req.body;
+          const { method, headers, body, url, snifferId } = req.body;
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
             snifferId,
@@ -165,10 +119,7 @@ export class EndpointController {
             return res.status(404).send("Sniffer not found");
           }
 
-          let newHeaders = !headers ? {} : headers;
-          if (testId) {
-            newHeaders["x-sharkio-test-execution-id"] = testId;
-          }
+          let newHeaders = headers ?? {};
 
           await this.requestService.execute({
             method,
@@ -186,14 +137,6 @@ export class EndpointController {
       },
     );
 
-    // TODO: deprecate this
-    router.route("/:snifferId/requests-tree").get(async (req, res) => {
-      const result = await this.endpointService.getRequestsTree(
-        req.params.snifferId,
-      );
-
-      res.status(200).send(result);
-    });
     return { router, path: "/sharkio/request" };
   }
 }

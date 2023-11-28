@@ -6,17 +6,6 @@ type BodySectionProps = {
 };
 
 export const BodySection = ({ body, onChangeBody }: BodySectionProps) => {
-  // console.log({ body, type: typeof body });
-
-  const onChangeBodyValue = (value: any, event: any) => {
-    if (typeof value !== "string" && value.includes("html")) {
-      onChangeBody(value);
-      return;
-    }
-    //  console.log({ value, event });
-    const res = JSON.parse(value);
-    onChangeBody(res);
-  };
 
   return (
     <div className="flex flex-col space-y-4 w-full">
@@ -25,12 +14,13 @@ export const BodySection = ({ body, onChangeBody }: BodySectionProps) => {
         width={"100%"}
         theme="vs-dark"
         defaultLanguage="json"
-        value={typeof body === "string" ? body : JSON.stringify(body, null, 2)}
+        value={body}
         language={
           typeof body === "string" && body.includes("html") ? "html" : "json"
         }
-        onChange={(value, event) => onChangeBodyValue(value, event)}
+        onChange={(value, _) => onChangeBody && onChangeBody(value || "")}
         options={{
+          readOnly: !onChangeBody,
           minimap: {
             enabled: false,
           },

@@ -104,7 +104,6 @@ export class TestSuiteController {
           );
           res.status(201).json(test);
         } catch (error) {
-          console.log(error);
           res.status(500).send();
         }
       }),
@@ -115,9 +114,8 @@ export class TestSuiteController {
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
-          const testSuite = await this.testService.getByTestSuiteId(
-            testSuiteId,
-          );
+          const testSuite =
+            await this.testService.getByTestSuiteId(testSuiteId);
           if (!testSuite) {
             return res.status(404).send();
           }
@@ -225,9 +223,8 @@ export class TestSuiteController {
           const { testSuiteId, testId } = req.params;
           const userId = res.locals.auth.user.id;
 
-          const testSuite = await this.testService.getByTestSuiteId(
-            testSuiteId,
-          );
+          const testSuite =
+            await this.testService.getByTestSuiteId(testSuiteId);
           if (!testSuite) {
             return res.status(404).send();
           }
@@ -298,7 +295,6 @@ export class TestSuiteController {
               };
             }
           });
-          console.log({ checks });
           await this.testExecutionService.update(testExecution.id, checks);
 
           res.status(204).send();

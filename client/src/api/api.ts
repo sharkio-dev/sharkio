@@ -139,7 +139,9 @@ export const getEnpoints = (snifferId: string) => {
 };
 
 export const getLiveInvocations = () => {
-  return BackendAxios.get(`/invocation`);
+  return BackendAxios.get(`/invocation`).then((res) => {
+    return res.data;
+  });
 };
 export const executeInvocation = (
   invocation: InvocationType & { testId?: string },

@@ -28,8 +28,7 @@ function APIKeys() {
       .then(() => {
         showSnackbar("API key deleted successfully", "success");
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         showSnackbar("Error deleting API key", "error");
       });
   };
