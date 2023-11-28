@@ -1,15 +1,18 @@
 import React from "react";
-import { SnifferType } from "../../../stores/sniffersStores";
+import { useSniffersStore } from "../../../stores/sniffersStores";
 import { AiOutlineBank, AiOutlineDatabase } from "react-icons/ai";
 import List from "@mui/material/List";
 import UrlItem from "../UrlItem";
+import { useParams } from "react-router-dom";
 
-interface UrlPageProps {
-  Sniffer: SnifferType;
-}
+const Sniffer: React.FC = () => {
+  const { snifferId } = useParams<{ snifferId: string }>();
+  const sniffer = useSniffersStore((s) =>
+    s.sniffers.find((s) => s.id === snifferId),
+  );
+  if (!sniffer) return null;
 
-const Sniffer: React.FC<UrlPageProps> = ({ Sniffer }) => {
-  const FullSnifferUrl = `https://${Sniffer.subdomain}.${
+  const FullSnifferUrl = `https://${sniffer.subdomain}.${
     import.meta.env.VITE_PROXY_DOMAIN
   }`;
   return (
@@ -29,7 +32,7 @@ const Sniffer: React.FC<UrlPageProps> = ({ Sniffer }) => {
           Title="Copy Sniffer Domain to clipboard"
         />
         <UrlItem
-          SnifferURL={Sniffer.downstreamUrl}
+          SnifferURL={sniffer.downstreamUrl}
           Icon={AiOutlineBank}
           Label="Server's Domain"
           Title="Copy Server Domain to clipboard"

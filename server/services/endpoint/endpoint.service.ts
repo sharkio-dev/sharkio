@@ -42,65 +42,19 @@ export class EndpointService {
         userId,
         snifferId,
       },
+      order: {
+        createdAt: "DESC",
+      },
     });
 
     return requests;
   }
 
   async getById(id: string) {
-    return this.repository.repository.findOne({ where: { id } });
-  }
-
-  async getRequestsTree(snifferId: string) {
-    const requests = await this.repository.repository.find({
-      where: {
-        snifferId,
-      },
+    return this.repository.repository.findOne({
+      where: { id },
+      order: { createdAt: "DESC" },
     });
-
-    const result = {
-      name: "/",
-      metadata: {
-        suspectedPath: true,
-      },
-      callCount: 0,
-    } as EndpointTreeNode;
-
-    for (const request of requests) {
-      const url = new URL(request.url);
-      const pathParts = url.pathname.split("/");
-
-      // Ensure the URL path is mapped to the current root
-      let currentLevel = result;
-      for (const part of pathParts) {
-        // Ignore the main part of the URL because it represents root
-        if (part === "") {
-          continue;
-        }
-
-        if (currentLevel.next === undefined) {
-          currentLevel.next = {};
-        }
-
-        if (currentLevel.next[part] === undefined) {
-          currentLevel.next[part] = {
-            name: part,
-            metadata: {
-              suspectedPath: true,
-            },
-            callCount: 0,
-          };
-        }
-
-        currentLevel = currentLevel.next[part];
-      }
-
-      // Update the corresponding endpoint
-      ++currentLevel.callCount;
-      currentLevel.metadata.suspectedPath = false;
-    }
-
-    return result;
   }
 
   async create(req: ExpressRequest, snifferId: string, userId: string) {
@@ -158,6 +112,9 @@ export class EndpointService {
         userId: request.userId,
         method: request.method,
         url: request.url,
+      },
+      order: {
+        createdAt: "DESC",
       },
     });
 

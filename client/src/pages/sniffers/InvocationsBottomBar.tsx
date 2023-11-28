@@ -4,16 +4,16 @@ import { Invocation } from "./Invocation";
 import { useState } from "react";
 import { TextField } from "@mui/material";
 import { LuRefreshCcw } from "react-icons/lu";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { LoadingIcon } from "./LoadingIcon";
 
 type InvocationsBottomBarProps = {
-  invocations?: InvocationType[];
   activeInvocation?: InvocationType;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
   refresh?: () => void;
 };
 export const InvocationsBottomBar = ({
-  invocations,
   activeInvocation,
   setActiveInvocation,
   title,
@@ -21,6 +21,7 @@ export const InvocationsBottomBar = ({
 }: InvocationsBottomBarProps) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const { invocations, loadingInvocations } = useSniffersStore();
 
   const filteredInvocations =
     invocations?.filter((invocation) => {
@@ -69,7 +70,11 @@ export const InvocationsBottomBar = ({
       </div>
 
       <div className="flex flex-col w-full overflow-y-auto">
-        {invocations &&
+        {loadingInvocations ? (
+          <div className="flex h-[25vh] w-full justify-center items-center">
+            <LoadingIcon />
+          </div>
+        ) : (
           filteredInvocations.map((invocation, i) => {
             return (
               <Invocation
@@ -81,7 +86,8 @@ export const InvocationsBottomBar = ({
                 url={invocation.url}
               />
             );
-          })}
+          })
+        )}
       </div>
     </>
   );

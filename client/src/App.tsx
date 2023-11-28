@@ -9,7 +9,12 @@ import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
 import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
 import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
-import SniffersPage from "./pages/sniffers/SniffersPage";
+import {
+  CreateInvocationPage,
+  LiveSnifferPage,
+  SnifferEndpointPage,
+  SnifferPage,
+} from "./pages/sniffers/SniffersPage";
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
@@ -28,11 +33,18 @@ function App(): React.JSX.Element {
   const routesWithAuth = () => {
     const routesWithAuth = [
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.LIVE, element: <SniffersPage /> },
-      { path: routes.SNIFFER, element: <SniffersPage /> },
-      { path: routes.SNIFFER_ENDPOINT, element: <SniffersPage /> },
-      { path: routes.SNIFFER_ENDPOINT_INVOCATION, element: <SniffersPage /> },
-      { path: routes.LIVE_INVOCATION, element: <SniffersPage /> },
+      { path: routes.LIVE, element: <LiveSnifferPage /> },
+      { path: routes.SNIFFER, element: <SnifferPage /> },
+      { path: routes.SNIFFER_ENDPOINT, element: <SnifferEndpointPage /> },
+      {
+        path: routes.SNIFFER_ENDPOINT_INVOCATION,
+        element: <SnifferEndpointPage />,
+      },
+      {
+        path: routes.SNIFFER_CREATE_INVOCATION,
+        element: <CreateInvocationPage />,
+      },
+      { path: routes.LIVE_INVOCATION, element: <LiveSnifferPage /> },
       { path: routes.CHAT, element: <ChatPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },
@@ -64,7 +76,7 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  {user ? <SniffersPage /> : <LandingPage />}
+                  {user ? <LiveSnifferPage /> : <LandingPage />}
                 </PageTemplate>
               }
             />
