@@ -9,10 +9,10 @@ import { Tooltip } from "@mui/material";
 import { TestConfig } from "./TestConfig";
 import { TbAdjustmentsCog } from "react-icons/tb";
 import { ExecutionHistory } from "./ExecutionHistory";
+import TestsTopSection from "./TestsTopSection";
 
 export const TestSuiteMainSection = () => {
   const [test, setTest] = React.useState<TestType | null>(null);
-  const [value, setValue] = React.useState("1");
   const [saveLoading, setSaveLoading] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
   const { testSuiteId, testId, endpointId } = useParams();
@@ -33,24 +33,21 @@ export const TestSuiteMainSection = () => {
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
   const DEBOUNCE_TIME_WAIT: number = 2000;
 
-  //pretty similar maybe can put them together
+  //make debounce functions together with if statement?
+  //make save functions together with if statement?
   const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
-    console.log("headers ass try");
     setHeaderRules([...newHeaders]);
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
-      console.log("headers ass CHANGE");
-      console.log(...newHeaders);
-      console.log(headerRules);
-      handleAssertionsSave([statusCodeRule, bodyRule, ...newHeaders]);
+      AssertionsDataSave([statusCodeRule, bodyRule, ...newHeaders]);
     }, DEBOUNCE_TIME_WAIT);
   };
 
   const handleAssertionStatusCodeChange = (newStatusCode: string) => {
     setStatusCodeRule({ ...statusCodeRule, expectedValue: newStatusCode });
-    handleAssertionsSave([
+    AssertionsDataSave([
       { ...statusCodeRule, expectedValue: newStatusCode },
       bodyRule,
       ...headerRules,
@@ -58,14 +55,12 @@ export const TestSuiteMainSection = () => {
   };
 
   const handleAssertionBodyChange = (newBody: string) => {
-    console.log("try value debounce body assertion-->", value);
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
       setBodyRule({ ...bodyRule, expectedValue: newBody });
-      //handleBodySave(newBody);
-      handleAssertionsSave([
+      AssertionsDataSave([
         statusCodeRule,
         { ...bodyRule, expectedValue: newBody },
         ...headerRules,
@@ -73,92 +68,86 @@ export const TestSuiteMainSection = () => {
     }, 2000);
   };
 
-  const handleRequestHeadersChange = (headersReq: any[]) => {
-    console.log("headersReq", headersReq);
-    console.log("headers test", test?.headers.headers);
-    //not working
-    setTest((prevTest) => {
+  const handleRequestHeadersChange = (headersReq: TestType["headers"]) => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    setTest((prevTest: TestType | null) => {
       if (!prevTest) {
         return null;
       }
-      const newHeaders = headersReq.reduce((acc, header, index) => {
-        const headerName = header.name || `header${index + 1}`;
-        return { ...acc, [headerName]: header.value };
-      }, {});
-      console.log("newHeaders", newHeaders);
       return {
         ...prevTest,
-        headers: newHeaders,
+        headers: headersReq,
       };
     });
+    debounceTimeout.current = setTimeout(() => {
+      if (!test) {
+        return null;
+      }
+      RequestDataSave({ ...test, headers: headersReq });
+    }, DEBOUNCE_TIME_WAIT);
   };
 
   const handleRequestChange = (newTest: TestType) => {
-    console.log("try value test request no debounce-->", newTest);
     setTest(newTest);
-    handleRequestSave(newTest);
+    RequestDataSave(newTest);
   };
 
   const handleDebounceRequestChange = (newTest: TestType) => {
-    console.log("try value test change debounce-->", newTest);
+    console.log("debounce request");
+    setTest(newTest);
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
-      console.log("debouce test method: " + { newTest });
-      setTest(newTest);
-      handleRequestSave(newTest);
+      RequestDataSave(newTest);
     }, 2000);
   };
 
-  const handleAssertionsSave = (newAssertions: Rule[]) => {
+  const AssertionsDataSave = (newAssertions: Rule[]) => {
     console.log("assertions save");
-    console.log(newAssertions);
     if (!testSuiteId || !testId || !test) {
       return;
     }
-    setSaveLoading(true);
-    editTest(testSuiteId, testId, {
+    saveTest(testSuiteId, testId, {
       ...test,
       rules: newAssertions,
-    })
-      .catch(() => {
-        show("Error saving test", "error");
-      })
-      .finally(() => {
-        setSaveLoading(false);
-      });
+    });
   };
 
-  const handleRequestSave = (newTest: TestType) => {
-    console.log("test save");
+  const RequestDataSave = (newTest: TestType) => {
+    console.log("request save");
     if (!testSuiteId || !testId || !test) {
       return;
     }
-    setSaveLoading(true);
-    editTest(testSuiteId, testId, newTest)
-      .catch(() => {
-        show("Error saving test", "error");
-      })
-      .finally(() => {
-        setSaveLoading(false);
-      });
+    saveTest(testSuiteId, testId, {
+      ...newTest,
+      rules: [statusCodeRule, bodyRule, ...headerRules],
+    });
   };
 
-  const hadnleSaveAll = React.useCallback(() => {
+  const handleSaveAll = React.useCallback(() => {
     console.log("save all");
-
     if (!testSuiteId || !testId || !test) {
       return;
     }
-    setSaveLoading(true);
-
-    editTest(testSuiteId, testId, {
+    saveTest(testSuiteId, testId, {
       ...test,
       rules: [statusCodeRule, bodyRule, ...headerRules],
-    })
+    });
+    if (!testSuiteId || !testId || !test) {
+      return;
+    }
+  }, [test, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
+
+  const saveTest = (testSuiteId: string, testId: string, test: TestType) => {
+    setSaveLoading(true);
+
+    editTest(testSuiteId, testId, test)
       .then(() => {
-        show("Test saved successfully", "success");
+        // show("Test saved successfully", "success");
       })
       .catch(() => {
         show("Error saving test", "error");
@@ -166,9 +155,7 @@ export const TestSuiteMainSection = () => {
       .finally(() => {
         setSaveLoading(false);
       });
-  }, [test, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
-
-  
+  };
   const extractStatusCode = (test: TestType) => {
     test.rules.forEach((rule) => {
       if (rule.type === "status_code") {
@@ -207,61 +194,24 @@ export const TestSuiteMainSection = () => {
     });
   }, [testSuiteId, testId]);
 
-  // console.log({ s: testSuiteId, t: testId, e: endpointId });
-
   return (
     <>
       {testId && (
         <>
-          <div className="flex flex-row items-center justify-between">
-            {snackBar}
-            <span className="text-white text-xl font-bold">{test?.name}</span>
-            <div className="flex items-center h-full space-x-4">
-              {showConfig ? (
-                !saveLoading ? (
-                  <Tooltip title="Save" arrow>
-                    <div>
-                      <CiSaveDown2
-                        className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                        onClick={hadnleSaveAll}
-                      />
-                    </div>
-                  </Tooltip>
-                ) : (
-                  <LoadingIcon />
-                )
-              ) : (
-                <></>
-              )}
-              {showConfig ? (
-                <Tooltip title="Tests" arrow>
-                  <div>
-                    <VscChecklist
-                      className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                      onClick={() => setShowConfig(!showConfig)}
-                    />
-                  </div>
-                </Tooltip>
-              ) : (
-                <Tooltip title="Config" arrow>
-                  <div>
-                    <TbAdjustmentsCog
-                      className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                      onClick={() => setShowConfig(!showConfig)}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            </div>
-          </div>
+          {snackBar}
+          <TestsTopSection
+            test={test}
+            saveLoading={saveLoading}
+            handleSaveAll={handleSaveAll}
+            showConfig={showConfig}
+            setShowConfig={setShowConfig}
+          />
           {test &&
             (showConfig ? (
               <TestConfig
                 test={test}
                 onTestChange={handleDebounceRequestChange}
                 onTestMethodChange={handleRequestChange}
-                tabNumber={value}
-                setTubNumber={setValue}
                 statusCodeRule={statusCodeRule}
                 onStatusCodeChange={handleAssertionStatusCodeChange}
                 bodyRule={bodyRule}

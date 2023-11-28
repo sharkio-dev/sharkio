@@ -19,7 +19,7 @@ export function SelectComponent({
   disabled,
 }: SelectComponentProps) {
   return (
-    <FormControl sx={{ width: "100%" }} size="small" disabled={disabled}>
+    <FormControl  sx={{ width: "100%" }} size="small" disabled={disabled}>
       <InputLabel>{title}</InputLabel>
       <Select
         value={value}
