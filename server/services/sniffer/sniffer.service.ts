@@ -1,6 +1,7 @@
 import { Sniffer, SnifferRepository } from "../../model/sniffer/sniffers.model";
 import { CreateSnifferDTO } from "../../dto/in/create-sniffer.dto";
 import { EditSnifferDTO } from "../../dto/in";
+import randomString from "random-string";
 
 export class SnifferService {
   constructor(private readonly snifferRepository: SnifferRepository) {}
@@ -18,6 +19,13 @@ export class SnifferService {
     return this.snifferRepository.findByUserId(userId);
   }
 
+  async getUserSniffersByPorts(
+    userId: string,
+    ports: number[]
+  ): Promise<Sniffer[]> {
+    return this.snifferRepository.findByPorts(userId, ports);
+  }
+
   async getAllSniffers(): Promise<Sniffer[]> {
     return this.snifferRepository.repository.find();
   }
@@ -25,13 +33,14 @@ export class SnifferService {
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
     const snifferEntity =
       this.snifferRepository.repository.create(snifferConfig);
-    const newSniffer =
-      await this.snifferRepository.repository.save(snifferEntity);
+    const newSniffer = await this.snifferRepository.repository.save(
+      snifferEntity
+    );
     return newSniffer;
   }
 
   async editSniffer(newConfig: EditSnifferDTO) {
-    return this.snifferRepository.repository
+    const res = await this.snifferRepository.repository
       .createQueryBuilder()
       .update(Sniffer)
       .set(newConfig)
@@ -41,7 +50,9 @@ export class SnifferService {
         name: newConfig.name,
         downstreamUrl: newConfig.downstreamUrl,
       })
+      .returning("*")
       .execute();
+    return res.raw[0];
   }
 
   async removeSniffer(userId: string, id: string) {
@@ -59,5 +70,45 @@ export class SnifferService {
 
   async findByName(userId: string, name: string) {
     return this.snifferRepository.findByName(userId, name);
+  }
+
+  async upsertLocalSniffers(
+    userId: string,
+    ports: number[],
+    downstreamUrl: string
+  ) {
+    const existingSniffers = await this.getUserSniffersByPorts(userId, ports);
+
+    const newPorts = ports.filter((port) => {
+      return !existingSniffers.find((sniffer) => port === sniffer.port);
+    });
+
+    const newSniffers = await Promise.all(
+      newPorts.map(async (port) => {
+        return this.createSniffer({
+          downstreamUrl,
+          name: `local-${port}`,
+          subdomain: `local-${port}-${randomString({
+            length: 5,
+          }).toLowerCase()}`,
+          userId,
+          port,
+        });
+      })
+    );
+
+    const editedSniffers = await Promise.all(
+      existingSniffers.map(async (sniffer) => {
+        return this.editSniffer({
+          id: sniffer.id,
+          downstreamUrl,
+          userId,
+          name: sniffer.name,
+          subdomain: sniffer.subdomain,
+        });
+      })
+    );
+
+    return [...newSniffers, ...editedSniffers];
   }
 }

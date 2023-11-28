@@ -9,7 +9,8 @@
     "sharkio": "dist/index.js"
   },
   "scripts": {
-    "build": "tsup index.cjs --format cjs,esm --minify --clean --legacy-output --out-dir dist",
+    "dev": "node ./index.mjs sniffer start 1000 2000",
+    "build": "tsup index.mjs --format cjs,esm --minify --clean --legacy-output --out-dir dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "npx changeset"
   },

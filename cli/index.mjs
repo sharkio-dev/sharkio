@@ -28,26 +28,25 @@ const printGreetings = () => {
 const main = async () => {
   loadLoginFromFile();
 
-  program.name("Sharkio-cli").usage(printGreetings());
+  program.name("sharkio-cli").usage(printGreetings());
 
   program
     .command("login")
     .description("🦈 Login to Sharkio")
     .action(login)
     .option("-r, --reset", "Reset login");
-
-  program
-    .command("list")
-    .description("🦈 List entities")
-    .command("sniffers")
-    .action(AuthWrapper(listSniffers));
-
-  program
-    .command("start")
-    .description("🦈 Start a sniffer")
+  const sniffersCommand = program
     .command("sniffer")
+    .description("🦈 Actions");
+  sniffersCommand
+    .command("list")
+    .description("🦈 List sniffers")
+    .action(AuthWrapper(listSniffers));
+  sniffersCommand
+    .command("start <port>")
     .description("🦈 Start a sniffer")
     .action(AuthWrapper(startSniffer));
+
 
   program.parse();
 };
