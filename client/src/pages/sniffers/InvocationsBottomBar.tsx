@@ -5,7 +5,7 @@ import { useState } from "react";
 import { TextField } from "@mui/material";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { LoadingIcon } from "./loadingIcon";
+import { LoadingIcon } from "./LoadingIcon";
 
 type InvocationsBottomBarProps = {
   activeInvocation?: InvocationType;

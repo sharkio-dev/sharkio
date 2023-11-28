@@ -13,8 +13,8 @@ export const LivePage = () => {
 
   const loadInvocations = async () => {
     return loadLiveInvocations().then((res) => {
-      if (invocations.length > 0 && !invocationId) {
-        navigator(`/live/invocations/${invocations[0].id}`, {
+      if (res.length > 0 && !invocationId) {
+        navigator(`/live/invocations/${res[0].id}`, {
           replace: true,
         });
       }

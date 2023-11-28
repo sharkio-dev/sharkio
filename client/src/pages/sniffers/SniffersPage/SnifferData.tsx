@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { LoadingIcon } from "../loadingIcon";
+import { LoadingIcon } from "../LoadingIcon";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 
 export const SnifferData: React.FC = () => {
