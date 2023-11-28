@@ -8,7 +8,7 @@ interface UrlPageProps {
   Sniffer: SnifferType;
 }
 
-const SnifferDetails: React.FC<UrlPageProps> = ({ Sniffer }) => {
+const Sniffer: React.FC<UrlPageProps> = ({ Sniffer }) => {
   const FullSnifferUrl = `https://${Sniffer.subdomain}.${
     import.meta.env.VITE_PROXY_DOMAIN
   }`;
@@ -39,7 +39,7 @@ const SnifferDetails: React.FC<UrlPageProps> = ({ Sniffer }) => {
   );
 };
 
-export default SnifferDetails;
+export default Sniffer;
 
 //full domain - https // domain // proxy
 //when click add effect

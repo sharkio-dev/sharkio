@@ -7,7 +7,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
 import { SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
-import SnifferDetails from "./SniffersPage/SnifferDetails";
+import SnifferDetails from "./SniffersPage/Sniffer";
 
 const SniffersPage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();

@@ -1,13 +1,8 @@
 import * as React from "react";
-import { CiSaveDown2 } from "react-icons/ci";
 import { Rule, TestType, useTestStore } from "../../stores/testStore";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { VscChecklist } from "react-icons/vsc";
-import { Tooltip } from "@mui/material";
 import { TestConfig } from "./TestConfig";
-import { TbAdjustmentsCog } from "react-icons/tb";
 import { ExecutionHistory } from "./ExecutionHistory";
 import TestsTopSection from "./TestsTopSection";
 
