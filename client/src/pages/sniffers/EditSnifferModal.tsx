@@ -19,7 +19,7 @@ export const EditSnifferModal = ({
     sniffer.downstreamUrl,
   );
   const [subdomain, setSubdomain] = useState<string>(
-    sniffer.subdomain.split("-")[1],
+    sniffer.subdomain.split("-")[-1],
   );
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
