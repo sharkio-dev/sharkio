@@ -9,7 +9,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { MdOutlineEmergencyRecording } from "react-icons/md";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { LoadingIcon } from "./loadingIcon";
+import { LoadingIcon } from "./LoadingIcon";
 import { AddSnifferModal } from "./AddSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";

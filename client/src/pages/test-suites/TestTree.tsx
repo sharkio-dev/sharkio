@@ -14,7 +14,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { TestType, useTestStore } from "../../stores/testStore";
 import { AddTestModal } from "./AddTestModal";
-import { LoadingIcon } from "../sniffers/loadingIcon";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type CustomContentProps = {
   onExecute?: () => Promise<void>;

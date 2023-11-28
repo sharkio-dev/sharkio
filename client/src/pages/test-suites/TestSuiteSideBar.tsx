@@ -19,7 +19,7 @@ import {
 } from "./AddTestSuiteModal";
 import { VscChecklist } from "react-icons/vsc";
 import { useTestStore } from "../../stores/testStore";
-import { LoadingIcon } from "../sniffers/loadingIcon";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 export const TestSuiteSideBar = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =
