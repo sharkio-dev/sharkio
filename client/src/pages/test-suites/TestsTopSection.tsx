@@ -20,8 +20,8 @@ const TestsTopSection = ({
 }: TestSuiteTopSectionProps) => {
   return (
     <div className="flex flex-row items-center justify-between">
-      <span className="text-white text-xl font-bold">{test?.name}</span>
-      <div className="flex h-full space-x-4">
+      <span className="text-white text-xl  font-bold">{test?.name}</span>
+      <div className="flex h-full  space-x-4">
         {showConfig ? (
           !saveLoading ? (
             <Tooltip title="Save" arrow>

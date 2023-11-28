@@ -31,7 +31,7 @@ const RequestModal = ({
       Object.entries(test?.headers || []).map((h: any) => ({
         name: h[0],
         value: h[1],
-      }))
+      })),
     );
   }, []);
 
@@ -102,7 +102,7 @@ const RequestModal = ({
             }}
             deleteHeader={(index) => {
               const removedHeaders = requestHeaders.filter(
-                (_, i) => i !== index
+                (_, i) => i !== index,
               );
               ReduceHeaders(removedHeaders);
             }}
