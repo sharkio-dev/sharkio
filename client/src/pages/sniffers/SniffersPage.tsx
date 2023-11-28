@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { LoadingIcon } from "./loadingIcon";
 import { LivePage } from "./SniffersPage/LivePage";
 import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
@@ -16,34 +15,20 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
 }) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadSniffers } = useSniffersStore();
-
-  const [loadingSniffers, setLoadingSniffers] = useState(false);
-
   const userId = useAuthStore((s) => s.user?.id);
 
   useEffect(() => {
     if (!userId) return;
-    setLoadingSniffers(true);
-    loadSniffers()
-      .catch(() => {
-        showSnackbar("Failed to get sniffers", "error");
-      })
-      .finally(() => {
-        setLoadingSniffers(false);
-      });
+    loadSniffers(true).catch(() => {
+      showSnackbar("Failed to get sniffers", "error");
+    });
   }, [userId]);
 
   return (
     <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
       {snackBar}
       <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
-        {loadingSniffers ? (
-          <div className="flex h-full justify-center items-center">
-            <LoadingIcon />
-          </div>
-        ) : (
-          <SniffersSideBar />
-        )}
+        <SniffersSideBar />
       </div>
 
       <div

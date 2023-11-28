@@ -9,7 +9,7 @@ import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
 import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
 import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
-import SnifferPageTemplate, {
+import {
   CreateInvocationPage,
   LiveSnifferPage,
   SnifferEndpointPage,
@@ -76,7 +76,7 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  {user ? <SnifferPageTemplate /> : <LandingPage />}
+                  {user ? <LiveSnifferPage /> : <LandingPage />}
                 </PageTemplate>
               }
             />

@@ -1,28 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getInvocations } from "../../../api/api";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { LoadingIcon } from "../loadingIcon";
-import { InvocationType } from "../types";
+import { useSniffersStore } from "../../../stores/sniffersStores";
 
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();
   const { show: showSnackbar } = useSnackbar();
-  const [invocations, setInvocations] = useState<InvocationType[]>([]);
-  const [loadingRequests, setLoadingRequests] = useState(false);
   const { snifferId, endpointId, invocationId } = useParams();
+  const { invocations, loadingInvocations, loadInvocations, resetInvocations } =
+    useSniffersStore();
   const invocation = invocations?.find((i) => i.id === invocationId);
 
   // Invocations source function
   const refreshInvocations = (endpointId: string) => {
-    setLoadingRequests(true);
-    getInvocations(endpointId)
-      .then((res) => {
-        setInvocations(res || []);
-        return res;
-      })
+    loadInvocations(endpointId)
       .then((invocations) => {
         if (invocations.length > 0) {
           navigator(
@@ -32,18 +26,15 @@ export const SnifferData: React.FC = () => {
         }
       })
       .catch(() => {
-        setInvocations([]);
+        resetInvocations();
         showSnackbar("Failed to get invocations", "error");
-      })
-      .finally(() => {
-        setLoadingRequests(false);
       });
   };
 
   // populate the invocations
   useEffect(() => {
     if (!endpointId) {
-      setInvocations([]);
+      resetInvocations();
     } else {
       refreshInvocations(endpointId);
     }
@@ -68,14 +59,13 @@ export const SnifferData: React.FC = () => {
         </div>
         <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] w-full overflow-y-auto overflow-x-auto">
           {invocations &&
-            (loadingRequests ? (
+            (loadingInvocations ? (
               <div className="flex flex-1 justify-center items-center">
                 <LoadingIcon />
               </div>
             ) : (
               <InvocationsBottomBar
                 title={"Invocations"}
-                invocations={invocations}
                 activeInvocation={invocation}
                 setActiveInvocation={onInvocationClick}
                 refresh={() => endpointId && refreshInvocations(endpointId)}

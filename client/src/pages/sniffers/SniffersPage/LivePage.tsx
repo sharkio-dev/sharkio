@@ -1,35 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
-import { InvocationType } from "../types";
+import { useCallback, useEffect } from "react";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { LoadingIcon } from "../loadingIcon";
-import { getLiveInvocations } from "../../../api/api";
 import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSniffersStore } from "../../../stores/sniffersStores";
 
 export const LivePage = () => {
-  const [invocations, setInvocations] = useState<InvocationType[]>([]);
-  const [loadingRequests, setLoadingRequests] = useState(false);
   const { invocationId } = useParams();
   const navigator = useNavigate();
+  const { loadLiveInvocations, invocations } = useSniffersStore();
 
   const invocation = invocations.find((i) => i.id === invocationId);
 
   const loadInvocations = async () => {
-    setLoadingRequests(true);
-    return getLiveInvocations()
-      .then((res) => {
-        const invocations = res.data;
-        setInvocations(invocations);
-        if (invocations.length > 0 && !invocationId) {
-          navigator(`/live/invocations/${invocations[0].id}`, {
-            replace: true,
-          });
-        }
-        return invocations;
-      })
-      .finally(() => {
-        setLoadingRequests(false);
-      });
+    return loadLiveInvocations().then((res) => {
+      if (invocations.length > 0 && !invocationId) {
+        navigator(`/live/invocations/${invocations[0].id}`, {
+          replace: true,
+        });
+      }
+      return invocations;
+    });
   };
 
   useEffect(() => {
@@ -53,27 +43,19 @@ export const LivePage = () => {
   return (
     <>
       <div className={`flex flex-col w-full`}>
-        <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
+        <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)]">
           <InvocationUpperBar
             activeInvocation={invocation}
             onExecuteRequest={() => loadInvocations()}
           />
         </div>
-        <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] overflow-y-auto overflow-x-auto">
-          {invocations &&
-            (loadingRequests ? (
-              <div className="flex flex-1 justify-center items-center">
-                <LoadingIcon />
-              </div>
-            ) : (
-              <InvocationsBottomBar
-                title={"Live Invocations"}
-                invocations={invocations}
-                activeInvocation={invocation}
-                setActiveInvocation={onInvocationClick}
-                refresh={() => loadInvocations()}
-              />
-            ))}
+        <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)]">
+          <InvocationsBottomBar
+            title={"Live Invocations"}
+            activeInvocation={invocation}
+            setActiveInvocation={onInvocationClick}
+            refresh={() => loadInvocations()}
+          />
         </div>
       </div>
     </>

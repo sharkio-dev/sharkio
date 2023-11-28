@@ -1,18 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { EndpointType } from "./types";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Endpoint } from "./Endpoint";
+import { useSniffersStore } from "../../stores/sniffersStores";
 
 type EndpointSideBarProps = {
-  endpoints: EndpointType[];
   showAdd?: boolean;
 };
-export const EndpointSideBar = ({
-  endpoints,
-  showAdd = true,
-}: EndpointSideBarProps) => {
+export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
   const navigate = useNavigate();
   const { snifferId, endpointId } = useParams();
+  const { endpoints } = useSniffersStore();
 
   return (
     <>
