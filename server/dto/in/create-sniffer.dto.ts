@@ -5,6 +5,7 @@ export type CreateSnifferDTO = {
   name: string;
   subdomain: string;
   downstreamUrl: string;
+  port?: number;
 };
 
 export const CreateSnifferValidator = z.object({

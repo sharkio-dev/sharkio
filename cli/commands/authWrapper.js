@@ -1,9 +1,9 @@
-import { loadLoginFromFile } from "./utils.js";
 import chalk from "chalk";
+import ServerAxios from './serverAxios.js'
 
 const AuthWrapper = (fn) => {
   return (...args) => {
-    const data = loadLoginFromFile();
+    const data = ServerAxios.defaults.headers.common["Authorization"];
 
     if (!data) {
       const promptMessage =
