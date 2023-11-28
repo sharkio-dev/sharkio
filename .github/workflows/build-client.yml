@@ -1,4 +1,4 @@
-name: Run Build
+name: Run Build Client
 on:
   pull_request:
     branches:
@@ -14,7 +14,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "18.x"
+      - name: CD into client directory
+        run: cd ./client
       - name: Install dependencies
         run: npm i
       - name: Run build
-        run: cd ./client; npm run build; cd ../server; npm run build;
+        run: npm run build

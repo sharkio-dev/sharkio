@@ -1,0 +1,22 @@
+name: Run Build Server
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.x"
+      - name: CD into server directory
+        run: cd ./server
+      - name: Install dependencies
+        run: npm i
+      - name: Run build
+        run: npm run build
