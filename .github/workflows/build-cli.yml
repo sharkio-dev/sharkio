@@ -1,4 +1,4 @@
-name: Run Build Server
+name: Run Build CLI
 on:
   pull_request:
     branches:
@@ -15,6 +15,6 @@ jobs:
         with:
           node-version: "18.x"
       - name: Install dependencies
-        run: cd ./server; npm i;
+        run: cd ./cli; npm i;
       - name: Run build
-        run: cd ./server; npm run build
+        run: cd ./cli; npm run build
