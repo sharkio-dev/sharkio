@@ -181,7 +181,7 @@ export const TestSuiteMainSection = () => {
     if (!testSuiteId || !testId) {
       return;
     }
-    getTest(testSuiteId, testId).then((data:TestType) => {
+    getTest(testSuiteId, testId).then((data: TestType) => {
       handleDebounceRequestChange(data);
       extractStatusCode(data);
       extractBody(data);

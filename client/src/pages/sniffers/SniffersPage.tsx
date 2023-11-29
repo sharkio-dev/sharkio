@@ -35,7 +35,6 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
       <div
         className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)]`}
       >
-
         {children}
       </div>
     </div>

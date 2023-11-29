@@ -17,7 +17,7 @@ import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import { InvocationType } from "./types";
 import { HeaderSection } from "../test-suites/HeaderSection";
 import { BodySection } from "../test-suites/BodySection";
-import { StatusCodeSelector } from "../test-suites/TestConfig";
+import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 
 type InvocationDetailsProps = {
   invocation: InvocationType;
@@ -33,10 +33,10 @@ export function InvocationDetails({
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [headers, setHeaders] = React.useState<{ name: string; value: any }[]>(
-    [],
+    []
   );
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status",
+    "Status"
   );
 
   React.useEffect(() => {
@@ -44,7 +44,7 @@ export function InvocationDetails({
       Object.entries(invocation?.headers || {}).map(([key, value]) => ({
         name: key,
         value,
-      })),
+      }))
     );
   }, [invocation]);
 
@@ -62,7 +62,7 @@ export function InvocationDetails({
     return data;
   };
 
-  const onBodyChange = (body: string) => {
+  const handleBodyChange = (body: string) => {
     setInvocation({
       ...invocation,
       body,
@@ -73,13 +73,10 @@ export function InvocationDetails({
     setHeaders(headers);
     setInvocation({
       ...invocation,
-      headers: headers.reduce(
-        (acc, header) => {
-          acc[header.name] = header.value;
-          return acc;
-        },
-        {} as { [key: string]: any },
-      ),
+      headers: headers.reduce((acc, header) => {
+        acc[header.name] = header.value;
+        return acc;
+      }, {} as { [key: string]: any }),
     });
   };
 
@@ -105,7 +102,10 @@ export function InvocationDetails({
           value="1"
           style={{ padding: 0, paddingTop: 16, overflowY: "auto" }}
         >
-          <BodySection body={invocation?.body} setBody={onBodyChange} />
+          <BodySection
+            body={invocation?.body}
+            onBodyChange={handleBodyChange}
+          />
         </TabPanel>
         <TabPanel
           value="2"
@@ -128,8 +128,8 @@ export function InvocationDetails({
                           name: targetPath,
                           value,
                         }
-                      : header,
-                  ),
+                      : header
+                  )
                 );
               }}
             />
@@ -161,12 +161,15 @@ export function InvocationDetails({
               />
             )}
             {section === "Body" && (
-              <BodySection body={responseData(invocation?.response).body} />
+              <BodySection
+                body={responseData(invocation?.response).body}
+                onBodyChange={handleBodyChange}
+              />
             )}
             {section === "Headers" && (
               <HeaderSection
                 headers={Object.entries(
-                  responseData(invocation?.response).headers || {},
+                  responseData(invocation?.response).headers || {}
                 ).map(([key, value]) => ({
                   name: key,
                   value,

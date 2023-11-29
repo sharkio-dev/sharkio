@@ -21,7 +21,7 @@ export class SnifferService {
 
   async getUserSniffersByPorts(
     userId: string,
-    ports: number[]
+    ports: number[],
   ): Promise<Sniffer[]> {
     return this.snifferRepository.findByPorts(userId, ports);
   }
@@ -34,7 +34,7 @@ export class SnifferService {
     const snifferEntity =
       this.snifferRepository.repository.create(snifferConfig);
     const newSniffer = await this.snifferRepository.repository.save(
-      snifferEntity
+      snifferEntity,
     );
     return newSniffer;
   }
@@ -75,7 +75,7 @@ export class SnifferService {
   async upsertLocalSniffers(
     userId: string,
     ports: number[],
-    downstreamUrl: string
+    downstreamUrl: string,
   ) {
     const existingSniffers = await this.getUserSniffersByPorts(userId, ports);
 
@@ -94,7 +94,7 @@ export class SnifferService {
           userId,
           port,
         });
-      })
+      }),
     );
 
     const editedSniffers = await Promise.all(
@@ -106,7 +106,7 @@ export class SnifferService {
           name: sniffer.name,
           subdomain: sniffer.subdomain,
         });
-      })
+      }),
     );
 
     return [...newSniffers, ...editedSniffers];

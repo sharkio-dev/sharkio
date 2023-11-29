@@ -79,7 +79,7 @@ const AssertionsModal: React.FC<AssertionsModalProps> = ({
       {AssertionPart === "Body" && (
         <BodySection
           body={bodyRule.expectedValue}
-          onChangeBody={onBodyChange}
+          onBodyChange={onBodyChange}
         />
       )}
     </TabPanel>

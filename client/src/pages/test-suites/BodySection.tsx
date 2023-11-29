@@ -2,11 +2,10 @@ import Editor from "@monaco-editor/react";
 
 type BodySectionProps = {
   body: any;
-  onChangeBody: (body: any) => void;
+  onBodyChange: (body: any) => void;
 };
 
-export const BodySection = ({ body, onChangeBody }: BodySectionProps) => {
-
+export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
   return (
     <div className="flex flex-col space-y-4 w-full">
       <Editor
@@ -18,9 +17,9 @@ export const BodySection = ({ body, onChangeBody }: BodySectionProps) => {
         language={
           typeof body === "string" && body.includes("html") ? "html" : "json"
         }
-        onChange={(value, _) => onChangeBody && onChangeBody(value || "")}
+        onChange={(value, _) => onBodyChange && onBodyChange(value || "")}
         options={{
-          readOnly: !onChangeBody,
+          readOnly: !onBodyChange,
           minimap: {
             enabled: false,
           },

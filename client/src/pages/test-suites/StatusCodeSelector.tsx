@@ -5,7 +5,7 @@ const StatusCodeSelector = ({
   setValue,
 }: {
   value: string;
-  setValue: (value: string) => void;
+  setValue?: (value: string) => void;
 }) => {
   const options = [
     { value: "100", label: "100 Continue" },

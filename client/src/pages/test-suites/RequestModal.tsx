@@ -111,7 +111,7 @@ const RequestModal = ({
         {requestPart === "Body" && (
           <BodySection
             body={test.body}
-            onChangeBody={(val) => onTestChange({ ...test, body: val })}
+            onBodyChange={(val) => onTestChange({ ...test, body: val })}
           />
         )}
       </div>
