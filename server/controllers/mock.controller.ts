@@ -178,6 +178,92 @@ export class MockController {
           await this.mockService.delete(userId, mockId);
           res.sendStatus(200);
         }
+      )
+      .patch(
+        /**
+         * @openapi
+         * /sharkio/mocks/{mockId}:
+         *   patch:
+         *     tags:
+         *      - mock
+         *     description: Update a mock
+         *     parameters:
+         *       - name: mockId
+         *         in: path
+         *         schema:
+         *           type: string
+         *         description: mockId
+         *         required: true
+         *     requestBody:
+         *        description: Create a mock
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              required:
+         *                - method
+         *                - url
+         *                - body
+         *                - headers
+         *                - status
+         *                - name
+         *                - snifferId
+         *              properties:
+         *                method:
+         *                  type: string
+         *                  description: The method of the mock
+         *                  example: POST
+         *                url:
+         *                  type: string
+         *                  description: The url of the mock
+         *                  example: /user
+         *                body:
+         *                  type: string
+         *                  description: The body of the mock
+         *                  minimum: 0
+         *                  example: {"hello":"world"}
+         *                headers:
+         *                  type: string
+         *                  description: The headers of the mock
+         *                  example: example
+         *                status:
+         *                  type: number
+         *                  description: The status of the response
+         *                  example: 200
+         *                name:
+         *                  type: string
+         *                  description: The name of the mock
+         *                  example: example-mock-name
+         *                snifferId:
+         *                  type: string
+         *                  description: The id of the sniffer
+         *                  example: 121ed1e5-0502-4fd3-a3f0-4603fcca1cbc
+         *     responses:
+         *       200:
+         *         description: Mock updated successfully
+         *       500:
+         *         description: Server error
+         */
+        async (req: Request, res: Response, next: NextFunction) => {
+          const userId = res.locals.auth.user.id;
+          const { mockId } = req.params;
+          const { method, url, body, headers, status, name, snifferId } =
+            req.body;
+
+          const updatedMock = await this.mockService.update(
+            userId,
+            mockId,
+            url,
+            method,
+            body,
+            headers,
+            status,
+            name,
+            snifferId
+          );
+
+          res.json(updatedMock).status(200);
+        }
       );
 
     return { router, path: "/sharkio/mocks" };

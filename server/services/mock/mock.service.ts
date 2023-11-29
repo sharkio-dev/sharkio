@@ -40,6 +40,36 @@ export class MockService {
     return this.mockRepository.repository.save(createdMock);
   }
 
+  async update(
+    userId: string,
+    mockId: string,
+    url?: string,
+    method?: string,
+    body?: string,
+    headers?: string,
+    status?: number,
+    name?: string,
+    snifferId?: string
+  ) {
+    return this.mockRepository.repository
+      .createQueryBuilder()
+      .update()
+      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .set({
+        id: mockId,
+        userId,
+        url,
+        method,
+        body,
+        headers,
+        status,
+        name,
+        snifferId,
+      })
+      .returning("*")
+      .execute();
+  }
+
   delete(userId: string, mockId: string) {
     return this.mockRepository.deleteById(userId, mockId);
   }
