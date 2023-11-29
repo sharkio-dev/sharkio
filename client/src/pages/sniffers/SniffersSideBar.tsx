@@ -14,9 +14,31 @@ import { AddSnifferModal } from "./AddSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
+const SelectSniffers = () => {
+  const { sniffers } = useSniffersStore();
+  const { snifferId } = useParams();
+
+  return (
+    <FormControl fullWidth size="small" variant="outlined">
+      <InputLabel>Sniffers</InputLabel>
+      <Select value={snifferId} label="Sniffers">
+        {sniffers.map((sniffer, i) => (
+          <MenuItem key={i} onClick={() => {}} value={sniffer.id}>
+            <SideBarItem
+              LeftIcon={GiSharkFin}
+              isSelected={snifferId === sniffer.id}
+              name={sniffer.name}
+            />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
+
 export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
+    null
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -79,7 +101,7 @@ export const SniffersSideBar = () => {
               onClick={() => setIsAddModalOpen(true)}
               value={"addSniffer"}
             >
-              <Sniffer
+              <SideBarItem
                 LeftIcon={AiOutlinePlus}
                 isSelected={false}
                 onClick={() => setIsAddModalOpen(true)}
@@ -94,7 +116,7 @@ export const SniffersSideBar = () => {
               }}
               value={"live"}
             >
-              <Sniffer
+              <SideBarItem
                 LeftIcon={MdOutlineEmergencyRecording}
                 isSelected={false}
                 name={"Live Invocations"}
@@ -109,7 +131,7 @@ export const SniffersSideBar = () => {
                 }}
                 value={sniffer.id}
               >
-                <Sniffer
+                <SideBarItem
                   LeftIcon={GiSharkFin}
                   isSelected={snifferId === sniffer.id}
                   onEditSniffer={() => onEditSniffer(sniffer)}
@@ -162,7 +184,7 @@ type SnifferProps = {
   LeftIcon?: any;
 };
 
-export const Sniffer = ({
+export const SideBarItem = ({
   isSelected = false,
   onClick,
   onEditSniffer,

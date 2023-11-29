@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useTestSuiteStore } from "../../stores/testSuitesStore";
 import { useNavigate, useParams } from "react-router-dom";
-import { Sniffer } from "../sniffers/SniffersSideBar";
+import { SideBarItem } from "../sniffers/SniffersSideBar";
 import { LuTestTube2 } from "react-icons/lu";
 import {
   AddTestSuiteModal,
@@ -32,7 +32,7 @@ export const TestSuiteSideBar = () => {
   const navigator = useNavigate();
   const [selectValue, setSelectValue] = React.useState<string>("");
   const selectedTestSuite = testSuites.find(
-    (testSuite) => testSuite.id === selectValue,
+    (testSuite) => testSuite.id === selectValue
   );
   const { testSuiteId } = useParams();
   const { tests, executeTest } = useTestStore();
@@ -52,11 +52,11 @@ export const TestSuiteSideBar = () => {
     }
     const combinedArray = Object.values(tests).reduce(
       (acc, array) => [...acc, ...array],
-      [],
+      []
     );
     setLoading(true);
     return Promise.all(
-      combinedArray.map((test) => executeTest(testSuiteId, test.id)),
+      combinedArray.map((test) => executeTest(testSuiteId, test.id))
     )
       .then(() => {
         navigator("/test-suites/" + testSuiteId);
@@ -88,7 +88,7 @@ export const TestSuiteSideBar = () => {
               onClick={() => setAddTestSuiteModalOpen(true)}
               value={"addTestSuite"}
             >
-              <Sniffer
+              <SideBarItem
                 LeftIcon={AiOutlinePlus}
                 isSelected={false}
                 name={"Add Test Suite"}
@@ -103,7 +103,7 @@ export const TestSuiteSideBar = () => {
                 }}
                 value={testSuite.id}
               >
-                <Sniffer
+                <SideBarItem
                   LeftIcon={LuTestTube2}
                   onEditSniffer={() => {
                     setSelectValue(testSuite.id);

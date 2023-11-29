@@ -18,4 +18,5 @@ export const routes = {
   TEST_SUITE_TEST:
     "/test-suites/:testSuiteId/endpoints/:endpointId/tests/:testId",
   MOCKS: "/mocks",
+  MOCKS_SNIFFER: "/mocks/sniffers/:snifferId",
 };

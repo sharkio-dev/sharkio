@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import ngrok from "ngrok";
 import { createLocalSniffers } from "./api.js";
-import { ProxyServer } from '../lib/proxy-server/proxy-server.mjs'
+import { ProxyServer } from "../lib/proxy-server/proxy-server.mjs";
 const getLocalUrl = (port) => `http://localhost:${port}`;
 const getSnifferUrl = (subdomain) => `https://${subdomain}.sniffer.sharkio.dev`;
 
@@ -21,14 +21,17 @@ const startSniffer = async (name, options, command) => {
     const server = await proxyServer.start(50000);
     const url = await ngrok.connect(50000);
 
-    const sniffers = await createLocalSniffers({ ports, downstreamUrl: url }).then((res) => res.data);
+    const sniffers = await createLocalSniffers({
+      ports,
+      downstreamUrl: url,
+    }).then((res) => res.data);
 
     const selectedSniffers = sniffers;
 
     if (selectedSniffers.length < 1) {
       console.log(
         chalk.bgBlue.white.bold("\n🌊 Ocean Warning! \n") +
-        chalk.blue("You need to select at least one sniffer to start.\n"),
+          chalk.blue("You need to select at least one sniffer to start.\n"),
       );
       process.exit(1);
     }
@@ -39,9 +42,7 @@ const startSniffer = async (name, options, command) => {
 
       console.log(
         chalk.green(
-          `🌊 Forwarding ${chalk.bold(snifferUrl)} to ${chalk.bold(
-            localUrl,
-          )}`,
+          `🌊 Forwarding ${chalk.bold(snifferUrl)} to ${chalk.bold(localUrl)}`,
         ),
       );
     });
