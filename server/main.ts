@@ -102,7 +102,6 @@ async function main() {
   );
   const snifferController = new SnifferController(
     snifferService,
-    endpointService,
     docGenerator,
     endpointService
   );

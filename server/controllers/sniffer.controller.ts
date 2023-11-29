@@ -20,7 +20,6 @@ const log = useLog({
 export class SnifferController {
   constructor(
     private readonly snifferManager: SnifferService,
-    private readonly requestService: EndpointService,
     private readonly snifferDocGenerator: SnifferDocGenerator,
     private readonly endpointService: EndpointService,
     private readonly baseUrl: string = "/sharkio/sniffer"
@@ -35,15 +34,6 @@ export class SnifferController {
          * @openapi
          * /sharkio/sniffer:
          *   get:
-         *     parameters:
-         *       - in: query
-         *         name: port
-         *         schema:
-         *           type: array
-         *           items:
-         *             type: number
-         *         required: false
-         *         description: asdasd
          *     tags:
          *      - sniffer
          *     description: Get all sniffers for user
@@ -55,22 +45,9 @@ export class SnifferController {
          */
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
-          const { port } = req.query;
           let sniffers = [];
 
-          if (port == undefined) {
-            sniffers = await this.snifferManager.getUserSniffers(userId);
-          } else {
-            const ports =
-              typeof port == "string"
-                ? [+port]
-                : (port as unknown as string[]).map((p) => +p);
-
-            sniffers = await this.snifferManager.getUserSniffersByPorts(
-              userId,
-              ports
-            );
-          }
+          sniffers = await this.snifferManager.getUserSniffers(userId);
 
           res.json(sniffers);
         }

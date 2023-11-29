@@ -11,6 +11,9 @@ export class Mock {
   @PrimaryGeneratedColumn()
   id: string;
 
+  @Column()
+  name: string;
+
   @Column({ name: "user_id" })
   userId: string;
 
@@ -18,13 +21,16 @@ export class Mock {
   snifferId: string;
 
   @Column()
+  method: string;
+
+  @Column()
   url: string;
 
   @Column()
   body: string;
 
-  @Column({ type: "varchar" })
-  headers: Record<string, any>;
+  @Column()
+  headers: string;
 
   @Column()
   status: number;
@@ -46,7 +52,21 @@ export class MockRepository {
     this.repository = appDataSource.manager.getRepository(Mock);
   }
 
+  getById(userId: string, mockId: string) {
+    return this.repository.findOne({
+      where: { userId: userId, id: mockId },
+    });
+  }
   getByUser(userId: string, limit: number) {
     return this.repository.find({ where: { userId: userId }, take: limit });
+  }
+
+  deleteById(userId: string, mockId: string) {
+    return this.repository
+      .createQueryBuilder()
+      .delete()
+      .from(Mock)
+      .where("id = :mockId AND userId = :userId", { userId, mockId })
+      .execute();
   }
 }
