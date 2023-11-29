@@ -48,7 +48,7 @@ const MockPage = () => {
   const { snifferId } = useParams();
   const navigator = useNavigate();
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body"
+    "Body",
   );
 
   useEffect(() => {
