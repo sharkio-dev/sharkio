@@ -36,6 +36,6 @@ export class MockController {
       }
     );
 
-    return { router, path: "/sharkio/mock" };
+    return { router, path: "/sharkio/mocks" };
   }
 }

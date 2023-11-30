@@ -4,6 +4,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   ThemeProvider,
   ToggleButton,
   ToggleButtonGroup,
@@ -41,79 +42,155 @@ import { GiSharkFin } from "react-icons/gi";
 import { StatusCodeSelector } from "./pages/test-suites/TestConfig";
 import { BodySection } from "./pages/test-suites/BodySection";
 import { HeaderSection } from "./pages/test-suites/HeaderSection";
-import { EndpointSideBar } from "./pages/sniffers/EndpointSideBar";
+import { useMockStore } from "./stores/mockStore";
+import { SelectComponent } from "./pages/test-suites/SelectComponent";
+import { AiOutlinePlus } from "react-icons/ai";
+import { selectIconByMethod } from "./pages/sniffers/selectIconByMethod";
 
-const MockPage = () => {
-  const { sniffers, loadSniffers, loadEndpoints } = useSniffersStore();
+const MockSideBar = () => {
+  const { sniffers, loadSniffers } = useSniffersStore();
+  const { mocks, loadMocks } = useMockStore();
   const { snifferId } = useParams();
   const navigator = useNavigate();
-  const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body",
-  );
 
   useEffect(() => {
     loadSniffers(true);
   }, []);
 
+  useEffect(() => {
+    if (snifferId) {
+      loadMocks(snifferId);
+    }
+  }, [snifferId]);
+
+  return (
+    <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
+      <FormControl fullWidth size="small" variant="outlined">
+        <InputLabel>Sniffers</InputLabel>
+        <Select value={snifferId} label="Sniffers">
+          {sniffers.map((sniffer, i) => (
+            <MenuItem
+              key={i}
+              value={sniffer.id}
+              onClick={() => {
+                navigator(`/mocks/sniffers/${sniffer.id}`);
+              }}
+            >
+              <SideBarItem
+                LeftIcon={GiSharkFin}
+                isSelected={snifferId === sniffer.id}
+                name={sniffer.name}
+              />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <div className="flex flex-col w-full overflow-y-auto">
+        <div
+          className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md p-2`}
+          onClick={() => {
+            console.log("new mock");
+          }}
+        >
+          <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center">
+            <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
+            New
+          </div>
+        </div>
+        {mocks.map((mock, i) => (
+          <div
+            className={`flex flex-row w-full hover:bg-primary p-2 cursor-pointer active:bg-tertiary items-center rounded-md space-x-4`}
+            onClick={() => {
+              navigator(`/mocks/${mock.id}/sniffers/${snifferId}`);
+            }}
+          >
+            {selectIconByMethod(mock.method)}
+            <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
+              {mock.url}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const MockMainSection = () => {
+  const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
+    "Body"
+  );
+
+  return (
+    <>
+      <div className="flex flex-row items-center space-x-4">
+        <div className="flex flex-row items-center w-40">
+          <SelectComponent
+            options={[
+              { value: "GET", label: "GET" },
+              { value: "POST", label: "POST" },
+              { value: "PUT", label: "PUT" },
+              { value: "PATCH", label: "PATCH" },
+              { value: "DELETE", label: "DELETE" },
+            ]}
+            title="Method"
+            value={""}
+            setValue={(value) => {
+              console.log(value);
+            }}
+          />
+        </div>
+        <TextField
+          value={""}
+          onChange={(e: any) => {
+            console.log(e.target.value);
+          }}
+          variant="outlined"
+          size="small"
+          style={{ width: "100%" }}
+        />
+      </div>
+      <div className="flex flex-col h-full p-2 rounded-md overflow-y-auto">
+        <ToggleButtonGroup
+          color="primary"
+          exclusive
+          onChange={(_, value) => setSection(value)}
+          className="flex flex-row w-full items-center justify-center mb-8"
+          value={section}
+        >
+          <ToggleButton value="Status" className="w-24 h-6">
+            Status
+          </ToggleButton>
+          <ToggleButton value="Body" className="w-24 h-6">
+            Body
+          </ToggleButton>
+          <ToggleButton value="Headers" className="w-24 h-6">
+            {" "}
+            Headers
+          </ToggleButton>
+        </ToggleButtonGroup>
+        {section === "Status" && <StatusCodeSelector value={"200"} />}
+        {section === "Body" && <BodySection body={""} />}
+        {section === "Headers" && (
+          <HeaderSection
+            headers={[{ name: "Content-Type", value: "application/json" }]}
+          />
+        )}
+      </div>
+    </>
+  );
+};
+
+const MockPage = () => {
+  const { mockId } = useParams();
+
   return (
     <div className={`flex h-full flex-row w-[calc(100vw-56px)]`}>
       <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
-        <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
-          <FormControl fullWidth size="small" variant="outlined">
-            <InputLabel>Sniffers</InputLabel>
-            <Select value={snifferId} label="Sniffers">
-              {sniffers.map((sniffer, i) => (
-                <MenuItem
-                  key={i}
-                  value={sniffer.id}
-                  onClick={() => {
-                    navigator(`/mocks/sniffers/${sniffer.id}`);
-                    loadEndpoints(sniffer.id);
-                  }}
-                >
-                  <SideBarItem
-                    LeftIcon={GiSharkFin}
-                    isSelected={snifferId === sniffer.id}
-                    name={sniffer.name}
-                  />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <div className="flex flex-col w-full overflow-y-auto">
-            <EndpointSideBar showAdd={true} />
-          </div>
-        </div>
+        <MockSideBar />
       </div>
 
       <div className="flex flex-col max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)] p-4 space-y-4 overflow-y-auto">
-        <div className="flex flex-col h-full p-2 rounded-md overflow-y-auto">
-          <ToggleButtonGroup
-            color="primary"
-            exclusive
-            onChange={(_, value) => setSection(value)}
-            className="flex flex-row w-full items-center justify-center mb-8"
-            value={section}
-          >
-            <ToggleButton value="Status" className="w-24 h-6">
-              Status
-            </ToggleButton>
-            <ToggleButton value="Body" className="w-24 h-6">
-              Body
-            </ToggleButton>
-            <ToggleButton value="Headers" className="w-24 h-6">
-              {" "}
-              Headers
-            </ToggleButton>
-          </ToggleButtonGroup>
-          {section === "Status" && <StatusCodeSelector value={"200"} />}
-          {section === "Body" && <BodySection body={""} />}
-          {section === "Headers" && (
-            <HeaderSection
-              headers={[{ name: "Content-Type", value: "application/json" }]}
-            />
-          )}
-        </div>
+        {mockId && <MockMainSection />}
       </div>
     </div>
   );
@@ -151,6 +228,7 @@ function App(): React.JSX.Element {
       { path: routes.TEST_ENDPOINT, element: <TestSuitePage /> },
       { path: routes.MOCKS, element: <MockPage /> },
       { path: routes.MOCKS_SNIFFER, element: <MockPage /> },
+      { path: routes.MOCK_SNIFFER, element: <MockPage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

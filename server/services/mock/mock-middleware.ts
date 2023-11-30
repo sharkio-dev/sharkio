@@ -5,7 +5,7 @@ import { Z_SYNC_FLUSH } from "zlib";
 export default class MockMiddleware {
   constructor(
     private readonly mockService: MockService,
-    private readonly snifferService: SnifferService
+    private readonly snifferService: SnifferService,
   ) {}
 
   async mock(req: Request, res: Response, next: NextFunction) {
@@ -16,7 +16,7 @@ export default class MockMiddleware {
       const mock = await this.mockService.getMock(
         sniffer?.userId,
         sniffer?.id,
-        `${req.method} ${req.url}`
+        `${req.method} ${req.url}`,
       );
 
       if (mock !== undefined && mock.isActive === true) {
