@@ -41,6 +41,7 @@ import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { EnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
+import MockMiddleware from "./server/middlewares/mock.middleware";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -103,7 +104,8 @@ async function main() {
   const snifferController = new SnifferController(
     snifferService,
     docGenerator,
-    endpointService
+    endpointService,
+    mockService
   );
   const endpointController = new EndpointController(
     endpointService,
@@ -136,11 +138,13 @@ async function main() {
     snifferService,
     requestInterceptorMiddleware
   );
+  const mockMiddleware = new MockMiddleware(mockService, snifferService);
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
-    requestInterceptorMiddleware
+    requestInterceptorMiddleware,
+    mockMiddleware
   );
   const snifferManagerServer = new Server(
     [

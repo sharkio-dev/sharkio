@@ -266,6 +266,76 @@ export class MockController {
         }
       );
 
+    router.route("/:mockId/activate").post(
+      /**
+       * @openapi
+       * /sharkio/mocks/{mockId}/activate:
+       *   post:
+       *     tags:
+       *      - mock
+       *     parameters:
+       *       - name: mockId
+       *         in: query
+       *         schema:
+       *           type: string
+       *         description: mockId
+       *         required: true
+       *     description: Get a mock
+       *     responses:
+       *       200:
+       *         description: Returns a mock
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const limit = +(req.params.limit ?? 1000);
+        const { mockId } = req.params;
+
+        const requests = await this.mockService.setIsActive(
+          userId,
+          mockId,
+          true
+        );
+        res.status(200).send(requests);
+      }
+    );
+
+    router.route("/:mockId/deactivate").post(
+      /**
+       * @openapi
+       * /sharkio/mocks/{mockId}/deactivate:
+       *   post:
+       *     tags:
+       *      - mock
+       *     parameters:
+       *       - name: mockId
+       *         in: query
+       *         schema:
+       *           type: string
+       *         description: mockId
+       *         required: true
+       *     description: Get a mock
+       *     responses:
+       *       200:
+       *         description: Returns a mock
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const limit = +(req.params.limit ?? 1000);
+        const { mockId } = req.params;
+
+        const requests = await this.mockService.setIsActive(
+          userId,
+          mockId,
+          false
+        );
+        res.status(200).send(requests);
+      }
+    );
+
     return { router, path: "/sharkio/mocks" };
   }
 }

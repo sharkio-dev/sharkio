@@ -57,8 +57,19 @@ export class MockRepository {
       where: { userId: userId, id: mockId },
     });
   }
+
   getByUser(userId: string, limit: number) {
     return this.repository.find({ where: { userId: userId }, take: limit });
+  }
+
+  getBySnifferId(userId: string, snifferId: string) {
+    return this.repository.find({ where: { userId, snifferId } });
+  }
+
+  getByUrl(userId: string, snifferId: string, url: string, method: string) {
+    return this.repository.findOne({
+      where: { userId, url, snifferId, method },
+    });
   }
 
   deleteById(userId: string, mockId: string) {
