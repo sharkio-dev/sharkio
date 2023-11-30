@@ -10,7 +10,7 @@ export class SwaggerUiController {
       swaggerUi.serve,
       swaggerUi.setup(openApiSpecification, {
         swaggerOptions: { persistAuthorization: true },
-      })
+      }),
     );
     app.use("/openapi.json", (req, res, next) => {
       res.send(JSON.stringify(openApiSpecification, null, 2));

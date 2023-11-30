@@ -7,9 +7,7 @@ const listSniffers = async () => {
   const sniffers = await getSniffers().catch((err) => {
     const errorMessage =
       chalk.bgRed.white.bold(" 🦈 Shark Alert! ") +
-      chalk.red(
-        "\nWe hit a reef while trying to fetch the sniffers.\n",
-      );
+      chalk.red("\nWe hit a reef while trying to fetch the sniffers.\n");
 
     console.log(errorMessage);
     process.exit(1);
@@ -20,7 +18,12 @@ const listSniffers = async () => {
     colWidths: [20, 30, 20],
   });
   sniffers.forEach((sniffer) => {
-    table.push([sniffer.name, sniffer.downstreamUrl, sniffer.port || "N/A", sniffer.subdomain]);
+    table.push([
+      sniffer.name,
+      sniffer.downstreamUrl,
+      sniffer.port || "N/A",
+      sniffer.subdomain,
+    ]);
   });
 
   // Print the table

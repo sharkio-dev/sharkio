@@ -171,3 +171,7 @@ export const newChat = (content: string) => {
 export const newMessage = (chatId: string, content: string) => {
   return BackendAxios.post(`/chat/${chatId}/message`, { content });
 };
+
+export const getMocks = () => {
+  return BackendAxios.get("/mocks");
+};

@@ -1,4 +1,4 @@
-import pkg from 'body-parser';
+import pkg from "body-parser";
 const { json } = pkg;
 import chalk from "chalk";
 import cookieParser from "cookie-parser";
@@ -37,9 +37,9 @@ export class ProxyServer {
     if (!port) {
       console.log(
         chalk.red.white.bold("\n🌊 Ocean Warning! \n") +
-        chalk.red(
-          "You didn't set the port on the sniffer. Please try again.\n"
-        )
+          chalk.red(
+            "You didn't set the port on the sniffer. Please try again.\n",
+          ),
       );
     }
     return getLocalUrl(port);

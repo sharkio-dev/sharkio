@@ -17,7 +17,7 @@ class CLIController {
   constructor(
     private readonly apiKeyService: APIKeysService,
     private readonly userService: UserService,
-    private readonly snifferService: SnifferService
+    private readonly snifferService: SnifferService,
   ) {
     this.authMiddleware = this.authMiddleware.bind(this);
   }
@@ -88,14 +88,14 @@ class CLIController {
         }
         const jwtToken = jwt.sign(
           { userId: user.id, email, token },
-          SECRET_KEY
+          SECRET_KEY,
         );
 
         if (!result) {
           return res.status(401).send({ message: "unauthorized" });
         }
         return res.status(200).send({ message: "login", jwt: jwtToken });
-      }
+      },
     );
 
     router.route("/sniffers").patch(
@@ -133,7 +133,7 @@ class CLIController {
           log.error(error);
           return res.status(500).send({ message: "internal server error" });
         }
-      }
+      },
     );
 
     router.route("/sniffers").get(
@@ -153,10 +153,10 @@ class CLIController {
        */
       async (req, res) => {
         const sniffers = await this.snifferService.getUserSniffers(
-          res.locals.user.id``
+          res.locals.user.id``,
         );
         return res.status(200).send({ sniffers });
-      }
+      },
     );
 
     router.route("/sniffer/local").put(
@@ -199,11 +199,11 @@ class CLIController {
         const result = await this.snifferService.upsertLocalSniffers(
           userId,
           ports,
-          downstreamUrl
+          downstreamUrl,
         );
 
         res.json(result);
-      }
+      },
     );
 
     return { router, path: "/sharkio/api" };

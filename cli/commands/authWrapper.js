@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import ServerAxios from './serverAxios.js'
+import ServerAxios from "./serverAxios.js";
 
 const AuthWrapper = (fn) => {
   return (...args) => {
