@@ -5,33 +5,48 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { TestConfig } from "./TestConfig";
 import { ExecutionHistory } from "./ExecutionHistory";
 import TestsTopSection from "./TestsTopSection";
+import TabContext from "@mui/lab/TabContext";
+import RequestModal from "./RequestModal";
+import AssertionsModal from "./AssertionsModal";
 
 export const TestSuiteMainSection = () => {
-  const [test, setTest] = React.useState<TestType | null>(null);
   const [saveLoading, setSaveLoading] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
   const { testSuiteId, testId, endpointId } = useParams();
-  const [statusCodeRule, setStatusCodeRule] = React.useState<Rule>({
+  const [tabNumber, setTabNumber] = React.useState("1");
+  const [requestHeaders, setRequestHeaders] = React.useState<any[]>([]);
+  const [showConfig, setShowConfig] = React.useState<boolean>(true);
+  const { getTest, editTest, setCurrentTest, currentTest } = useTestStore();
+
+  const statusCodeRule = useTestStore((s) =>
+    s.currentTest.rules.find((rule) => rule.type === "status_code")
+  ) || {
     type: "status_code",
     expectedValue: "200",
     comparator: "equals",
-  });
-  const [bodyRule, setBodyRule] = React.useState<Rule>({
+  };
+
+  const bodyRule = useTestStore((s) =>
+    s.currentTest.rules.find((rule) => rule.type === "body")
+  ) || {
     type: "body",
     expectedValue: "",
     comparator: "equals",
-  });
+  };
 
-  const [headerRules, setHeaderRules] = React.useState<Rule[]>([]);
-  const [showConfig, setShowConfig] = React.useState<boolean>(true);
-  const { getTest, editTest } = useTestStore();
+  const headerRules = useTestStore((s) =>
+    s.currentTest.rules.filter((rule) => rule.type === "header")
+  );
+
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
   const DEBOUNCE_TIME_WAIT: number = 2000;
 
-  //make debounce functions together with if statement?
-  //make save functions together with if statement?
   const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
-    setHeaderRules([...newHeaders]);
+    setCurrentTest({
+      ...currentTest,
+      rules: [statusCodeRule, bodyRule, ...newHeaders],
+    });
+
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
@@ -39,82 +54,92 @@ export const TestSuiteMainSection = () => {
       AssertionsDataSave([statusCodeRule, bodyRule, ...newHeaders]);
     }, DEBOUNCE_TIME_WAIT);
   };
-
-  const handleAssertionStatusCodeChange = (newStatusCode: string) => {
-    setStatusCodeRule({ ...statusCodeRule, expectedValue: newStatusCode });
+  const handleAssertionChange = (newStatusCode: string) => {
+    setCurrentTest({
+      ...currentTest,
+      rules: [
+        { ...statusCodeRule, expectedValue: newStatusCode },
+        bodyRule,
+        ...headerRules,
+      ],
+    });
     AssertionsDataSave([
       { ...statusCodeRule, expectedValue: newStatusCode },
       bodyRule,
       ...headerRules,
     ]);
   };
-
-  const handleAssertionBodyChange = (newBody: string) => {
+  const handleAssertionDebounceChange = (newBody: string) => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
-      setBodyRule({ ...bodyRule, expectedValue: newBody });
+      setCurrentTest({
+        ...currentTest,
+        rules: [
+          statusCodeRule,
+          { ...bodyRule, expectedValue: newBody },
+          ...headerRules,
+        ],
+      });
       AssertionsDataSave([
         statusCodeRule,
         { ...bodyRule, expectedValue: newBody },
         ...headerRules,
       ]);
-    }, 2000);
+    }, DEBOUNCE_TIME_WAIT);
   };
 
-  const handleRequestHeadersChange = (headersReq: TestType["headers"]) => {
+  const handleRequestHeadersChange = (headersReq: any[]) => {
+    console.log(headersReq);
+    setRequestHeaders(headersReq);
+    const newHeaders = headersReq.reduce((acc, h) => {
+      acc[h.name] = h.value;
+      return acc;
+    }, {} as any);
+    setCurrentTest({ ...currentTest, headers: newHeaders });
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
-
-    setTest((prevTest: TestType | null) => {
-      if (!prevTest) {
-        return null;
-      }
-      return {
-        ...prevTest,
-        headers: headersReq,
-      };
-    });
     debounceTimeout.current = setTimeout(() => {
-      if (!test) {
+      if (!currentTest) {
         return null;
       }
-      RequestDataSave({ ...test, headers: headersReq });
+      console.log({ ...currentTest, headers: newHeaders });
+      RequestDataSave({ ...currentTest, headers: newHeaders });
     }, DEBOUNCE_TIME_WAIT);
   };
 
   const handleRequestChange = (newTest: TestType) => {
-    setTest(newTest);
+    setCurrentTest(newTest);
     RequestDataSave(newTest);
   };
 
   const handleDebounceRequestChange = (newTest: TestType) => {
     console.log("debounce request");
-    setTest(newTest);
+    setCurrentTest(newTest);
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
       RequestDataSave(newTest);
-    }, 2000);
+    }, DEBOUNCE_TIME_WAIT);
   };
 
   const AssertionsDataSave = (newAssertions: Rule[]) => {
     console.log("assertions save");
-    if (!testSuiteId || !testId || !test) {
+    if (!testSuiteId || !testId || !currentTest) {
       return;
     }
     saveTest(testSuiteId, testId, {
-      ...test,
+      ...currentTest,
       rules: newAssertions,
     });
   };
 
   const RequestDataSave = (newTest: TestType) => {
     console.log("request save");
-    if (!testSuiteId || !testId || !test) {
+    if (!testSuiteId || !testId || !currentTest) {
       return;
     }
     saveTest(testSuiteId, testId, {
@@ -125,68 +150,52 @@ export const TestSuiteMainSection = () => {
 
   const handleSaveAll = React.useCallback(() => {
     console.log("save all");
-    if (!testSuiteId || !testId || !test) {
+    if (!testSuiteId || !testId || !currentTest) {
       return;
     }
     saveTest(testSuiteId, testId, {
-      ...test,
+      ...currentTest,
       rules: [statusCodeRule, bodyRule, ...headerRules],
     });
-    if (!testSuiteId || !testId || !test) {
+    if (!testSuiteId || !testId || !currentTest) {
       return;
     }
-  }, [test, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
+  }, [currentTest, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
 
-  const saveTest = (testSuiteId: string, testId: string, test: TestType) => {
+  const saveTest = (
+    testSuiteId: string,
+    testId: string,
+    currentTest: TestType
+  ) => {
     setSaveLoading(true);
 
-    editTest(testSuiteId, testId, test)
-      .then(() => {
-        // show("Test saved successfully", "success");
-      })
+    editTest(testSuiteId, testId, currentTest)
       .catch(() => {
-        show("Error saving test", "error");
+        show("Error saving currentTest", "error");
       })
       .finally(() => {
         setSaveLoading(false);
       });
   };
-  const extractStatusCode = (test: TestType) => {
-    test.rules.forEach((rule) => {
-      if (rule.type === "status_code") {
-        setStatusCodeRule(rule);
-      }
-    });
-  };
 
-  const extractBody = (test: TestType) => {
-    test.rules.forEach((rule) => {
-      if (rule.type === "body") {
-        setBodyRule(rule);
-      }
-    });
+  const setNewHeaders = (test: TestType) => {
+    console.log(test);
+    const headers = Object.entries(test?.headers || []).map((h: any) => ({
+      name: h[0],
+      value: h[1],
+    }));
+    setRequestHeaders(headers);
   };
-
-  const extractHeaders = (test: TestType) => {
-    const headers: Rule[] = [];
-    test.rules.forEach((rule) => {
-      if (rule.type === "header") {
-        headers.push(rule);
-      }
-    });
-    setHeaderRules(headers);
-  };
-
   React.useEffect(() => {
+    console.log("extracting headers");
     if (!testSuiteId || !testId) {
       return;
     }
     getTest(testSuiteId, testId).then((data: TestType) => {
-      handleDebounceRequestChange(data);
-      extractStatusCode(data);
-      extractBody(data);
-      extractHeaders(data);
+      console.log(data);
+      setNewHeaders(data);
     });
+
   }, [testSuiteId, testId]);
 
   return (
@@ -195,26 +204,28 @@ export const TestSuiteMainSection = () => {
         <>
           {snackBar}
           <TestsTopSection
-            test={test}
             saveLoading={saveLoading}
             handleSaveAll={handleSaveAll}
             showConfig={showConfig}
             setShowConfig={setShowConfig}
           />
-          {test &&
+          {currentTest &&
             (showConfig ? (
-              <TestConfig
-                test={test}
-                onTestChange={handleDebounceRequestChange}
-                onTestMethodChange={handleRequestChange}
-                statusCodeRule={statusCodeRule}
-                onStatusCodeChange={handleAssertionStatusCodeChange}
-                bodyRule={bodyRule}
-                onBodyChange={handleAssertionBodyChange}
-                headerRules={headerRules}
-                onAssertionHeadersChange={handleAssertionHeadersChange}
-                onRequestHeadersChange={handleRequestHeadersChange}
-              />
+              <TabContext value={tabNumber}>
+                <TestConfig setTabNumber={setTabNumber} />
+                <AssertionsModal
+                  onStatusCodeChange={handleAssertionChange}
+                  onBodyChange={handleAssertionDebounceChange}
+                  onAssertionHeadersChange={handleAssertionHeadersChange}
+                  tabNumber={tabNumber}
+                />
+                <RequestModal
+                  requestHeaders={requestHeaders}
+                  onTestChange={handleDebounceRequestChange}
+                  onTestMethodChange={handleRequestChange}
+                  onRequestHeadersChange={handleRequestHeadersChange}
+                />
+              </TabContext>
             ) : (
               <ExecutionHistory />
             ))}

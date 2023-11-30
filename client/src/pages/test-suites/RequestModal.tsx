@@ -2,38 +2,25 @@ import TabPanel from "@mui/lab/TabPanel";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import { TextField } from "@mui/material";
-import { TestType } from "../../stores/testStore";
+import { TestType, useTestStore } from "../../stores/testStore";
 import { SelectComponent } from "./SelectComponent";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
 
 interface RequestModalProps {
-  test: TestType;
   onTestChange: (test: TestType) => void;
   onTestMethodChange: (test: TestType) => void;
   onRequestHeadersChange: (rules: any[]) => void;
+  requestHeaders: any[];
 }
 const RequestModal = ({
-  test,
   onTestChange,
   onTestMethodChange,
   onRequestHeadersChange,
+  requestHeaders,
 }: RequestModalProps) => {
+  const currentTest = useTestStore((s) => s.currentTest);
   const [requestPart, setRequestPart] = useState<string>("Body");
-  const [requestHeaders, setRequestHeaders] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (!test?.headers) {
-      setRequestHeaders([]);
-      return;
-    }
-    setRequestHeaders(
-      Object.entries(test?.headers || []).map((h: any) => ({
-        name: h[0],
-        value: h[1],
-      })),
-    );
-  }, []);
 
   const onHeaderChange = (index: number, value: any, targetPath: string) => {
     const headers = [...requestHeaders];
@@ -42,16 +29,7 @@ const RequestModal = ({
       name: targetPath,
       value: value,
     };
-    ReduceHeaders(headers);
-  };
-
-  const ReduceHeaders = (headers: any[]) => {
-    setRequestHeaders(headers);
-    const newHeaders = headers.reduce((acc, h) => {
-      acc[h.name] = h.value;
-      return acc;
-    }, {} as any);
-    onRequestHeadersChange(newHeaders);
+    onRequestHeadersChange(headers);
   };
 
   return (
@@ -68,9 +46,9 @@ const RequestModal = ({
                 { value: "DELETE", label: "DELETE" },
               ]}
               title="Method"
-              value={test.method}
+              value={currentTest.method}
               setValue={(value) => {
-                onTestMethodChange({ ...test, method: value });
+                onTestMethodChange({ ...currentTest, method: value });
               }}
             />
           </div>
@@ -79,9 +57,9 @@ const RequestModal = ({
             variant="outlined"
             size="small"
             className="w-full"
-            value={test.url}
+            value={currentTest.url}
             onChange={(e) => {
-              onTestChange({ ...test, url: e.target.value });
+              onTestChange({ ...currentTest, url: e.target.value });
             }}
           />
         </div>
@@ -98,20 +76,20 @@ const RequestModal = ({
                 name: "",
                 value: "",
               };
-              ReduceHeaders([...requestHeaders, newHeader]);
+              onRequestHeadersChange([...requestHeaders, newHeader]);
             }}
             deleteHeader={(index) => {
               const removedHeaders = requestHeaders.filter(
-                (_, i) => i !== index,
+                (_, i) => i !== index
               );
-              ReduceHeaders(removedHeaders);
+              onRequestHeadersChange(removedHeaders);
             }}
           />
         )}
         {requestPart === "Body" && (
           <BodySection
-            body={test.body}
-            onBodyChange={(val) => onTestChange({ ...test, body: val })}
+            body={currentTest.body}
+            onBodyChange={(val) => onTestChange({ ...currentTest, body: val })}
           />
         )}
       </div>

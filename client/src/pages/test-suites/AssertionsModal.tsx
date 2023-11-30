@@ -2,39 +2,42 @@ import TabPanel from "@mui/lab/TabPanel";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import StatusCodeSelector from "./StatusCodeSelector";
-import { Rule } from "../../stores/testStore";
+import { Rule,useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
 
 interface AssertionsModalProps {
-  statusCodeRule: Rule;
   onStatusCodeChange: (statusCode: string) => void;
-  bodyRule: Rule;
   onBodyChange: (body: string) => void;
-  headerRules: Rule[];
   onAssertionHeadersChange: (rules: Rule[]) => void;
   tabNumber: string;
 }
 
 const AssertionsModal: React.FC<AssertionsModalProps> = ({
-  statusCodeRule,
   onStatusCodeChange,
-  bodyRule,
   onBodyChange,
-  headerRules,
   onAssertionHeadersChange,
   tabNumber,
 }) => {
   const [AssertionPart, setAssertionPart] = useState<string>("Status");
+  const statusCode = useTestStore((s) =>
+    s.currentTest.rules.find((rule) => rule.type === "status_code")
+  );
+  const body = useTestStore((s) =>
+    s.currentTest.rules.find((rule) => rule.type === "body")
+  );
+  const headers = useTestStore((s) =>
+    s.currentTest.rules.filter((rule) => rule.type === "header")
+  );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {
-    const headers = [...headerRules];
-    headers[index] = {
-      ...headers[index],
+    const newHeaders = [...headers];
+    newHeaders[index] = {
+      ...newHeaders[index],
       targetPath: targetPath,
       expectedValue: value,
     };
-    onAssertionHeadersChange(headers);
+    onAssertionHeadersChange(newHeaders);
   };
 
   return (
@@ -47,21 +50,21 @@ const AssertionsModal: React.FC<AssertionsModalProps> = ({
       {AssertionPart === "Status" && (
         <div className="flex flex-row w-full">
           <StatusCodeSelector
-            value={statusCodeRule.expectedValue?.toString() || ""}
+            value={statusCode?.expectedValue.toString() || ""}
             setValue={onStatusCodeChange}
           />
         </div>
       )}
       {AssertionPart === "Headers" && (
         <HeaderSection
-          headers={headerRules.map((rule) => ({
+          headers={headers.map((rule) => ({
             name: (rule.targetPath as string) || "",
             value: rule.expectedValue,
           }))}
           setHeaders={onChangeHeader}
           addHeader={() => {
             onAssertionHeadersChange([
-              ...headerRules,
+              ...headers,
               {
                 type: "header",
                 expectedValue: "",
@@ -72,15 +75,12 @@ const AssertionsModal: React.FC<AssertionsModalProps> = ({
             console.log("assertions headers");
           }}
           deleteHeader={(index) =>
-            onAssertionHeadersChange(headerRules.filter((_, i) => i !== index))
+            onAssertionHeadersChange(headers.filter((_, i) => i !== index))
           }
         />
       )}
       {AssertionPart === "Body" && (
-        <BodySection
-          body={bodyRule.expectedValue}
-          onBodyChange={onBodyChange}
-        />
+        <BodySection body={body?.expectedValue} onBodyChange={onBodyChange} />
       )}
     </TabPanel>
   );
