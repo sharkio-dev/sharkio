@@ -35,9 +35,7 @@ const main = async () => {
     .description("🦈 Login to Sharkio")
     .action(login)
     .option("-r, --reset", "Reset login");
-  const sniffersCommand = program
-    .command("sniffer")
-    .description("🦈 Actions");
+  const sniffersCommand = program.command("sniffer").description("🦈 Actions");
   sniffersCommand
     .command("list")
     .description("🦈 List sniffers")
@@ -46,7 +44,6 @@ const main = async () => {
     .command("start <port>")
     .description("🦈 Start a sniffer")
     .action(AuthWrapper(startSniffer));
-
 
   program.parse();
 };
