@@ -1,9 +1,11 @@
 import { Tooltip } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
+import { selectIconByMethod } from "./selectIconByMethod";
 
 type InvocationProps = {
   status: number;
   url: string;
+  method: string;
   date?: string;
   isSelected?: boolean;
   onClick?: () => void;
@@ -11,6 +13,7 @@ type InvocationProps = {
 export const Invocation = ({
   status,
   url,
+  method,
   isSelected,
   onClick,
   date,
@@ -32,14 +35,15 @@ export const Invocation = ({
         onClick={onClick}
       >
         <div className="flex flex-row items-center space-x-4">
-          {selectIconByStatus(status)}
-          <div className="flex text-xs text-gray-500">{date}</div>
+          {selectIconByMethod(method)}
           <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
             {url}
           </div>
         </div>
-        <div className="flex flex-row items-center">
-          <PlayArrow className="text-green-500 p-1" />
+        <div className="flex flex-row items-center space-x-4">
+          {selectIconByStatus(status)}
+
+          <div className="flex text-xs text-gray-500">{date}</div>
         </div>
       </div>
     </Tooltip>
