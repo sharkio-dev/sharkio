@@ -37,7 +37,7 @@ export class MockController {
           const limit = +(req.params.limit ?? 1000);
           const requests = await this.mockService.getByUser(userId, limit);
           res.status(200).send(requests);
-        }
+        },
       )
       .post(
         /**
@@ -110,10 +110,10 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId
+            snifferId,
           );
           res.status(200).send(requests);
-        }
+        },
       );
 
     router
@@ -149,7 +149,7 @@ export class MockController {
 
           const requests = await this.mockService.getById(userId, mockId);
           res.status(200).send(requests);
-        }
+        },
       )
       .delete(
         /**
@@ -177,7 +177,7 @@ export class MockController {
           const { mockId } = req.params;
           await this.mockService.delete(userId, mockId);
           res.sendStatus(200);
-        }
+        },
       )
       .patch(
         /**
@@ -259,11 +259,11 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId
+            snifferId,
           );
 
           res.json(updatedMock).status(200);
-        }
+        },
       );
 
     return { router, path: "/sharkio/mocks" };

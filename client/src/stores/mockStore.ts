@@ -2,20 +2,21 @@ import { create } from "zustand";
 import { getMocks } from "../api/api";
 
 export interface Mock {
-  id: number;
+  id: string;
   name: string;
   url: string;
+  body: string;
+  headers: Record<string, string>;
   method: string;
-  response: string;
-  status: number;
-  delay: number;
-  active: boolean;
+  status: string;
+  isActive: boolean;
 }
 
 interface MockState {
   mocks: Mock[];
   loadingMocks: boolean;
   loadMocks: (snifferId: string, force?: boolean) => Promise<Mock[]>;
+  resetMocks: () => void;
 }
 
 export const useMockStore = create<MockState>((set, get) => ({
@@ -33,4 +34,5 @@ export const useMockStore = create<MockState>((set, get) => ({
       })
       .finally(() => set({ loadingMocks: false }));
   },
+  resetMocks: () => set({ mocks: [] }),
 }));

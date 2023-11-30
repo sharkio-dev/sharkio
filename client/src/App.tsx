@@ -1,9 +1,11 @@
 import {
+  Button,
   CssBaseline,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  Switch,
   TextField,
   ThemeProvider,
   ToggleButton,
@@ -15,6 +17,7 @@ import {
   BrowserRouter,
   Route,
   Routes,
+  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -46,11 +49,14 @@ import { useMockStore } from "./stores/mockStore";
 import { SelectComponent } from "./pages/test-suites/SelectComponent";
 import { AiOutlinePlus } from "react-icons/ai";
 import { selectIconByMethod } from "./pages/sniffers/selectIconByMethod";
+import queryString from "query-string";
 
 const MockSideBar = () => {
+  const location = useLocation();
+  const { snifferId, isNew } = queryString.parse(location.search);
   const { sniffers, loadSniffers } = useSniffersStore();
-  const { mocks, loadMocks } = useMockStore();
-  const { snifferId } = useParams();
+  const { mocks, loadMocks, resetMocks } = useMockStore();
+  const { mockId } = useParams();
   const navigator = useNavigate();
 
   useEffect(() => {
@@ -59,7 +65,9 @@ const MockSideBar = () => {
 
   useEffect(() => {
     if (snifferId) {
-      loadMocks(snifferId);
+      loadMocks(snifferId as string);
+    } else {
+      resetMocks();
     }
   }, [snifferId]);
 
@@ -73,7 +81,10 @@ const MockSideBar = () => {
               key={i}
               value={sniffer.id}
               onClick={() => {
-                navigator(`/mocks/sniffers/${sniffer.id}`);
+                let params = new URLSearchParams();
+                params.append("snifferId", sniffer.id);
+                let queryString = params.toString();
+                navigator(`/mocks?${queryString}`);
               }}
             >
               <SideBarItem
@@ -85,32 +96,47 @@ const MockSideBar = () => {
           ))}
         </Select>
       </FormControl>
-      <div className="flex flex-col w-full overflow-y-auto">
-        <div
-          className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md p-2`}
-          onClick={() => {
-            console.log("new mock");
-          }}
-        >
-          <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center">
-            <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
-            New
-          </div>
-        </div>
-        {mocks.map((mock, i) => (
+      {snifferId && (
+        <div className="flex flex-col w-full overflow-y-auto">
           <div
-            className={`flex flex-row w-full hover:bg-primary p-2 cursor-pointer active:bg-tertiary items-center rounded-md space-x-4`}
+            className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md p-2
+          ${isNew ? "bg-primary" : ""}`}
             onClick={() => {
-              navigator(`/mocks/${mock.id}/sniffers/${snifferId}`);
+              let params = new URLSearchParams();
+              params.append("isNew", "true");
+              params.append("snifferId", snifferId?.toString() || "");
+              let queryString = params.toString();
+              navigator(`/mocks?${queryString}`);
             }}
           >
-            {selectIconByMethod(mock.method)}
-            <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {mock.url}
+            <div
+              className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
+            >
+              <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
+              New
             </div>
           </div>
-        ))}
-      </div>
+          {mocks.map((mock, i) => (
+            <div
+              className={`flex flex-row w-full hover:bg-primary p-2 cursor-pointer active:bg-tertiary items-center rounded-md space-x-4 justify-between
+            ${mock.id === mockId ? "bg-primary" : ""}`}
+              onClick={() => {
+                let params = new URLSearchParams();
+                params.append("snifferId", snifferId?.toString() || "");
+                navigator(`/mocks/${mock.id}?${params.toString()}`);
+              }}
+            >
+              <div className="flex flex-row items-center space-x-2">
+                {selectIconByMethod(mock.method)}
+                <div className="flex text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {mock.url}
+                </div>
+              </div>
+              <Switch checked={mock.isActive} size="small" />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -119,6 +145,40 @@ const MockMainSection = () => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
     "Body"
   );
+  const { mocks } = useMockStore();
+  const { mockId } = useParams();
+  const location = useLocation();
+  const { isNew } = queryString.parse(location.search);
+  const [editedMock, setEditedMock] = React.useState({
+    method: "GET",
+    url: "",
+    status: "200",
+    headers: {},
+    body: "",
+  });
+
+  useEffect(() => {
+    if (mockId) {
+      const mock = mocks.find((mock) => mock.id === mockId);
+      if (!mock) return;
+      setEditedMock({
+        method: mock.method,
+        url: mock.url,
+        status: mock.status,
+        headers: mock.headers,
+        body: mock.body,
+      });
+    }
+    if (isNew) {
+      setEditedMock({
+        method: "GET",
+        url: "",
+        status: "200",
+        headers: {},
+        body: "",
+      });
+    }
+  }, [mockId, isNew]);
 
   return (
     <>
@@ -133,21 +193,24 @@ const MockMainSection = () => {
               { value: "DELETE", label: "DELETE" },
             ]}
             title="Method"
-            value={""}
+            value={editedMock.method || ""}
             setValue={(value) => {
-              console.log(value);
+              setEditedMock((prev) => ({ ...prev, method: value }));
             }}
           />
         </div>
         <TextField
-          value={""}
+          value={editedMock.url || ""}
           onChange={(e: any) => {
-            console.log(e.target.value);
+            setEditedMock((prev) => ({ ...prev, url: e.target.value }));
           }}
           variant="outlined"
           size="small"
           style={{ width: "100%" }}
         />
+        <Button variant="contained" color="primary">
+          {isNew ? "Create" : "Save"}
+        </Button>
       </div>
       <div className="flex flex-col h-full p-2 rounded-md overflow-y-auto">
         <ToggleButtonGroup
@@ -168,11 +231,39 @@ const MockMainSection = () => {
             Headers
           </ToggleButton>
         </ToggleButtonGroup>
-        {section === "Status" && <StatusCodeSelector value={"200"} />}
-        {section === "Body" && <BodySection body={""} />}
+        {section === "Status" && (
+          <StatusCodeSelector
+            value={editedMock.status || ""}
+            setValue={(value) => {
+              setEditedMock((prev) => ({ ...prev, status: value }));
+            }}
+          />
+        )}
+        {section === "Body" && (
+          <BodySection
+            body={editedMock.body || ""}
+            setBody={(value) => {
+              setEditedMock((prev) => ({ ...prev, body: value }));
+            }}
+          />
+        )}
         {section === "Headers" && (
           <HeaderSection
-            headers={[{ name: "Content-Type", value: "application/json" }]}
+            headers={Object.entries(editedMock.headers || {}).map(
+              ([key, value]) => ({ name: key, value })
+            )}
+            setHeaders={(value) => {
+              setEditedMock((prev) => ({ ...prev, headers: value }));
+            }}
+            addHeader={(header) => {
+              setEditedMock((prev) => ({
+                ...prev,
+                headers: {
+                  ...prev.headers,
+                  [header.name]: header.value,
+                },
+              }));
+            }}
           />
         )}
       </div>
@@ -182,6 +273,8 @@ const MockMainSection = () => {
 
 const MockPage = () => {
   const { mockId } = useParams();
+  const location = useLocation();
+  const { isNew } = queryString.parse(location.search);
 
   return (
     <div className={`flex h-full flex-row w-[calc(100vw-56px)]`}>
@@ -190,7 +283,7 @@ const MockPage = () => {
       </div>
 
       <div className="flex flex-col max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)] p-4 space-y-4 overflow-y-auto">
-        {mockId && <MockMainSection />}
+        {(mockId || isNew) && <MockMainSection />}
       </div>
     </div>
   );
@@ -227,8 +320,7 @@ function App(): React.JSX.Element {
       { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },
       { path: routes.TEST_ENDPOINT, element: <TestSuitePage /> },
       { path: routes.MOCKS, element: <MockPage /> },
-      { path: routes.MOCKS_SNIFFER, element: <MockPage /> },
-      { path: routes.MOCK_SNIFFER, element: <MockPage /> },
+      { path: routes.MOCK, element: <MockPage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
