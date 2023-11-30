@@ -1,5 +1,4 @@
 import { Tooltip } from "@mui/material";
-import { PlayArrow } from "@mui/icons-material";
 import { selectIconByMethod } from "./selectIconByMethod";
 
 type InvocationProps = {

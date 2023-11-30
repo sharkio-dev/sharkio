@@ -1,14 +1,18 @@
 import ServerAxios from "./serverAxios.js";
 
 export const createLocalSniffers = async ({ ports, downstreamUrl }) => {
-  return ServerAxios.put(`/sniffer/local`, {
-    downstreamUrl,
-    ports
-  }, {
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  return ServerAxios.put(
+    `/sniffer/local`,
+    {
+      downstreamUrl,
+      ports,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
 };
 
 export const getSniffers = async () => {
