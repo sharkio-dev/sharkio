@@ -78,6 +78,7 @@ export const InvocationsBottomBar = ({
           filteredInvocations.map((invocation, i) => {
             return (
               <Invocation
+                method={invocation.method}
                 isSelected={invocation.id === activeInvocation?.id}
                 onClick={() => setActiveInvocation(invocation.id)}
                 key={i}

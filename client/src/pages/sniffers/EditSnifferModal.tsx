@@ -4,6 +4,19 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 
+const splitByLast = (str: string, delimiter: string) => {
+  const lastIndex = str.lastIndexOf(delimiter);
+
+  if (lastIndex === -1) {
+    return [str]; // delimiter not found, return the original string as a single element in an array
+  }
+
+  const firstPart = str.substring(0, lastIndex);
+  const secondPart = str.substring(lastIndex + 1); // +1 to exclude the delimiter itself
+
+  return [firstPart, secondPart];
+};
+
 type EdirSnifferModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -16,10 +29,10 @@ export const EditSnifferModal = ({
 }: EdirSnifferModalProps) => {
   const [name, setName] = useState<string>(sniffer.name);
   const [downstreamUrl, setDownstreamUrl] = useState<string>(
-    sniffer.downstreamUrl,
+    sniffer.downstreamUrl
   );
   const [subdomain, setSubdomain] = useState<string>(
-    sniffer.subdomain.split("-")[1],
+    splitByLast(sniffer.subdomain, "-")[1]
   );
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
