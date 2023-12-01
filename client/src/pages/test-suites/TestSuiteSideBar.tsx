@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useTestSuiteStore } from "../../stores/testSuitesStore";
 import { useNavigate, useParams } from "react-router-dom";
-import { Sniffer } from "../sniffers/SniffersSideBar";
+import { SideBarItem } from "../sniffers/SniffersSideBar";
 import { LuTestTube2 } from "react-icons/lu";
 import {
   AddTestSuiteModal,
@@ -88,7 +88,7 @@ export const TestSuiteSideBar = () => {
               onClick={() => setAddTestSuiteModalOpen(true)}
               value={"addTestSuite"}
             >
-              <Sniffer
+              <SideBarItem
                 LeftIcon={AiOutlinePlus}
                 isSelected={false}
                 name={"Add Test Suite"}
@@ -103,7 +103,7 @@ export const TestSuiteSideBar = () => {
                 }}
                 value={testSuite.id}
               >
-                <Sniffer
+                <SideBarItem
                   LeftIcon={LuTestTube2}
                   onEditSniffer={() => {
                     setSelectValue(testSuite.id);

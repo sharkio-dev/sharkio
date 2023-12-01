@@ -15,7 +15,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
     <>
       {showAdd && (
         <div
-          className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md p-2`}
+          className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
           onClick={() => navigate(`/sniffers/${snifferId}/invocations/create`)}
         >
           <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center">

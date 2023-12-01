@@ -79,7 +79,7 @@ export const SniffersSideBar = () => {
               onClick={() => setIsAddModalOpen(true)}
               value={"addSniffer"}
             >
-              <Sniffer
+              <SideBarItem
                 LeftIcon={AiOutlinePlus}
                 isSelected={false}
                 onClick={() => setIsAddModalOpen(true)}
@@ -94,7 +94,7 @@ export const SniffersSideBar = () => {
               }}
               value={"live"}
             >
-              <Sniffer
+              <SideBarItem
                 LeftIcon={MdOutlineEmergencyRecording}
                 isSelected={false}
                 name={"Live Invocations"}
@@ -109,7 +109,7 @@ export const SniffersSideBar = () => {
                 }}
                 value={sniffer.id}
               >
-                <Sniffer
+                <SideBarItem
                   LeftIcon={GiSharkFin}
                   isSelected={snifferId === sniffer.id}
                   onEditSniffer={() => onEditSniffer(sniffer)}
@@ -162,7 +162,7 @@ type SnifferProps = {
   LeftIcon?: any;
 };
 
-export const Sniffer = ({
+export const SideBarItem = ({
   isSelected = false,
   onClick,
   onEditSniffer,

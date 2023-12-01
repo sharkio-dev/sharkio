@@ -53,7 +53,6 @@ export class EndpointService {
   async getById(id: string) {
     return this.repository.repository.findOne({
       where: { id },
-      order: { createdAt: "DESC" },
     });
   }
 
