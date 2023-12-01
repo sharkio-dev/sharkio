@@ -12,8 +12,16 @@ export class MockService {
     return this.mockRepository.getById(userId, mockId);
   }
 
+  getByUrl(userId: string, mockId: string, url: string, method: string) {
+    return this.mockRepository.getByUrl(userId, mockId, url, method);
+  }
+
   getByUser(userId: string, limit: number) {
     return this.mockRepository.getByUser(userId, limit);
+  }
+
+  getBySnifferId(userId: string, snifferId: string) {
+    return this.mockRepository.getBySnifferId(userId, snifferId);
   }
 
   async create(
@@ -74,15 +82,15 @@ export class MockService {
     return this.mockRepository.deleteById(userId, mockId);
   }
 
-  setIsActive() {
-    throw new Error("Method not implemented.");
-  }
-
-  getIsActive() {
-    throw new Error("Method not implemented.");
-  }
-
-  getMock(userId: string, snifferId: string, endpoint: string): Promise<Mock> {
-    throw new Error("Method not implemented.");
+  async setIsActive(userId: string, mockId: string, isActive: boolean) {
+    return this.mockRepository.repository
+      .createQueryBuilder()
+      .update()
+      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .set({
+        isActive,
+      })
+      .returning("*")
+      .execute();
   }
 }

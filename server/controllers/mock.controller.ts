@@ -37,7 +37,7 @@ export class MockController {
           const limit = +(req.params.limit ?? 1000);
           const requests = await this.mockService.getByUser(userId, limit);
           res.status(200).send(requests);
-        },
+        }
       )
       .post(
         /**
@@ -110,10 +110,10 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId,
+            snifferId
           );
           res.status(200).send(requests);
-        },
+        }
       );
 
     router
@@ -149,7 +149,7 @@ export class MockController {
 
           const requests = await this.mockService.getById(userId, mockId);
           res.status(200).send(requests);
-        },
+        }
       )
       .delete(
         /**
@@ -177,7 +177,7 @@ export class MockController {
           const { mockId } = req.params;
           await this.mockService.delete(userId, mockId);
           res.sendStatus(200);
-        },
+        }
       )
       .patch(
         /**
@@ -259,12 +259,82 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId,
+            snifferId
           );
 
           res.json(updatedMock).status(200);
-        },
+        }
       );
+
+    router.route("/:mockId/activate").post(
+      /**
+       * @openapi
+       * /sharkio/mocks/{mockId}/activate:
+       *   post:
+       *     tags:
+       *      - mock
+       *     parameters:
+       *       - name: mockId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: mockId
+       *         required: true
+       *     description: Get a mock
+       *     responses:
+       *       200:
+       *         description: Returns a mock
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const limit = +(req.params.limit ?? 1000);
+        const { mockId } = req.params;
+
+        const requests = await this.mockService.setIsActive(
+          userId,
+          mockId,
+          true
+        );
+        res.status(200).send(requests);
+      }
+    );
+
+    router.route("/:mockId/deactivate").post(
+      /**
+       * @openapi
+       * /sharkio/mocks/{mockId}/deactivate:
+       *   post:
+       *     tags:
+       *      - mock
+       *     parameters:
+       *       - name: mockId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: mockId
+       *         required: true
+       *     description: Get a mock
+       *     responses:
+       *       200:
+       *         description: Returns a mock
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const limit = +(req.params.limit ?? 1000);
+        const { mockId } = req.params;
+
+        const requests = await this.mockService.setIsActive(
+          userId,
+          mockId,
+          false
+        );
+        res.status(200).send(requests);
+      }
+    );
 
     return { router, path: "/sharkio/mocks" };
   }

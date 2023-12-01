@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { MockService } from "./mock.service";
-import { SnifferService } from "../sniffer/sniffer.service";
-import { Z_SYNC_FLUSH } from "zlib";
+import { SnifferService } from "../../services/sniffer/sniffer.service";
+import { MockService } from "../../services/mock/mock.service";
+
 export default class MockMiddleware {
   constructor(
     private readonly mockService: MockService,
-    private readonly snifferService: SnifferService,
+    private readonly snifferService: SnifferService
   ) {}
 
   async mock(req: Request, res: Response, next: NextFunction) {
@@ -13,13 +13,14 @@ export default class MockMiddleware {
     const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
     if (sniffer != null && sniffer.userId != null) {
-      const mock = await this.mockService.getMock(
+      const mock = await this.mockService.getByUrl(
         sniffer?.userId,
         sniffer?.id,
-        `${req.method} ${req.url}`,
+        req.url,
+        req.method
       );
 
-      if (mock !== undefined && mock.isActive === true) {
+      if (mock != null && mock.isActive === true) {
         res.status(mock.status).send(mock.body);
       } else {
         next();

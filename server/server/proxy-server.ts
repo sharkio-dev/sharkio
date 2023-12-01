@@ -10,6 +10,7 @@ import { ProxyMiddleware } from "./middlewares/proxy.middleware";
 import { RequestInterceptor } from "./middlewares/request-interceptor";
 import https from "https";
 import fs from "fs";
+import MockMiddleware from "./middlewares/mock.middleware";
 
 const log = useLog({
   dirname: __dirname,
@@ -26,6 +27,7 @@ export class ProxyServer {
   constructor(
     private readonly proxyMiddleware: ProxyMiddleware,
     private readonly requestInterceptor: RequestInterceptor,
+    private readonly mockMiddleware: MockMiddleware
   ) {
     this.app = express();
 
@@ -33,8 +35,9 @@ export class ProxyServer {
     this.app.use(cors({ origin: "*" }));
     this.app.use(json());
     this.app.use(cookieParser());
+    this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
     this.app.use(
-      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
+      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor)
     );
     this.app.use(this.proxyMiddleware.getMiddleware());
   }
@@ -54,7 +57,7 @@ export class ProxyServer {
       const server = https.createServer(options, this.app);
       return server.listen(this.httpsPort, () => {
         log.info(
-          `https proxy server started listening on port ${this.httpsPort}`,
+          `https proxy server started listening on port ${this.httpsPort}`
         );
       });
     } catch (err) {

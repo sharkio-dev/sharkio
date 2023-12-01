@@ -11,6 +11,7 @@ import EndpointService from "../services/endpoint/endpoint.service";
 import { SnifferDocGenerator } from "../services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { IRouterConfig } from "./router.interface";
+import { MockService } from "../services/mock/mock.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -22,6 +23,7 @@ export class SnifferController {
     private readonly snifferManager: SnifferService,
     private readonly snifferDocGenerator: SnifferDocGenerator,
     private readonly endpointService: EndpointService,
+    private readonly mockService: MockService,
     private readonly baseUrl: string = "/sharkio/sniffer"
   ) {}
 
@@ -249,6 +251,43 @@ export class SnifferController {
         }
       );
 
+    router.route("/:snifferId/mocks").get(
+      /**
+       * @openapi
+       * /sharkio/sniffer/{snifferId}/mocks:
+       *   get:
+       *     tags:
+       *      - sniffer
+       *     description: Get all sniffers mocks
+       *     parameters:
+       *       - name: snifferId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Sniffer id
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Returns all mocks for a sniffer
+       *       500:
+       *         description: Server error
+       */
+      requestValidator({
+        params: z.object({
+          id: z.string().uuid(),
+        }),
+      }),
+      async (req: Request, res: Response) => {
+        const { snifferId } = req.params;
+        const userId = res.locals.auth.user.id;
+        const snifferMocks = await this.mockService.getBySnifferId(
+          userId,
+          snifferId
+        );
+
+        res.json(snifferMocks);
+      }
+    );
     router.route("/:id/request").get(
       /**
        * @openapi
