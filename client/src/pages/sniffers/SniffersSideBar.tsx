@@ -14,31 +14,9 @@ import { AddSnifferModal } from "./AddSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
-const SelectSniffers = () => {
-  const { sniffers } = useSniffersStore();
-  const { snifferId } = useParams();
-
-  return (
-    <FormControl fullWidth size="small" variant="outlined">
-      <InputLabel>Sniffers</InputLabel>
-      <Select value={snifferId} label="Sniffers">
-        {sniffers.map((sniffer, i) => (
-          <MenuItem key={i} onClick={() => {}} value={sniffer.id}>
-            <SideBarItem
-              LeftIcon={GiSharkFin}
-              isSelected={snifferId === sniffer.id}
-              name={sniffer.name}
-            />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-};
-
 export const SniffersSideBar = () => {
   const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
+    null
   );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);

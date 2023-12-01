@@ -127,7 +127,7 @@ const MockSideBar = () => {
               New
             </div>
           </div>
-          {mocks.map((mock, i) => (
+          {mocks.map((mock) => (
             <div
               className={`flex flex-row w-full  items-center rounded-md space-x-4 justify-between hover:bg-primary cursor-pointer active:bg-tertiary
             ${mock.id === mockId ? "bg-primary" : ""}`}
@@ -164,7 +164,7 @@ const MockSideBar = () => {
 
 const MockMainSection = () => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body",
+    "Body"
   );
   const {
     mocks,
@@ -224,7 +224,7 @@ const MockMainSection = () => {
           if (!header.name) return acc;
           return { ...acc, [header.name]: header.value };
         },
-        {},
+        {}
       ),
       isActive: true,
     };
@@ -243,7 +243,7 @@ const MockMainSection = () => {
           if (!header.name) return acc;
           return { ...acc, [header.name]: header.value };
         },
-        {},
+        {}
       ),
       isActive: true,
     };
