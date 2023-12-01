@@ -6,6 +6,7 @@ import {
 import { BackendAxios } from "./backendAxios";
 import { SnifferType } from "../stores/sniffersStores";
 import { InvocationType } from "../pages/sniffers/types";
+import { Mock } from "../stores/mockStore";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return BackendAxios.post("/sniffer", config);
@@ -32,7 +33,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<SnifferType, "subdomain">>,
+  newConfig: Partial<Omit<SnifferType, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
@@ -50,7 +51,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -67,7 +68,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -81,26 +82,6 @@ export const editMock = (
 export const deleteMock = (id: string, sniffer_id: string) => {
   return BackendAxios.delete(`/sniffer/${sniffer_id}/mock`, {
     data: { mockId: id },
-  });
-};
-
-export const activateMock = (
-  port: number,
-  method: string,
-  endpoint: string,
-) => {
-  return BackendAxios.post(`/sniffer/${port}/mock/actions/activate`, {
-    mockId: `${method} ${endpoint}`,
-  });
-};
-
-export const deactivateMock = (
-  port: number,
-  method: string,
-  endpoint: string,
-) => {
-  return BackendAxios.post(`/sniffer/${port}/mock/actions/deactivate`, {
-    mockId: `${method} ${endpoint}`,
   });
 };
 
@@ -121,7 +102,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -144,7 +125,7 @@ export const getLiveInvocations = () => {
   });
 };
 export const executeInvocation = (
-  invocation: InvocationType & { testId?: string },
+  invocation: InvocationType & { testId?: string }
 ) => {
   const url = invocation.url;
   const method = invocation.method;
@@ -172,6 +153,33 @@ export const newMessage = (chatId: string, content: string) => {
   return BackendAxios.post(`/chat/${chatId}/message`, { content });
 };
 
-export const getMocks = () => {
-  return BackendAxios.get("/mocks");
+export const getMocksAPI = (snifferId: string) => {
+  return BackendAxios.get(`/sniffer/${snifferId}/mocks`);
+};
+
+export const activateMockAPI = (mockId: string) => {
+  return BackendAxios.post(`/mocks/${mockId}/activate`);
+};
+
+export const deactivateMockAPI = (mockId: string) => {
+  return BackendAxios.post(`/mocks/${mockId}/deactivate`);
+};
+
+export const deleteMockAPI = (mockId: string) => {
+  return BackendAxios.delete(`/mocks/${mockId}`);
+};
+
+export const createMockAPI = (
+  mock: Omit<Mock, "id"> & { snifferId: string }
+) => {
+  return BackendAxios.post(`/mocks`, mock).then((res) => {
+    return res.data;
+  });
+};
+
+export const editMockAPI = (
+  mockId: string,
+  mock: Partial<Omit<Mock, "id">>
+) => {
+  return BackendAxios.patch(`/mocks/${mockId}`, mock);
 };

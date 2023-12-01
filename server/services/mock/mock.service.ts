@@ -29,10 +29,10 @@ export class MockService {
     url: string,
     method: string,
     body: string,
-    headers: string,
+    headers: Record<string, string>,
     status: number,
     name: string,
-    snifferId: string,
+    snifferId: string
   ) {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -54,10 +54,10 @@ export class MockService {
     url?: string,
     method?: string,
     body?: string,
-    headers?: string,
+    headers?: Record<string, string>,
     status?: number,
     name?: string,
-    snifferId?: string,
+    snifferId?: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()

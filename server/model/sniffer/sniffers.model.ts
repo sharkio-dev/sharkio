@@ -21,7 +21,10 @@ export class SnifferRepository {
   }
 
   findByUserId(userId: string) {
-    return this.repository.findBy({ userId });
+    return this.repository.find({
+      where: { userId },
+      order: { createdAt: "ASC" },
+    });
   }
 
   findBySubdomain(subdomain: string) {

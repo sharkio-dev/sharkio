@@ -274,7 +274,7 @@ export class SnifferController {
        */
       requestValidator({
         params: z.object({
-          id: z.string().uuid(),
+          snifferId: z.string().uuid(),
         }),
       }),
       async (req: Request, res: Response) => {

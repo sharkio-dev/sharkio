@@ -29,8 +29,8 @@ export class Mock {
   @Column()
   body: string;
 
-  @Column()
-  headers: string;
+  @Column({ type: "json" })
+  headers: Record<string, string>;
 
   @Column()
   status: number;
@@ -59,16 +59,24 @@ export class MockRepository {
   }
 
   getByUser(userId: string, limit: number) {
-    return this.repository.find({ where: { userId: userId }, take: limit });
+    return this.repository.find({
+      where: { userId: userId },
+      take: limit,
+      order: { createdAt: "DESC" },
+    });
   }
 
   getBySnifferId(userId: string, snifferId: string) {
-    return this.repository.find({ where: { userId, snifferId } });
+    return this.repository.find({
+      where: { userId, snifferId },
+      order: { createdAt: "DESC" },
+    });
   }
 
   getByUrl(userId: string, snifferId: string, url: string, method: string) {
     return this.repository.findOne({
       where: { userId, url, snifferId, method },
+      order: { createdAt: "DESC" },
     });
   }
 

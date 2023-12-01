@@ -50,12 +50,14 @@ import { SelectComponent } from "./pages/test-suites/SelectComponent";
 import { AiOutlinePlus } from "react-icons/ai";
 import { selectIconByMethod } from "./pages/sniffers/selectIconByMethod";
 import queryString from "query-string";
+import { LoadingIcon } from "./pages/sniffers/LoadingIcon";
 
 const MockSideBar = () => {
   const location = useLocation();
   const { snifferId, isNew } = queryString.parse(location.search);
   const { sniffers, loadSniffers } = useSniffersStore();
-  const { mocks, loadMocks, resetMocks } = useMockStore();
+  const { mocks, loadMocks, resetMocks, activateMock, deactivateMock } =
+    useMockStore();
   const { mockId } = useParams();
   const navigator = useNavigate();
 
@@ -65,11 +67,20 @@ const MockSideBar = () => {
 
   useEffect(() => {
     if (snifferId) {
-      loadMocks(snifferId as string);
+      loadMocks(snifferId as string, true);
     } else {
       resetMocks();
     }
   }, [snifferId]);
+
+  const onSwitchChange = (mockId: string, isActive: boolean) => {
+    if (!snifferId) return;
+    if (isActive) {
+      activateMock(snifferId as string, mockId);
+    } else {
+      deactivateMock(snifferId as string, mockId);
+    }
+  };
 
   return (
     <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
@@ -99,7 +110,7 @@ const MockSideBar = () => {
       {snifferId && (
         <div className="flex flex-col w-full overflow-y-auto">
           <div
-            className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md p-2
+            className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md
           ${isNew ? "bg-primary" : ""}`}
             onClick={() => {
               let params = new URLSearchParams();
@@ -118,21 +129,31 @@ const MockSideBar = () => {
           </div>
           {mocks.map((mock, i) => (
             <div
-              className={`flex flex-row w-full hover:bg-primary p-2 cursor-pointer active:bg-tertiary items-center rounded-md space-x-4 justify-between
+              className={`flex flex-row w-full  items-center rounded-md space-x-4 justify-between hover:bg-primary cursor-pointer active:bg-tertiary
             ${mock.id === mockId ? "bg-primary" : ""}`}
-              onClick={() => {
-                let params = new URLSearchParams();
-                params.append("snifferId", snifferId?.toString() || "");
-                navigator(`/mocks/${mock.id}?${params.toString()}`);
-              }}
             >
-              <div className="flex flex-row items-center space-x-2">
+              <div
+                className="flex flex-row items-center space-x-2  w-full"
+                onClick={() => {
+                  let params = new URLSearchParams();
+                  params.append("snifferId", snifferId?.toString() || "");
+                  navigator(`/mocks/${mock.id}?${params.toString()}`);
+                }}
+              >
                 {selectIconByMethod(mock.method)}
                 <div className="flex text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
                   {mock.url}
                 </div>
               </div>
-              <Switch checked={mock.isActive} size="small" />
+              <Switch
+                checked={mock.isActive}
+                size="small"
+                onChange={(e) => {
+                  e.stopPropagation();
+                  console.log("switch", e.target.checked);
+                  onSwitchChange(mock.id, e.target.checked);
+                }}
+              ></Switch>
             </div>
           ))}
         </div>
@@ -145,16 +166,26 @@ const MockMainSection = () => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
     "Body"
   );
-  const { mocks } = useMockStore();
+  const {
+    mocks,
+    createMock,
+    loadingNewMock,
+    loadingEditMock,
+    editMock,
+    deleteMock,
+    loadingDeleteMock,
+  } = useMockStore();
   const { mockId } = useParams();
   const location = useLocation();
-  const { isNew } = queryString.parse(location.search);
+  const { isNew, snifferId } = queryString.parse(location.search);
+  const navigator = useNavigate();
   const [editedMock, setEditedMock] = React.useState({
     method: "GET",
     url: "",
     status: "200",
-    headers: {},
+    headers: [{ name: "", value: "" }],
     body: "",
+    isActive: true,
   });
 
   useEffect(() => {
@@ -165,8 +196,12 @@ const MockMainSection = () => {
         method: mock.method,
         url: mock.url,
         status: mock.status,
-        headers: mock.headers,
+        headers: Object.entries(mock.headers || {}).map(([key, value]) => ({
+          name: key,
+          value,
+        })),
         body: mock.body,
+        isActive: mock.isActive,
       });
     }
     if (isNew) {
@@ -174,11 +209,46 @@ const MockMainSection = () => {
         method: "GET",
         url: "",
         status: "200",
-        headers: {},
+        headers: [],
         body: "",
+        isActive: true,
       });
     }
   }, [mockId, isNew]);
+
+  const onClickSave = () => {
+    let newMock = {
+      ...editedMock,
+      headers: editedMock.headers.reduce(
+        (acc: object, header: { name: string; value: string }) => {
+          if (!header.name) return acc;
+          return { ...acc, [header.name]: header.value };
+        },
+        {}
+      ),
+      isActive: true,
+    };
+    createMock(snifferId as string, newMock).then((res: any) => {
+      console.log("res", res);
+      navigator(`/mocks/${res?.id}?snifferId=${snifferId}`);
+    });
+  };
+
+  const onClickEdit = () => {
+    if (!mockId) return;
+    let newMock = {
+      ...editedMock,
+      headers: editedMock.headers.reduce(
+        (acc: object, header: { name: string; value: string }) => {
+          if (!header.name) return acc;
+          return { ...acc, [header.name]: header.value };
+        },
+        {}
+      ),
+      isActive: true,
+    };
+    editMock(snifferId as string, mockId as string, newMock);
+  };
 
   return (
     <>
@@ -208,9 +278,32 @@ const MockMainSection = () => {
           size="small"
           style={{ width: "100%" }}
         />
-        <Button variant="contained" color="primary">
-          {isNew ? "Create" : "Save"}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={isNew ? onClickSave : onClickEdit}
+        >
+          {loadingNewMock || loadingEditMock ? (
+            <LoadingIcon />
+          ) : isNew ? (
+            "Create"
+          ) : (
+            "Save"
+          )}
         </Button>
+        {!isNew && (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              deleteMock(snifferId as string, mockId as string).then(() => {
+                navigator(`/mocks?snifferId=${snifferId}`);
+              });
+            }}
+          >
+            {loadingDeleteMock ? <LoadingIcon /> : "Delete"}
+          </Button>
+        )}
       </div>
       <div className="flex flex-col h-full p-2 rounded-md overflow-y-auto">
         <ToggleButtonGroup
@@ -249,20 +342,29 @@ const MockMainSection = () => {
         )}
         {section === "Headers" && (
           <HeaderSection
-            headers={Object.entries(editedMock.headers || {}).map(
-              ([key, value]) => ({ name: key, value })
-            )}
-            setHeaders={(value) => {
-              setEditedMock((prev) => ({ ...prev, headers: value }));
+            headers={editedMock.headers || []}
+            setHeaders={(index, value, key) => {
+              setEditedMock((prev) => {
+                const headers = [...prev.headers];
+                headers[index] = { name: key, value };
+                return { ...prev, headers };
+              });
             }}
-            addHeader={(header) => {
+            addHeader={() => {
               setEditedMock((prev) => ({
                 ...prev,
-                headers: {
-                  ...prev.headers,
-                  [header.name]: header.value,
-                },
+                headers: [...prev.headers, { name: "", value: "" }],
               }));
+            }}
+            deleteHeader={(index: number) => {
+              setEditedMock((prev) => {
+                const headers = [...prev.headers];
+
+                return {
+                  ...prev,
+                  headers: headers.filter((_, i) => i !== index),
+                };
+              });
             }}
           />
         )}

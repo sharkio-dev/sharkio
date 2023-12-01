@@ -101,8 +101,8 @@ export class MockController {
           const userId = res.locals.auth.user.id;
           const { headers, body, status, url, snifferId, name, method } =
             req.body;
-
-          const requests = await this.mockService.create(
+          console.log({ headers: req.body.headers });
+          const mock = await this.mockService.create(
             userId,
             url,
             method,
@@ -112,7 +112,7 @@ export class MockController {
             name,
             snifferId
           );
-          res.status(200).send(requests);
+          res.status(200).send(mock);
         }
       );
 
@@ -147,8 +147,8 @@ export class MockController {
           const limit = +(req.params.limit ?? 1000);
           const { mockId } = req.params;
 
-          const requests = await this.mockService.getById(userId, mockId);
-          res.status(200).send(requests);
+          const mock = await this.mockService.getById(userId, mockId);
+          res.status(200).send(mock);
         }
       )
       .delete(
@@ -289,7 +289,6 @@ export class MockController {
        */
       async (req: Request, res: Response, next: NextFunction) => {
         const userId = res.locals.auth.user.id;
-        const limit = +(req.params.limit ?? 1000);
         const { mockId } = req.params;
 
         const requests = await this.mockService.setIsActive(
