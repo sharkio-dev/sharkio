@@ -37,7 +37,7 @@ export class MockController {
           const limit = +(req.params.limit ?? 1000);
           const requests = await this.mockService.getByUser(userId, limit);
           res.status(200).send(requests);
-        },
+        }
       )
       .post(
         /**
@@ -101,7 +101,6 @@ export class MockController {
           const userId = res.locals.auth.user.id;
           const { headers, body, status, url, snifferId, name, method } =
             req.body;
-          console.log({ headers: req.body.headers });
           const mock = await this.mockService.create(
             userId,
             url,
@@ -110,10 +109,10 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId,
+            snifferId
           );
           res.status(200).send(mock);
-        },
+        }
       );
 
     router
@@ -149,7 +148,7 @@ export class MockController {
 
           const mock = await this.mockService.getById(userId, mockId);
           res.status(200).send(mock);
-        },
+        }
       )
       .delete(
         /**
@@ -177,7 +176,7 @@ export class MockController {
           const { mockId } = req.params;
           await this.mockService.delete(userId, mockId);
           res.sendStatus(200);
-        },
+        }
       )
       .patch(
         /**
@@ -259,11 +258,11 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId,
+            snifferId
           );
 
           res.json(updatedMock).status(200);
-        },
+        }
       );
 
     router.route("/:mockId/activate").post(
@@ -294,10 +293,10 @@ export class MockController {
         const requests = await this.mockService.setIsActive(
           userId,
           mockId,
-          true,
+          true
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:mockId/deactivate").post(
@@ -329,10 +328,10 @@ export class MockController {
         const requests = await this.mockService.setIsActive(
           userId,
           mockId,
-          false,
+          false
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     return { router, path: "/sharkio/mocks" };

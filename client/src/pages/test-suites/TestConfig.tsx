@@ -8,6 +8,8 @@ import { HeaderSection } from "./HeaderSection";
 import { Rule, TestType } from "../../stores/testStore";
 import { TextField, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import React from "react";
+import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
+import { BodyHeaderStatusToggle } from "../mocks/BodyHeaderStatusToggle";
 
 type TestConfigProps = {
   tabNumber: string;
@@ -68,24 +70,7 @@ export const TestConfig = ({
         <div className="flex w-1/4 items-center self-end"></div>
       </div>
       <TabPanel value="1" style={{ padding: 0, paddingTop: 0 }}>
-        <ToggleButtonGroup
-          color="primary"
-          exclusive
-          onChange={(_, value) => setTestType(value)}
-          className="flex flex-row w-full items-center justify-center mb-8"
-          value={testType}
-        >
-          <ToggleButton value="Status" className="w-24 h-6">
-            Status
-          </ToggleButton>
-          <ToggleButton value="Body" className="w-24 h-6">
-            Body
-          </ToggleButton>
-          <ToggleButton value="Headers" className="w-24 h-6">
-            {" "}
-            Headers
-          </ToggleButton>
-        </ToggleButtonGroup>
+        <BodyHeaderStatusToggle value={testType} setValue={setTestType} />
         {testType === "Status" && (
           <div className="flex flex-row w-full">
             <StatusCodeSelector
@@ -129,17 +114,9 @@ export const TestConfig = ({
         <div className="flex flex-col space-y-4">
           <div className="flex flex-row space-x-4">
             <div className="flex flex-row w-40">
-              <SelectComponent
-                options={[
-                  { value: "GET", label: "GET" },
-                  { value: "POST", label: "POST" },
-                  { value: "PUT", label: "PUT" },
-                  { value: "PATCH", label: "PATCH" },
-                  { value: "DELETE", label: "DELETE" },
-                ]}
-                title="Method"
+              <SelectMethodDropDown
                 value={test?.method || ""}
-                setValue={(value) => {
+                onChange={(value) => {
                   setTest({ ...test, method: value });
                 }}
               />
@@ -185,7 +162,7 @@ export const TestConfig = ({
                 setTest({
                   ...test,
                   headers: Object.fromEntries(
-                    Object.entries(test.headers).filter((_, i) => i !== index),
+                    Object.entries(test.headers).filter((_, i) => i !== index)
                   ),
                 })
               }
