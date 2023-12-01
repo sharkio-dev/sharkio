@@ -6,7 +6,7 @@ import { MockMainSection } from "./MockMainSection";
 export const MockPage = () => {
   const { mockId } = useParams();
   const location = useLocation();
-  const { isNew } = queryString.parse(location.search);
+  const { isNew, snifferId } = queryString.parse(location.search);
 
   return (
     <div className={`flex h-full flex-row w-[calc(100vw-56px)]`}>
@@ -15,7 +15,7 @@ export const MockPage = () => {
       </div>
 
       <div className="flex flex-col max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)] p-4 space-y-4 overflow-y-auto">
-        {(mockId || isNew) && <MockMainSection />}
+        {snifferId && (mockId || isNew) && <MockMainSection />}
       </div>
     </div>
   );

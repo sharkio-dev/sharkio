@@ -38,6 +38,7 @@ export const MockSideBar = () => {
               value={sniffer.id}
               onClick={() => {
                 let params = new URLSearchParams();
+                console.log("snifferId", sniffer.id);
                 params.append("snifferId", sniffer.id);
                 let queryString = params.toString();
                 navigator(`/mocks?${queryString}`);

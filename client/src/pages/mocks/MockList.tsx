@@ -7,10 +7,10 @@ import queryString from "query-string";
 
 export const MockList = () => {
   const { mocks, activateMock, deactivateMock } = useMockStore();
-  const { snifferId, mockId } = useParams();
+  const { mockId } = useParams();
   const navigator = useNavigate();
   const location = useLocation();
-  const { isNew } = queryString.parse(location.search);
+  const { isNew, snifferId } = queryString.parse(location.search);
 
   const onSwitchChange = (mockId: string, isActive: boolean) => {
     if (!snifferId) return;
