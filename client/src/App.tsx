@@ -164,7 +164,7 @@ const MockSideBar = () => {
 
 const MockMainSection = () => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body"
+    "Body",
   );
   const {
     mocks,
@@ -224,7 +224,7 @@ const MockMainSection = () => {
           if (!header.name) return acc;
           return { ...acc, [header.name]: header.value };
         },
-        {}
+        {},
       ),
       isActive: true,
     };
@@ -243,7 +243,7 @@ const MockMainSection = () => {
           if (!header.name) return acc;
           return { ...acc, [header.name]: header.value };
         },
-        {}
+        {},
       ),
       isActive: true,
     };
