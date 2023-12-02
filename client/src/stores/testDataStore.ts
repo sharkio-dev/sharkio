@@ -1,4 +1,1 @@
-
-interface testDataStore {
-  
-}
+interface testDataStore {}

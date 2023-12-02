@@ -15,7 +15,6 @@ const MocksPage: React.FC = () => {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const { user } = useAuthStore();
   const userId = user?.id;
-  
 
   const [editMock, setEditMock] = useState<
     (Omit<Mock, "active"> & { port: number }) | null

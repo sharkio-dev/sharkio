@@ -19,7 +19,7 @@ export const TestSuiteMainSection = () => {
   const { getTest, editTest, setCurrentTest, currentTest } = useTestStore();
 
   const statusCodeRule = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "status_code")
+    s.currentTest.rules.find((rule) => rule.type === "status_code"),
   ) || {
     type: "status_code",
     expectedValue: "200",
@@ -27,7 +27,7 @@ export const TestSuiteMainSection = () => {
   };
 
   const bodyRule = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "body")
+    s.currentTest.rules.find((rule) => rule.type === "body"),
   ) || {
     type: "body",
     expectedValue: "",
@@ -35,7 +35,7 @@ export const TestSuiteMainSection = () => {
   };
 
   const headerRules = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header")
+    s.currentTest.rules.filter((rule) => rule.type === "header"),
   );
 
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
@@ -165,7 +165,7 @@ export const TestSuiteMainSection = () => {
   const saveTest = (
     testSuiteId: string,
     testId: string,
-    currentTest: TestType
+    currentTest: TestType,
   ) => {
     setSaveLoading(true);
 
@@ -195,7 +195,6 @@ export const TestSuiteMainSection = () => {
       console.log(data);
       setNewHeaders(data);
     });
-
   }, [testSuiteId, testId]);
 
   return (

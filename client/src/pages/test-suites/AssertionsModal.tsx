@@ -2,7 +2,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import StatusCodeSelector from "./StatusCodeSelector";
-import { Rule,useTestStore } from "../../stores/testStore";
+import { Rule, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
 
@@ -21,13 +21,13 @@ const AssertionsModal: React.FC<AssertionsModalProps> = ({
 }) => {
   const [AssertionPart, setAssertionPart] = useState<string>("Status");
   const statusCode = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "status_code")
+    s.currentTest.rules.find((rule) => rule.type === "status_code"),
   );
   const body = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "body")
+    s.currentTest.rules.find((rule) => rule.type === "body"),
   );
   const headers = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header")
+    s.currentTest.rules.filter((rule) => rule.type === "header"),
   );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {
