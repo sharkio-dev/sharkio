@@ -19,6 +19,7 @@ import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
+import { MockPage } from "./pages/mocks/MockPage";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -50,6 +51,8 @@ function App(): React.JSX.Element {
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },
       { path: routes.TEST_ENDPOINT, element: <TestSuitePage /> },
+      { path: routes.MOCKS, element: <MockPage /> },
+      { path: routes.MOCK, element: <MockPage /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

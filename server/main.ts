@@ -7,11 +7,13 @@ import { EndpointController } from "./controllers/endpoint.controller";
 import { InvocationController } from "./controllers/invocation.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
+import { MockController } from "./controllers/mock.controller";
 import { TestSuiteController } from "./controllers/testSuite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import ChatRepository from "./model/chat/chat.model";
 import MessageRepository from "./model/chat/message.model";
+import { MockRepository } from "./model/mock/mock.model";
 import { EndpointRepository } from "./model/endpoint/endpoint.model";
 import { RequestRepository } from "./model/request/request.model";
 import { ResponseRepository } from "./model/response/response.model";
@@ -29,6 +31,7 @@ import { ChatService } from "./services/chat/chat.service";
 import EndpointService from "./services/endpoint/endpoint.service";
 import { RequestService } from "./services/request/request.service";
 import ResponseService from "./services/response/response.service";
+import { MockService } from "./services/mock/mock.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
@@ -38,6 +41,7 @@ import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { EnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
+import MockMiddleware from "./server/middlewares/mock.middleware";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -56,6 +60,7 @@ async function main() {
   const appDataSource = await getAppDataSource();
 
   /* Repositories */
+  const mockRepository = new MockRepository(appDataSource);
   const endpointRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
   const invocationRepository = new RequestRepository(appDataSource);
@@ -69,6 +74,7 @@ async function main() {
   const testExecutionRepository = new TextExecutionRepository(appDataSource);
 
   /* Services */
+  const mockService = new MockService(mockRepository);
   const snifferService = new SnifferService(snifferRepository);
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
@@ -87,6 +93,7 @@ async function main() {
   );
 
   /* Controllers */
+  const mockController = new MockController(mockService);
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const cliController = new CLIController(
@@ -96,9 +103,9 @@ async function main() {
   );
   const snifferController = new SnifferController(
     snifferService,
-    endpointService,
     docGenerator,
     endpointService,
+    mockService,
   );
   const endpointController = new EndpointController(
     endpointService,
@@ -131,11 +138,13 @@ async function main() {
     snifferService,
     requestInterceptorMiddleware,
   );
+  const mockMiddleware = new MockMiddleware(mockService, snifferService);
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
     requestInterceptorMiddleware,
+    mockMiddleware,
   );
   const snifferManagerServer = new Server(
     [
@@ -147,6 +156,7 @@ async function main() {
       endpointController.getRouter(),
       chatController.getRouter(),
       testSuiteController.getRouter(),
+      mockController.getRouter(),
     ],
     swaggerUi,
   );

@@ -19,7 +19,7 @@ export const TestSuiteMainSection = () => {
   const { getTest, editTest, setCurrentTest, currentTest } = useTestStore();
 
   const statusCodeRule = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "status_code"),
+    s.currentTest.rules.find((rule) => rule.type === "status_code")
   ) || {
     type: "status_code",
     expectedValue: "200",
@@ -27,7 +27,7 @@ export const TestSuiteMainSection = () => {
   };
 
   const bodyRule = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "body"),
+    s.currentTest.rules.find((rule) => rule.type === "body")
   ) || {
     type: "body",
     expectedValue: "",
@@ -35,24 +35,49 @@ export const TestSuiteMainSection = () => {
   };
 
   const headerRules = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header"),
+    s.currentTest.rules.filter((rule) => rule.type === "header")
   );
 
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
   const DEBOUNCE_TIME_WAIT: number = 2000;
 
-  const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
-    setCurrentTest({
-      ...currentTest,
-      rules: [statusCodeRule, bodyRule, ...newHeaders],
-    });
-
+  const handleDebounce = (
+    newData: any,
+    saveFunction: (data: any) => void
+    // callback: () => void = () => {}
+  ) => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
+
+    setCurrentTest(newData);
+
     debounceTimeout.current = setTimeout(() => {
-      AssertionsDataSave([statusCodeRule, bodyRule, ...newHeaders]);
+      saveFunction(newData);
+      // callback();
+      console.log("debounced");
     }, DEBOUNCE_TIME_WAIT);
+  };
+
+  const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
+    handleDebounce(
+      {
+        ...currentTest,
+        rules: [statusCodeRule, bodyRule, ...newHeaders],
+      },
+      AssertionsDataSave
+    );
+    // setCurrentTest({
+    //   ...currentTest,
+    //   rules: [statusCodeRule, bodyRule, ...newHeaders],
+    // });
+
+    // if (debounceTimeout.current) {
+    //   clearTimeout(debounceTimeout.current);
+    // }
+    // debounceTimeout.current = setTimeout(() => {
+    //   AssertionsDataSave([statusCodeRule, bodyRule, ...newHeaders]);
+    // }, DEBOUNCE_TIME_WAIT);
   };
   const handleAssertionChange = (newStatusCode: string) => {
     setCurrentTest({
@@ -70,44 +95,65 @@ export const TestSuiteMainSection = () => {
     ]);
   };
   const handleAssertionDebounceChange = (newBody: string) => {
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-    debounceTimeout.current = setTimeout(() => {
-      setCurrentTest({
+    handleDebounce(
+      {
         ...currentTest,
         rules: [
           statusCodeRule,
           { ...bodyRule, expectedValue: newBody },
           ...headerRules,
         ],
-      });
-      AssertionsDataSave([
-        statusCodeRule,
-        { ...bodyRule, expectedValue: newBody },
-        ...headerRules,
-      ]);
-    }, DEBOUNCE_TIME_WAIT);
+      },
+      AssertionsDataSave
+    );
+    // if (debounceTimeout.current) {
+    //   clearTimeout(debounceTimeout.current);
+    // }
+    // debounceTimeout.current = setTimeout(() => {
+    //   setCurrentTest({
+    //     ...currentTest,
+    //     rules: [
+    //       statusCodeRule,
+    //       { ...bodyRule, expectedValue: newBody },
+    //       ...headerRules,
+    //     ],
+    //   });
+    //   AssertionsDataSave([
+    //     statusCodeRule,
+    //     { ...bodyRule, expectedValue: newBody },
+    //     ...headerRules,
+    //   ]);
+    // }, DEBOUNCE_TIME_WAIT);
   };
 
   const handleRequestHeadersChange = (headersReq: any[]) => {
-    console.log(headersReq);
-    setRequestHeaders(headersReq);
-    const newHeaders = headersReq.reduce((acc, h) => {
-      acc[h.name] = h.value;
-      return acc;
-    }, {} as any);
-    setCurrentTest({ ...currentTest, headers: newHeaders });
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-    debounceTimeout.current = setTimeout(() => {
-      if (!currentTest) {
-        return null;
-      }
-      console.log({ ...currentTest, headers: newHeaders });
-      RequestDataSave({ ...currentTest, headers: newHeaders });
-    }, DEBOUNCE_TIME_WAIT);
+    handleDebounce(
+      {
+        ...currentTest,
+        headers: headersReq.reduce((acc, h) => {
+          acc[h.name] = h.value;
+          return acc;
+        }, {} as any),
+      },
+      RequestDataSave
+    );
+    // console.log(headersReq);
+    // setRequestHeaders(headersReq);
+    // const newHeaders = headersReq.reduce((acc, h) => {
+    //   acc[h.name] = h.value;
+    //   return acc;
+    // }, {} as any);
+    // setCurrentTest({ ...currentTest, headers: newHeaders });
+    // if (debounceTimeout.current) {
+    //   clearTimeout(debounceTimeout.current);
+    // }
+    // debounceTimeout.current = setTimeout(() => {
+    //   if (!currentTest) {
+    //     return null;
+    //   }
+    //   console.log({ ...currentTest, headers: newHeaders });
+    //   RequestDataSave({ ...currentTest, headers: newHeaders });
+    // }, DEBOUNCE_TIME_WAIT);
   };
 
   const handleRequestChange = (newTest: TestType) => {
@@ -128,9 +174,6 @@ export const TestSuiteMainSection = () => {
 
   const AssertionsDataSave = (newAssertions: Rule[]) => {
     console.log("assertions save");
-    if (!testSuiteId || !testId || !currentTest) {
-      return;
-    }
     saveTest(testSuiteId, testId, {
       ...currentTest,
       rules: newAssertions,
@@ -139,9 +182,6 @@ export const TestSuiteMainSection = () => {
 
   const RequestDataSave = (newTest: TestType) => {
     console.log("request save");
-    if (!testSuiteId || !testId || !currentTest) {
-      return;
-    }
     saveTest(testSuiteId, testId, {
       ...newTest,
       rules: [statusCodeRule, bodyRule, ...headerRules],
@@ -150,23 +190,21 @@ export const TestSuiteMainSection = () => {
 
   const handleSaveAll = React.useCallback(() => {
     console.log("save all");
-    if (!testSuiteId || !testId || !currentTest) {
-      return;
-    }
     saveTest(testSuiteId, testId, {
       ...currentTest,
       rules: [statusCodeRule, bodyRule, ...headerRules],
     });
-    if (!testSuiteId || !testId || !currentTest) {
-      return;
-    }
   }, [currentTest, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
 
   const saveTest = (
-    testSuiteId: string,
-    testId: string,
-    currentTest: TestType,
+    testSuiteId: string | undefined,
+    testId: string | undefined,
+    currentTest: TestType
   ) => {
+    if (!testSuiteId || !testId || !currentTest) {
+      return;
+    }
+
     setSaveLoading(true);
 
     editTest(testSuiteId, testId, currentTest)

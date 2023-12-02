@@ -1,5 +1,5 @@
-import Tab from "@mui/material/Tab";
 import TabList from "@mui/lab/TabList";
+import { Tab } from "@mui/material";
 
 type TestConfigProps = {
   setTabNumber: (tabNumber: string) => void;
@@ -15,7 +15,6 @@ export const TestConfig = ({ setTabNumber }: TestConfigProps) => {
         <Tab label="Assertions" value="1" />
         <Tab label="Request" value="2" />
       </TabList>
-      <div className="flex w-1/4 items-center self-end"></div>
     </div>
   );
 };

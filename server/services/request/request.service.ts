@@ -23,9 +23,9 @@ export class RequestService {
   constructor(private readonly requestRepository: RequestRepository) {}
 
   async execute({ method, url, headers, body, subdomain }: ExecutionType) {
-    console.log("execute", {
+    log.info({
       method,
-      url,
+      url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
       headers,
       body,
       subdomain,

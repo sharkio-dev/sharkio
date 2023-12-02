@@ -5,7 +5,7 @@ import { InvocationDetails } from "./InvocationDetails";
 import { executeInvocation } from "../../api/api";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
-import { SelectComponent } from "../test-suites/SelectComponent";
+import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
@@ -49,17 +49,9 @@ export const InvocationUpperBar = ({
     <>
       <div className="flex flex-row items-center space-x-4">
         <div className="flex flex-row items-center w-40">
-          <SelectComponent
-            options={[
-              { value: "GET", label: "GET" },
-              { value: "POST", label: "POST" },
-              { value: "PUT", label: "PUT" },
-              { value: "PATCH", label: "PATCH" },
-              { value: "DELETE", label: "DELETE" },
-            ]}
-            title="Method"
+          <SelectMethodDropDown
             value={editedInvocation?.method || ""}
-            setValue={(value) => {
+            onChange={(value: string) => {
               if (editedInvocation) {
                 setEditedInvocation({
                   ...editedInvocation,
