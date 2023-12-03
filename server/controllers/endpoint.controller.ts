@@ -111,6 +111,9 @@ export class EndpointController {
       async (req, res) => {
         try {
           const { method, headers, body, url, snifferId } = req.body;
+          if (!snifferId) {
+            return res.status(400).send("Sniffer id is required");
+          }
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
             snifferId,
