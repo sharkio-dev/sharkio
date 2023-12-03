@@ -15,7 +15,7 @@ export class ProxyMiddleware {
 
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestInterceptor: RequestInterceptor,
+    private readonly requestInterceptor: RequestInterceptor
   ) {
     this.proxyMiddleware = createProxyMiddleware({
       router: this.chooseRoute.bind(this),
@@ -49,14 +49,14 @@ export class ProxyMiddleware {
                     snifferId,
                     invocationId,
                     {
-                      body: body.toString(),
+                      body: body?.toString() || "",
                       headers: proxyRes.headers,
                       statusCode: proxyRes.statusCode,
                     },
-                    testExecutionId,
+                    testExecutionId
                   )
                   .then((data) => {
-                    res.end(body.toString());
+                    res.end(body?.toString() || "");
                   })
                   .catch((e) => {
                     logger.error(e.message);
@@ -65,12 +65,12 @@ export class ProxyMiddleware {
               } else {
                 res.end(body);
               }
-            }.bind(this),
+            }.bind(this)
           );
         } catch (e) {
           logger.error(
             "failed to capture response for invocation id" + invocationId,
-            e,
+            e
           );
         }
       },
@@ -80,9 +80,12 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
-    req.headers["x-sharkio-port"] = selectedSniffer?.port.toString();
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain
+    );
+    if (selectedSniffer?.port) {
+      req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
+    }
 
     if (selectedSniffer != null) {
       return selectedSniffer.downstreamUrl;
