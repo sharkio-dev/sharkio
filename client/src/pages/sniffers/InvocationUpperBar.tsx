@@ -34,6 +34,9 @@ export const InvocationUpperBar = ({
     if (!editedInvocation) {
       return;
     }
+    if (!snifferId) {
+      return;
+    }
     setLoading(true);
     executeInvocation({ ...editedInvocation, snifferId })
       .then(() => {
