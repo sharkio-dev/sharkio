@@ -32,7 +32,7 @@ export const SnifferData: React.FC = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
+      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`
     );
   };
   const bottomBarHeight = !invocationId
