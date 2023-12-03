@@ -6,6 +6,7 @@ import { executeInvocation } from "../../api/api";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
+import { useParams } from "react-router-dom";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
@@ -17,6 +18,7 @@ export const InvocationUpperBar = ({
   onExecuteRequest,
 }: InvocationUpperBarProps) => {
   const [loading, setLoading] = useState(false);
+  const { snifferId } = useParams();
   const [editedInvocation, setEditedInvocation] = useState<InvocationType>({
     method: "GET",
     url: "",
@@ -33,7 +35,7 @@ export const InvocationUpperBar = ({
       return;
     }
     setLoading(true);
-    executeInvocation(editedInvocation)
+    executeInvocation({ ...editedInvocation, snifferId })
       .then(() => {
         onExecuteRequest && onExecuteRequest();
       })

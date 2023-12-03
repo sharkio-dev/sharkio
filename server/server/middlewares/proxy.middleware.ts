@@ -86,7 +86,6 @@ export class ProxyMiddleware {
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
     }
-
     if (selectedSniffer != null) {
       return selectedSniffer.downstreamUrl;
     }
