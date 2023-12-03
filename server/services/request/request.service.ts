@@ -35,7 +35,7 @@ export class RequestService {
         method,
         url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers,
-        data: body,
+        data: method === "GET" ? undefined : body,
         httpsAgent: agent,
       })
       .catch((e) => {
