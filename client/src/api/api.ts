@@ -5,7 +5,6 @@ import {
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
 import { SnifferType } from "../stores/sniffersStores";
-import { InvocationType } from "../pages/sniffers/types";
 import { Mock } from "../stores/mockStore";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
