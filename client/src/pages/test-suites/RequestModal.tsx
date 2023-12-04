@@ -80,7 +80,7 @@ const RequestTab = ({
             }}
             deleteHeader={(index) => {
               const removedHeaders = requestHeaders.filter(
-                (_, i) => i !== index
+                (_, i) => i !== index,
               );
               onRequestHeadersChange(removedHeaders);
             }}
