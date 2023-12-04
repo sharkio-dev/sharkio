@@ -49,6 +49,7 @@ export class RequestInterceptor {
     const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
       | string
       | undefined;
+    req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
 
     const request = await this.requestService.findOrCreate(
       req,
