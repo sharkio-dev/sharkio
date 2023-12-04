@@ -7,18 +7,18 @@ import { SelectComponent } from "./SelectComponent";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
 
-interface RequestModalProps {
+interface RequestTabProps {
   onTestChange: (test: TestType) => void;
   onTestMethodChange: (test: TestType) => void;
   onRequestHeadersChange: (rules: any[]) => void;
   requestHeaders: any[];
 }
-const RequestModal = ({
+const RequestTab = ({
   onTestChange,
   onTestMethodChange,
   onRequestHeadersChange,
   requestHeaders,
-}: RequestModalProps) => {
+}: RequestTabProps) => {
   const currentTest = useTestStore((s) => s.currentTest);
   const [requestPart, setRequestPart] = useState<string>("Body");
 
@@ -97,4 +97,4 @@ const RequestModal = ({
   );
 };
 
-export default RequestModal;
+export default RequestTab;

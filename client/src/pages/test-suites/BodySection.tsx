@@ -6,6 +6,15 @@ type BodySectionProps = {
 };
 
 export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
+  const onChangeBodyValue = (value: any) => {
+    try {
+      const parsedValue = JSON.parse(value);
+      onBodyChange(value);
+    } catch (error) {
+      console.log("Not valid JSON");
+    }
+  };
+
   return (
     <div className="flex flex-col space-y-4 w-full">
       <Editor
@@ -17,7 +26,7 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
         language={
           typeof body === "string" && body.includes("html") ? "html" : "json"
         }
-        onChange={(value, _) => onBodyChange && onBodyChange(value || "")}
+        onChange={(value) => onChangeBodyValue(value)}
         options={{
           readOnly: !onBodyChange,
           minimap: {

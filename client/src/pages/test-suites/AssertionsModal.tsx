@@ -6,14 +6,14 @@ import { Rule, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
 
-interface AssertionsModalProps {
+interface AssertionsTabProps {
   onStatusCodeChange: (statusCode: string) => void;
   onBodyChange: (body: string) => void;
   onAssertionHeadersChange: (rules: Rule[]) => void;
   tabNumber: string;
 }
 
-const AssertionsModal: React.FC<AssertionsModalProps> = ({
+const AssertionsTab: React.FC<AssertionsTabProps> = ({
   onStatusCodeChange,
   onBodyChange,
   onAssertionHeadersChange,
@@ -86,4 +86,4 @@ const AssertionsModal: React.FC<AssertionsModalProps> = ({
   );
 };
 
-export default AssertionsModal;
+export default AssertionsTab;

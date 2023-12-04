@@ -1,7 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { StatusCodeSelector } from "../test-suites/TestConfig";
 import { BodySection } from "../test-suites/BodySection";
 import { HeaderSection } from "../test-suites/HeaderSection";
 import { useMockStore } from "../../stores/mockStore";
@@ -9,6 +8,7 @@ import queryString from "query-string";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { SelectMethodDropDown } from "./SelectMethodDropDown";
 import { BodyHeaderStatusToggle } from "./BodyHeaderStatusToggle";
+import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 
 export const MockMainSection = () => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
@@ -160,7 +160,7 @@ export const MockMainSection = () => {
         {section === "Body" && (
           <BodySection
             body={editedMock.body || ""}
-            setBody={(value) => {
+            onBodyChange={(value: any) => {
               setEditedMock((prev) => ({ ...prev, body: value }));
             }}
           />
