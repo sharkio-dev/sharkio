@@ -16,7 +16,7 @@ export class EndpointController {
   constructor(
     private readonly endpointService: EndpointService,
     private readonly snifferService: SnifferService,
-    private readonly requestService: RequestService,
+    private readonly requestService: RequestService
   ) {}
 
   getRouter(): IRouterConfig {
@@ -40,7 +40,7 @@ export class EndpointController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.endpointService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:requestId/invocation").get(
@@ -66,7 +66,7 @@ export class EndpointController {
        */
       async (req, res) => {
         const request = await this.endpointService.getById(
-          req.params.requestId,
+          req.params.requestId
         );
         if (request === null) {
           return res.status(404).send("Request not found");
@@ -75,7 +75,7 @@ export class EndpointController {
         const requests =
           (await this.endpointService.getInvocations(request)) || [];
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/execute").post(
@@ -122,7 +122,7 @@ export class EndpointController {
           }
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
           if (!sniffer) {
             return res.status(404).send("Sniffer not found");
@@ -151,7 +151,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     return { router, path: "/sharkio/request" };
