@@ -30,7 +30,7 @@ export class RequestService {
       body,
       subdomain,
     });
-    await axios
+    return await axios
       .request({
         method,
         url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
@@ -41,7 +41,6 @@ export class RequestService {
       .catch((e) => {
         log.error({ e });
       });
-    return;
   }
 
   async getByTestExecutionId(testExecutionId: string) {

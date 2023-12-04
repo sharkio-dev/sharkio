@@ -9,6 +9,7 @@ import {
   getSniffers,
 } from "../api/api";
 import { EndpointType, InvocationType } from "../pages/sniffers/types";
+import { executeInvocationAPI } from "../api/api";
 
 export type SnifferType = {
   name: string;
@@ -27,6 +28,7 @@ interface SniffersState {
   loadingInvocations: boolean;
   loadingSniffers: boolean;
   loadingEndpoints: boolean;
+  loadingExecution: boolean;
   loadSniffers: (force?: boolean) => Promise<SnifferType[]>;
   createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
@@ -42,6 +44,14 @@ interface SniffersState {
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   loadLiveInvocations: () => Promise<InvocationType[]>;
+  executeInvocation: (data: {
+    testId?: string;
+    snifferId: string;
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    body: string;
+  }) => Promise<any>;
 }
 
 export const useSniffersStore = create<SniffersState>((set, get) => ({
@@ -53,6 +63,7 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
   loadingInvocations: false,
   loadingSniffers: false,
   loadingEndpoints: false,
+  loadingExecution: false,
   loadSniffers: (force = false) => {
     if (get().sniffers.length && !force) {
       return Promise.resolve(get().sniffers);
@@ -133,6 +144,31 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
       })
       .finally(() => {
         set({ loadingInvocations: false });
+      });
+  },
+  executeInvocation: (data: {
+    testId?: string;
+    snifferId: string;
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    body: string;
+  }) => {
+    set({ loadingExecution: true });
+    return executeInvocationAPI({
+      testId: data.testId,
+      snifferId: data.snifferId,
+      url: data.url,
+      method: data.method,
+      headers: data.headers,
+      body: data.body,
+    })
+      .then((res) => {
+        get().loadEndpoints(data.snifferId, true);
+        return res;
+      })
+      .finally(() => {
+        set({ loadingExecution: false });
       });
   },
 }));

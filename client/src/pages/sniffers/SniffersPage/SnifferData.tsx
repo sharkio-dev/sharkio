@@ -44,12 +44,7 @@ export const SnifferData: React.FC = () => {
       <div className={`flex flex-col  w-full`}>
         {invocationId && (
           <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-            <InvocationUpperBar
-              activeInvocation={invocation}
-              onExecuteRequest={() =>
-                endpointId && refreshInvocations(endpointId)
-              }
-            />
+            <InvocationUpperBar activeInvocation={invocation} />
           </div>
         )}
         <div
