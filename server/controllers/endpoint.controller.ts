@@ -137,13 +137,13 @@ export class EndpointController {
             body,
             subdomain: sniffer.subdomain,
           });
-          console.log({
-            data: response?.data,
+          log.info({
+            body: response?.data,
             headers: response?.headers,
             status: response?.status,
           });
           res.status(200).send({
-            data: response?.data,
+            body: response?.data,
             headers: response?.headers,
             status: response?.status,
           });

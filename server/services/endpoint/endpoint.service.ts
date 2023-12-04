@@ -21,7 +21,7 @@ interface EndpointMetadata {
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository,
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -112,6 +112,7 @@ export class EndpointService {
         method: request.method,
         url: request.url,
       },
+      take: 100,
       order: {
         createdAt: "DESC",
       },
@@ -159,6 +160,11 @@ export class EndpointService {
 
   async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
     const invocations = await this.requestRepository.repository.find({
+      where: {
+        userId,
+        snifferId,
+      },
+      take: 100,
       relations: {
         response: true,
       },
