@@ -34,7 +34,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/live/invocations/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
@@ -46,10 +46,7 @@ export const LivePage = () => {
         {snackBar}
         {invocationId && (
           <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)]">
-            <InvocationUpperBar
-              activeInvocation={invocation}
-              onExecuteRequest={() => loadInvocations()}
-            />
+            <InvocationUpperBar activeInvocation={invocation} />
           </div>
         )}
         <div className={`flex flex-col p-2 px-4 ${bottomBarHeight}`}>
