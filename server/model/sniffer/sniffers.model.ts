@@ -20,6 +20,10 @@ export class SnifferRepository {
     this.repository = appDataSource.manager.getRepository(Sniffer);
   }
 
+  findByDownstream(url: string) {
+    return this.repository.findOne({ where: { downstreamUrl: url } });
+  }
+
   findByUserId(userId: string) {
     return this.repository.find({
       where: { userId },

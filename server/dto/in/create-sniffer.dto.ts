@@ -3,7 +3,7 @@ import z from "zod";
 export type CreateSnifferDTO = {
   userId: string;
   name: string;
-  subdomain: string;
+  subdomain?: string;
   downstreamUrl: string;
   port?: number;
 };
