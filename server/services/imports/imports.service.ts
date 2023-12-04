@@ -14,7 +14,7 @@ export class ImportService {
       curlObject.header ?? {},
       curlObject.data,
       snifferId,
-      userId
+      userId,
     );
 
     return newEndpoint;
