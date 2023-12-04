@@ -43,8 +43,6 @@ export const InvocationUpperBar = ({
     }
     executeInvocation({ ...editedInvocation, snifferId }).then((res) => {
       if (res) {
-        console.log({ res });
-        console.log({ body: res?.data });
         setEditedInvocation((prevState) => {
           return {
             ...prevState,
