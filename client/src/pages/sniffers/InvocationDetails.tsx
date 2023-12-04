@@ -27,17 +27,22 @@ type InvocationDetailsProps = {
 const defaultCodeLanguage = "bash";
 
 export function InvocationDetails({
+  defaultTab = "1",
   invocation,
   setInvocation,
-}: InvocationDetailsProps) {
+}: InvocationDetailsProps & { defaultTab?: string }) {
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [headers, setHeaders] = React.useState<{ name: string; value: any }[]>(
     [],
   );
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status",
+    "Body",
   );
+
+  React.useEffect(() => {
+    setValue(defaultTab);
+  }, [defaultTab]);
 
   React.useEffect(() => {
     setHeaders(

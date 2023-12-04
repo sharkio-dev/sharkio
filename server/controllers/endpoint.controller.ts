@@ -111,6 +111,15 @@ export class EndpointController {
       async (req, res) => {
         try {
           const { method, headers, body, url, snifferId } = req.body;
+          if (!snifferId) {
+            return res.status(400).send("Sniffer id is required");
+          }
+          if (!url) {
+            return res.status(400).send("Url is required");
+          }
+          if (!method) {
+            return res.status(400).send("Method is required");
+          }
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
             snifferId,
@@ -121,15 +130,23 @@ export class EndpointController {
 
           let newHeaders = headers ?? {};
 
-          await this.requestService.execute({
+          const response = await this.requestService.execute({
             method,
             url,
             headers: newHeaders,
             body,
             subdomain: sniffer.subdomain,
           });
-
-          res.sendStatus(200);
+          console.log({
+            data: response?.data,
+            headers: response?.headers,
+            status: response?.status,
+          });
+          res.status(200).send({
+            data: response?.data,
+            headers: response?.headers,
+            status: response?.status,
+          });
         } catch (e) {
           log.error(e);
           res.status(500).send("Internal server error");
