@@ -38,10 +38,11 @@ export const InvocationUpperBar = ({
     if (!editedInvocation) {
       return;
     }
-    if (!snifferId) {
+    const sid = snifferId || editedInvocation.snifferId;
+    if (!sid) {
       return;
     }
-    executeInvocation({ ...editedInvocation, snifferId }).then((res) => {
+    executeInvocation({ ...editedInvocation, snifferId: sid }).then((res) => {
       if (res) {
         setEditedInvocation((prevState) => {
           return {
