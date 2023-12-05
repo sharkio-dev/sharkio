@@ -12,7 +12,7 @@ import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 
 export const MockMainSection = () => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body"
+    "Body",
   );
   const {
     mocks,
@@ -72,7 +72,7 @@ export const MockMainSection = () => {
           if (!header.name) return acc;
           return { ...acc, [header.name]: header.value };
         },
-        {}
+        {},
       ),
       isActive: true,
     };
@@ -90,7 +90,7 @@ export const MockMainSection = () => {
           if (!header.name) return acc;
           return { ...acc, [header.name]: header.value };
         },
-        {}
+        {},
       ),
       isActive: true,
     };

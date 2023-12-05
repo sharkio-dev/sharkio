@@ -2,9 +2,9 @@ import { CiSaveDown2 } from "react-icons/ci";
 import { TbAdjustmentsCog } from "react-icons/tb";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { VscChecklist } from "react-icons/vsc";
-import { Tooltip } from "@mui/material";
 import { useTestStore } from "../../stores/testStore";
-
+import { AiOutlineUpload } from "react-icons/ai";
+import OutlinedButton from "../../utils/OutlinedButton";
 interface TestSuiteTopSectionProps {
   saveLoading: boolean;
   handleSaveAll: () => void;
@@ -21,42 +21,40 @@ const TestsTopSection = ({
 
   return (
     <div className="flex flex-row items-center justify-between">
-      <span className="text-white text-xl  font-bold">{currentTest?.name}</span>
+      <span className="text-white text-x1  font-bold">{currentTest?.name}</span>
       <div className="flex h-full  space-x-4">
         {showConfig ? (
           !saveLoading ? (
-            <Tooltip title="Save" arrow>
-              <div>
-                <CiSaveDown2
-                  className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                  onClick={handleSaveAll}
-                />
-              </div>
-            </Tooltip>
+            <OutlinedButton
+              onClick={handleSaveAll}
+              startIcon={
+                <div className="w-4 h-5">
+                  <CiSaveDown2 />
+                </div>
+              }
+              value="save"
+            />
           ) : (
-            <LoadingIcon />
+            <OutlinedButton
+              size="small"
+              startIcon={<AiOutlineUpload />}
+              value={<LoadingIcon />}
+            />
           )
         ) : (
           <></>
         )}
         {showConfig ? (
-          <Tooltip title="Tests" arrow>
-            <div>
-              <VscChecklist
-                className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                onClick={() => setShowConfig(!showConfig)}
-              />
-            </div>
-          </Tooltip>
+          <OutlinedButton
+            onClick={() => setShowConfig(!showConfig)}
+            startIcon={<VscChecklist />}
+            value="tests"
+          />
         ) : (
-          <Tooltip title="Config" arrow>
-            <div>
-              <TbAdjustmentsCog
-                className="text-blue-400 text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                onClick={() => setShowConfig(!showConfig)}
-              />
-            </div>
-          </Tooltip>
+          <OutlinedButton
+            onClick={() => setShowConfig(!showConfig)}
+            startIcon={<TbAdjustmentsCog />}
+          />
         )}
       </div>
     </div>

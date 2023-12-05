@@ -16,8 +16,13 @@ export const TestSuiteMainSection = () => {
   const [tabNumber, setTabNumber] = React.useState("1");
   const [requestHeaders, setRequestHeaders] = React.useState<any[]>([]);
   const [showConfig, setShowConfig] = React.useState<boolean>(true);
-  const { getRule, getTest, editTest, setCurrentTest, currentTest } =
-    useTestStore();
+  const {
+    getRuleFromCurrentTest: getRule,
+    getTest,
+    editTest,
+    setCurrentTest,
+    currentTest,
+  } = useTestStore();
 
   const statusCodeRule = getRule("status_code") || {
     type: "status_code",
@@ -36,30 +41,50 @@ export const TestSuiteMainSection = () => {
     );
   });
 
+  // why react.hooks and not just get the hooks in import from react?
+  React.useEffect(() => {
+    if (!testSuiteId || !testId) {
+      return;
+    }
+    getTest(testSuiteId, testId).then((data: TestType) => {
+      setNewHeaders(data);
+    });
+  }, [testSuiteId, testId]);
+
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
   const DEBOUNCE_TIME_WAIT: number = 2000;
 
-  const handleDebounce = (newData: any, saveFunction: (data: any) => void) => {
+ const handleDebounce = (
+    newData: any,
+    saveFunction: (data: any) => void
+  ) => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
-    setCurrentTest(newData);
-
     debounceTimeout.current = setTimeout(() => {
       saveFunction(newData);
     }, DEBOUNCE_TIME_WAIT);
   };
 
+  const setNewHeaders = (test: TestType) => {
+    const headers = Object.entries(test?.headers || []).map((h: any) => ({
+      name: h[0],
+      value: h[1],
+    }));
+    setRequestHeaders(headers);
+  };
+
   const handleAssertionHeadersChange = (newHeaders: Rule[]) => {
+    setCurrentTest({
+      ...currentTest,
+      rules: [statusCodeRule, bodyRule, ...newHeaders],
+    });
     handleDebounce(
-      {
-        ...currentTest,
-        rules: [statusCodeRule, bodyRule, ...newHeaders],
-      },
+      [statusCodeRule, bodyRule, ...newHeaders],
       AssertionsDataSave
     );
   };
-  const handleAssertionChange = (newStatusCode: string) => {
+  const handleStatusCodeChange = (newStatusCode: string) => {
     setCurrentTest({
       ...currentTest,
       rules: [
@@ -69,32 +94,37 @@ export const TestSuiteMainSection = () => {
       ],
     });
 
-    AssertionsDataSave({
+    AssertionsDataSave([
+      { ...statusCodeRule, expectedValue: newStatusCode },
+      bodyRule,
+      ...headerRules,
+    ]);
+  };
+
+  const handleAssertionBodyChange = (newBody: string) => {
+    setCurrentTest({
       ...currentTest,
       rules: [
-        { ...statusCodeRule, expectedValue: newStatusCode },
-        bodyRule,
+        statusCodeRule,
+        { ...bodyRule, expectedValue: newBody },
         ...headerRules,
       ],
     });
-  };
-
-  const handleAssertionDebounceChange = (newBody: string) => {
     handleDebounce(
-      {
-        ...currentTest,
-        rules: [
-          statusCodeRule,
-          { ...bodyRule, expectedValue: newBody },
-          ...headerRules,
-        ],
-      },
+      [statusCodeRule, { ...bodyRule, expectedValue: newBody }, ...headerRules],
       AssertionsDataSave
     );
   };
 
   const handleRequestHeadersChange = (headersReq: any[]) => {
     setRequestHeaders(headersReq);
+    setCurrentTest({
+      ...currentTest,
+      headers: headersReq.reduce((acc, h) => {
+        acc[h.name] = h.value;
+        return acc;
+      }, {} as any),
+    });
     handleDebounce(
       {
         ...currentTest,
@@ -107,18 +137,20 @@ export const TestSuiteMainSection = () => {
     );
   };
 
-  const handleRequestChange = (newTest: TestType) => {
+  const handleTestMethodChange = (newTest: TestType) => {
     setCurrentTest(newTest);
     RequestDataSave(newTest);
   };
 
   const handleDebounceRequestChange = (newTest: TestType) => {
+    setCurrentTest(newTest);
     handleDebounce(newTest, RequestDataSave);
   };
 
-  const AssertionsDataSave = (newAssertions: TestType) => {
+  const AssertionsDataSave = (newAssertions: Rule[]) => {
     saveTest(testSuiteId, testId, {
-      ...newAssertions,
+      ...currentTest,
+      rules: newAssertions,
     });
   };
 
@@ -129,12 +161,12 @@ export const TestSuiteMainSection = () => {
     });
   };
 
-  const handleSaveAll = React.useCallback(() => {
+  const handleSaveAll = () => {
     saveTest(testSuiteId, testId, {
       ...currentTest,
       rules: [statusCodeRule, bodyRule, ...headerRules],
     });
-  }, [currentTest, testSuiteId, testId, statusCodeRule, bodyRule, headerRules]);
+  };
 
   const saveTest = (
     testSuiteId: string | undefined,
@@ -144,9 +176,7 @@ export const TestSuiteMainSection = () => {
     if (!testSuiteId || !testId || !currentTest) {
       return;
     }
-
     setSaveLoading(true);
-
     editTest(testSuiteId, testId, currentTest)
       .catch(() => {
         show("Error saving currentTest", "error");
@@ -155,23 +185,6 @@ export const TestSuiteMainSection = () => {
         setSaveLoading(false);
       });
   };
-
-  const setNewHeaders = (test: TestType) => {
-    const headers = Object.entries(test?.headers || []).map((h: any) => ({
-      name: h[0],
-      value: h[1],
-    }));
-    setRequestHeaders(headers);
-  };
-
-  React.useEffect(() => {
-    if (!testSuiteId || !testId) {
-      return;
-    }
-    getTest(testSuiteId, testId).then((data: TestType) => {
-      setNewHeaders(data);
-    });
-  }, [testSuiteId, testId]);
 
   return (
     <>
@@ -189,15 +202,15 @@ export const TestSuiteMainSection = () => {
               <TabContext value={tabNumber}>
                 <TestConfig setTabNumber={setTabNumber} />
                 <AssertionsTab
-                  onStatusCodeChange={handleAssertionChange}
-                  onBodyChange={handleAssertionDebounceChange}
+                  onStatusCodeChange={handleStatusCodeChange}
+                  onBodyChange={handleAssertionBodyChange}
                   onAssertionHeadersChange={handleAssertionHeadersChange}
                   tabNumber={tabNumber}
                 />
                 <RequestTab
                   requestHeaders={requestHeaders}
-                  onTestChange={handleDebounceRequestChange}
-                  onTestMethodChange={handleRequestChange}
+                  onDebounceRequestChange={handleDebounceRequestChange}
+                  onTestMethodChange={handleTestMethodChange}
                   onRequestHeadersChange={handleRequestHeadersChange}
                 />
               </TabContext>

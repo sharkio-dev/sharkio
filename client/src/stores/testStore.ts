@@ -49,7 +49,7 @@ interface TestStore {
   getExecutionByEndpoint: (testSuiteId: string, url: string) => Promise<any>;
   currentTest: TestType;
   setCurrentTest: (test: TestType) => void;
-  getRule: (ruleType: string) => Rule | undefined;
+  getRuleFromCurrentTest: (ruleType: string) => Rule | undefined;
 }
 
 export const useTestStore = create<TestStore>((set, get) => ({
@@ -68,9 +68,8 @@ export const useTestStore = create<TestStore>((set, get) => ({
     rules: [],
   },
 
-  getRule: (ruleType: string) => {
+  getRuleFromCurrentTest: (ruleType: string) => {
     const rules = get().currentTest.rules;
-    console.log(get().tests);
     return rules.find((rule) => rule.type === ruleType);
   },
 

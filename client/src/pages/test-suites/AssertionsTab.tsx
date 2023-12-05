@@ -5,6 +5,8 @@ import StatusCodeSelector from "./StatusCodeSelector";
 import { Rule, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
+import { AiOutlineInfo } from "react-icons/ai";
+import { Button, Tooltip } from "@mui/material";
 
 interface AssertionsTabProps {
   onStatusCodeChange: (statusCode: string) => void;
@@ -20,15 +22,19 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
   tabNumber,
 }) => {
   const [AssertionPart, setAssertionPart] = useState<string>("Status");
-  
-  const statusCode = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "status_code"),
-  );
-  const body = useTestStore((s) =>
-    s.currentTest.rules.find((rule) => rule.type === "body"),
-  );
+  const getRule = useTestStore((s) => s.getRuleFromCurrentTest);
+  const statusCode = getRule("status_code") || {
+    type: "status_code",
+    expectedValue: "200",
+    comparator: "equals",
+  };
+  const body = getRule("body") || {
+    type: "body",
+    expectedValue: "",
+    comparator: "equals",
+  };
   const headers = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header"),
+    s.currentTest.rules.filter((rule) => rule.type === "header")
   );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {
@@ -81,7 +87,21 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
         />
       )}
       {AssertionPart === "Body" && (
-        <BodySection body={body?.expectedValue} onBodyChange={onBodyChange} />
+        <div>
+          <div className="flex h-5 mb-2  ">
+            <Tooltip title="Invalid JSON will not be saved!">
+              <Button
+                color="warning"
+                variant="outlined"
+                size="small"
+                className=""
+              >
+                <AiOutlineInfo className="w-5 h-4 font-bold" />
+              </Button>
+            </Tooltip>
+          </div>
+          <BodySection body={body?.expectedValue} onBodyChange={onBodyChange} />
+        </div>
       )}
     </TabPanel>
   );

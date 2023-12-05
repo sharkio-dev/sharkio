@@ -11,7 +11,6 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
       const parsedValue = JSON.parse(value);
       onBodyChange(value);
     } catch (error) {
-      console.log("Not valid JSON");
     }
   };
 
