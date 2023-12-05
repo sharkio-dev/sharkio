@@ -20,6 +20,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
   tabNumber,
 }) => {
   const [AssertionPart, setAssertionPart] = useState<string>("Status");
+  
   const statusCode = useTestStore((s) =>
     s.currentTest.rules.find((rule) => rule.type === "status_code"),
   );

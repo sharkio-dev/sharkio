@@ -70,6 +70,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
 
   getRule: (ruleType: string) => {
     const rules = get().currentTest.rules;
+    console.log(get().tests);
     return rules.find((rule) => rule.type === ruleType);
   },
 

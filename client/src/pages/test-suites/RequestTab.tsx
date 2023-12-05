@@ -6,6 +6,7 @@ import { TestType, useTestStore } from "../../stores/testStore";
 import { SelectComponent } from "./SelectComponent";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
+import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 
 interface RequestTabProps {
   onTestChange: (test: TestType) => void;
@@ -37,6 +38,10 @@ const RequestTab = ({
       <div className="flex flex-col space-y-4">
         <div className="flex flex-row space-x-4">
           <div className="flex flex-row w-40">
+            {/* <SelectMethodDropDown
+              value={currentTest.method}
+              onChange={onTestMethodChange}
+            /> */}
             <SelectComponent
               options={[
                 { value: "GET", label: "GET" },
@@ -80,7 +85,7 @@ const RequestTab = ({
             }}
             deleteHeader={(index) => {
               const removedHeaders = requestHeaders.filter(
-                (_, i) => i !== index,
+                (_, i) => i !== index
               );
               onRequestHeadersChange(removedHeaders);
             }}
