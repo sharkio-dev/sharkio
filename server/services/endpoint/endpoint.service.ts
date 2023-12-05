@@ -6,10 +6,22 @@ import {
 } from "../../model/endpoint/endpoint.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
 
+type TreeNodeKey = string;
+interface EndpointTreeNode {
+  name: TreeNodeKey;
+  callCount: number;
+  metadata: EndpointMetadata;
+  next?: Record<TreeNodeKey, EndpointTreeNode>;
+}
+
+interface EndpointMetadata {
+  suspectedPath: boolean;
+}
+
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository
+    private readonly requestRepository: RequestRepository,
   ) {}
 
   async getByUser(userId: string, limit: number) {
