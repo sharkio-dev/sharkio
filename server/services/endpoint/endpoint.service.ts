@@ -9,7 +9,7 @@ import { Sniffer } from "../../model/sniffer/sniffers.model";
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository,
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -47,7 +47,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -66,7 +66,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -144,13 +144,15 @@ export class EndpointService {
 
   async getInvocationsByUser(userId: string, limit: number) {
     const invocations = await this.requestRepository.repository.find({
+      // TODO: reduce response and get it by demand.
       relations: {
         response: true,
       },
       where: {
         userId,
       },
-      take: limit,
+      // TODO: make this configurable
+      take: 25,
       order: {
         createdAt: "DESC",
       },

@@ -33,10 +33,10 @@ export class InvocationController {
         const limit = 50;
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
-          limit
+          limit,
         );
         res.status(200).send(requests);
-      }
+      },
     );
 
     router.route("/:id").get(
@@ -64,10 +64,10 @@ export class InvocationController {
         const { id } = req.params;
         const request = await this.endpointService.getInvocationById(
           id,
-          userId
+          userId,
         );
         res.status(200).send(request);
-      }
+      },
     );
 
     return { router, path: "/sharkio/invocation" };
