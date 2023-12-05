@@ -11,11 +11,7 @@ export const LivePage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadLiveInvocations, invocations } = useSniffersStore();
 
-  const invocation =
-    (invocations &&
-      Array.isArray(invocations) &&
-      invocations.find((i) => i.id === invocationId)) ||
-    undefined;
+  const invocation = invocations.find((i) => i.id === invocationId);
 
   const loadInvocations = async () => {
     return loadLiveInvocations().catch(() => {
@@ -38,7 +34,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/live/invocations/${id}`);
     },
-    [invocationId]
+    [invocationId],
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
