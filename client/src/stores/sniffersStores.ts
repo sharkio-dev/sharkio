@@ -166,8 +166,8 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
       body: data.body,
     })
       .then((res) => {
-        get().loadEndpoints(data.snifferId, true);
         if (data.endpointId) {
+          get().loadEndpoints(data.snifferId, true);
           get().loadInvocations(data.endpointId, true);
         }
         return res;
