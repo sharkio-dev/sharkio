@@ -56,7 +56,8 @@ export class ProxyMiddleware {
                     testExecutionId
                   )
                   .then((data) => {
-                    res.end(body || "");
+                    res.json(body || {});
+                    res.end(body?.toString() || "");
                   })
                   .catch((e) => {
                     logger.error(e.message);
