@@ -35,12 +35,12 @@ interface SniffersState {
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
   loadEndpoints: (
     snifferId: string,
-    force?: boolean,
+    force?: boolean
   ) => Promise<EndpointType[]>;
   resetEndpoints: () => void;
   loadInvocations: (
     endpointId: string,
-    force?: boolean,
+    force?: boolean
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   loadLiveInvocations: () => Promise<InvocationType[]>;
@@ -51,6 +51,7 @@ interface SniffersState {
     method: string;
     headers: Record<string, string>;
     body: string;
+    endpointId?: string;
   }) => Promise<any>;
 }
 
@@ -153,6 +154,7 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     method: string;
     headers: Record<string, string>;
     body: string;
+    endpointId?: string;
   }) => {
     set({ loadingExecution: true });
     return executeInvocationAPI({
@@ -165,6 +167,9 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     })
       .then((res) => {
         get().loadEndpoints(data.snifferId, true);
+        if (data.endpointId) {
+          get().loadInvocations(data.endpointId, true);
+        }
         return res;
       })
       .finally(() => {
