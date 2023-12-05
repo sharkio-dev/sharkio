@@ -63,7 +63,7 @@ export class ProxyMiddleware {
                     res.sendStatus(500).end();
                   });
               } else {
-                res.end(body?.toString() || "");
+                res.end(body);
               }
             }.bind(this)
           );

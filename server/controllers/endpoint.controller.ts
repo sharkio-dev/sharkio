@@ -138,18 +138,13 @@ export class EndpointController {
             body,
             subdomain: sniffer.subdomain,
           });
-
-          console.log({ response, data: response?.data?.data });
           log.info({
             body: response?.data,
             headers: response?.headers,
             status: response?.status,
           });
-
-          const buffer = Buffer.from(response?.data);
-
           res.status(200).send({
-            body: buffer.toString(),
+            body: JSON.stringify(response?.data ?? "", null, 2),
             headers: response?.headers,
             status: response?.status,
           });
