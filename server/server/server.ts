@@ -1,4 +1,4 @@
-import { json } from "body-parser";
+import { json, urlencoded } from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
@@ -27,7 +27,8 @@ export class Server {
     this.app = express();
     this.app.use(logMiddleware);
     this.app.use(cors({ origin: "*" }));
-    this.app.use(json());
+    this.app.use(json({ limit: "50mb" }));
+    this.app.use(urlencoded({ extended: true, limit: "50mb" }));
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
 
@@ -42,7 +43,7 @@ export class Server {
     err: Error,
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ) {
     if (req.xhr) {
       log.error(`${req.method} ${req.path} FAILED`);
