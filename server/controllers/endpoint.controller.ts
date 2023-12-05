@@ -144,7 +144,10 @@ export class EndpointController {
             status: response?.status,
           });
           res.status(200).send({
-            body: JSON.stringify(response?.data ?? "", null, 2),
+            body:
+              typeof response?.data === "string"
+                ? response?.data
+                : JSON.stringify(response?.data ?? "", null, 2),
             headers: response?.headers,
             status: response?.status,
           });
