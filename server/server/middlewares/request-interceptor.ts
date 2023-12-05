@@ -15,8 +15,8 @@ const logger = useLog({
 export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestService: EndpointService,
-    private readonly responseService: ResponseService,
+    private readonly endpointService: EndpointService,
+    private readonly responseService: ResponseService
   ) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
@@ -50,13 +50,14 @@ export class RequestInterceptor {
       | string
       | undefined;
     req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
+    req.headers["ngrok-skip-browser-warning"] = "true";
 
-    const request = await this.requestService.findOrCreate(
+    const request = await this.endpointService.findOrCreate(
       req,
       sniffer.id,
-      sniffer.userId,
+      sniffer.userId
     );
-    const invocation = await this.requestService.addInvocation({
+    const invocation = await this.endpointService.addInvocation({
       ...request,
       testExecutionId,
     });
@@ -73,7 +74,7 @@ export class RequestInterceptor {
       statusCode: number | undefined;
       body: any;
     },
-    testExecutionId?: string,
+    testExecutionId?: string
   ) {
     return await this.responseService.addResponse({
       userId,
