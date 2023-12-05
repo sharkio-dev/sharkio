@@ -17,7 +17,7 @@ export class EndpointController {
     private readonly endpointService: EndpointService,
     private readonly snifferService: SnifferService,
     private readonly requestService: RequestService,
-    private readonly importService: ImportService
+    private readonly importService: ImportService,
   ) {}
 
   getRouter(): IRouterConfig {
@@ -190,7 +190,7 @@ export class EndpointController {
 
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId
+            snifferId,
           );
 
           if (!sniffer) {
@@ -200,7 +200,7 @@ export class EndpointController {
           const newEndpoint = await this.importService.importFromCurl(
             userId,
             snifferId,
-            curl
+            curl,
           );
 
           res.status(200).json(newEndpoint);
@@ -208,7 +208,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      }
+      },
     );
 
     return { router, path: "/sharkio/request" };
