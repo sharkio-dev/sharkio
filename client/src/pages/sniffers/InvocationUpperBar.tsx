@@ -7,6 +7,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { useParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
+import { BackendAxios } from "../../api/backendAxios";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
@@ -31,17 +32,24 @@ export const InvocationUpperBar = ({
   const [defaultTab, setDefaultTab] = useState("1");
 
   useEffect(() => {
-    activeInvocation && setEditedInvocation(activeInvocation);
+    if (activeInvocation) {
+      BackendAxios.get(`/invocation/${activeInvocation.id}`).then((res) => {
+        if (res) {
+          setEditedInvocation(res.data);
+        }
+      });
+    }
   }, [activeInvocation]);
 
   const executeRequest = () => {
     if (!editedInvocation) {
       return;
     }
-    if (!snifferId) {
+    const sid = snifferId || editedInvocation.snifferId;
+    if (!sid) {
       return;
     }
-    executeInvocation({ ...editedInvocation, snifferId }).then((res) => {
+    executeInvocation({ ...editedInvocation, snifferId: sid }).then((res) => {
       if (res) {
         setEditedInvocation((prevState) => {
           return {

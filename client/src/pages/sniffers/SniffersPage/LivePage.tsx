@@ -11,7 +11,11 @@ export const LivePage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadLiveInvocations, invocations } = useSniffersStore();
 
-  const invocation = invocations.find((i) => i.id === invocationId);
+  const invocation =
+    (invocations &&
+      Array.isArray(invocations) &&
+      invocations.find((i) => i.id === invocationId)) ||
+    undefined;
 
   const loadInvocations = async () => {
     return loadLiveInvocations().catch(() => {
