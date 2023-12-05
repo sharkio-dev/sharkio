@@ -31,8 +31,17 @@ export class SnifferService {
   }
 
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
-    const snifferEntity =
-      this.snifferRepository.repository.create(snifferConfig);
+    const subdomain = snifferConfig.subdomain
+      ? snifferConfig.subdomain
+      : `${snifferConfig.downstreamUrl}-${randomString({
+          length: 5,
+        }).toLowerCase()}`;
+
+    const snifferEntity = this.snifferRepository.repository.create({
+      ...snifferConfig,
+      subdomain,
+    });
+
     const newSniffer =
       await this.snifferRepository.repository.save(snifferEntity);
     return newSniffer;
@@ -65,6 +74,10 @@ export class SnifferService {
 
   async findBySubdomain(subdomain: string) {
     return this.snifferRepository.findBySubdomain(subdomain);
+  }
+
+  async findByDownstream(url: string) {
+    return this.snifferRepository.findByDownstream(url);
   }
 
   async findByName(userId: string, name: string) {

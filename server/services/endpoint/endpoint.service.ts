@@ -56,7 +56,11 @@ export class EndpointService {
     });
   }
 
-  async create(req: ExpressRequest, snifferId: string, userId: string) {
+  async createFromExpressReq(
+    req: ExpressRequest,
+    snifferId: string,
+    userId: string,
+  ) {
     const newRequest = this.repository.repository.create({
       snifferId,
       userId,
@@ -64,6 +68,25 @@ export class EndpointService {
       method: req.method,
       headers: req.headers,
       body: req.body,
+    });
+    return this.repository.repository.save(newRequest);
+  }
+
+  async create(
+    url: string,
+    method: string,
+    headers: Record<string, any>,
+    body: string,
+    snifferId: string,
+    userId: string,
+  ) {
+    const newRequest = this.repository.repository.create({
+      snifferId,
+      userId,
+      url,
+      method,
+      headers,
+      body,
     });
     return this.repository.repository.save(newRequest);
   }
@@ -82,7 +105,7 @@ export class EndpointService {
       return request;
     }
 
-    return this.create(req, snifferId, userId);
+    return this.createFromExpressReq(req, snifferId, userId);
   }
 
   async addInvocation(request: Partial<Request>) {
