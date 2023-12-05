@@ -10,8 +10,7 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
     try {
       const parsedValue = JSON.parse(value);
       onBodyChange(value);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (

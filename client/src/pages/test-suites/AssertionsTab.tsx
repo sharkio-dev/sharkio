@@ -34,7 +34,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
     comparator: "equals",
   };
   const headers = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header")
+    s.currentTest.rules.filter((rule) => rule.type === "header"),
   );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {

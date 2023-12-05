@@ -37,7 +37,7 @@ export const TestSuiteMainSection = () => {
 
   const headerRules = useTestStore((s) => {
     return (s.currentTest.rules as Rule[]).filter(
-      (rule) => rule.type === "header"
+      (rule) => rule.type === "header",
     );
   });
 
@@ -54,10 +54,7 @@ export const TestSuiteMainSection = () => {
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
   const DEBOUNCE_TIME_WAIT: number = 2000;
 
- const handleDebounce = (
-    newData: any,
-    saveFunction: (data: any) => void
-  ) => {
+  const handleDebounce = (newData: any, saveFunction: (data: any) => void) => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
@@ -81,7 +78,7 @@ export const TestSuiteMainSection = () => {
     });
     handleDebounce(
       [statusCodeRule, bodyRule, ...newHeaders],
-      AssertionsDataSave
+      AssertionsDataSave,
     );
   };
   const handleStatusCodeChange = (newStatusCode: string) => {
@@ -112,7 +109,7 @@ export const TestSuiteMainSection = () => {
     });
     handleDebounce(
       [statusCodeRule, { ...bodyRule, expectedValue: newBody }, ...headerRules],
-      AssertionsDataSave
+      AssertionsDataSave,
     );
   };
 
@@ -133,7 +130,7 @@ export const TestSuiteMainSection = () => {
           return acc;
         }, {} as any),
       },
-      RequestDataSave
+      RequestDataSave,
     );
   };
 
@@ -171,7 +168,7 @@ export const TestSuiteMainSection = () => {
   const saveTest = (
     testSuiteId: string | undefined,
     testId: string | undefined,
-    currentTest: TestType
+    currentTest: TestType,
   ) => {
     if (!testSuiteId || !testId || !currentTest) {
       return;
