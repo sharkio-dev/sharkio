@@ -5,7 +5,7 @@ import { EndpointService } from "../services/endpoint/endpoint.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { IRouterConfig } from "./router.interface";
 import { RequestService } from "../services/request/request.service";
-import axios from "axios";
+import { ImportService } from "../services/imports/imports.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -17,6 +17,7 @@ export class EndpointController {
     private readonly endpointService: EndpointService,
     private readonly snifferService: SnifferService,
     private readonly requestService: RequestService,
+    private readonly importService: ImportService
   ) {}
 
   getRouter(): IRouterConfig {
@@ -137,13 +138,16 @@ export class EndpointController {
             body,
             subdomain: sniffer.subdomain,
           });
-          console.log({
-            data: response?.data,
+          log.info({
+            body: response?.data,
             headers: response?.headers,
             status: response?.status,
           });
           res.status(200).send({
-            data: response?.data,
+            body:
+              typeof response?.data === "string"
+                ? response?.data
+                : JSON.stringify(response?.data ?? "", null, 2),
             headers: response?.headers,
             status: response?.status,
           });
@@ -152,6 +156,59 @@ export class EndpointController {
           res.status(500).send("Internal server error");
         }
       },
+    );
+
+    router.route("/import/curl").post(
+      /**
+       * @openapi
+       * /sharkio/request/import/curl:
+       *   post:
+       *     requestBody:
+       *        description: Execute a request
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              properties:
+       *                curl:
+       *                  type: string
+       *                snifferId:
+       *                  type: string
+       *     tags:
+       *      - request
+       *     description: imports a request
+       *     responses:
+       *       200:
+       *         description: request was successfully imported
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        try {
+          const userId = res.locals.auth.user.id;
+          const { curl, snifferId } = req.body;
+
+          const sniffer = await this.snifferService.getSniffer(
+            res.locals.auth.userId,
+            snifferId
+          );
+
+          if (!sniffer) {
+            return res.status(404).send("Sniffer not found");
+          }
+
+          const newEndpoint = await this.importService.importFromCurl(
+            userId,
+            snifferId,
+            curl
+          );
+
+          res.status(200).json(newEndpoint);
+        } catch (e) {
+          log.error(e);
+          res.status(500).send("Internal server error");
+        }
+      }
     );
 
     return { router, path: "/sharkio/request" };

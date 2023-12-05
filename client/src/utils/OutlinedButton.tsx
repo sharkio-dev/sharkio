@@ -4,7 +4,14 @@ import React from "react";
 interface OutlinedButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   size?: "small" | "medium" | "large";
-  color?: "inherit" | "primary" | "secondary" | "success" | "error" | "info" | "warning";
+  color?:
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
   startIcon?: React.ReactNode;
   value?: any;
 }

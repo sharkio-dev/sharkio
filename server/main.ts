@@ -42,6 +42,7 @@ import UserService from "./services/user/user";
 import { EnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
+import { ImportService } from "./services/imports/imports.service";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -91,6 +92,7 @@ async function main() {
   const testExecutionService = new TestExecutionService(
     testExecutionRepository,
   );
+  const importService = new ImportService(endpointService);
 
   /* Controllers */
   const mockController = new MockController(mockService);
@@ -111,6 +113,7 @@ async function main() {
     endpointService,
     snifferService,
     requestService,
+    importService,
   );
   const invocationController = new InvocationController(endpointService);
   const chatController = new ChatController(

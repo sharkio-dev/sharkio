@@ -30,7 +30,7 @@ export class InvocationController {
        */
       async (req: Request, res: Response, next: NextFunction) => {
         const userId = res.locals.auth.user.id;
-        const limit = +(req.params.limit ?? 1000);
+        const limit = 25;
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
           limit,

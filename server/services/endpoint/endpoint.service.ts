@@ -6,18 +6,6 @@ import {
 } from "../../model/endpoint/endpoint.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
 
-type TreeNodeKey = string;
-interface EndpointTreeNode {
-  name: TreeNodeKey;
-  callCount: number;
-  metadata: EndpointMetadata;
-  next?: Record<TreeNodeKey, EndpointTreeNode>;
-}
-
-interface EndpointMetadata {
-  suspectedPath: boolean;
-}
-
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
@@ -56,7 +44,11 @@ export class EndpointService {
     });
   }
 
-  async create(req: ExpressRequest, snifferId: string, userId: string) {
+  async createFromExpressReq(
+    req: ExpressRequest,
+    snifferId: string,
+    userId: string,
+  ) {
     const newRequest = this.repository.repository.create({
       snifferId,
       userId,
@@ -64,6 +56,25 @@ export class EndpointService {
       method: req.method,
       headers: req.headers,
       body: req.body,
+    });
+    return this.repository.repository.save(newRequest);
+  }
+
+  async create(
+    url: string,
+    method: string,
+    headers: Record<string, any>,
+    body: string,
+    snifferId: string,
+    userId: string,
+  ) {
+    const newRequest = this.repository.repository.create({
+      snifferId,
+      userId,
+      url,
+      method,
+      headers,
+      body,
     });
     return this.repository.repository.save(newRequest);
   }
@@ -82,7 +93,7 @@ export class EndpointService {
       return request;
     }
 
-    return this.create(req, snifferId, userId);
+    return this.createFromExpressReq(req, snifferId, userId);
   }
 
   async addInvocation(request: Partial<Request>) {
@@ -112,6 +123,7 @@ export class EndpointService {
         method: request.method,
         url: request.url,
       },
+      take: 100,
       order: {
         createdAt: "DESC",
       },
@@ -132,13 +144,15 @@ export class EndpointService {
 
   async getInvocationsByUser(userId: string, limit: number) {
     const invocations = await this.requestRepository.repository.find({
-      relations: {
-        response: true,
-      },
+      // TODO: reduce response and get it by demand.
+      // relations: {
+      //   response: true,
+      // },
       where: {
         userId,
       },
-      take: limit,
+      // TODO: make this configurable
+      take: 25,
       order: {
         createdAt: "DESC",
       },
@@ -159,6 +173,11 @@ export class EndpointService {
 
   async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
     const invocations = await this.requestRepository.repository.find({
+      where: {
+        userId,
+        snifferId,
+      },
+      take: 100,
       relations: {
         response: true,
       },

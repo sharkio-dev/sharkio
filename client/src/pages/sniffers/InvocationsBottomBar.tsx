@@ -22,7 +22,6 @@ export const InvocationsBottomBar = ({
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const { invocations, loadingInvocations } = useSniffersStore();
-
   const filteredInvocations =
     invocations?.filter((invocation) => {
       if (!search) return true;
