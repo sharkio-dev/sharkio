@@ -6,6 +6,7 @@ import {
 import { BackendAxios } from "./backendAxios";
 import { SnifferType } from "../stores/sniffersStores";
 import { Mock } from "../stores/mockStore";
+import * as projectsData from "./fakeProjectData.json";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return BackendAxios.post("/sniffer", config);
@@ -193,55 +194,83 @@ export interface ProjectType {
   name: string;
   id: string;
   isOpen: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
 }
 
-export const projectsArray: ProjectType[] = [
-  { name: "project1", id: "1", isOpen: false },
-  { name: "project2", id: "2", isOpen: true },
-  { name: "project3", id: "3", isOpen: false },
-  { name: "project4", id: "4", isOpen: false },
-];
-
 export const getProjects = (): ProjectType[] => {
-  //will get all the user projects from the backend
-  return projectsArray;
+  const jsonData = projectsData as { projects: any[] };
+  const projects: ProjectType[] = jsonData.projects.map((project) => {
+    return {
+      name: project.name,
+      id: project.id,
+      isOpen: project.isOpen,
+      createdAt: project.createdAt,
+      updatedAt: project.updatedAt,
+      deletedAt: project.deletedAt,
+    };
+  });
+  return projects;
+};
+export const getChangeBetweenProjects = async (projectClickName: string) => {
+  // Simulating the get operation by finding the project in the JSON data
+  const project = (projectsData as { projects: ProjectType[] }).projects.find(
+    (p) => p.name === projectClickName
+  );
+
+  console.log("move to project", project);
+  return project; // Return the project or handle the logic accordingly
 };
 
-export const getChangeBetweenProjects = async (projectClick: String) => {
-  // Change between projects logic here
-  console.log("move to project", projectClick);
-  return await BackendAxios.get(`/project/${projectClick}`);
-};
-
-//Delete project
 export const deleteProject = async (projectName: string) => {
-  // Delete project logic here
+  // Simulating the delete operation by filtering out the project from the JSON data
+  (projectsData as { projects: ProjectType[] }).projects =
+    projectsData.projects.filter((p) => p.name !== projectName);
+
   console.log("delete project", projectName);
-  return await BackendAxios.delete(`/project/${projectName}`);
+  // You can optionally save the updated data back to the file here if needed
+
+  return { success: true }; // Return a success message or handle the logic accordingly
 };
 
 export const postAddNewProject = async (newProjectName: string) => {
-  // Add new project logic here
-  //need to check if project name already exists
-  console.log("add new project", newProjectName);
-  return await BackendAxios.post("/project", {
+  // Simulating the post operation by adding a new project to the JSON data
+  const newProject: ProjectType = {
+    id: Date.now().toString(), // Assuming a simple timestamp-based ID for demo purposes
     name: newProjectName,
-  });
+    isOpen: true, // Set default values
+  };
+
+  (projectsData as { projects: ProjectType[] }).projects.push(newProject);
+
+  console.log("add new project", newProject);
+  // You can optionally save the updated data back to the file here if needed
+
+  return newProject; // Return the newly added project or handle the logic accordingly
 };
 
 export const putEditProject = async (
   editedProjectName: string,
   selectedProjectName: string
 ) => {
-  // Edit project logic here
-  //need to check if project name already exists
+  // Simulating the put operation by updating the project in the JSON data
+  const projectToUpdate = (
+    projectsData as { projects: ProjectType[] }
+  ).projects.find((p) => p.name === selectedProjectName);
+
+  if (projectToUpdate) {
+    projectToUpdate.name = editedProjectName;
+    projectToUpdate.updatedAt = new Date().toISOString();
+  }
+
   console.log(
     "new name=",
     editedProjectName,
     " old name=",
     selectedProjectName
   );
-  return await BackendAxios.put(`/project/${selectedProjectName}`, {
-    name: editedProjectName,
-  });
+  // You can optionally save the updated data back to the file here if needed
+
+  return projectToUpdate; // Return the updated project or handle the logic accordingly
 };

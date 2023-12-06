@@ -28,7 +28,7 @@ const ProjectSelector = () => {
 
   const [ProjectToEditName, setProjectToEditName] = useState("");
   const [selectedProjectName, setSelectedProjectName] = useState(
-    getProjects().find((project) => project.isOpen)?.name || "",
+    getProjects().find((project) => project.isOpen)?.name || ""
   );
 
   const handleChangeProject = (projectClick: SelectChangeEvent<string>) => {
