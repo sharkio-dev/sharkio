@@ -23,20 +23,17 @@ export const TestSuiteMainSection = () => {
       return;
     }
     getTest(testSuiteId, testId).then((data: TestType) => {
-      setNewHeaders(data);
+      const headers = Object.entries(data?.headers || []).map((h: any) => ({
+        name: h[0],
+        value: h[1],
+      }));
+      setRequestHeaders(headers);
     });
   }, [testSuiteId, testId]);
 
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
   const DEBOUNCE_TIME_WAIT: number = 2000;
 
-  const setNewHeaders = (test: TestType) => {
-    const headers = Object.entries(test?.headers || []).map((h: any) => ({
-      name: h[0],
-      value: h[1],
-    }));
-    setRequestHeaders(headers);
-  };
   const handleDebounceDataSave = (newTest: TestType) => {
     setCurrentTest(newTest);
     if (debounceTimeout.current) {
@@ -57,7 +54,9 @@ export const TestSuiteMainSection = () => {
   };
 
   const saveTest = (
-    testSuiteId: string | undefined, testId: string | undefined, currentTest: TestType,
+    testSuiteId: string | undefined,
+    testId: string | undefined,
+    currentTest: TestType,
   ) => {
     if (!testSuiteId || !testId || !currentTest) {
       return;

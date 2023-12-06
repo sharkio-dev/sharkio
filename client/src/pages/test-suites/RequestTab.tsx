@@ -25,7 +25,11 @@ const RequestTab = ({
   const currentTest = useTestStore((s) => s.currentTest);
   const [requestPart, setRequestPart] = useState<string>("Body");
 
-  const handleHeaderChange = (index: number,value: any,targetPath: string,) => {
+  const handleHeaderChange = (
+    index: number,
+    value: any,
+    targetPath: string,
+  ) => {
     const headersReq = [...requestHeaders];
     headersReq[index] = {
       ...headersReq[index],
