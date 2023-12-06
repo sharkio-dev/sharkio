@@ -106,12 +106,14 @@ export function generateCurlCommand(req: InvocationType): string {
   const host = req?.headers?.host;
   let curlCommand = `curl -X ${req?.method} http://${host}${req.url} \\\n`;
 
-  // Add request headers
-  for (const [key, value] of Object.entries(req.headers)) {
-    if (key === "host" || key.includes("sec-ch-ua")) {
-      continue;
+  if (req.headers != null) {
+    // Add request headers
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (key === "host" || key.includes("sec-ch-ua")) {
+        continue;
+      }
+      curlCommand += `\t-H "${key}: ${value}" \\\n`;
     }
-    curlCommand += `\t-H "${key}: ${value}" \\\n`;
   }
 
   // Add request body, if present

@@ -57,6 +57,7 @@ export class RequestInterceptor {
       sniffer.id,
       sniffer.userId,
     );
+
     const invocation = await this.endpointService.addInvocation({
       ...request,
       testExecutionId,
