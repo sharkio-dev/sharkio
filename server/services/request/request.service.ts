@@ -30,18 +30,17 @@ export class RequestService {
       body,
       subdomain,
     });
-    await axios
+    return await axios
       .request({
         method,
         url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers,
-        data: "",
+        data: method === "GET" ? undefined : body,
         httpsAgent: agent,
       })
       .catch((e) => {
         log.error({ e });
       });
-    return;
   }
 
   async getByTestExecutionId(testExecutionId: string) {

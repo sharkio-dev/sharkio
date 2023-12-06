@@ -15,7 +15,7 @@ const logger = useLog({
 export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestService: EndpointService,
+    private readonly endpointService: EndpointService,
     private readonly responseService: ResponseService,
   ) {}
 
@@ -49,13 +49,15 @@ export class RequestInterceptor {
     const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
       | string
       | undefined;
+    req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
+    req.headers["ngrok-skip-browser-warning"] = "true";
 
-    const request = await this.requestService.findOrCreate(
+    const request = await this.endpointService.findOrCreate(
       req,
       sniffer.id,
       sniffer.userId,
     );
-    const invocation = await this.requestService.addInvocation({
+    const invocation = await this.endpointService.addInvocation({
       ...request,
       testExecutionId,
     });
