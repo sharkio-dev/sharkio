@@ -9,6 +9,8 @@ import TabContext from "@mui/lab/TabContext";
 import AssertionsTab from "./AssertionsTab";
 import RequestTab from "./RequestTab";
 
+const DEBOUNCE_TIME_WAIT: number = 2000;
+
 export const TestSuiteMainSection = () => {
   const [saveLoading, setSaveLoading] = React.useState<boolean>(false);
   const { show, component: snackBar } = useSnackbar();
@@ -32,7 +34,6 @@ export const TestSuiteMainSection = () => {
   }, [testSuiteId, testId]);
 
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
-  const DEBOUNCE_TIME_WAIT: number = 2000;
 
   const handleDebounceDataSave = (newTest: TestType) => {
     setCurrentTest(newTest);
@@ -56,7 +57,7 @@ export const TestSuiteMainSection = () => {
   const saveTest = (
     testSuiteId: string | undefined,
     testId: string | undefined,
-    currentTest: TestType,
+    currentTest: TestType
   ) => {
     if (!testSuiteId || !testId || !currentTest) {
       return;
