@@ -33,13 +33,23 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<SnifferType, "subdomain">>,
+  newConfig: Partial<Omit<SnifferType, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
 
 export const getRequests = () => {
   return BackendAxios.get("/request");
+};
+
+export const importRequestFromCurl = (
+  snifferId: string,
+  curlCommand: string
+) => {
+  return BackendAxios.post("/request/import/curl", {
+    snifferId,
+    curl: curlCommand,
+  });
 };
 
 export const getAllMocks = () => {
@@ -51,7 +61,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -68,7 +78,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -102,7 +112,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -125,7 +135,7 @@ export const getLiveInvocations = () => {
   });
 };
 export const executeInvocation = (
-  invocation: InvocationType & { testId?: string },
+  invocation: InvocationType & { testId?: string }
 ) => {
   const url = invocation.url;
   const method = invocation.method;
@@ -170,7 +180,7 @@ export const deleteMockAPI = (mockId: string) => {
 };
 
 export const createMockAPI = (
-  mock: Omit<Mock, "id"> & { snifferId: string },
+  mock: Omit<Mock, "id"> & { snifferId: string }
 ) => {
   return BackendAxios.post(`/mocks`, mock).then((res) => {
     return res.data;
@@ -179,7 +189,7 @@ export const createMockAPI = (
 
 export const editMockAPI = (
   mockId: string,
-  mock: Partial<Omit<Mock, "id">>,
+  mock: Partial<Omit<Mock, "id">>
 ) => {
   return BackendAxios.patch(`/mocks/${mockId}`, mock);
 };
