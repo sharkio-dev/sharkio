@@ -9,28 +9,46 @@ import { AiOutlineInfo } from "react-icons/ai";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 
 interface RequestTabProps {
-  onDebounceRequestChange: (test: TestType) => void;
+  onDebounceSave: (test: TestType) => void;
   onTestMethodChange: (test: TestType) => void;
-  onRequestHeadersChange: (rules: any[]) => void;
-  requestHeaders: any[];
+  requestHeaders: { name: string; value: string }[];
+  setRequestHeaders: React.Dispatch<
+    React.SetStateAction<{ name: string; value: string }[]>
+  >;
 }
 const RequestTab = ({
-  onDebounceRequestChange,
+  onDebounceSave,
   onTestMethodChange,
-  onRequestHeadersChange,
   requestHeaders,
+  setRequestHeaders,
 }: RequestTabProps) => {
   const currentTest = useTestStore((s) => s.currentTest);
   const [requestPart, setRequestPart] = useState<string>("Body");
 
-  const onHeaderChange = (index: number, value: any, targetPath: string) => {
-    const headers = [...requestHeaders];
-    headers[index] = {
-      ...headers[index],
+  const handleHeaderChange = (
+    index: number,
+    value: any,
+    targetPath: string
+  ) => {
+    const headersReq = [...requestHeaders];
+    headersReq[index] = {
+      ...headersReq[index],
       name: targetPath,
       value: value,
     };
-    onRequestHeadersChange(headers);
+    handleReduceHeaders(headersReq);
+  };
+
+  const handleReduceHeaders = (headersReq: any[]) => {
+    setRequestHeaders(headersReq);
+    const reduceHeaders = headersReq.reduce((acc, h) => {
+      acc[h.name] = h.value;
+      return acc;
+    }, {} as any);
+    onDebounceSave({
+      ...currentTest,
+      headers: reduceHeaders,
+    });
   };
 
   return (
@@ -52,7 +70,7 @@ const RequestTab = ({
             className="w-full"
             value={currentTest.url}
             onChange={(e) => {
-              onDebounceRequestChange({ ...currentTest, url: e.target.value });
+              onDebounceSave({ ...currentTest, url: e.target.value });
             }}
           />
         </div>
@@ -76,30 +94,44 @@ const RequestTab = ({
                 name: header.name,
                 value: header.value,
               }))}
-              setHeaders={onHeaderChange}
+              setHeaders={handleHeaderChange}
               addHeader={() => {
                 const newHeader = {
                   name: "",
                   value: "",
                 };
-                onRequestHeadersChange([...requestHeaders, newHeader]);
+                handleReduceHeaders([...requestHeaders, newHeader]);
               }}
               deleteHeader={(index) => {
                 const removedHeaders = requestHeaders.filter(
-                  (_, i) => i !== index,
+                  (_, i) => i !== index
                 );
-                onRequestHeadersChange(removedHeaders);
+                handleReduceHeaders(removedHeaders);
               }}
             />
           </div>
         )}
         {requestPart === "Body" && (
-          <BodySection
-            body={currentTest.body}
-            onBodyChange={(val) =>
-              onDebounceRequestChange({ ...currentTest, body: val })
-            }
-          />
+          <>
+            <div className="flex h-5 mb-2  ">
+              <Tooltip title="Invalid JSON will not be saved!">
+                <Button
+                  color="warning"
+                  variant="outlined"
+                  size="small"
+                  className=""
+                >
+                  <AiOutlineInfo className="w-5 h-4 font-bold" />
+                </Button>
+              </Tooltip>
+            </div>
+            <BodySection
+              body={currentTest.body}
+              onBodyChange={(val) =>
+                onDebounceSave({ ...currentTest, body: val })
+              }
+            />
+          </>
         )}
       </div>
     </TabPanel>

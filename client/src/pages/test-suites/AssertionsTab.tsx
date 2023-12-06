@@ -2,49 +2,76 @@ import TabPanel from "@mui/lab/TabPanel";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
 import StatusCodeSelector from "./StatusCodeSelector";
-import { Rule, useTestStore } from "../../stores/testStore";
+import { Rule, TestType, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
 import { AiOutlineInfo } from "react-icons/ai";
 import { Button, Tooltip } from "@mui/material";
 
 interface AssertionsTabProps {
-  onStatusCodeChange: (statusCode: string) => void;
-  onBodyChange: (body: string) => void;
-  onAssertionHeadersChange: (rules: Rule[]) => void;
+  onDataSave: (test: TestType) => void;
+  onDebounceSave: (test: TestType) => void;
   tabNumber: string;
 }
 
 const AssertionsTab: React.FC<AssertionsTabProps> = ({
-  onStatusCodeChange,
-  onBodyChange,
-  onAssertionHeadersChange,
+  onDataSave,
+  onDebounceSave,
   tabNumber,
 }) => {
+  const currentTest = useTestStore((s) => s.currentTest);
   const [AssertionPart, setAssertionPart] = useState<string>("Status");
   const getRule = useTestStore((s) => s.getRuleFromCurrentTest);
-  const statusCode = getRule("status_code") || {
+  const statusCodeRule = getRule("status_code") || {
     type: "status_code",
     expectedValue: "200",
     comparator: "equals",
   };
-  const body = getRule("body") || {
+  const bodyRule = getRule("body") || {
     type: "body",
     expectedValue: "",
     comparator: "equals",
   };
-  const headers = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header"),
+  const headerRules = useTestStore((s) =>
+    s.currentTest.rules.filter((rule) => rule.type === "header")
   );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {
-    const newHeaders = [...headers];
+    const newHeaders = [...headerRules];
     newHeaders[index] = {
       ...newHeaders[index],
       targetPath: targetPath,
       expectedValue: value,
     };
-    onAssertionHeadersChange(newHeaders);
+    handleHeadersChange(newHeaders);
+  };
+
+  const handleHeadersChange = (newHeaders: Rule[]) => {
+    onDebounceSave({
+      ...currentTest,
+      rules: [statusCodeRule, bodyRule, ...newHeaders],
+    });
+  };
+
+  const handleBodyChange = (newBody: string) => {
+    onDebounceSave({
+      ...currentTest,
+      rules: [
+        statusCodeRule,
+        { ...bodyRule, expectedValue: newBody },
+        ...headerRules,
+      ],
+    });
+  };
+  const handleStatusCodeChange = (newStatusCode: string) => {
+    onDataSave({
+      ...currentTest,
+      rules: [
+        { ...statusCodeRule, expectedValue: newStatusCode },
+        bodyRule,
+        ...headerRules,
+      ],
+    });
   };
 
   return (
@@ -57,21 +84,21 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
       {AssertionPart === "Status" && (
         <div className="flex flex-row w-full">
           <StatusCodeSelector
-            value={statusCode?.expectedValue.toString() || ""}
-            setValue={onStatusCodeChange}
+            value={statusCodeRule?.expectedValue.toString() || ""}
+            setValue={handleStatusCodeChange}
           />
         </div>
       )}
       {AssertionPart === "Headers" && (
         <HeaderSection
-          headers={headers.map((rule) => ({
+          headers={headerRules.map((rule) => ({
             name: (rule.targetPath as string) || "",
             value: rule.expectedValue,
           }))}
           setHeaders={onChangeHeader}
           addHeader={() => {
-            onAssertionHeadersChange([
-              ...headers,
+            handleHeadersChange([
+              ...headerRules,
               {
                 type: "header",
                 expectedValue: "",
@@ -82,7 +109,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
             console.log("assertions headers");
           }}
           deleteHeader={(index) =>
-            onAssertionHeadersChange(headers.filter((_, i) => i !== index))
+            handleHeadersChange(headerRules.filter((_, i) => i !== index))
           }
         />
       )}
@@ -100,7 +127,10 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
               </Button>
             </Tooltip>
           </div>
-          <BodySection body={body?.expectedValue} onBodyChange={onBodyChange} />
+          <BodySection
+            body={bodyRule?.expectedValue}
+            onBodyChange={handleBodyChange}
+          />
         </div>
       )}
     </TabPanel>
