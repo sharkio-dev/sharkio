@@ -90,7 +90,7 @@ const ImportRequestModal = ({
       .then(() => {
         showSnackbar("Imported successfully", "success");
       })
-      .catch((e) => {
+      .catch(() => {
         showSnackbar("Failed to import", "error");
       });
   };
