@@ -18,7 +18,6 @@ export const TestSuiteMainSection = () => {
   const [requestHeaders, setRequestHeaders] = React.useState<any[]>([]);
 
   const { getTest, editTest, setCurrentTest, currentTest } = useTestStore();
-  // why react.hooks and not just get the hooks in import from react?
   React.useEffect(() => {
     if (!testSuiteId || !testId) {
       return;
@@ -39,13 +38,10 @@ export const TestSuiteMainSection = () => {
     setRequestHeaders(headers);
   };
   const handleDebounceDataSave = (newTest: TestType) => {
-    console.log("debounce data save:", newTest);
     setCurrentTest(newTest);
-
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
-
     debounceTimeout.current = setTimeout(() => {
       saveTest(testSuiteId, testId, {
         ...newTest,
@@ -54,7 +50,6 @@ export const TestSuiteMainSection = () => {
   };
 
   const handleDataSave = (newTest: TestType) => {
-    console.log("data save:", newTest);
     setCurrentTest(newTest);
     saveTest(testSuiteId, testId, {
       ...newTest,
@@ -62,9 +57,7 @@ export const TestSuiteMainSection = () => {
   };
 
   const saveTest = (
-    testSuiteId: string | undefined,
-    testId: string | undefined,
-    currentTest: TestType
+    testSuiteId: string | undefined, testId: string | undefined, currentTest: TestType,
   ) => {
     if (!testSuiteId || !testId || !currentTest) {
       return;

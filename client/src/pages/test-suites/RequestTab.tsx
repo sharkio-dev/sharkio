@@ -25,11 +25,7 @@ const RequestTab = ({
   const currentTest = useTestStore((s) => s.currentTest);
   const [requestPart, setRequestPart] = useState<string>("Body");
 
-  const handleHeaderChange = (
-    index: number,
-    value: any,
-    targetPath: string
-  ) => {
+  const handleHeaderChange = (index: number,value: any,targetPath: string,) => {
     const headersReq = [...requestHeaders];
     headersReq[index] = {
       ...headersReq[index],
@@ -104,7 +100,7 @@ const RequestTab = ({
               }}
               deleteHeader={(index) => {
                 const removedHeaders = requestHeaders.filter(
-                  (_, i) => i !== index
+                  (_, i) => i !== index,
                 );
                 handleReduceHeaders(removedHeaders);
               }}
