@@ -56,6 +56,10 @@ export class ProxyMiddleware {
                     testExecutionId,
                   )
                   .then((data) => {
+                    Object.entries(proxyRes.headers).forEach(([key, value]) => {
+                      value && res.setHeader(key, value);
+                    });
+                    res.status(proxyRes.statusCode ?? 200);
                     res.end(body.toString());
                   })
                   .catch((e) => {

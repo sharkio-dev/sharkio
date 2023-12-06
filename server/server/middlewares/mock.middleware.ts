@@ -21,6 +21,10 @@ export default class MockMiddleware {
       );
 
       if (mock != null && mock.isActive === true) {
+        Object.entries(mock.headers).forEach(([key, value]) => {
+          res.setHeader(key, value);
+        });
+
         res.status(mock.status).send(mock.body);
       } else {
         next();
