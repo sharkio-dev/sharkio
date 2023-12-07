@@ -23,13 +23,17 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
   const [AssertionPart, setAssertionPart] = useState<string>("Status");
   const getRule = useTestStore((s) => s.getRuleFromCurrentTest);
   const statusCodeRule = getRule("status_code") || {
-    type: "status_code", expectedValue: "200", comparator: "equals",
+    type: "status_code",
+    expectedValue: "200",
+    comparator: "equals",
   };
   const bodyRule = getRule("body") || {
-    type: "body", expectedValue: "", comparator: "equals",
+    type: "body",
+    expectedValue: "",
+    comparator: "equals",
   };
   const headerRules = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header")
+    s.currentTest.rules.filter((rule) => rule.type === "header"),
   );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {

@@ -57,7 +57,7 @@ export const TestSuiteMainSection = () => {
   const saveTest = (
     testSuiteId: string | undefined,
     testId: string | undefined,
-    currentTest: TestType
+    currentTest: TestType,
   ) => {
     if (!testSuiteId || !testId || !currentTest) {
       return;
