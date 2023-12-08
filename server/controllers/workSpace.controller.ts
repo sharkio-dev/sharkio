@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly baseUrl: string = "/sharkio/sniffer"
+    private readonly baseUrl: string = "/sharkio/sniffer",
   ) {}
 
   getRouter(): IRouterConfig {
@@ -30,10 +30,10 @@ export class WorkspaceController {
         const workspaceId = req.query.workspaceId as string;
         const workspace = await this.workspaceService.getWorkspace(
           userId,
-          workspaceId
+          workspaceId,
         );
         res.json(workspace);
-      }
+      },
     );
     return {
       router,

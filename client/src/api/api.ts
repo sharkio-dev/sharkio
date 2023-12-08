@@ -33,7 +33,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<SnifferType, "subdomain">>
+  newConfig: Partial<Omit<SnifferType, "subdomain">>,
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
@@ -51,7 +51,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any
+  data: any,
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -68,7 +68,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any
+  data: any,
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -102,7 +102,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest
+  request: InterceptedRequest,
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -177,7 +177,7 @@ export const deleteMockAPI = (mockId: string) => {
 };
 
 export const createMockAPI = (
-  mock: Omit<Mock, "id"> & { snifferId: string }
+  mock: Omit<Mock, "id"> & { snifferId: string },
 ) => {
   return BackendAxios.post(`/mocks`, mock).then((res) => {
     return res.data;
@@ -186,7 +186,7 @@ export const createMockAPI = (
 
 export const editMockAPI = (
   mockId: string,
-  mock: Partial<Omit<Mock, "id">>
+  mock: Partial<Omit<Mock, "id">>,
 ) => {
   return BackendAxios.patch(`/mocks/${mockId}`, mock);
 };
@@ -223,9 +223,9 @@ export const getProjects = (): ProjectType[] => {
 //   return project; // Return the project or handle the logic accordingly
 // };
 
-export const getChangeBetweenWorkspaces = async (projectClickName: string) => {
-  
-};
+export const getChangeBetweenWorkspaces = async (
+  projectClickName: string,
+) => {};
 
 export const deleteProject = async (projectName: string) => {
   // Simulating the delete operation by filtering out the project from the JSON data
@@ -256,7 +256,7 @@ export const postAddNewProject = async (newProjectName: string) => {
 
 export const putEditProject = async (
   editedProjectName: string,
-  selectedProjectName: string
+  selectedProjectName: string,
 ) => {
   // Simulating the put operation by updating the project in the JSON data
   const projectToUpdate = (
@@ -272,7 +272,7 @@ export const putEditProject = async (
     "new name=",
     editedProjectName,
     " old name=",
-    selectedProjectName
+    selectedProjectName,
   );
   // You can optionally save the updated data back to the file here if needed
 
