@@ -213,14 +213,18 @@ export const getProjects = (): ProjectType[] => {
   });
   return projects;
 };
-export const getChangeBetweenProjects = async (projectClickName: string) => {
-  // Simulating the get operation by finding the project in the JSON data
-  const project = (projectsData as { projects: ProjectType[] }).projects.find(
-    (p) => p.name === projectClickName
-  );
+// export const getChangeBetweenWorkspaces = async (projectClickName: string) => {
+//   // Simulating the get operation by finding the project in the JSON data
+//   const project = (projectsData as { projects: ProjectType[] }).projects.find(
+//     (p) => p.name === projectClickName
+//   );
 
-  console.log("move to project", project);
-  return project; // Return the project or handle the logic accordingly
+//   console.log("move to project", project);
+//   return project; // Return the project or handle the logic accordingly
+// };
+
+export const getChangeBetweenWorkspaces = async (projectClickName: string) => {
+  
 };
 
 export const deleteProject = async (projectName: string) => {

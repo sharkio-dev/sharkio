@@ -8,8 +8,6 @@ const log = useLog({
   filename: __filename,
 });
 
-// ? the workspace in the db is in the public schemas
-// ? i think it should be in the auth schema with user relation
 @Entity({ name: "workspace", schema: "auth" })
 export class Workspace {
   @PrimaryColumn("uuid")
@@ -20,7 +18,6 @@ export class Workspace {
 
   @Column({ name: "user_id" })
   userId: string;
-  //? how to make the relationship
 
   @Column({ name: "created_at" })
   createdAt: Date;
@@ -37,3 +34,15 @@ export class Workspace {
 
 //   @OneToMany(() => Workspace, workspace => workspace.user)
 //   workspaces: Workspace[];
+
+export class WorkspaceRepository {
+  repository: Repository<Workspace>;
+
+  constructor(private readonly appDataSource: DataSource) {
+    this.repository = appDataSource.manager.getRepository(Workspace);
+  }
+
+  getById(userId: string, workspaceId: string) {
+    return this.repository.findOne({ where: { id: workspaceId, userId } });
+  }
+}

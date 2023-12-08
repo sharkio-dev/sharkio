@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   ProjectType,
-  getChangeBetweenProjects,
+  getChangeBetweenWorkspaces,
   getProjects,
 } from "../../api/api";
 import {
@@ -33,7 +33,7 @@ const ProjectSelector = () => {
 
   const handleChangeProject = (projectClick: SelectChangeEvent<string>) => {
     setSelectedProjectName(projectClick.target.value);
-    getChangeBetweenProjects(projectClick.target.value); //api call
+    getChangeBetweenWorkspaces(projectClick.target.value); //api call
   };
 
   const handleNewProjectEnd = () => {
