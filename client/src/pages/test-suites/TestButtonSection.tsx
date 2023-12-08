@@ -1,10 +1,4 @@
-import TabPanel from "@mui/lab/TabPanel";
-import {
-  ExtendButtonBase,
-  ToggleButton,
-  ToggleButtonGroup,
-  ToggleButtonTypeMap,
-} from "@mui/material";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 interface TestButtonSectionProps {
   changePart: (value: string) => void;

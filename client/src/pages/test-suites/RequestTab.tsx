@@ -75,34 +75,34 @@ const RequestTab = ({
         </div>
         <TestButtonSection changePart={setRequestPart} partName={requestPart} />
         {requestPart === "Headers" && (
-            <HeaderSection
-              headers={requestHeaders.map((header: any) => ({
-                name: header.name,
-                value: header.value,
-              }))}
-              setHeaders={handleHeaderChange}
-              addHeader={() => {
-                const newHeader = {
-                  name: "",
-                  value: "",
-                };
-                handleReduceHeaders([...requestHeaders, newHeader]);
-              }}
-              deleteHeader={(index) => {
-                const removedHeaders = requestHeaders.filter(
-                  (_, i) => i !== index,
-                );
-                handleReduceHeaders(removedHeaders);
-              }}
-            />
+          <HeaderSection
+            headers={requestHeaders.map((header: any) => ({
+              name: header.name,
+              value: header.value,
+            }))}
+            setHeaders={handleHeaderChange}
+            addHeader={() => {
+              const newHeader = {
+                name: "",
+                value: "",
+              };
+              handleReduceHeaders([...requestHeaders, newHeader]);
+            }}
+            deleteHeader={(index) => {
+              const removedHeaders = requestHeaders.filter(
+                (_, i) => i !== index,
+              );
+              handleReduceHeaders(removedHeaders);
+            }}
+          />
         )}
         {requestPart === "Body" && (
-            <BodySection
-              body={currentTest.body}
-              onBodyChange={(val) =>
-                onDebounceSave({ ...currentTest, body: val })
-              }
-            />
+          <BodySection
+            body={currentTest.body}
+            onBodyChange={(val) =>
+              onDebounceSave({ ...currentTest, body: val })
+            }
+          />
         )}
       </div>
     </TabPanel>

@@ -15,7 +15,7 @@ export class ProxyMiddleware {
 
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestInterceptor: RequestInterceptor
+    private readonly requestInterceptor: RequestInterceptor,
   ) {
     this.proxyMiddleware = createProxyMiddleware({
       router: this.chooseRoute.bind(this),
@@ -55,7 +55,7 @@ export class ProxyMiddleware {
                       headers: proxyRes.headers,
                       statusCode: proxyRes.statusCode,
                     },
-                    testExecutionId
+                    testExecutionId,
                   )
                   .then((data) => {
                     Object.entries(proxyRes.headers)
@@ -64,7 +64,7 @@ export class ProxyMiddleware {
                         value && res.setHeader(key, value);
                       });
                     res.end(
-                      new Uint8Array(body.map((a: any) => [...a]).flat()) || ""
+                      new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
                     );
                   })
                   .catch((e) => {
@@ -78,15 +78,15 @@ export class ProxyMiddleware {
                     value && res.setHeader(key, value);
                   });
                 res.end(
-                  new Uint8Array(body.map((a: any) => [...a]).flat()) || ""
+                  new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
                 );
               }
-            }.bind(this)
+            }.bind(this),
           );
         } catch (e) {
           logger.error(
             "failed to capture response for invocation id" + invocationId,
-            e
+            e,
           );
         }
       },
@@ -98,7 +98,7 @@ export class ProxyMiddleware {
     const subdomain = host.split(".")[0];
 
     const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain
+      subdomain,
     );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();

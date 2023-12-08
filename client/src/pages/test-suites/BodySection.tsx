@@ -8,7 +8,7 @@ type BodySectionProps = {
 export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
   const onChangeBodyValue = (value: any) => {
     try {
-      const parsedValue = JSON.parse(value);
+      JSON.parse(value);
       onBodyChange(value);
     } catch (error) {}
   };
