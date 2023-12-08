@@ -96,8 +96,10 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
+
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain,
+    );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
     }

@@ -110,7 +110,6 @@ export const TestSuiteSideBar = () => {
                     setEditTestSuiteModalOpen(true);
                   }}
                   onDeleteSniffer={() => {
-                    navigator("/test-suites/");
                     setDeleteTestSuiteModalOpen(true);
                   }}
                   name={testSuite.name}

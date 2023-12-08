@@ -2,7 +2,7 @@ import { SelectComponent } from "../test-suites/SelectComponent";
 
 type SelectMethodDropDownProps = {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: any) => void;
   title?: string;
 };
 export const SelectMethodDropDown = ({

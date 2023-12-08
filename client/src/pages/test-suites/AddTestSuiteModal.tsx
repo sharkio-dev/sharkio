@@ -161,14 +161,26 @@ export const EditTestSuiteModal = ({
           />
         </div>
 
-        <div className="flex flex-row justify-end mt-4">
+        <div className="flex flex-row justify-end space-x-2 mt-4">
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="success"
             onClick={onClickEdit}
             disabled={isLoading}
           >
             {isLoading ? <CircularProgress size={24} /> : "Save"}
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              onClose();
+              resetState();
+            }}
+            className="ml-2"
+          >
+            Cancel
           </Button>
         </div>
       </Paper>
@@ -229,14 +241,23 @@ export const DeleteTestSuiteModal = ({
             />
           </div>
 
-          <div className="flex flex-row justify-end mt-4">
+          <div className="flex flex-row justify-end space-x-2 mt-4">
             <Button
-              variant="contained"
+              variant="outlined"
               color="error"
               onClick={handleDeleteTestSuite}
               disabled={isLoading}
             >
               {isLoading ? <CircularProgress size={24} /> : "Delete"}
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              onClick={onClose}
+              disabled={isLoading}
+            >
+              Cancel
             </Button>
           </div>
         </Paper>

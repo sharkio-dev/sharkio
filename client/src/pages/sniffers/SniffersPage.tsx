@@ -5,6 +5,7 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { LivePage } from "./SniffersPage/LivePage";
 import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
+
 import Sniffer from "./SniffersPage/Sniffer";
 
 interface SnifferPageTemplateProps {
