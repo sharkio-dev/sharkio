@@ -18,7 +18,7 @@ export const SharkioDocsSetupPage = () => {
         <img
           src="/login.png"
           alt=""
-          className="w-full rounded-lg h-96 border-2 border-border-color mt-4"
+          className="w-80 rounded-lg border-2 border-border-color mt-4"
         />
       </SharkioDocsSection>
 
@@ -36,7 +36,7 @@ export const SharkioDocsSetupPage = () => {
         <img
           src="/apiKeys.png"
           alt=""
-          className="w-full rounded-lg h-96 border-2 border-border-color mt-4"
+          className="w-80 rounded-lg border-2 border-border-color mt-4"
         />
       </SharkioDocsSection>
 
