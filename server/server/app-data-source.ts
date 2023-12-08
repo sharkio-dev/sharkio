@@ -11,6 +11,7 @@ import { TestSuite } from "../model/testSuite/testSuite.model";
 import { Test } from "../model/testSuite/test.model";
 import { TestExecution } from "../model/testSuite/testExecution.model";
 import { Mock } from "../model/mock/mock.model";
+import { Workspace } from "../model/workSpace/workSpace.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -35,6 +36,7 @@ export const getAppDataSource = async () => {
         Test,
         Response,
         Mock,
+        Workspace,
       ],
       subscribers: [],
       migrations: [],
