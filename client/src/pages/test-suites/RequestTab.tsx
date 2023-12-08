@@ -1,11 +1,10 @@
 import TabPanel from "@mui/lab/TabPanel";
 import { BodySection } from "./BodySection";
 import { HeaderSection } from "./HeaderSection";
-import { Button, TextField, Tooltip } from "@mui/material";
+import { TextField } from "@mui/material";
 import { TestType, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
-import { AiOutlineInfo } from "react-icons/ai";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 
 interface RequestTabProps {
@@ -76,19 +75,6 @@ const RequestTab = ({
         </div>
         <TestButtonSection changePart={setRequestPart} partName={requestPart} />
         {requestPart === "Headers" && (
-          <div>
-            <div className="flex h-5 mb-2  ">
-              <Tooltip title="Two headers with the same name will not be saved">
-                <Button
-                  color="warning"
-                  variant="outlined"
-                  size="small"
-                  className=""
-                >
-                  <AiOutlineInfo className="w-5 h-4 font-bold" />
-                </Button>
-              </Tooltip>
-            </div>
             <HeaderSection
               headers={requestHeaders.map((header: any) => ({
                 name: header.name,
@@ -109,29 +95,14 @@ const RequestTab = ({
                 handleReduceHeaders(removedHeaders);
               }}
             />
-          </div>
         )}
         {requestPart === "Body" && (
-          <>
-            <div className="flex h-5 mb-2  ">
-              <Tooltip title="Invalid JSON will not be saved!">
-                <Button
-                  color="warning"
-                  variant="outlined"
-                  size="small"
-                  className=""
-                >
-                  <AiOutlineInfo className="w-5 h-4 font-bold" />
-                </Button>
-              </Tooltip>
-            </div>
             <BodySection
               body={currentTest.body}
               onBodyChange={(val) =>
                 onDebounceSave({ ...currentTest, body: val })
               }
             />
-          </>
         )}
       </div>
     </TabPanel>

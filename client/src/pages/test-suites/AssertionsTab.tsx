@@ -5,8 +5,6 @@ import StatusCodeSelector from "./StatusCodeSelector";
 import { Rule, TestType, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
 import TestButtonSection from "./TestButtonSection";
-import { AiOutlineInfo } from "react-icons/ai";
-import { Button, Tooltip } from "@mui/material";
 
 interface AssertionsTabProps {
   onDataSave: (test: TestType) => void;
@@ -33,7 +31,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
     comparator: "equals",
   };
   const headerRules = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header"),
+    s.currentTest.rules.filter((rule) => rule.type === "header")
   );
 
   const onChangeHeader = (index: number, value: any, targetPath: string) => {
@@ -113,24 +111,10 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
         />
       )}
       {AssertionPart === "Body" && (
-        <div>
-          <div className="flex h-5 mb-2  ">
-            <Tooltip title="Invalid JSON will not be saved!">
-              <Button
-                color="warning"
-                variant="outlined"
-                size="small"
-                className=""
-              >
-                <AiOutlineInfo className="w-5 h-4 font-bold" />
-              </Button>
-            </Tooltip>
-          </div>
-          <BodySection
-            body={bodyRule?.expectedValue}
-            onBodyChange={handleBodyChange}
-          />
-        </div>
+        <BodySection
+          body={bodyRule?.expectedValue}
+          onBodyChange={handleBodyChange}
+        />
       )}
     </TabPanel>
   );
