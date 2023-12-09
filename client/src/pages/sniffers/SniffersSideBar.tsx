@@ -6,7 +6,6 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { useNavigate, useParams } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { MdOutlineEmergencyRecording } from "react-icons/md";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { LoadingIcon } from "./LoadingIcon";
@@ -15,33 +14,39 @@ import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
 export const SniffersSideBar = () => {
-  const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
-  );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const { sniffers } = useSniffersStore();
-  const [selectValue, setSelectValue] = useState<string>("");
   const navigator = useNavigate();
-
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { snifferId } = useParams();
-  const { loadEndpoints, resetEndpoints, loadingEndpoints } =
-    useSniffersStore();
+  const {
+    loadEndpoints,
+    resetEndpoints,
+    loadingEndpoints,
+    selectedSniffer,
+    setSelectedSniffer,
+  } = useSniffersStore();
 
-  // Populate the endpoints of the screen
   useEffect(() => {
     if (!snifferId) {
       resetEndpoints();
-      setSelectValue("live");
       return;
     }
-    setSelectValue(snifferId);
     loadEndpoints(snifferId).catch(() => {
       showSnackbar("Failed to get endpoints", "error");
     });
-  }, [snifferId]);
+  }, [snifferId, sniffers]);
+
+  useEffect(() => {
+    if (selectedSniffer && !snifferId) {
+      navigator(`/sniffers/${selectedSniffer.id}`);
+    } else if (sniffers.length > 0 && !selectedSniffer && !snifferId) {
+      navigator(`/sniffers/${sniffers[0].id}`);
+      return;
+    }
+  }, [selectedSniffer, sniffers]);
 
   const onAddSnifferModalClose = () => {
     setIsAddModalOpen(false);
@@ -49,18 +54,15 @@ export const SniffersSideBar = () => {
 
   const onEditSnifferModalClose = () => {
     setIsEditModalOpen(false);
-    setSelectedSniffer(null);
   };
 
-  const onEditSniffer = (sniffer: SnifferType) => {
-    setSelectedSniffer(sniffer);
+  const onEditSniffer = () => {
     setIsEditModalOpen(true);
   };
 
   const onDeleteModalClose = () => {
     setIsDeleteModalOpen(false);
     setSelectedSniffer(null);
-    navigator("/live");
   };
 
   const onDeleteSniffer = (sniffer: SnifferType) => {
@@ -74,7 +76,7 @@ export const SniffersSideBar = () => {
         {snackBar}
         <FormControl fullWidth size="small" variant="outlined">
           <InputLabel>Sniffers</InputLabel>
-          <Select value={selectValue} label="Sniffers">
+          <Select value={snifferId || ""} label="Sniffers">
             <MenuItem
               onClick={() => setIsAddModalOpen(true)}
               value={"addSniffer"}
@@ -86,25 +88,10 @@ export const SniffersSideBar = () => {
                 name={"Add Sniffer"}
               />
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                resetEndpoints();
-                navigator("/live");
-                setSelectValue("live");
-              }}
-              value={"live"}
-            >
-              <SideBarItem
-                LeftIcon={MdOutlineEmergencyRecording}
-                isSelected={false}
-                name={"Live Invocations"}
-              />
-            </MenuItem>
             {sniffers.map((sniffer, i) => (
               <MenuItem
                 key={i}
                 onClick={() => {
-                  setSelectValue(sniffer.id);
                   navigator(`/sniffers/${sniffer.id}`);
                 }}
                 value={sniffer.id}
@@ -112,7 +99,7 @@ export const SniffersSideBar = () => {
                 <SideBarItem
                   LeftIcon={GiSharkFin}
                   isSelected={snifferId === sniffer.id}
-                  onEditSniffer={() => onEditSniffer(sniffer)}
+                  onEditSniffer={() => onEditSniffer()}
                   onDeleteSniffer={() => onDeleteSniffer(sniffer)}
                   name={sniffer.name}
                 />
@@ -120,15 +107,17 @@ export const SniffersSideBar = () => {
             ))}
           </Select>
         </FormControl>
-        <div className="flex flex-col w-full overflow-y-auto">
-          {loadingEndpoints ? (
-            <div className="flex h-[calc(100vh)] justify-center items-center">
-              <LoadingIcon />
-            </div>
-          ) : (
-            <EndpointSideBar showAdd={selectValue !== "live"} />
-          )}
-        </div>
+        {snifferId && (
+          <div className="flex flex-col w-full overflow-y-auto">
+            {loadingEndpoints ? (
+              <div className="flex h-[calc(100vh)] justify-center items-center">
+                <LoadingIcon />
+              </div>
+            ) : (
+              <EndpointSideBar />
+            )}
+          </div>
+        )}
       </div>
 
       <AddSnifferModal

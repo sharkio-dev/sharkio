@@ -11,7 +11,8 @@ import { MockList } from "./MockList";
 export const MockSideBar = () => {
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
-  const { sniffers, loadSniffers } = useSniffersStore();
+  const { sniffers, loadSniffers, selectedSniffer, setSelectedSniffer } =
+    useSniffersStore();
   const { loadMocks, resetMocks } = useMockStore();
   const navigator = useNavigate();
 
@@ -27,11 +28,23 @@ export const MockSideBar = () => {
     }
   }, [snifferId]);
 
+  useEffect(() => {
+    if (selectedSniffer && !snifferId) {
+      let params = new URLSearchParams();
+      params.append("snifferId", selectedSniffer.id);
+      let queryString = params.toString();
+      navigator(`/mocks?${queryString}`);
+    } else if (sniffers.length > 0 && !selectedSniffer) {
+      setSelectedSniffer(sniffers[0]);
+      return;
+    }
+  }, [sniffers]);
+
   return (
     <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
       <FormControl fullWidth size="small" variant="outlined">
         <InputLabel>Sniffers</InputLabel>
-        <Select value={snifferId} label="Sniffers">
+        <Select value={snifferId || ""} label="Sniffers">
           {sniffers.map((sniffer, i) => (
             <MenuItem
               key={i}

@@ -132,7 +132,7 @@ export const MockMainSection = () => {
         </Button>
         {!isNew && (
           <Button
-            variant="contained"
+            variant="outlined"
             color="error"
             onClick={() => {
               deleteMock(snifferId as string, mockId as string).then(() => {

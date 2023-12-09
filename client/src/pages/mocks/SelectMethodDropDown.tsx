@@ -4,14 +4,17 @@ type SelectMethodDropDownProps = {
   value: string;
   onChange: (value: any) => void;
   title?: string;
+  disabled?: boolean;
 };
 export const SelectMethodDropDown = ({
   value,
+  disabled,
   onChange,
   title = "Method",
 }: SelectMethodDropDownProps) => {
   return (
     <SelectComponent
+      disabled={disabled}
       options={[
         { value: "GET", label: "GET" },
         { value: "POST", label: "POST" },
