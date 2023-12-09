@@ -42,14 +42,14 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/live/invocations/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
     : "h-1/3 max-h-[calc(33vh-16px)]";
 
   return (
-    <>
+    <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
       {(invocations.length > 0 || loadingInvocations) && (
         <div className={`flex flex-col w-full`}>
           {snackBar}
@@ -81,6 +81,6 @@ export const LivePage = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
