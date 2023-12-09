@@ -1,65 +1,67 @@
-import React, { useState } from "react";
-import {
-  ProjectType,
-  getChangeBetweenWorkspaces,
-  getProjects,
-} from "../../api/api";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ProjectItem from "./ProjectItem";
 import NewProjectModal from "./NewProjectModal";
 import EditProjectModal from "./EditProjectModal";
 import NewProjectItem from "./NewProjectItem";
 import { DeleteProjectModal } from "./DeleteProjectModal";
+import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
+
+//TODO Connect workspaces to specific user in db
+//TODO: make all the jsx as one component (in edit\add\delete) calls editModal and pass needed props and remove duplicated code
+const emptyWorkSpace: workSpaceType = {
+  id: "",
+  name: "",
+  isOpen: false,
+};
 const ProjectSelector = () => {
-  // const [projects] = useState<ProjectType[]>(getProjects()); if i want to check if the project name already exist from the frontend i need to add this state
-
-  //for now all the logic happen with the name if needed can be change to the id
-
+  //const [workSpaces, setWorkSpaces] = useState<workSpaceType[]>([]);
   const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
   const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState(false);
   const [deleteProjectModalIsOpen, setDeleteProjectModalIsOpen] =
     useState(false);
 
-  const [ProjectToEditName, setProjectToEditName] = useState("");
-  const [selectedProjectName, setSelectedProjectName] = useState(
-    getProjects().find((project) => project.isOpen)?.name || "",
-  );
+  const [workSpaceToEdit, setWorkSpaceToEdit] =
+    useState<workSpaceType>(emptyWorkSpace);
+  //const [selectedWorkSpace, setSelectedWorkSpace] = useState<workSpaceType>();
+  const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
+    useWorkspaceStore();
 
-  const handleChangeProject = (projectClick: SelectChangeEvent<string>) => {
-    setSelectedProjectName(projectClick.target.value);
-    getChangeBetweenWorkspaces(projectClick.target.value); //api call
+  useEffect(() => {
+    getWorkspaces();
+  }, []);
+
+  const handleChangeProject = async (workSpaceId: string) => {
+    changeBetweenWorkSpaces(workSpaceId);
   };
 
   const handleNewProjectEnd = () => {
     setNewProjectModalIsOpen(false);
   };
 
-  const handleEditProject = (e: React.MouseEvent, projectName: string) => {
+  const handleEditProject = (e: React.MouseEvent, workSpace: workSpaceType) => {
     e.stopPropagation();
-    setProjectToEditName(projectName);
+    setWorkSpaceToEdit(workSpace);
     setEditProjectModalIsOpen(true);
   };
 
   const handleEditProjectEnd = () => {
-    setProjectToEditName(" ");
+    setWorkSpaceToEdit(emptyWorkSpace);
     setEditProjectModalIsOpen(false);
   };
 
-  const handleDeleteProject = (e: React.MouseEvent, projectName: string) => {
+  const handleDeleteProject = (
+    e: React.MouseEvent,
+    workSpace: workSpaceType
+  ) => {
     e.stopPropagation();
     setDeleteProjectModalIsOpen(true);
-    setProjectToEditName(projectName);
+    setWorkSpaceToEdit(workSpace);
   };
 
   const handleDeleteProjectEnd = () => {
     setDeleteProjectModalIsOpen(false);
-    setProjectToEditName("");
+    setWorkSpaceToEdit(emptyWorkSpace);
   };
 
   return (
@@ -68,14 +70,17 @@ const ProjectSelector = () => {
         <InputLabel>NameSpaces</InputLabel>
         <Select
           style={{ width: "200px" }}
-          value={selectedProjectName || " "}
+          value={openWorkspace?.name || ""}
           label="project"
-          onChange={handleChangeProject}
         >
           <NewProjectItem setNewProjectModalIsOpen={setNewProjectModalIsOpen} />
-          {getProjects().map((project: ProjectType) => {
+          {workspaces.map((project: workSpaceType) => {
             return (
-              <MenuItem key={project.id} value={project.name}>
+              <MenuItem
+                key={project.id}
+                value={project.name}
+                onClick={() => handleChangeProject(project.id)}
+              >
                 <ProjectItem
                   project={project}
                   handleEditProject={handleEditProject}
@@ -94,10 +99,10 @@ const ProjectSelector = () => {
       <EditProjectModal
         open={editProjectModalIsOpen}
         onCancel={handleEditProjectEnd}
-        ProjectToEditName={ProjectToEditName}
+        workSpace={workSpaceToEdit}
       />
       <DeleteProjectModal
-        projectName={ProjectToEditName}
+        workSpace={workSpaceToEdit}
         open={deleteProjectModalIsOpen}
         onCancel={handleDeleteProjectEnd}
       />

@@ -6,8 +6,7 @@ import {
 import { BackendAxios } from "./backendAxios";
 import { SnifferType } from "../stores/sniffersStores";
 import { Mock } from "../stores/mockStore";
-import * as projectsData from "./fakeProjectData.json";
-
+import { workSpaceType } from "../stores/workspaceStore";
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return BackendAxios.post("/sniffer", config);
 };
@@ -33,7 +32,7 @@ export const deleteSniffer = async (id: string) => {
 };
 
 export const editSniffer = async (
-  newConfig: Partial<Omit<SnifferType, "subdomain">>,
+  newConfig: Partial<Omit<SnifferType, "subdomain">>
 ) => {
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
@@ -51,7 +50,7 @@ export const createMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.post(`/sniffer/${snifferId}/mock`, {
     sniffer_id: snifferId,
@@ -68,7 +67,7 @@ export const editMock = (
   method: string,
   endpoint: string,
   status: number,
-  data: any,
+  data: any
 ) => {
   return BackendAxios.put(`/sniffer/${port}/mock`, {
     mockId: id,
@@ -102,7 +101,7 @@ export const createCollection = (name: string) => {
 
 export const saveRequestToCollection = (
   id: Collection["id"],
-  request: InterceptedRequest,
+  request: InterceptedRequest
 ) => {
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
@@ -177,7 +176,7 @@ export const deleteMockAPI = (mockId: string) => {
 };
 
 export const createMockAPI = (
-  mock: Omit<Mock, "id"> & { snifferId: string },
+  mock: Omit<Mock, "id"> & { snifferId: string }
 ) => {
   return BackendAxios.post(`/mocks`, mock).then((res) => {
     return res.data;
@@ -186,95 +185,33 @@ export const createMockAPI = (
 
 export const editMockAPI = (
   mockId: string,
-  mock: Partial<Omit<Mock, "id">>,
+  mock: Partial<Omit<Mock, "id">>
 ) => {
   return BackendAxios.patch(`/mocks/${mockId}`, mock);
 };
-export interface ProjectType {
-  name: string;
-  id: string;
-  isOpen: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string | null;
-}
 
-export const getProjects = (): ProjectType[] => {
-  const jsonData = projectsData as { projects: any[] };
-  const projects: ProjectType[] = jsonData.projects.map((project) => {
-    return {
-      name: project.name,
-      id: project.id,
-      isOpen: project.isOpen,
-      createdAt: project.createdAt,
-      updatedAt: project.updatedAt,
-      deletedAt: project.deletedAt,
-    };
+export const getProjects = async () => {
+  return await BackendAxios.get<workSpaceType[]>("/workspace");
+};
+export const getChangeBetweenWorkSpaces = async (workspaceId: string) => {
+  return await BackendAxios.get(`/workspace/${workspaceId}`);
+}; //? needed?
+
+export const deleteWorkSpace = async (workSpaceId: string) => {
+  return await BackendAxios.delete(`/workspace/${workSpaceId}`);
+};
+
+export const postAddNewWorkspace = async (newWorkSpaceName: string) => {
+  return await BackendAxios.post(`/workspace`, {
+    newWorkSpaceName,
   });
-  return projects;
-};
-// export const getChangeBetweenWorkspaces = async (projectClickName: string) => {
-//   // Simulating the get operation by finding the project in the JSON data
-//   const project = (projectsData as { projects: ProjectType[] }).projects.find(
-//     (p) => p.name === projectClickName
-//   );
-
-//   console.log("move to project", project);
-//   return project; // Return the project or handle the logic accordingly
-// };
-
-export const getChangeBetweenWorkspaces = async (
-  projectClickName: string,
-) => {};
-
-export const deleteProject = async (projectName: string) => {
-  // Simulating the delete operation by filtering out the project from the JSON data
-  (projectsData as { projects: ProjectType[] }).projects =
-    projectsData.projects.filter((p) => p.name !== projectName);
-
-  console.log("delete project", projectName);
-  // You can optionally save the updated data back to the file here if needed
-
-  return { success: true }; // Return a success message or handle the logic accordingly
 };
 
-export const postAddNewProject = async (newProjectName: string) => {
-  // Simulating the post operation by adding a new project to the JSON data
-  const newProject: ProjectType = {
-    id: Date.now().toString(), // Assuming a simple timestamp-based ID for demo purposes
-    name: newProjectName,
-    isOpen: true, // Set default values
-  };
-
-  (projectsData as { projects: ProjectType[] }).projects.push(newProject);
-
-  console.log("add new project", newProject);
-  // You can optionally save the updated data back to the file here if needed
-
-  return newProject; // Return the newly added project or handle the logic accordingly
-};
-
-export const putEditProject = async (
-  editedProjectName: string,
-  selectedProjectName: string,
+export const putEditWorkSpaceName = async (
+  newWorkspaceName: string,
+  workspaceId: string
 ) => {
-  // Simulating the put operation by updating the project in the JSON data
-  const projectToUpdate = (
-    projectsData as { projects: ProjectType[] }
-  ).projects.find((p) => p.name === selectedProjectName);
-
-  if (projectToUpdate) {
-    projectToUpdate.name = editedProjectName;
-    projectToUpdate.updatedAt = new Date().toISOString();
-  }
-
-  console.log(
-    "new name=",
-    editedProjectName,
-    " old name=",
-    selectedProjectName,
-  );
-  // You can optionally save the updated data back to the file here if needed
-
-  return projectToUpdate; // Return the updated project or handle the logic accordingly
+  return await BackendAxios.put(`/workspace/${workspaceId}`, {
+    newWorkspaceName,
+  });
 };

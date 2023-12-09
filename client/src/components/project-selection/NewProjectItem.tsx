@@ -13,7 +13,7 @@ const NewProjectItem: React.FC<NewProjectItemProps> = ({
 
   return (
     <MenuItem onClick={() => handleAddNewProject()} value="New Project">
-      <AiOutlinePlus></AiOutlinePlus> New Project
+      <AiOutlinePlus></AiOutlinePlus> add workSpace
     </MenuItem>
   );
 };

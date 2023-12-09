@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { postAddNewProject } from "../../api/api";
+import { useWorkspaceStore } from "../../stores/workspaceStore";
 
 interface EditProjectModalProps {
   open: boolean;
@@ -17,21 +17,26 @@ const NewProjectModal: React.FC<EditProjectModalProps> = ({
   open,
   onCancel,
 }) => {
-  const [newProjectName, setNewProjectName] = useState("");
+  const [newWorkSpaceName, setNewWorkSpaceName] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const handleNewProjectSave = () => {
-    if (newProjectName === "") {
+  const { createWorkspace, getWorkspaces } = useWorkspaceStore();
+  const handleNewWorkSpcaeSave = () => {
+    if (newWorkSpaceName === "") {
       showSnackbar("Name cannot be empty or already exists", "error");
       return;
     }
     setIsLoading(true);
-    postAddNewProject(newProjectName) //api call
-      .then(() => onCancel)
+    createWorkspace(newWorkSpaceName) //api call
+      .then(() => {
+        onCancel(), showSnackbar("Project added", "success");
+      })
       .catch(() => showSnackbar("Error adding new project", "error"))
-      .finally(() => setIsLoading(false));
-    setNewProjectName("");
+      .finally(() => {
+        setIsLoading(false);
+        getWorkspaces();
+      });
+    setNewWorkSpaceName("");
   };
 
   return (
@@ -50,13 +55,13 @@ const NewProjectModal: React.FC<EditProjectModalProps> = ({
             <TextField
               label={"Project Name"}
               placeholder="Project Name"
-              onChange={(e) => setNewProjectName(e.target.value)}
+              onChange={(e) => setNewWorkSpaceName(e.target.value)}
               inputProps={{ maxLength: 25 }}
             />
           </div>
           <div className="flex flex-row justify-start  mt-4 space-x-2">
             <Button
-              onClick={handleNewProjectSave}
+              onClick={handleNewWorkSpcaeSave}
               variant="contained"
               color="success"
             >

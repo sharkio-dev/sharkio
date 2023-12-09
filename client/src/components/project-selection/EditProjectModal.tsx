@@ -7,42 +7,47 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { putEditProject } from "../../api/api";
+import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 
 interface EditProjectModalProps {
   open: boolean;
   onCancel: () => void;
-  ProjectToEditName: string;
+  workSpace: workSpaceType;
 }
 
 const EditProjectModal: React.FC<EditProjectModalProps> = ({
   open,
   onCancel,
-  ProjectToEditName,
+  workSpace,
 }) => {
-  const [editedProjectName, setEditedProjectName] = useState("");
+  const [editedWorkSpaceName, setEditedWorkSpaceName] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { editWorkSpaceName } = useWorkspaceStore();
   const handleEditedProjectSave = () => {
     console.log(
-      "try edit - " + "to edit:" + ProjectToEditName,
-      "edited:" + editedProjectName,
+      "try edit - " + "to edit:" + workSpace.name,
+      "edited:" + editedWorkSpaceName
     );
-    if (editedProjectName === "" || ProjectToEditName === editedProjectName) {
+    if (editedWorkSpaceName === "" || workSpace.name === editedWorkSpaceName) {
       showSnackbar("Name cannot be empty or the same", "error");
       return;
     }
 
     setIsLoading(true);
-    putEditProject(editedProjectName, ProjectToEditName) //api call
-      .then(() => onCancel)
+    editWorkSpaceName(editedWorkSpaceName, workSpace.id) //api call
+      .then(() => {
+        onCancel(), showSnackbar("Project edited", "success");
+      })
       .catch(() => showSnackbar("Error editing project", "error"))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
-    setEditedProjectName(ProjectToEditName);
-  }, [ProjectToEditName]);
+    setEditedWorkSpaceName(workSpace.name);
+  }, [workSpace]);
 
   return (
     <>
@@ -58,10 +63,10 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
           <div className="w-full border-b-[0.05px] my-4" />
           <div className="flex flex-col space-y-2">
             <TextField
-              label={"Current name: " + ProjectToEditName}
-              placeholder={ProjectToEditName}
-              value={editedProjectName}
-              onChange={(e) => setEditedProjectName(e.target.value)}
+              label={"Current name: " + workSpace.name}
+              placeholder={workSpace.name}
+              value={editedWorkSpaceName}
+              onChange={(e) => setEditedWorkSpaceName(e.target.value)}
               inputProps={{ maxLength: 25 }}
             />
           </div>

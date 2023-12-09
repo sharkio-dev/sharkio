@@ -8,7 +8,7 @@ const log = useLog({
   filename: __filename,
 });
 
-@Entity({ name: "workspace", schema: "auth" })
+@Entity({ name: "workspace", schema: "public" })
 export class Workspace {
   @PrimaryColumn("uuid")
   id: string;
@@ -43,6 +43,36 @@ export class WorkspaceRepository {
   }
 
   getById(userId: string, workspaceId: string) {
-    return this.repository.findOne({ where: { id: workspaceId, userId } });
+    const moveToWorkspace = this.repository.findOne({
+      where: { id: workspaceId, userId },
+    });
+    if (moveToWorkspace === null) {
+      return;
+    }
+    this.repository.update({ isOpen: true }, { isOpen: false });
+    this.repository.update({ id: workspaceId, userId }, { isOpen: true });
+    return;
+  }
+
+  saveWorkspace(workspace: Workspace) {
+    return this.repository.save(workspace);
+  }
+
+  getUserWorkspaces(userId: string) {
+    return this.repository.find({ where: { userId } });
+  }
+  deleteWorkspace(userId: string, workspaceId: string) {
+    return this.repository.delete({ id: workspaceId, userId });
+  }
+
+  changeWorkspaceName(
+    userId: string,
+    workspaceId: string,
+    newWorkspaceName: string
+  ) {
+    return this.repository.update(
+      { id: workspaceId, userId },
+      { name: newWorkspaceName }
+    );
   }
 }
