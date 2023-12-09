@@ -4,7 +4,7 @@ import { MenuItem } from "@mui/material";
 interface NewProjectItemProps {
   setNewProjectModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const NewProjectItem: React.FC<NewProjectItemProps> = ({
+const NewWorkspaceItem: React.FC<NewProjectItemProps> = ({
   setNewProjectModalIsOpen,
 }) => {
   const handleAddNewProject = () => {
@@ -18,4 +18,4 @@ const NewProjectItem: React.FC<NewProjectItemProps> = ({
   );
 };
 
-export default NewProjectItem;
+export default NewWorkspaceItem;

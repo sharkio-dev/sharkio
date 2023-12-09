@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import ProjectItem from "./ProjectItem";
-import NewProjectModal from "./NewProjectModal";
-import EditProjectModal from "./EditProjectModal";
-import NewProjectItem from "./NewProjectItem";
-import { DeleteProjectModal } from "./DeleteProjectModal";
+import WorkspaceItem from "./WorkspaceItem";
+import NewWorkspaceModal from "./NewWorkspaceModal";
+import EditWorkspaceModal from "./EditWorkspaceModal";
+import NewWorkspaceItem from "./NewWorkspaceItem";
+import { DeleteWorkspaceModal } from "./DeleteWorkspaceModal";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 
 //TODO Connect workspaces to specific user in db
@@ -14,16 +14,14 @@ const emptyWorkSpace: workSpaceType = {
   name: "",
   isOpen: false,
 };
-const ProjectSelector = () => {
-  //const [workSpaces, setWorkSpaces] = useState<workSpaceType[]>([]);
-  const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
-  const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState(false);
-  const [deleteProjectModalIsOpen, setDeleteProjectModalIsOpen] =
+const WorkspaceSelector = () => {
+  const [newWorkspaceModalIsOpen, setNewProjectModalIsOpen] = useState(false);
+  const [editWorkspaceModalIsOpen, setEditWorkspaceModalIsOpen] = useState(false);
+  const [deleteWorkspaceModalIsOpen, setDeleteWorkspaceModalIsOpen] =
     useState(false);
 
   const [workSpaceToEdit, setWorkSpaceToEdit] =
     useState<workSpaceType>(emptyWorkSpace);
-  //const [selectedWorkSpace, setSelectedWorkSpace] = useState<workSpaceType>();
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
     useWorkspaceStore();
 
@@ -31,36 +29,36 @@ const ProjectSelector = () => {
     getWorkspaces();
   }, []);
 
-  const handleChangeProject = async (workSpaceId: string) => {
+  const handleChangeWorkspace = async (workSpaceId: string) => {
     changeBetweenWorkSpaces(workSpaceId);
   };
 
-  const handleNewProjectEnd = () => {
+  const handleNewWorkspaceEnd = () => {
     setNewProjectModalIsOpen(false);
   };
 
-  const handleEditProject = (e: React.MouseEvent, workSpace: workSpaceType) => {
+  const handleEditWorkspace = (e: React.MouseEvent, workSpace: workSpaceType) => {
     e.stopPropagation();
     setWorkSpaceToEdit(workSpace);
-    setEditProjectModalIsOpen(true);
+    setEditWorkspaceModalIsOpen(true);
   };
 
-  const handleEditProjectEnd = () => {
+  const handleEditWorkspaceEnd = () => {
     setWorkSpaceToEdit(emptyWorkSpace);
-    setEditProjectModalIsOpen(false);
+    setEditWorkspaceModalIsOpen(false);
   };
 
-  const handleDeleteProject = (
+  const handleDeleteWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType
+    workSpace: workSpaceType,
   ) => {
     e.stopPropagation();
-    setDeleteProjectModalIsOpen(true);
+    setDeleteWorkspaceModalIsOpen(true);
     setWorkSpaceToEdit(workSpace);
   };
 
-  const handleDeleteProjectEnd = () => {
-    setDeleteProjectModalIsOpen(false);
+  const handleDeleteWorkspaceEnd = () => {
+    setDeleteWorkspaceModalIsOpen(false);
     setWorkSpaceToEdit(emptyWorkSpace);
   };
 
@@ -73,41 +71,41 @@ const ProjectSelector = () => {
           value={openWorkspace?.name || ""}
           label="project"
         >
-          <NewProjectItem setNewProjectModalIsOpen={setNewProjectModalIsOpen} />
+          <NewWorkspaceItem setNewProjectModalIsOpen={setNewProjectModalIsOpen} />
           {workspaces.map((project: workSpaceType) => {
             return (
               <MenuItem
                 key={project.id}
                 value={project.name}
-                onClick={() => handleChangeProject(project.id)}
+                onClick={() => handleChangeWorkspace(project.id)}
               >
-                <ProjectItem
+                <WorkspaceItem
                   project={project}
-                  handleEditProject={handleEditProject}
-                  handleDeleteProject={handleDeleteProject}
+                  handleEditProject={handleEditWorkspace}
+                  handleDeleteProject={handleDeleteWorkspace}
                 />
               </MenuItem>
             );
           })}
         </Select>
       </FormControl>
-      <NewProjectModal
-        open={newProjectModalIsOpen}
-        onCancel={handleNewProjectEnd}
+      <NewWorkspaceModal
+        open={newWorkspaceModalIsOpen}
+        onCancel={handleNewWorkspaceEnd}
       />
 
-      <EditProjectModal
-        open={editProjectModalIsOpen}
-        onCancel={handleEditProjectEnd}
+      <EditWorkspaceModal
+        open={editWorkspaceModalIsOpen}
+        onCancel={handleEditWorkspaceEnd}
         workSpace={workSpaceToEdit}
       />
-      <DeleteProjectModal
+      <DeleteWorkspaceModal
         workSpace={workSpaceToEdit}
-        open={deleteProjectModalIsOpen}
-        onCancel={handleDeleteProjectEnd}
+        open={deleteWorkspaceModalIsOpen}
+        onCancel={handleDeleteWorkspaceEnd}
       />
     </div>
   );
 };
 
-export default ProjectSelector;
+export default WorkspaceSelector;

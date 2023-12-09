@@ -9,13 +9,13 @@ import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 
-interface EditProjectModalProps {
+interface EditWorkspaceModalProps {
   open: boolean;
   onCancel: () => void;
   workSpace: workSpaceType;
 }
 
-const EditProjectModal: React.FC<EditProjectModalProps> = ({
+const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
   open,
   onCancel,
   workSpace,
@@ -27,7 +27,7 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
   const handleEditedProjectSave = () => {
     console.log(
       "try edit - " + "to edit:" + workSpace.name,
-      "edited:" + editedWorkSpaceName
+      "edited:" + editedWorkSpaceName,
     );
     if (editedWorkSpaceName === "" || workSpace.name === editedWorkSpaceName) {
       showSnackbar("Name cannot be empty or the same", "error");
@@ -89,4 +89,4 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
   );
 };
 
-export default EditProjectModal;
+export default EditWorkspaceModal;

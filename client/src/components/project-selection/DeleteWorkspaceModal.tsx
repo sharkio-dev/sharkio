@@ -4,16 +4,16 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 
-type DeleteProjectModalProps = {
+type DeleteWorkspaceModalProps = {
   workSpace: workSpaceType;
   open: boolean;
   onCancel: () => void;
 };
-export const DeleteProjectModal = ({
+export const DeleteWorkspaceModal = ({
   workSpace,
   open,
   onCancel,
-}: DeleteProjectModalProps) => {
+}: DeleteWorkspaceModalProps) => {
   const [verifyDelete, setVerifyDelete] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);

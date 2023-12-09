@@ -7,7 +7,7 @@ console.log("workspace controller");
 export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly baseUrl: string = "/sharkio/workspace"
+    private readonly baseUrl: string = "/sharkio/workspace",
   ) {}
 
   getRouter(): IRouterConfig {
@@ -32,10 +32,10 @@ export class WorkspaceController {
           console.log("get all, req.params:", req.params);
           const userId = res.locals.auth.user.id;
           const workspaces = await this.workspaceService.getUserWorkspaces(
-            userId
+            userId,
           );
           res.json(workspaces);
-        }
+        },
       )
       .post(
         /**
@@ -56,10 +56,10 @@ export class WorkspaceController {
           const userId = res.locals.auth.user.id;
           const newWorkspace = await this.workspaceService.createWorkspace(
             newWorkSpaceName,
-            userId
+            userId,
           );
           res.json(newWorkspace);
-        }
+        },
       );
 
     router
@@ -84,10 +84,10 @@ export class WorkspaceController {
           const { workspaceId } = req.params;
           const workspace = await this.workspaceService.getWorkspace(
             userId,
-            workspaceId
+            workspaceId,
           );
           res.json(workspace);
-        }
+        },
       )
       .delete(async (req: Request, res: Response) => {
         console.log("delete project");
@@ -104,7 +104,7 @@ export class WorkspaceController {
         const newWorkspace = await this.workspaceService.changeWorkspaceName(
           userId,
           workspaceId,
-          newWorkspaceName
+          newWorkspaceName,
         );
         res.json(newWorkspace);
       });

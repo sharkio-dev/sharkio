@@ -9,11 +9,11 @@ import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
 
-interface EditProjectModalProps {
+interface EditWorkspaceModalProps {
   open: boolean;
   onCancel: () => void;
 }
-const NewProjectModal: React.FC<EditProjectModalProps> = ({
+const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
   open,
   onCancel,
 }) => {
@@ -77,4 +77,4 @@ const NewProjectModal: React.FC<EditProjectModalProps> = ({
   );
 };
 
-export default NewProjectModal;
+export default NewWorkspaceModal;

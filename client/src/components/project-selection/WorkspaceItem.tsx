@@ -1,12 +1,12 @@
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import { workSpaceType } from "../../api/api";
+import { workSpaceType } from "../../stores/workspaceStore";
 
 interface projectItemProps {
   project: workSpaceType;
   handleEditProject: (e: React.MouseEvent, workSpace: workSpaceType) => void;
   handleDeleteProject: (e: React.MouseEvent, workSpace: workSpaceType) => void;
 }
-const ProjectItem: React.FC<projectItemProps> = ({
+const WorkspaceItem: React.FC<projectItemProps> = ({
   project: workSpace,
   handleEditProject,
   handleDeleteProject,
@@ -28,4 +28,4 @@ const ProjectItem: React.FC<projectItemProps> = ({
   );
 };
 
-export default ProjectItem;
+export default WorkspaceItem;

@@ -28,7 +28,14 @@ export class WorkspaceService {
     return this.workspaceRepository.deleteWorkspace(userId, workspaceId);
   }
   async changeWorkspaceName(
-    userId: string, workspaceId: string, newWorkspaceName: string ) {
-    return this.workspaceRepository.changeWorkspaceName(userId, workspaceId, newWorkspaceName );
+    userId: string,
+    workspaceId: string,
+    newWorkspaceName: string,
+  ) {
+    return this.workspaceRepository.changeWorkspaceName(
+      userId,
+      workspaceId,
+      newWorkspaceName,
+    );
   }
 }

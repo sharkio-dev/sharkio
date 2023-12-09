@@ -68,11 +68,11 @@ export class WorkspaceRepository {
   changeWorkspaceName(
     userId: string,
     workspaceId: string,
-    newWorkspaceName: string
+    newWorkspaceName: string,
   ) {
     return this.repository.update(
       { id: workspaceId, userId },
-      { name: newWorkspaceName }
+      { name: newWorkspaceName },
     );
   }
 }
