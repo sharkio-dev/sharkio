@@ -33,7 +33,7 @@ export const InvocationUpperBar = ({
   const { sniffers } = useSniffersStore();
   console.log(editedInvocation);
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
   );
 
   useEffect(() => {

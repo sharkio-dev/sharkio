@@ -56,7 +56,7 @@ export const SniffersSideBar = () => {
     setIsEditModalOpen(false);
   };
 
-  const onEditSniffer = (sniffer: SnifferType) => {
+  const onEditSniffer = () => {
     setIsEditModalOpen(true);
   };
 
@@ -99,7 +99,7 @@ export const SniffersSideBar = () => {
                 <SideBarItem
                   LeftIcon={GiSharkFin}
                   isSelected={snifferId === sniffer.id}
-                  onEditSniffer={() => onEditSniffer(sniffer)}
+                  onEditSniffer={() => onEditSniffer()}
                   onDeleteSniffer={() => onDeleteSniffer(sniffer)}
                   name={sniffer.name}
                 />

@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 const Sniffer: React.FC = () => {
   const { snifferId } = useParams<{ snifferId: string }>();
   const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId)
+    s.sniffers.find((s) => s.id === snifferId),
   );
   const { loadingSniffers } = useSniffersStore();
   if (!sniffer)
