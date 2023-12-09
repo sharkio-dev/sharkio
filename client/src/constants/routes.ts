@@ -3,6 +3,7 @@ export const routes = {
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
   LIVE: "/live",
   LIVE_INVOCATION: "/live/invocations/:invocationId",
+  SNIFFERS: "/sniffers",
   SNIFFER: "/sniffers/:snifferId",
   SNIFFER_CREATE_INVOCATION: "/sniffers/:snifferId/invocations/create",
   SNIFFER_ENDPOINT: "/sniffers/:snifferId/endpoints/:endpointId",

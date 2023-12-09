@@ -32,16 +32,19 @@ export const TestSuiteSideBar = () => {
   const navigator = useNavigate();
   const [selectValue, setSelectValue] = React.useState<string>("");
   const selectedTestSuite = testSuites.find(
-    (testSuite) => testSuite.id === selectValue,
+    (testSuite) => testSuite.id === selectValue
   );
   const { testSuiteId } = useParams();
   const { tests, executeTest } = useTestStore();
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const loadTS = () => {
-    loadTestSuites().then(() => {
+    loadTestSuites().then((res) => {
       if (testSuiteId) {
         setSelectValue(testSuiteId);
+      }
+      if (res.length > 0) {
+        navigator("/test-suites/" + res[0].id);
       }
     });
   };
@@ -52,11 +55,11 @@ export const TestSuiteSideBar = () => {
     }
     const combinedArray = Object.values(tests).reduce(
       (acc, array) => [...acc, ...array],
-      [],
+      []
     );
     setLoading(true);
     return Promise.all(
-      combinedArray.map((test) => executeTest(testSuiteId, test.id)),
+      combinedArray.map((test) => executeTest(testSuiteId, test.id))
     )
       .then(() => {
         navigator("/test-suites/" + testSuiteId);

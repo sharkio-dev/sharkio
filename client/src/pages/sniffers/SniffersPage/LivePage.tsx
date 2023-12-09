@@ -9,7 +9,8 @@ export const LivePage = () => {
   const { invocationId } = useParams();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadLiveInvocations, invocations } = useSniffersStore();
+  const { loadLiveInvocations, invocations, loadingInvocations, loadSniffers } =
+    useSniffersStore();
 
   const invocation =
     (invocations &&
@@ -22,6 +23,9 @@ export const LivePage = () => {
       showSnackbar("Failed to get live invocations", "error");
     });
   };
+  useEffect(() => {
+    loadSniffers();
+  }, [invocationId]);
 
   useEffect(() => {
     loadInvocations();
@@ -38,7 +42,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/live/invocations/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
@@ -46,22 +50,37 @@ export const LivePage = () => {
 
   return (
     <>
-      <div className={`flex flex-col w-full`}>
-        {snackBar}
-        {invocationId && (
-          <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)]">
-            <InvocationUpperBar activeInvocation={invocation} />
+      {(invocations.length > 0 || loadingInvocations) && (
+        <div className={`flex flex-col w-full`}>
+          {snackBar}
+          {invocationId && (
+            <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)]">
+              <InvocationUpperBar activeInvocation={invocation} />
+            </div>
+          )}
+          <div className={`flex flex-col p-2 px-4 ${bottomBarHeight}`}>
+            <InvocationsBottomBar
+              title={"Live Invocations"}
+              activeInvocation={invocation}
+              setActiveInvocation={onInvocationClick}
+              refresh={() => loadInvocations()}
+            />
           </div>
-        )}
-        <div className={`flex flex-col p-2 px-4 ${bottomBarHeight}`}>
-          <InvocationsBottomBar
-            title={"Live Invocations"}
-            activeInvocation={invocation}
-            setActiveInvocation={onInvocationClick}
-            refresh={() => loadInvocations()}
-          />
         </div>
-      </div>
+      )}
+      {invocations.length === 0 && !loadingInvocations && (
+        <div className="flex flex-col justify-center items-center h-full w-full">
+          <div className="flex flex-col justify-center items-center space-y-4">
+            <h1 className="text-2xl font-semibold ">No Live Requests</h1>
+            <h2 className="text-lg font-medium ">
+              <a href="/sniffers" className="text-blue-400">
+                Create
+              </a>{" "}
+              a new sniffer to start sniffing
+            </h2>
+          </div>
+        </div>
+      )}
     </>
   );
 };
