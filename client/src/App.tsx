@@ -20,6 +20,7 @@ import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
 import { MockPage } from "./pages/mocks/MockPage";
+import { RestPassword } from "./pages/reset-password/reset-password";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -33,6 +34,7 @@ function App(): React.JSX.Element {
 
   const routesWithAuth = () => {
     const routesWithAuth = [
+      { path: routes.RESET_PASSWORD, element: <RestPassword /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
       { path: routes.LIVE, element: <LiveSnifferPage /> },
       { path: routes.SNIFFER, element: <SnifferPage /> },

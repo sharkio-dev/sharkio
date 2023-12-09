@@ -35,6 +35,19 @@ export class TestSuiteController {
 
     router.get(
       "",
+      /**
+       * @openapi
+       * /sharkio/test-suites:
+       *   get:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const userId = res.locals.auth.user.id;
         const testSuites = await this.testSuiteService.getByUserId(userId);
@@ -44,6 +57,19 @@ export class TestSuiteController {
 
     router.post(
       "",
+      /**
+       * @openapi
+       * /sharkio/test-suites:
+       *   post:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const userId = res.locals.auth.user.id;
         const { name } = req.body;
@@ -54,6 +80,19 @@ export class TestSuiteController {
 
     router.post(
       "/:testSuiteId/import/:invocationId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/:testSuiteId/import/:invocationId:
+       *   post:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         try {
           const userId = res.locals.auth.user.id;
@@ -111,11 +150,25 @@ export class TestSuiteController {
 
     router.delete(
       "/:testSuiteId/tests/:testId",
+      /**
+       * @openapi
+       * /sharkio/tests/:testId:
+       *   delete:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
-          const testSuite =
-            await this.testService.getByTestSuiteId(testSuiteId);
+          const testSuite = await this.testService.getByTestSuiteId(
+            testSuiteId,
+          );
           if (!testSuite) {
             return res.status(404).send();
           }
@@ -137,6 +190,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/tests/:testId",
+      /**
+       * @openapi
+       * /:testSuiteId/tests/:testId:
+       *   get:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
         const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
@@ -153,6 +219,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/tests",
+      /**
+       * @openapi
+       * /:testSuiteId/tests:
+       *   get:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
@@ -165,6 +244,19 @@ export class TestSuiteController {
 
     router.put(
       "/:testSuiteId",
+      /**
+       * @openapi
+       * /:testSuiteId:
+       *   put:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const testSuite = await this.testSuiteService.getById(testSuiteId);
@@ -179,6 +271,19 @@ export class TestSuiteController {
 
     router.delete(
       "/:testSuiteId",
+      /**
+       * @openapi
+       * /:testSuiteId:
+       *   delete:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const testSuite = await this.testSuiteService.getById(testSuiteId);
@@ -192,6 +297,19 @@ export class TestSuiteController {
 
     router.put(
       "/:testSuiteId/tests/:testId",
+      /**
+       * @openapi
+       * /:testSuiteId/tests/:testId:
+       *   put:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
         const { headers, body, url, method } = req.body;
@@ -218,13 +336,27 @@ export class TestSuiteController {
 
     router.post(
       "/:testSuiteId/tests/:testId/run",
+      /**
+       * @openapi
+       * /:testSuiteId/tests/:testId/run:
+       *   post:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
           const userId = res.locals.auth.user.id;
 
-          const testSuite =
-            await this.testService.getByTestSuiteId(testSuiteId);
+          const testSuite = await this.testService.getByTestSuiteId(
+            testSuiteId,
+          );
           if (!testSuite) {
             return res.status(404).send();
           }
@@ -307,6 +439,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/test-executions",
+      /**
+       * @openapi
+       * /:testSuiteId/test-executions:
+       *   get:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const { url } = req.query;
@@ -345,6 +490,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/tests/:testId/test-executions",
+      /**
+       * @openapi
+       * /:testSuiteId/tests/:testId/test-executions:
+       *   get:
+       *     tags:
+       *      - tests
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
         const testSuite = await this.testService.getByTestSuiteId(testSuiteId);

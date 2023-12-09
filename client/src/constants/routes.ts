@@ -1,4 +1,5 @@
 export const routes = {
+  RESET_PASSWORD: "/reset-password",
   LOGIN: "/login",
   COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
   LIVE: "/live",

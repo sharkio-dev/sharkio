@@ -18,7 +18,10 @@ const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
   const { user, signOut } = useAuthStore();
   const [loading, setLoading] = useState(false);
-  const settings = user != null ? ["Logout", "API keys"] : ["Login", "Signup"];
+  const settings =
+    user != null
+      ? ["Logout", "API keys", "Reset password"]
+      : ["Login", "Signup"];
   const navigate = useNavigate();
 
   const handleOpenUserMenu = () => {
@@ -52,6 +55,10 @@ const LoginComponent: React.FC = () => {
         setLoading(false);
         navigate(routes.LOGIN);
         break;
+      }
+      case "Reset password": {
+        setLoading(false);
+        navigate(routes.RESET_PASSWORD);
       }
       default: {
         setLoading(false);
