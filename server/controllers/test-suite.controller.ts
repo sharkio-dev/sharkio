@@ -1,12 +1,12 @@
 import EndpointService from "../services/endpoint/endpoint.service";
-import { TestSuiteService } from "../services/testSuite/testSuite.service";
-import { TestService } from "../services/testSuite/test.service";
+import { TestSuiteService } from "../services/test-suite/test-suite.service";
+import { TestService } from "../services/test-suite/test.service";
 import { NextFunction, Request, Response, Router } from "express";
 import { Rule } from "../model/testSuite/types";
 import { RequestService } from "../services/request/request.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { useLog } from "../lib/log";
-import { TestExecutionService } from "../services/testSuite/testExecution.service";
+import { TestExecutionService } from "../services/test-suite/test-execution.service";
 
 const log = useLog({
   dirname: __dirname,

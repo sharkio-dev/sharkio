@@ -8,7 +8,7 @@ import { InvocationController } from "./controllers/invocation.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
-import { TestSuiteController } from "./controllers/testSuite.controller";
+import { TestSuiteController } from "./controllers/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import ChatRepository from "./model/chat/chat.model";
@@ -35,9 +35,9 @@ import { MockService } from "./services/mock/mock.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
-import { TestService } from "./services/testSuite/test.service";
-import { TestExecutionService } from "./services/testSuite/testExecution.service";
-import { TestSuiteService } from "./services/testSuite/testSuite.service";
+import { TestService } from "./services/test-suite/test.service";
+import { TestExecutionService } from "./services/test-suite/test-execution.service";
+import { TestSuiteService } from "./services/test-suite/test-suite.service";
 import UserService from "./services/user/user";
 import { EnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
@@ -80,7 +80,7 @@ async function main() {
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
-    invocationRepository,
+    invocationRepository
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -90,7 +90,7 @@ async function main() {
   const testService = new TestService(testRepository);
   const requestService = new RequestService(invocationRepository);
   const testExecutionService = new TestExecutionService(
-    testExecutionRepository,
+    testExecutionRepository
   );
   const importService = new ImportService(endpointService);
 
@@ -101,25 +101,25 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService,
+    snifferService
   );
   const snifferController = new SnifferController(
     snifferService,
     docGenerator,
     endpointService,
-    mockService,
+    mockService
   );
   const endpointController = new EndpointController(
     endpointService,
     snifferService,
     requestService,
-    importService,
+    importService
   );
   const invocationController = new InvocationController(endpointService);
   const chatController = new ChatController(
     snifferService,
     endpointService,
-    chatService,
+    chatService
   );
   const swaggerUi = new SwaggerUiController();
   const testSuiteController = new TestSuiteController(
@@ -128,18 +128,18 @@ async function main() {
     testService,
     requestService,
     snifferService,
-    testExecutionService,
+    testExecutionService
   );
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     endpointService,
-    responseService,
+    responseService
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
   const mockMiddleware = new MockMiddleware(mockService, snifferService);
 
@@ -147,7 +147,7 @@ async function main() {
   const proxyServer = new ProxyServer(
     proxyMiddleware,
     requestInterceptorMiddleware,
-    mockMiddleware,
+    mockMiddleware
   );
   const snifferManagerServer = new Server(
     [
@@ -161,7 +161,7 @@ async function main() {
       testSuiteController.getRouter(),
       mockController.getRouter(),
     ],
-    swaggerUi,
+    swaggerUi
   );
 
   // /* Start Servers */
