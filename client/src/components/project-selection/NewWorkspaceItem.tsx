@@ -9,7 +9,7 @@ const NewWorkspaceItem: React.FC<NewProjectItemProps> = ({
   setModalIsOpen,
 }) => {
   const handleAddNewProject = () => {
-    setModalIsOpen('create');
+    setModalIsOpen("create");
   };
 
   return (

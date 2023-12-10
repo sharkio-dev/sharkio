@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { CircularProgress } from "@mui/material";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 import { openModal } from "./WorkspaceSelector";
+import EditingModal from "./EditingModal";
 
 type DeleteWorkspaceModalProps = {
   workSpace: workSpaceType;
@@ -46,38 +45,30 @@ export const DeleteWorkspaceModal = ({
   return (
     <>
       {snackBar}
-      <Modal
-        open={modalIsOpen === "delete"}
-        onClose={onCancel}
-        className="flex justify-center items-center border-0"
-      >
-        <Paper className="flex flex-col p-4 w-96 rounded-sm">
-          <div className="text-2xl font-bold">Delete Project</div>
-          <div className="w-full border-b-[0.05px] my-4" />
-          <div className="flex flex-col space-y-2">
-            <TextField
-              label={"Delete: " + workSpace.name}
-              placeholder={`Type "${workSpace.name}" to delete`}
-              value={verifyDelete}
-              onChange={(event) => setVerifyDelete(event.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-row  mt-4 space-x-2">
-            <Button
-              variant="contained"
-              color="error"
-              disabled={isLoading}
-              onClick={handleDeleteProjectAccept}
-            >
-              {isLoading ? <CircularProgress size={24} /> : "Delete"}
-            </Button>
-            <Button onClick={onCancel} variant="outlined" color="primary">
-              "Cancel
-            </Button>
-          </div>
-        </Paper>
-      </Modal>
+      <EditingModal
+        modalProps={{
+          open: modalIsOpen === "delete",
+          onClose: onCancel,
+        }}
+        paperHeadLine="Delete Project"
+        textFieldProps={{
+          placeholder: `Type "${workSpace.name}" to delete`,
+          label: "Delete: " + workSpace.name,
+          value: verifyDelete,
+          onChange: (e) => setVerifyDelete(e.target.value),
+        }}
+        acceptButtonProps={{
+          onClick: handleDeleteProjectAccept,
+          disabled: isLoading,
+          color: "error",
+        }}
+        acceptButtonValue="Delete"
+        cancelButtonProps={{
+          onClick: onCancel,
+        }}
+        cancelButtonValue="Cancel"
+        isLoading={isLoading}
+      />
     </>
   );
 };

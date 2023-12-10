@@ -3,13 +3,13 @@ import { workSpaceType } from "../../stores/workspaceStore";
 
 interface projectItemProps {
   workspace: workSpaceType;
-  handleEditProject: (e: React.MouseEvent, workSpace: workSpaceType) => void;
-  handleDeleteProject: (e: React.MouseEvent, workSpace: workSpaceType) => void;
+  handleEditWorkspace: (e: React.MouseEvent, workSpace: workSpaceType) => void;
+  handleDeleteWorkspace: (e: React.MouseEvent, workSpace: workSpaceType) => void;
 }
 const WorkspaceItem: React.FC<projectItemProps> = ({
   workspace,
-  handleEditProject,
-  handleDeleteProject,
+  handleEditWorkspace,
+  handleDeleteWorkspace,
 }: any) => {
   return (
     <div className="flex items-center w-full justify-between">
@@ -17,11 +17,11 @@ const WorkspaceItem: React.FC<projectItemProps> = ({
       <div className="flex items-end space-x-2">
         <AiOutlineEdit
           className="text-amber-200 text-lg"
-          onClick={(e: React.MouseEvent) => handleEditProject(e, workspace)}
+          onClick={(e: React.MouseEvent) => handleEditWorkspace(e, workspace)}
         />
         <AiOutlineDelete
           className="text-red-200 text-lg"
-          onClick={(e: React.MouseEvent) => handleDeleteProject(e, workspace)}
+          onClick={(e: React.MouseEvent) => handleDeleteWorkspace(e, workspace)}
         />
       </div>
     </div>

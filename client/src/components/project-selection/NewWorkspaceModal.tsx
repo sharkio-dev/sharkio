@@ -1,14 +1,8 @@
-import {
-  Button,
-  CircularProgress,
-  Modal,
-  Paper,
-  TextField,
-} from "@mui/material";
 import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
 import { openModal } from "./WorkspaceSelector";
+import EditingModal from "./EditingModal";
 
 interface EditWorkspaceModalProps {
   modalIsOpen: openModal;
@@ -43,37 +37,25 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
   return (
     <>
       {snackBar}
-      <Modal
-        open={modalIsOpen === "create"}
-        onClose={onCancel}
-        closeAfterTransition
-        className="flex justify-center items-center border-0"
-      >
-        <Paper className="flex flex-col p-4 w-96 rounded-sm">
-          <div className="text-2xl font-bold">Add New Project</div>
-          <div className="w-full border-b-[0.05px] my-4" />
-          <div className="flex flex-col space-y-2">
-            <TextField
-              label={"Project Name"}
-              placeholder="Project Name"
-              onChange={(e) => setNewWorkSpaceName(e.target.value)}
-              inputProps={{ maxLength: 25 }}
-            />
-          </div>
-          <div className="flex flex-row justify-start  mt-4 space-x-2">
-            <Button
-              onClick={handleNewWorkSpcaeSave}
-              variant="contained"
-              color="success"
-            >
-              {isLoading ? <CircularProgress /> : "Add"}
-            </Button>
-            <Button onClick={onCancel} variant="outlined">
-              Cancel
-            </Button>
-          </div>
-        </Paper>
-      </Modal>
+      <EditingModal
+        modalProps={{ open: modalIsOpen === "create", onClose: onCancel }}
+        paperHeadLine="Add New Project"
+        textFieldProps={{
+          placeholder: "Workspace Name",
+          label: "Workspace Name",
+          onChange: (e) => setNewWorkSpaceName(e.target.value),
+        }}
+        acceptButtonValue="Add"
+        acceptButtonProps={{
+          onClick: handleNewWorkSpcaeSave,
+          disabled: isLoading,
+        }}
+        cancelButtonProps={{
+          onClick: onCancel,
+          disabled: isLoading,
+        }}
+        isLoading={isLoading}
+      />
     </>
   );
 };

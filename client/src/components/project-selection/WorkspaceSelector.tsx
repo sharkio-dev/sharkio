@@ -53,7 +53,7 @@ const WorkspaceSelector = () => {
   };
   return (
     <div>
-      {!HIDDEN && (
+      {HIDDEN && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
@@ -63,17 +63,17 @@ const WorkspaceSelector = () => {
               label="workspace"
             >
               <NewWorkspaceItem setModalIsOpen={setModalIsOpen} />
-              {workspaces.map((project: workSpaceType) => {
+              {workspaces.map((workspace: workSpaceType) => {
                 return (
                   <MenuItem
-                    key={project.id}
-                    value={project.name}
-                    onClick={() => handleChangeWorkspace(project.id)}
+                    key={workspace.id}
+                    value={workspace.name}
+                    onClick={() => handleChangeWorkspace(workspace.id)}
                   >
                     <WorkspaceItem
-                      project={project}
-                      handleEditProject={handleEditWorkspace}
-                      handleDeleteProject={handleDeleteWorkspace}
+                      workspace={workspace}
+                      handleEditWorkspace={handleEditWorkspace}
+                      handleDeleteWorkspace={handleDeleteWorkspace}
                     />
                   </MenuItem>
                 );

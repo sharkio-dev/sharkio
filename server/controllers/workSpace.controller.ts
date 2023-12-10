@@ -3,11 +3,10 @@ import PromiseRouter from "express-promise-router";
 import { IRouterConfig } from "./router.interface";
 import { Request, Response } from "express";
 
-console.log("workspace controller");
 export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly baseUrl: string = "/sharkio/workspace",
+    private readonly baseUrl: string = "/sharkio/workspace"
   ) {}
 
   getRouter(): IRouterConfig {
@@ -29,13 +28,12 @@ export class WorkspaceController {
          *         description: Server error
          */
         async (req: Request, res: Response) => {
-          console.log("get all, req.params:", req.params);
           const userId = res.locals.auth.user.id;
           const workspaces = await this.workspaceService.getUserWorkspaces(
-            userId,
+            userId
           );
           res.json(workspaces);
-        },
+        }
       )
       .post(
         /**
@@ -51,15 +49,14 @@ export class WorkspaceController {
          *          application/json:
          */
         async (req: Request, res: Response) => {
-          console.log("add new workspace, req.body:", req.body);
           const { newWorkSpaceName } = req.body;
           const userId = res.locals.auth.user.id;
           const newWorkspace = await this.workspaceService.createWorkspace(
             newWorkSpaceName,
-            userId,
+            userId
           );
           res.json(newWorkspace);
-        },
+        }
       );
 
     router
@@ -79,35 +76,62 @@ export class WorkspaceController {
          *         description: Server error
          */
         async (req: Request, res: Response) => {
-          console.log("get one workspace, req.params:", req.params);
           const userId = res.locals.auth.user.id;
           const { workspaceId } = req.params;
           const workspace = await this.workspaceService.getWorkspace(
             userId,
-            workspaceId,
+            workspaceId
           );
           res.json(workspace);
-        },
+        }
       )
-      .delete(async (req: Request, res: Response) => {
-        console.log("delete project");
-        const userId = res.locals.auth.user.id;
-        const { workspaceId } = req.params;
-        await this.workspaceService.deleteWorkspace(userId, workspaceId);
-        res.json({ success: true });
-      })
-      .put(async (req: Request, res: Response) => {
-        console.log("edit workspace, body:", req.body);
-        const userId = res.locals.auth.user.id;
-        const { workspaceId } = req.params;
-        const { newWorkspaceName } = req.body;
-        const newWorkspace = await this.workspaceService.changeWorkspaceName(
-          userId,
-          workspaceId,
-          newWorkspaceName,
-        );
-        res.json(newWorkspace);
-      });
+      .delete(
+        /**
+         * @openapi
+         * /sharkio/workspace/{workspaceId}:
+         *   delete:
+         *     tags:
+         *      - workspace
+         *     description: delete requested workspace
+         *     responses:
+         *       200:
+         *         description: Returns requested workspace
+         *       500:
+         *         description: Server error
+         */
+        async (req: Request, res: Response) => {
+          const userId = res.locals.auth.user.id;
+          const { workspaceId } = req.params;
+          await this.workspaceService.deleteWorkspace(userId, workspaceId);
+          res.json({ success: true });
+        }
+      )
+      .put(
+        /**
+         * @openapi
+         * /sharkio/workspace/{workspaceId}:
+         *   put:
+         *     tags:
+         *      - workspace
+         *     description: change workspace name
+         *     responses:
+         *       200:
+         *         description: Returns requested workspace
+         *       500:
+         *         description: Server error
+         */
+        async (req: Request, res: Response) => {
+          const userId = res.locals.auth.user.id;
+          const { workspaceId } = req.params;
+          const { newWorkspaceName } = req.body;
+          const newWorkspace = await this.workspaceService.changeWorkspaceName(
+            userId,
+            workspaceId,
+            newWorkspaceName
+          );
+          res.json(newWorkspace);
+        }
+      );
 
     return {
       router,
