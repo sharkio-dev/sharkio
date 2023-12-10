@@ -31,7 +31,7 @@ const WorkspaceSelector = () => {
 
   const handleEditWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType
+    workSpace: workSpaceType,
   ) => {
     e.stopPropagation();
     setWorkSpaceToEdit(workSpace);
@@ -40,7 +40,7 @@ const WorkspaceSelector = () => {
 
   const handleDeleteWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType
+    workSpace: workSpaceType,
   ) => {
     e.stopPropagation();
     setModalIsOpen("delete");

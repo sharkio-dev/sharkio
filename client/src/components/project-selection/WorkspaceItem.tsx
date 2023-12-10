@@ -4,7 +4,10 @@ import { workSpaceType } from "../../stores/workspaceStore";
 interface projectItemProps {
   workspace: workSpaceType;
   handleEditWorkspace: (e: React.MouseEvent, workSpace: workSpaceType) => void;
-  handleDeleteWorkspace: (e: React.MouseEvent, workSpace: workSpaceType) => void;
+  handleDeleteWorkspace: (
+    e: React.MouseEvent,
+    workSpace: workSpaceType,
+  ) => void;
 }
 const WorkspaceItem: React.FC<projectItemProps> = ({
   workspace,

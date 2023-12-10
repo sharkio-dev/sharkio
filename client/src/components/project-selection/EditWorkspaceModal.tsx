@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 import { openModal } from "./WorkspaceSelector";
-import EditingModal from "./EditingModal";
+import GenericEditingModal from "./GenericEditingModal";
 
 interface EditWorkspaceModalProps {
   modalIsOpen: openModal;
@@ -45,7 +45,7 @@ const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
   return (
     <>
       {snackBar}
-      <EditingModal
+      <GenericEditingModal
         modalProps={{
           open: modalIsOpen === "edit",
           onClose: onCancel,

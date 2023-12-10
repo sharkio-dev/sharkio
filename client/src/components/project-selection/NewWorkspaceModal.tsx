@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
 import { openModal } from "./WorkspaceSelector";
-import EditingModal from "./EditingModal";
+import GenericEditingModal from "./GenericEditingModal";
 
 interface EditWorkspaceModalProps {
   modalIsOpen: openModal;
@@ -37,7 +37,7 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
   return (
     <>
       {snackBar}
-      <EditingModal
+      <GenericEditingModal
         modalProps={{ open: modalIsOpen === "create", onClose: onCancel }}
         paperHeadLine="Add New Project"
         textFieldProps={{

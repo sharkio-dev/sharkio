@@ -21,7 +21,7 @@ interface EditingModalProps {
   isLoading: boolean;
 }
 
-const EditingModal: React.FC<EditingModalProps> = ({
+const GenericEditingModal: React.FC<EditingModalProps> = ({
   paperHeadLine: headLine,
   acceptButtonProps,
   cancelButtonProps,
@@ -54,4 +54,4 @@ const EditingModal: React.FC<EditingModalProps> = ({
   );
 };
 
-export default EditingModal;
+export default GenericEditingModal;

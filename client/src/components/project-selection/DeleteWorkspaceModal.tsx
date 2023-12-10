@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 import { openModal } from "./WorkspaceSelector";
-import EditingModal from "./EditingModal";
+import GenericEditingModal from "./GenericEditingModal";
 
 type DeleteWorkspaceModalProps = {
   workSpace: workSpaceType;
@@ -45,7 +45,7 @@ export const DeleteWorkspaceModal = ({
   return (
     <>
       {snackBar}
-      <EditingModal
+      <GenericEditingModal
         modalProps={{
           open: modalIsOpen === "delete",
           onClose: onCancel,
