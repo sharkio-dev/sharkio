@@ -30,6 +30,11 @@ export const InvocationUpperBar = ({
   } as InvocationType);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const [defaultTab, setDefaultTab] = useState("1");
+  const { sniffers } = useSniffersStore();
+  console.log(editedInvocation);
+  const sniffer = sniffers.find(
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+  );
 
   useEffect(() => {
     if (activeInvocation) {
@@ -66,12 +71,16 @@ export const InvocationUpperBar = ({
       }
     });
   };
+  const snifferUrl = `https://${sniffer?.subdomain}.${
+    import.meta.env.VITE_PROXY_DOMAIN
+  }`;
 
   return (
     <>
       <div className="flex flex-row items-center space-x-4">
         <div className="flex flex-row items-center w-40">
           <SelectMethodDropDown
+            disabled={activeInvocation !== undefined}
             value={editedInvocation?.method || ""}
             onChange={(value: string) => {
               if (editedInvocation) {
@@ -84,13 +93,16 @@ export const InvocationUpperBar = ({
           />
         </div>
         <TextField
-          value={editedInvocation?.url}
+          disabled={activeInvocation !== undefined}
+          value={snifferUrl + editedInvocation?.url}
           onChange={(e: any) => {
             if (editedInvocation) {
-              setEditedInvocation({
-                ...editedInvocation,
-                url: e.target.value,
-              });
+              if (e.target.value.startsWith(snifferUrl + "/")) {
+                setEditedInvocation({
+                  ...editedInvocation,
+                  url: e.target.value.replace(snifferUrl, ""),
+                });
+              }
             }
           }}
           variant="outlined"

@@ -16,7 +16,7 @@ type AddSnifferModalProps = {
 };
 export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const [name, setName] = useState<string>("");
-  const [downstreamUrl, setDownstreamUrl] = useState<string>("");
+  const [downstreamUrl, setDownstreamUrl] = useState<string>("https://");
 
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);

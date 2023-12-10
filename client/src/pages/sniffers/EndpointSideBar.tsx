@@ -104,7 +104,7 @@ const ImportRequestModal = ({
       <Paper className="h-fit w-1/2 p-5">
         {snackBar}
         <div className="mb-4 flex ">
-          <Typography variant="h6">Import an Endpoint</Typography>
+          <Typography variant="h6">Import a Request from Curl</Typography>
         </div>
         <div className="w-full border-b-[0.05px] my-4" />
         <Editor

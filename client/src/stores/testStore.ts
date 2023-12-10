@@ -25,7 +25,6 @@ export type TestType = {
 export const getTestByTestSuiteId = (testSuiteId: string) => {
   return BackendAxios.get(`/test-suites/${testSuiteId}/tests`);
 };
-
 interface TestStore {
   tests: Record<string, TestType[]>;
   executedTests: Record<string, boolean>;
@@ -48,12 +47,35 @@ interface TestStore {
   executeTest: (testSuiteId: string, testId: string) => Promise<void>;
   getExecutions: (testSuiteId: string, testId: string) => Promise<any>;
   getExecutionByEndpoint: (testSuiteId: string, url: string) => Promise<any>;
+  currentTest: TestType;
+  setCurrentTest: (test: TestType) => void;
+  getRuleFromCurrentTest: (ruleType: string) => Rule | undefined;
 }
 
 export const useTestStore = create<TestStore>((set, get) => ({
   tests: {},
   executedTests: {},
   executions: [],
+  currentTest: {
+    id: "",
+    name: "",
+    createdAt: new Date(),
+    testSuiteId: "",
+    url: "",
+    body: "",
+    headers: {},
+    method: "",
+    rules: [],
+  },
+
+  getRuleFromCurrentTest: (ruleType: string) => {
+    const rules = get().currentTest.rules;
+    return rules.find((rule) => rule.type === ruleType);
+  },
+
+  setCurrentTest: (test: TestType) => {
+    set({ currentTest: test });
+  },
   loadTests: async (testSuiteId: string) => {
     return getTestByTestSuiteId(testSuiteId).then((res) => {
       const a = res?.data?.reduce(
@@ -120,9 +142,11 @@ export const useTestStore = create<TestStore>((set, get) => ({
     return BackendAxios.get<TestType>(
       `/test-suites/${testSuiteId}/tests/${testId}`,
     ).then((res) => {
+      set({ currentTest: res.data });
       return res.data;
     });
   },
+
   resetTests: () => {
     set({ tests: {} });
   },

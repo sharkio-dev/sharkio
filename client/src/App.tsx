@@ -11,7 +11,6 @@ import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingSt
 import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
 import {
   CreateInvocationPage,
-  LiveSnifferPage,
   SnifferEndpointPage,
   SnifferPage,
 } from "./pages/sniffers/SniffersPage";
@@ -21,6 +20,7 @@ import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
 import { MockPage } from "./pages/mocks/MockPage";
 import { RestPassword } from "./pages/reset-password/reset-password";
+import { LivePage } from "./pages/sniffers/SniffersPage/LivePage";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -36,8 +36,9 @@ function App(): React.JSX.Element {
     const routesWithAuth = [
       { path: routes.RESET_PASSWORD, element: <RestPassword /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.LIVE, element: <LiveSnifferPage /> },
+      { path: routes.LIVE, element: <LivePage /> },
       { path: routes.SNIFFER, element: <SnifferPage /> },
+      { path: routes.SNIFFERS, element: <SnifferPage /> },
       { path: routes.SNIFFER_ENDPOINT, element: <SnifferEndpointPage /> },
       {
         path: routes.SNIFFER_ENDPOINT_INVOCATION,
@@ -47,7 +48,7 @@ function App(): React.JSX.Element {
         path: routes.SNIFFER_CREATE_INVOCATION,
         element: <CreateInvocationPage />,
       },
-      { path: routes.LIVE_INVOCATION, element: <LiveSnifferPage /> },
+      { path: routes.LIVE_INVOCATION, element: <LivePage /> },
       { path: routes.CHAT, element: <ChatPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },
@@ -81,7 +82,7 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  {user ? <LiveSnifferPage /> : <LandingPage />}
+                  {user ? <LivePage /> : <LandingPage />}
                 </PageTemplate>
               }
             />

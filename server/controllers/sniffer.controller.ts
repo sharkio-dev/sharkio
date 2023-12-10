@@ -50,7 +50,6 @@ export class SnifferController {
           let sniffers = [];
 
           sniffers = await this.snifferManager.getUserSniffers(userId);
-
           res.json(sniffers);
         },
       )
