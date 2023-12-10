@@ -41,6 +41,16 @@ export const getRequests = () => {
   return BackendAxios.get("/request");
 };
 
+export const importRequestFromCurl = (
+  snifferId: string,
+  curlCommand: string,
+) => {
+  return BackendAxios.post("/request/import/curl", {
+    snifferId,
+    curl: curlCommand,
+  });
+};
+
 export const getAllMocks = () => {
   return BackendAxios.get("/sniffer/action/getMocks");
 };

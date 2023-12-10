@@ -144,15 +144,10 @@ export class EndpointService {
 
   async getInvocationsByUser(userId: string, limit: number) {
     const invocations = await this.requestRepository.repository.find({
-      // TODO: reduce response and get it by demand.
-      // relations: {
-      //   response: true,
-      // },
       where: {
         userId,
       },
-      // TODO: make this configurable
-      take: 25,
+      take: limit,
       order: {
         createdAt: "DESC",
       },

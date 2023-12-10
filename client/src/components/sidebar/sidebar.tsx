@@ -5,6 +5,7 @@ import { Logo } from "./Logo";
 import { BiTestTube } from "react-icons/bi";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { VscTypeHierarchy } from "react-icons/vsc";
+import { MdOutlineEmergencyRecording } from "react-icons/md";
 
 interface IMenuItem {
   to: string;
@@ -16,10 +17,17 @@ interface IMenuItem {
 const menus: IMenuItem[] = [
   {
     to: routes.LIVE,
-    title: "Proxies",
-    Icon: VscTypeHierarchy,
+    title: "Real Time",
+    Icon: MdOutlineEmergencyRecording,
     identifier: "live",
   },
+  {
+    to: routes.SNIFFERS,
+    title: "Sniffers",
+    Icon: VscTypeHierarchy,
+    identifier: "sniffers",
+  },
+
   {
     to: routes.TEST_SUITES,
     title: "Test Suites",

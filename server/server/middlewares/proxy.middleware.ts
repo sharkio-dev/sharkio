@@ -43,27 +43,43 @@ export class ProxyMiddleware {
             "end",
             function (this: ProxyMiddleware) {
               if (invocationId != null && typeof invocationId === "string") {
+                let escapedBody = body.toString();
+
                 this.requestInterceptor
                   .interceptResponse(
                     userId,
                     snifferId,
                     invocationId,
                     {
-                      body: body?.toString() || "",
+                      body: escapedBody,
                       headers: proxyRes.headers,
                       statusCode: proxyRes.statusCode,
                     },
                     testExecutionId,
                   )
                   .then((data) => {
-                    res.end(body?.toString() || "");
+                    Object.entries(proxyRes.headers)
+                      .filter(([key, value]) => key != "content-length")
+                      .forEach(([key, value]) => {
+                        value && res.setHeader(key, value);
+                      });
+                    res.end(
+                      new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
+                    );
                   })
                   .catch((e) => {
                     logger.error(e.message);
                     res.sendStatus(500).end();
                   });
               } else {
-                res.end(body);
+                Object.entries(proxyRes.headers)
+                  .filter(([key, value]) => key != "content-length")
+                  .forEach(([key, value]) => {
+                    value && res.setHeader(key, value);
+                  });
+                res.end(
+                  new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
+                );
               }
             }.bind(this),
           );
@@ -80,9 +96,9 @@ export class ProxyMiddleware {
   async chooseRoute(req: Request) {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
-    const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain,
-    );
+
+    const selectedSniffer =
+      await this.snifferService.findBySubdomain(subdomain);
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
     }
