@@ -2,7 +2,7 @@ import { Request } from "express";
 import { useLog } from "../../lib/log/index";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { RequestHandler, createProxyMiddleware } from "http-proxy-middleware";
-import { RequestInterceptor } from "./request-interceptor";
+import { RequestInterceptor } from "./request-interceptor.middleware";
 import type * as http from "http";
 
 const logger = useLog({
@@ -43,7 +43,10 @@ export class ProxyMiddleware {
             "end",
             function (this: ProxyMiddleware) {
               if (invocationId != null && typeof invocationId === "string") {
-                let escapedBody = body.toString();
+                let escapedBody = body
+                  .map((a: any) => [...a])
+                  .flat()
+                  .toString();
 
                 this.requestInterceptor
                   .interceptResponse(

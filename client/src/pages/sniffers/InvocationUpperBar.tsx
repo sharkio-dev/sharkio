@@ -71,6 +71,7 @@ export const InvocationUpperBar = ({
       }
     });
   };
+
   const snifferUrl = `https://${sniffer?.subdomain}.${
     import.meta.env.VITE_PROXY_DOMAIN
   }`;

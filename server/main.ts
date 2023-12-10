@@ -18,13 +18,13 @@ import { EndpointRepository } from "./model/endpoint/endpoint.model";
 import { RequestRepository } from "./model/request/request.model";
 import { ResponseRepository } from "./model/response/response.model";
 import { SnifferRepository } from "./model/sniffer/sniffers.model";
-import { TestRepository } from "./model/testSuite/test.model";
-import { TextExecutionRepository } from "./model/testSuite/testExecution.model";
-import { TestSuiteRepository } from "./model/testSuite/testSuite.model";
+import { TestRepository } from "./model/test-suite/test.model";
+import { TextExecutionRepository } from "./model/test-suite/test-execution.model";
+import { TestSuiteRepository } from "./model/test-suite/test-suite.model";
 import UserRepository from "./model/user/user.model";
 import { getAppDataSource } from "./server/app-data-source";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
-import { RequestInterceptor } from "./server/middlewares/request-interceptor";
+import { RequestInterceptor } from "./server/middlewares/request-interceptor.middleware";
 import { ProxyServer } from "./server/proxy-server";
 import { Server } from "./server/server";
 import { ChatService } from "./services/chat/chat.service";
@@ -43,6 +43,10 @@ import { EnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
 import { ImportService } from "./services/imports/imports.service";
+import { TestFlowService } from "./services/test-flow/test-flow.service";
+import { TestFlowNodeRepository } from "./model/test-suite/test-flow/test-flow-node.model";
+import { TestFlowEdgeRepository } from "./model/test-suite/test-flow/test-flow-edge.model";
+import { TestFlowRepository } from "./model/test-suite/test-flow/test-flow.model";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -131,42 +135,52 @@ async function main() {
     testExecutionService,
   );
 
-  /* Middlewares */
-  const requestInterceptorMiddleware = new RequestInterceptor(
-    snifferService,
-    endpointService,
-    responseService,
+  const testFlowRepository = new TestFlowRepository(appDataSource);
+  const testFlowEdgeRepository = new TestFlowEdgeRepository(appDataSource);
+  const testFlowNodeRepository = new TestFlowNodeRepository(appDataSource);
+  const testFlowService = new TestFlowService(
+    testFlowNodeRepository,
+    testFlowEdgeRepository,
+    testFlowRepository,
   );
-  const proxyMiddleware = new ProxyMiddleware(
-    snifferService,
-    requestInterceptorMiddleware,
-  );
-  const mockMiddleware = new MockMiddleware(mockService, snifferService);
+  testFlowService.test();
 
-  /* Servers */
-  const proxyServer = new ProxyServer(
-    proxyMiddleware,
-    requestInterceptorMiddleware,
-    mockMiddleware,
-  );
-  const snifferManagerServer = new Server(
-    [
-      authController.getRouter(),
-      snifferController.getRouter(),
-      settingsController.getRouter(),
-      invocationController.getRouter(),
-      cliController.getRouter(),
-      endpointController.getRouter(),
-      chatController.getRouter(),
-      testSuiteController.getRouter(),
-      mockController.getRouter(),
-    ],
-    swaggerUi,
-  );
+  // /* Middlewares */
+  // const requestInterceptorMiddleware = new RequestInterceptor(
+  //   snifferService,
+  //   endpointService,
+  //   responseService,
+  // );
+  // const proxyMiddleware = new ProxyMiddleware(
+  //   snifferService,
+  //   requestInterceptorMiddleware,
+  // );
+  // const mockMiddleware = new MockMiddleware(mockService, snifferService);
 
-  // /* Start Servers */
-  snifferManagerServer.start();
-  proxyServer.start();
+  // /* Servers */
+  // const proxyServer = new ProxyServer(
+  //   proxyMiddleware,
+  //   requestInterceptorMiddleware,
+  //   mockMiddleware,
+  // );
+  // const snifferManagerServer = new Server(
+  //   [
+  //     authController.getRouter(),
+  //     snifferController.getRouter(),
+  //     settingsController.getRouter(),
+  //     invocationController.getRouter(),
+  //     cliController.getRouter(),
+  //     endpointController.getRouter(),
+  //     chatController.getRouter(),
+  //     testSuiteController.getRouter(),
+  //     mockController.getRouter(),
+  //   ],
+  //   swaggerUi,
+  // );
+
+  // // /* Start Servers */
+  // snifferManagerServer.start();
+  // proxyServer.start();
 }
 
 main();

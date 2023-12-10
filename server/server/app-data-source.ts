@@ -7,10 +7,13 @@ import { Chat } from "../model/chat/chat.model";
 import { Message } from "../model/chat/message.model";
 import { Request } from "../model/request/request.model";
 import { Response } from "../model/response/response.model";
-import { TestSuite } from "../model/testSuite/testSuite.model";
-import { Test } from "../model/testSuite/test.model";
-import { TestExecution } from "../model/testSuite/testExecution.model";
+import { TestSuite } from "../model/test-suite/test-suite.model";
+import { Test } from "../model/test-suite/test.model";
+import { TestExecution } from "../model/test-suite/test-execution.model";
 import { Mock } from "../model/mock/mock.model";
+import { TestFlowNode } from "../model/test-suite/test-flow/test-flow-node.model";
+import { TestFlow } from "../model/test-suite/test-flow/test-flow.model";
+import { TestFlowEdge } from "../model/test-suite/test-flow/test-flow-edge.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
@@ -35,6 +38,9 @@ export const getAppDataSource = async () => {
         Test,
         Response,
         Mock,
+        TestFlowNode,
+        TestFlowEdge,
+        TestFlow,
       ],
       subscribers: [],
       migrations: [],

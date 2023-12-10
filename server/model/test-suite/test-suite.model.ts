@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Repository,
 } from "typeorm";
+import type { TestSuiteType } from "./types";
 
 @Entity()
 export class TestSuite {
@@ -13,6 +14,9 @@ export class TestSuite {
 
   @Column()
   name: string;
+
+  @Column()
+  type: string;
 
   @Column({ name: "created_at" })
   createdAt: Date;

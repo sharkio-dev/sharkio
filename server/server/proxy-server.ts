@@ -7,7 +7,7 @@ import "reflect-metadata";
 import { useLog } from "../lib/log";
 import { logMiddleware } from "./middlewares/log.middleware";
 import { ProxyMiddleware } from "./middlewares/proxy.middleware";
-import { RequestInterceptor } from "./middlewares/request-interceptor";
+import { RequestInterceptor } from "./middlewares/request-interceptor.middleware";
 import https from "https";
 import fs from "fs";
 import MockMiddleware from "./middlewares/mock.middleware";

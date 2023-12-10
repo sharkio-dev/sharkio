@@ -1,5 +1,5 @@
 import { useLog } from "../../lib/log";
-import { Mock, MockRepository } from "../../model/mock/mock.model";
+import { MockRepository } from "../../model/mock/mock.model";
 
 const log = useLog({
   dirname: __dirname,

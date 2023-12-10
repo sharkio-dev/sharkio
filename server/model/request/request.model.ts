@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import { useLog } from "../../lib/log";
 import { Response } from "../response/response.model";
-import { TestExecution } from "../testSuite/testExecution.model";
+import { TestExecution } from "../test-suite/test-execution.model";
 
 const log = useLog({
   dirname: __dirname,
