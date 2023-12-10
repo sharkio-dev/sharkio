@@ -13,7 +13,7 @@ const emptyWorkSpace: workSpaceType = {
   name: "",
   isOpen: false,
 };
-const HIDDEN: boolean = true;
+const ISHIDDEN: boolean = true;
 const WorkspaceSelector = () => {
   const [modalIsOpen, setModalIsOpen] = useState<openModal>("none");
   const [workSpaceToEdit, setWorkSpaceToEdit] =
@@ -53,7 +53,7 @@ const WorkspaceSelector = () => {
   };
   return (
     <div>
-      {!HIDDEN && (
+      {!ISHIDDEN && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>

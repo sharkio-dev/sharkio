@@ -20,7 +20,6 @@ interface EditingModalProps {
   cancelButtonValue?: string;
   isLoading: boolean;
 }
-
 const GenericEditingModal: React.FC<EditingModalProps> = ({
   paperHeadLine: headLine,
   acceptButtonProps,
