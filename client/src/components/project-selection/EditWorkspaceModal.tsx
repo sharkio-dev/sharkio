@@ -1,22 +1,20 @@
 import {
-  Button,
-  CircularProgress,
   Modal,
-  Paper,
-  TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
+import { openModal } from "./WorkspaceSelector";
+import EditPaper from "./EditPaper";
 
 interface EditWorkspaceModalProps {
-  open: boolean;
+  modalIsOpen: openModal;
   onCancel: () => void;
   workSpace: workSpaceType;
 }
 
 const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
-  open,
+  modalIsOpen,
   onCancel,
   workSpace,
 }) => {
@@ -27,7 +25,7 @@ const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
   const handleEditedProjectSave = () => {
     console.log(
       "try edit - " + "to edit:" + workSpace.name,
-      "edited:" + editedWorkSpaceName,
+      "edited:" + editedWorkSpaceName
     );
     if (editedWorkSpaceName === "" || workSpace.name === editedWorkSpaceName) {
       showSnackbar("Name cannot be empty or the same", "error");
@@ -53,37 +51,25 @@ const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
     <>
       {snackBar}
       <Modal
-        open={open}
+        open={modalIsOpen === "edit"}
         onClose={onCancel}
         closeAfterTransition
         className="flex justify-center items-center border-0"
       >
-        <Paper className="flex flex-col p-4 w-96 rounded-sm">
-          <div className="text-2xl font-bold">Edit project name</div>
-          <div className="w-full border-b-[0.05px] my-4" />
-          <div className="flex flex-col space-y-2">
-            <TextField
-              label={"Current name: " + workSpace.name}
-              placeholder={workSpace.name}
-              value={editedWorkSpaceName}
-              onChange={(e) => setEditedWorkSpaceName(e.target.value)}
-              inputProps={{ maxLength: 25 }}
-            />
-          </div>
-          <div className="flex flex-row justify-start mt-4 space-x-2">
-            <Button
-              onClick={handleEditedProjectSave}
-              variant="outlined"
-              color="success"
-              disabled={isLoading}
-            >
-              {isLoading ? <CircularProgress size={24} /> : "Save"}
-            </Button>
-            <Button onClick={onCancel} variant="outlined">
-              {isLoading ? <CircularProgress size={24} /> : "Cancel"}
-            </Button>
-          </div>
-        </Paper>
+        <EditPaper
+          paperHeadLine="Edit Project"
+          textFieldLabel={"Current name: " + workSpace.name}
+          textFieldPlaceHolder={workSpace.name}
+          textFieldValue={editedWorkSpaceName}
+          onChangeTextField={(e) => setEditedWorkSpaceName(e.target.value)}
+          onClickAcceptButton={handleEditedProjectSave}
+          onClickCancelButton={onCancel}
+          isLoading={isLoading}
+          acceptButtonValue="Save"
+          cancelButtonValue="Cancel"
+          acceptButtonColor="success"
+          acceptButtonDisabled={isLoading}
+        />
       </Modal>
     </>
   );

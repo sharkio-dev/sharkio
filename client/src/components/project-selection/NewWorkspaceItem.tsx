@@ -1,18 +1,19 @@
 import { AiOutlinePlus } from "react-icons/ai";
 import { MenuItem } from "@mui/material";
+import { openModal } from "./WorkspaceSelector";
 
 interface NewProjectItemProps {
-  setNewProjectModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setModalIsOpen: React.Dispatch<React.SetStateAction<openModal>>;
 }
 const NewWorkspaceItem: React.FC<NewProjectItemProps> = ({
-  setNewProjectModalIsOpen,
+  setModalIsOpen,
 }) => {
   const handleAddNewProject = () => {
-    setNewProjectModalIsOpen(true);
+    setModalIsOpen('create');
   };
 
   return (
-    <MenuItem onClick={() => handleAddNewProject()} value="New Project">
+    <MenuItem onClick={() => handleAddNewProject()} value="New workspace">
       <AiOutlinePlus></AiOutlinePlus> add workSpace
     </MenuItem>
   );

@@ -7,19 +7,15 @@ import NewWorkspaceItem from "./NewWorkspaceItem";
 import { DeleteWorkspaceModal } from "./DeleteWorkspaceModal";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 
-//TODO Connect workspaces to specific user in db
-//TODO: make all the jsx as one component (in edit\add\delete) calls editModal and pass needed props and remove duplicated code
+export type openModal = "create" | "edit" | "delete" | "none";
 const emptyWorkSpace: workSpaceType = {
   id: "",
   name: "",
   isOpen: false,
 };
+const HIDDEN: boolean = true;
 const WorkspaceSelector = () => {
-  const [newWorkspaceModalIsOpen, setNewProjectModalIsOpen] = useState(false);
-  const [editWorkspaceModalIsOpen, setEditWorkspaceModalIsOpen] = useState(false);
-  const [deleteWorkspaceModalIsOpen, setDeleteWorkspaceModalIsOpen] =
-    useState(false);
-
+  const [modalIsOpen, setModalIsOpen] = useState<openModal>("none");
   const [workSpaceToEdit, setWorkSpaceToEdit] =
     useState<workSpaceType>(emptyWorkSpace);
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
@@ -33,77 +29,73 @@ const WorkspaceSelector = () => {
     changeBetweenWorkSpaces(workSpaceId);
   };
 
-  const handleNewWorkspaceEnd = () => {
-    setNewProjectModalIsOpen(false);
-  };
-
-  const handleEditWorkspace = (e: React.MouseEvent, workSpace: workSpaceType) => {
+  const handleEditWorkspace = (
+    e: React.MouseEvent,
+    workSpace: workSpaceType
+  ) => {
     e.stopPropagation();
     setWorkSpaceToEdit(workSpace);
-    setEditWorkspaceModalIsOpen(true);
-  };
-
-  const handleEditWorkspaceEnd = () => {
-    setWorkSpaceToEdit(emptyWorkSpace);
-    setEditWorkspaceModalIsOpen(false);
+    setModalIsOpen("edit");
   };
 
   const handleDeleteWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType,
+    workSpace: workSpaceType
   ) => {
     e.stopPropagation();
-    setDeleteWorkspaceModalIsOpen(true);
+    setModalIsOpen("delete");
     setWorkSpaceToEdit(workSpace);
   };
 
-  const handleDeleteWorkspaceEnd = () => {
-    setDeleteWorkspaceModalIsOpen(false);
+  const handleModalIsClosed = () => {
     setWorkSpaceToEdit(emptyWorkSpace);
+    setModalIsOpen("none");
   };
-
   return (
     <div>
-      <FormControl fullWidth size="small">
-        <InputLabel>NameSpaces</InputLabel>
-        <Select
-          style={{ width: "200px" }}
-          value={openWorkspace?.name || ""}
-          label="project"
-        >
-          <NewWorkspaceItem setNewProjectModalIsOpen={setNewProjectModalIsOpen} />
-          {workspaces.map((project: workSpaceType) => {
-            return (
-              <MenuItem
-                key={project.id}
-                value={project.name}
-                onClick={() => handleChangeWorkspace(project.id)}
-              >
-                <WorkspaceItem
-                  project={project}
-                  handleEditProject={handleEditWorkspace}
-                  handleDeleteProject={handleDeleteWorkspace}
-                />
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-      <NewWorkspaceModal
-        open={newWorkspaceModalIsOpen}
-        onCancel={handleNewWorkspaceEnd}
-      />
-
-      <EditWorkspaceModal
-        open={editWorkspaceModalIsOpen}
-        onCancel={handleEditWorkspaceEnd}
-        workSpace={workSpaceToEdit}
-      />
-      <DeleteWorkspaceModal
-        workSpace={workSpaceToEdit}
-        open={deleteWorkspaceModalIsOpen}
-        onCancel={handleDeleteWorkspaceEnd}
-      />
+      {!HIDDEN && (
+        <>
+          <FormControl fullWidth size="small">
+            <InputLabel>workspaces</InputLabel>
+            <Select
+              style={{ width: "200px" }}
+              value={openWorkspace.name}
+              label="workspace"
+            >
+              <NewWorkspaceItem setModalIsOpen={setModalIsOpen} />
+              {workspaces.map((project: workSpaceType) => {
+                return (
+                  <MenuItem
+                    key={project.id}
+                    value={project.name}
+                    onClick={() => handleChangeWorkspace(project.id)}
+                  >
+                    <WorkspaceItem
+                      project={project}
+                      handleEditProject={handleEditWorkspace}
+                      handleDeleteProject={handleDeleteWorkspace}
+                    />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <NewWorkspaceModal
+            modalIsOpen={modalIsOpen}
+            onCancel={handleModalIsClosed}
+          />
+          <EditWorkspaceModal
+            modalIsOpen={modalIsOpen}
+            onCancel={handleModalIsClosed}
+            workSpace={workSpaceToEdit}
+          />
+          <DeleteWorkspaceModal
+            modalIsOpen={modalIsOpen}
+            onCancel={handleModalIsClosed}
+            workSpace={workSpaceToEdit}
+          />
+        </>
+      )}
     </div>
   );
 };

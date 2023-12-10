@@ -8,13 +8,14 @@ import {
 import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
+import { openModal } from "./WorkspaceSelector";
 
 interface EditWorkspaceModalProps {
-  open: boolean;
+  modalIsOpen: openModal;
   onCancel: () => void;
 }
 const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
-  open,
+  modalIsOpen,
   onCancel,
 }) => {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState("");
@@ -29,9 +30,9 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
     setIsLoading(true);
     createWorkspace(newWorkSpaceName) //api call
       .then(() => {
-        onCancel(), showSnackbar("Project added", "success");
+        onCancel(), showSnackbar("workspace added", "success");
       })
-      .catch(() => showSnackbar("Error adding new project", "error"))
+      .catch(() => showSnackbar("Error adding new workspace", "error"))
       .finally(() => {
         setIsLoading(false);
         getWorkspaces();
@@ -43,7 +44,7 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
     <>
       {snackBar}
       <Modal
-        open={open}
+        open={modalIsOpen === "create"}
         onClose={onCancel}
         closeAfterTransition
         className="flex justify-center items-center border-0"

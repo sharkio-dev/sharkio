@@ -3,15 +3,16 @@ import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
+import { openModal } from "./WorkspaceSelector";
 
 type DeleteWorkspaceModalProps = {
   workSpace: workSpaceType;
-  open: boolean;
+  modalIsOpen: openModal;
   onCancel: () => void;
 };
 export const DeleteWorkspaceModal = ({
   workSpace,
-  open,
+  modalIsOpen,
   onCancel,
 }: DeleteWorkspaceModalProps) => {
   const [verifyDelete, setVerifyDelete] = useState("");
@@ -21,7 +22,7 @@ export const DeleteWorkspaceModal = ({
 
   const handleDeleteProjectAccept = () => {
     if (workSpace.name !== verifyDelete) {
-      showSnackbar("Please type the name of the project to delete", "error");
+      showSnackbar("Please type the name of the workspace to delete", "error");
       return;
     }
     setIsLoading(true);
@@ -31,7 +32,7 @@ export const DeleteWorkspaceModal = ({
       })
       .catch((e) => {
         console.log(e);
-        showSnackbar("Error deleting project", "error");
+        showSnackbar("Error deleting workspace", "error");
       })
       .finally(() => {
         setIsLoading(false);
@@ -46,7 +47,7 @@ export const DeleteWorkspaceModal = ({
     <>
       {snackBar}
       <Modal
-        open={open}
+        open={modalIsOpen === "delete"}
         onClose={onCancel}
         className="flex justify-center items-center border-0"
       >
@@ -72,7 +73,7 @@ export const DeleteWorkspaceModal = ({
               {isLoading ? <CircularProgress size={24} /> : "Delete"}
             </Button>
             <Button onClick={onCancel} variant="outlined" color="primary">
-              {isLoading ? <CircularProgress size={24} /> : "Cancel"}
+              "Cancel
             </Button>
           </div>
         </Paper>
