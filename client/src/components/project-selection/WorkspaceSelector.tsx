@@ -53,7 +53,7 @@ const WorkspaceSelector = () => {
   };
   return (
     <div>
-      {HIDDEN && (
+      {!HIDDEN && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
