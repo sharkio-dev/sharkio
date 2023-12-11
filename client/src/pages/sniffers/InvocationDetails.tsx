@@ -17,7 +17,7 @@ import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import { InvocationType } from "./types";
 import { HeaderSection } from "../test-suites/HeaderSection";
 import { BodySection } from "../test-suites/BodySection";
-import { StatusCodeSelector } from "../test-suites/TestConfig";
+import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 
 type InvocationDetailsProps = {
   invocation: InvocationType;
@@ -27,17 +27,22 @@ type InvocationDetailsProps = {
 const defaultCodeLanguage = "bash";
 
 export function InvocationDetails({
+  defaultTab = "1",
   invocation,
   setInvocation,
-}: InvocationDetailsProps) {
+}: InvocationDetailsProps & { defaultTab?: string }) {
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [headers, setHeaders] = React.useState<{ name: string; value: any }[]>(
     [],
   );
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status",
+    "Body",
   );
+
+  React.useEffect(() => {
+    setValue(defaultTab);
+  }, [defaultTab]);
 
   React.useEffect(() => {
     setHeaders(
@@ -62,7 +67,7 @@ export function InvocationDetails({
     return data;
   };
 
-  const onBodyChange = (body: string) => {
+  const handleBodyChange = (body: string) => {
     setInvocation({
       ...invocation,
       body,
@@ -105,7 +110,10 @@ export function InvocationDetails({
           value="1"
           style={{ padding: 0, paddingTop: 16, overflowY: "auto" }}
         >
-          <BodySection body={invocation?.body} setBody={onBodyChange} />
+          <BodySection
+            body={invocation?.body}
+            onBodyChange={handleBodyChange}
+          />
         </TabPanel>
         <TabPanel
           value="2"
@@ -161,7 +169,10 @@ export function InvocationDetails({
               />
             )}
             {section === "Body" && (
-              <BodySection body={responseData(invocation?.response).body} />
+              <BodySection
+                body={responseData(invocation?.response).body}
+                onBodyChange={handleBodyChange}
+              />
             )}
             {section === "Headers" && (
               <HeaderSection

@@ -5,7 +5,6 @@ import {
 } from "../types/types";
 import { BackendAxios } from "./backendAxios";
 import { SnifferType } from "../stores/sniffersStores";
-import { InvocationType } from "../pages/sniffers/types";
 import { Mock } from "../stores/mockStore";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
@@ -40,6 +39,16 @@ export const editSniffer = async (
 
 export const getRequests = () => {
   return BackendAxios.get("/request");
+};
+
+export const importRequestFromCurl = (
+  snifferId: string,
+  curlCommand: string,
+) => {
+  return BackendAxios.post("/request/import/curl", {
+    snifferId,
+    curl: curlCommand,
+  });
 };
 
 export const getAllMocks = () => {
@@ -124,9 +133,14 @@ export const getLiveInvocations = () => {
     return res.data;
   });
 };
-export const executeInvocation = (
-  invocation: InvocationType & { testId?: string },
-) => {
+export const executeInvocationAPI = (invocation: {
+  testId?: string;
+  snifferId: string;
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  body: string;
+}) => {
   const url = invocation.url;
   const method = invocation.method;
   const headers = invocation.headers;
@@ -138,6 +152,8 @@ export const executeInvocation = (
     method,
     headers,
     body,
+  }).then((res) => {
+    return res.data;
   });
 };
 

@@ -39,9 +39,12 @@ export const TestSuiteSideBar = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const loadTS = () => {
-    loadTestSuites().then(() => {
+    loadTestSuites().then((res) => {
       if (testSuiteId) {
         setSelectValue(testSuiteId);
+      }
+      if (res.length > 0) {
+        navigator("/test-suites/" + res[0].id);
       }
     });
   };
@@ -110,7 +113,6 @@ export const TestSuiteSideBar = () => {
                     setEditTestSuiteModalOpen(true);
                   }}
                   onDeleteSniffer={() => {
-                    navigator("/test-suites/");
                     setDeleteTestSuiteModalOpen(true);
                   }}
                   name={testSuite.name}

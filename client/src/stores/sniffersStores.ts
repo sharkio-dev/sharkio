@@ -9,6 +9,7 @@ import {
   getSniffers,
 } from "../api/api";
 import { EndpointType, InvocationType } from "../pages/sniffers/types";
+import { executeInvocationAPI } from "../api/api";
 
 export type SnifferType = {
   name: string;
@@ -20,6 +21,7 @@ export type SnifferType = {
 
 interface SniffersState {
   sniffers: SnifferType[];
+  selectedSniffer: SnifferType | null;
   endpoints: EndpointType[];
   endpointsCache: Record<string, EndpointType[]>;
   invocations: InvocationType[];
@@ -27,7 +29,9 @@ interface SniffersState {
   loadingInvocations: boolean;
   loadingSniffers: boolean;
   loadingEndpoints: boolean;
+  loadingExecution: boolean;
   loadSniffers: (force?: boolean) => Promise<SnifferType[]>;
+  setSelectedSniffer: (sniffer: SnifferType | null) => void;
   createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<void>;
   deleteSniffer: (snifferId: string) => Promise<void>;
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
@@ -42,10 +46,20 @@ interface SniffersState {
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   loadLiveInvocations: () => Promise<InvocationType[]>;
+  executeInvocation: (data: {
+    testId?: string;
+    snifferId: string;
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    body: string;
+    endpointId?: string;
+  }) => Promise<any>;
 }
 
 export const useSniffersStore = create<SniffersState>((set, get) => ({
   sniffers: [],
+  selectedSniffer: null,
   endpoints: [],
   endpointsCache: {},
   invocations: [],
@@ -53,17 +67,23 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
   loadingInvocations: false,
   loadingSniffers: false,
   loadingEndpoints: false,
+  loadingExecution: false,
   loadSniffers: (force = false) => {
     if (get().sniffers.length && !force) {
       return Promise.resolve(get().sniffers);
     }
+
     set({ loadingSniffers: true });
     return getSniffers()
       .then((res) => {
-        set({ sniffers: res.data });
+        set({ sniffers: res.data || [] });
+        console.log(res.data);
         return res.data;
       })
       .finally(() => set({ loadingSniffers: false }));
+  },
+  setSelectedSniffer: (sniffer: SnifferType | null) => {
+    set({ selectedSniffer: sniffer });
   },
   createSniffer: (sniffer: Omit<SnifferType, "id">) => {
     return createSniffer(sniffer).then(() => {
@@ -133,6 +153,31 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
       })
       .finally(() => {
         set({ loadingInvocations: false });
+      });
+  },
+  executeInvocation: (data: {
+    testId?: string;
+    snifferId: string;
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    body: string;
+    endpointId?: string;
+  }) => {
+    set({ loadingExecution: true });
+    return executeInvocationAPI({
+      testId: data.testId,
+      snifferId: data.snifferId,
+      url: data.url,
+      method: data.method,
+      headers: data.headers,
+      body: data.body,
+    })
+      .then((res) => {
+        return res;
+      })
+      .finally(() => {
+        set({ loadingExecution: false });
       });
   },
 }));

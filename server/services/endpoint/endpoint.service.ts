@@ -6,18 +6,6 @@ import {
 } from "../../model/endpoint/endpoint.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
 
-type TreeNodeKey = string;
-interface EndpointTreeNode {
-  name: TreeNodeKey;
-  callCount: number;
-  metadata: EndpointMetadata;
-  next?: Record<TreeNodeKey, EndpointTreeNode>;
-}
-
-interface EndpointMetadata {
-  suspectedPath: boolean;
-}
-
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
@@ -135,6 +123,7 @@ export class EndpointService {
         method: request.method,
         url: request.url,
       },
+      take: 100,
       order: {
         createdAt: "DESC",
       },
@@ -155,9 +144,6 @@ export class EndpointService {
 
   async getInvocationsByUser(userId: string, limit: number) {
     const invocations = await this.requestRepository.repository.find({
-      relations: {
-        response: true,
-      },
       where: {
         userId,
       },
@@ -182,6 +168,11 @@ export class EndpointService {
 
   async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
     const invocations = await this.requestRepository.repository.find({
+      where: {
+        userId,
+        snifferId,
+      },
+      take: 100,
       relations: {
         response: true,
       },

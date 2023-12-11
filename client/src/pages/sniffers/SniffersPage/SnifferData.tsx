@@ -16,26 +16,16 @@ export const SnifferData: React.FC = () => {
 
   // Invocations source function
   const refreshInvocations = (endpointId: string) => {
-    loadInvocations(endpointId)
-      .then((invocations) => {
-        if (invocations.length > 0) {
-          navigator(
-            `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocations[0].id}`,
-            { replace: true },
-          );
-        }
-      })
-      .catch(() => {
-        resetInvocations();
-        showSnackbar("Failed to get invocations", "error");
-      });
+    loadInvocations(endpointId, true).catch(() => {
+      resetInvocations();
+      showSnackbar("Failed to get invocations", "error");
+    });
   };
 
   // populate the invocations
   useEffect(() => {
-    if (!endpointId) {
+    if (endpointId) {
       resetInvocations();
-    } else {
       refreshInvocations(endpointId);
     }
   }, [endpointId]);
@@ -45,22 +35,24 @@ export const SnifferData: React.FC = () => {
       `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
     );
   };
+  const bottomBarHeight = !invocationId
+    ? "h-1/1 max-h-[calc(100vh-56px)]"
+    : "h-1/3 max-h-[calc(33vh-16px)]";
 
   return (
     <>
       <div className={`flex flex-col  w-full`}>
-        <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
-          <InvocationUpperBar
-            activeInvocation={invocation}
-            onExecuteRequest={() =>
-              endpointId && refreshInvocations(endpointId)
-            }
-          />
-        </div>
-        <div className="flex flex-col p-2 px-4 h-1/3 max-h-[calc(33vh-16px)] w-full overflow-y-auto overflow-x-auto">
+        {invocationId && (
+          <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
+            <InvocationUpperBar activeInvocation={invocation} />
+          </div>
+        )}
+        <div
+          className={`flex flex-col p-2 px-4 ${bottomBarHeight} w-full overflow-y-auto`}
+        >
           {invocations &&
             (loadingInvocations ? (
-              <div className="flex flex-1 justify-center items-center">
+              <div className="flex h-[100vh] justify-center items-center">
                 <LoadingIcon />
               </div>
             ) : (

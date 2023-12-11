@@ -36,6 +36,7 @@ const UrlItem: React.FC<UrlItemProps> = ({
               label={Label}
               variant="outlined"
               color="warning"
+              size="small"
               disabled
               value={SnifferURL}
               focused

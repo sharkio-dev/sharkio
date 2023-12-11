@@ -112,6 +112,15 @@ export class EndpointController {
       async (req, res) => {
         try {
           const { method, headers, body, url, snifferId } = req.body;
+          if (!snifferId) {
+            return res.status(400).send("Sniffer id is required");
+          }
+          if (!url) {
+            return res.status(400).send("Url is required");
+          }
+          if (!method) {
+            return res.status(400).send("Method is required");
+          }
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
             snifferId,
@@ -122,15 +131,136 @@ export class EndpointController {
 
           let newHeaders = headers ?? {};
 
-          await this.requestService.execute({
+          const response = await this.requestService.execute({
             method,
             url,
             headers: newHeaders,
             body,
             subdomain: sniffer.subdomain,
           });
+          log.info({
+            body: response?.data,
+            headers: response?.headers,
+            status: response?.status,
+          });
+          res.status(200).send({
+            body:
+              typeof response?.data === "string"
+                ? response?.data
+                : JSON.stringify(response?.data ?? "", null, 2),
+            headers: response?.headers,
+            status: response?.status,
+          });
+        } catch (e) {
+          log.error(e);
+          res.status(500).send("Internal server error");
+        }
+      },
+    );
 
-          res.sendStatus(200);
+    router.route("/import/curl").post(
+      /**
+       * @openapi
+       * /sharkio/request/import/curl:
+       *   post:
+       *     requestBody:
+       *        description: Execute a request
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              properties:
+       *                curl:
+       *                  type: string
+       *                snifferId:
+       *                  type: string
+       *     tags:
+       *      - request
+       *     description: imports a request
+       *     responses:
+       *       200:
+       *         description: request was successfully imported
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        try {
+          const userId = res.locals.auth.user.id;
+          const { curl, snifferId } = req.body;
+
+          const sniffer = await this.snifferService.getSniffer(
+            res.locals.auth.userId,
+            snifferId,
+          );
+
+          if (!sniffer) {
+            return res.status(404).send("Sniffer not found");
+          }
+
+          const newEndpoint = await this.importService.importFromCurl(
+            userId,
+            snifferId,
+            curl,
+          );
+
+          res.status(200).json(newEndpoint);
+        } catch (e) {
+          log.error(e);
+          res.status(500).send("Internal server error");
+        }
+      },
+    );
+
+    router.route("/import/curl").post(
+      /**
+       * @openapi
+       * /sharkio/request/import/curl:
+       *   post:
+       *     requestBody:
+       *        description: Execute a request
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              properties:
+       *                curl:
+       *                  type: string
+       *                snifferId:
+       *                  type: string
+       *     tags:
+       *      - request
+       *     description: imports a request
+       *     responses:
+       *       200:
+       *         description: request was successfully imported
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        try {
+          const userId = res.locals.auth.user.id;
+          const { curl, snifferId } = req.body;
+
+          if (curl == null || curl == "") {
+            res.status(400).send("Curl command is required");
+          }
+
+          const sniffer = await this.snifferService.getSniffer(
+            res.locals.auth.userId,
+            snifferId,
+          );
+
+          if (!sniffer) {
+            return res.status(404).send("Sniffer not found");
+          }
+
+          const newEndpoint = await this.importService.importFromCurl(
+            userId,
+            snifferId,
+            curl,
+          );
+
+          res.status(200).json(newEndpoint);
         } catch (e) {
           log.error(e);
           res.status(500).send("Internal server error");

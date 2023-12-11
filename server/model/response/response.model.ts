@@ -35,8 +35,8 @@ export class Response {
   @Column({ name: "request_id" })
   requestId: string;
 
-  @Column({ type: "varchar" })
-  body: Record<string, any>;
+  @Column({ type: "text" })
+  body: string;
 
   @Column({ type: "varchar" })
   headers: Record<string, any>;
