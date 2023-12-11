@@ -31,7 +31,6 @@ export const InvocationUpperBar = ({
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const [defaultTab, setDefaultTab] = useState("1");
   const { sniffers } = useSniffersStore();
-  console.log(editedInvocation);
   const sniffer = sniffers.find(
     (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
   );

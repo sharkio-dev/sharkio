@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import randomString from "random-string";
+import { useNavigate } from "react-router-dom";
 
 type AddSnifferModalProps = {
   isOpen: boolean;
@@ -17,6 +18,7 @@ type AddSnifferModalProps = {
 export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const [name, setName] = useState<string>("");
   const [downstreamUrl, setDownstreamUrl] = useState<string>("https://");
+  const navigator = useNavigate();
 
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,10 +44,15 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
       port: 0,
       subdomain: `${name}-${subdomain}`,
     })
-      .then(() => {
+      .then((res) => {
         setName("");
         setDownstreamUrl("");
         onClose();
+        console.log({ res });
+        if (res?.id) {
+          console.log({ res });
+          navigator(`/sniffers/${res?.id}`);
+        }
       })
       .catch(() => {
         showSnackbar("Error updating sniffer", "error");

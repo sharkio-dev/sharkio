@@ -98,6 +98,9 @@ export class SnifferController {
             const { ...config } = req.body;
             const userId = res.locals.auth.user.id;
 
+            if (config.subdomain) {
+              config.subdomain = config.subdomain.toLowerCase();
+            }
             const createdSniffer = await this.snifferManager.createSniffer({
               ...config,
               userId,
@@ -162,6 +165,10 @@ export class SnifferController {
           try {
             const { id } = req.params;
             const data = req.body;
+
+            if (data.subdomain) {
+              data.subdomain = data.subdomain.toLowerCase();
+            }
             const userId = res.locals.auth.user.id;
             await this.snifferManager.editSniffer({ id, userId, ...data });
             res.sendStatus(200);
