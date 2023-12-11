@@ -15,9 +15,9 @@ export const routes = {
   CHAT: "/chat",
   TEST_SUITES: "/test-suites",
   TEST_SUITE: "/test-suites/:testSuiteId",
-  TEST_ENDPOINT: "/test-suites/:testSuiteId/endpoints/:endpointId",
-  TEST_SUITE_TEST:
-    "/test-suites/:testSuiteId/endpoints/:endpointId/tests/:testId",
+  TEST_SUITE_TEST: "/test-suites/:testSuiteId/tests/:testId",
   MOCKS: "/mocks",
   MOCK: "/mocks/:mockId",
+  FLOWS: "/flows",
+  FLOW: "/flows/:flowId",
 };

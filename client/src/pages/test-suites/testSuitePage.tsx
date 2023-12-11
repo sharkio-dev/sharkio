@@ -8,7 +8,7 @@ const TestSuitePage = () => {
         <TestSuiteSideBar />
       </div>
 
-      <div className="flex flex-col max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)] p-4 space-y-4 overflow-y-auto">
+      <div className="flex flex-col max-h-[calc(100vh-96px)] p-4 w-[calc(100vw-56px-240px)] space-y-4 overflow-y-auto">
         <TestSuiteMainSection />
       </div>
     </div>

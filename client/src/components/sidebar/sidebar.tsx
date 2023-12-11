@@ -6,6 +6,7 @@ import { BiTestTube } from "react-icons/bi";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { VscTypeHierarchy } from "react-icons/vsc";
 import { MdOutlineEmergencyRecording } from "react-icons/md";
+import { TiFlowChildren } from "react-icons/ti";
 
 interface IMenuItem {
   to: string;
@@ -33,6 +34,12 @@ const menus: IMenuItem[] = [
     title: "Test Suites",
     Icon: BiTestTube,
     identifier: "test-suites",
+  },
+  {
+    to: routes.FLOWS,
+    title: "Test Flow",
+    Icon: TiFlowChildren,
+    identifier: "flows",
   },
   {
     to: routes.MOCKS,

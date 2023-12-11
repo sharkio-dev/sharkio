@@ -6,3 +6,10 @@ export const BackendAxios = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+export const MockAxios = axios.create({
+  baseURL: "https://test-flow-xw1zs.sniffer.sharkio.dev/sharkio",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
