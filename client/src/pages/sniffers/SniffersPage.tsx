@@ -6,6 +6,7 @@ import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
 
 import Sniffer from "./SniffersPage/Sniffer";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface SnifferPageTemplateProps {
   children?: React.ReactNode;
@@ -15,7 +16,9 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
 }) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadSniffers } = useSniffersStore();
+  const navigator = useNavigate();
   const userId = useAuthStore((s) => s.user?.id);
+  const { snifferId } = useParams();
 
   useEffect(() => {
     if (!userId) return;

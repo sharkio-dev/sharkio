@@ -51,8 +51,8 @@ export const DeleteSnifferModal = ({
           <div className="w-full border-b-[0.05px] my-4" />
           <div className="flex flex-col space-y-2">
             <TextField
-              label={"Delete"}
-              placeholder={`Type "${sniffer.name}" to delete`}
+              label={`Type "${sniffer.name}" to delete`}
+              placeholder={`Delete`}
               value={verifyDelete}
               onChange={(event) => setVerifyDelete(event.target.value)}
             />

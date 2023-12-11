@@ -34,7 +34,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
           >
             <div className="flex text-sm overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
               <AiOutlinePlus className="text-blue-500 text-xl h-[25px] w-[25px]" />
-              <div>New</div>
+              <div>New Request</div>
             </div>
           </div>
           <div
@@ -43,7 +43,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
           >
             <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
               <UploadFileIcon className="text-blue-500 text-xl h-[25px] w-[25px]" />
-              Import
+              Import Request
             </div>
           </div>
         </div>

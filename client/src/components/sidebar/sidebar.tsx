@@ -17,13 +17,13 @@ interface IMenuItem {
 const menus: IMenuItem[] = [
   {
     to: routes.LIVE,
-    title: "Real Time",
+    title: "Live",
     Icon: MdOutlineEmergencyRecording,
     identifier: "live",
   },
   {
     to: routes.SNIFFERS,
-    title: "Sniffers",
+    title: "Requests",
     Icon: VscTypeHierarchy,
     identifier: "sniffers",
   },

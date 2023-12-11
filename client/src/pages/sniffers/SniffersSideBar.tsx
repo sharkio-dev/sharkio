@@ -14,6 +14,9 @@ import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
 export const SniffersSideBar = () => {
+  const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
+    null
+  );
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -21,16 +24,14 @@ export const SniffersSideBar = () => {
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { snifferId } = useParams();
-  const {
-    loadEndpoints,
-    resetEndpoints,
-    loadingEndpoints,
-    selectedSniffer,
-    setSelectedSniffer,
-  } = useSniffersStore();
+  const { loadEndpoints, resetEndpoints, loadingEndpoints } =
+    useSniffersStore();
 
   useEffect(() => {
     if (!snifferId) {
+      if (sniffers.length > 0) {
+        navigator(`/sniffers/${sniffers[0].id}`);
+      }
       resetEndpoints();
       return;
     }
@@ -39,30 +40,24 @@ export const SniffersSideBar = () => {
     });
   }, [snifferId, sniffers]);
 
-  useEffect(() => {
-    if (selectedSniffer && !snifferId) {
-      navigator(`/sniffers/${selectedSniffer.id}`);
-    } else if (sniffers.length > 0 && !selectedSniffer && !snifferId) {
-      navigator(`/sniffers/${sniffers[0].id}`);
-      return;
-    }
-  }, [selectedSniffer, sniffers]);
-
   const onAddSnifferModalClose = () => {
     setIsAddModalOpen(false);
   };
 
   const onEditSnifferModalClose = () => {
+    setSelectedSniffer(null);
     setIsEditModalOpen(false);
   };
 
-  const onEditSniffer = () => {
+  const onEditSniffer = (sniffer: SnifferType) => {
+    setSelectedSniffer(sniffer);
     setIsEditModalOpen(true);
   };
 
   const onDeleteModalClose = () => {
-    setIsDeleteModalOpen(false);
+    navigator(`/sniffers`);
     setSelectedSniffer(null);
+    setIsDeleteModalOpen(false);
   };
 
   const onDeleteSniffer = (sniffer: SnifferType) => {
@@ -99,7 +94,7 @@ export const SniffersSideBar = () => {
                 <SideBarItem
                   LeftIcon={GiSharkFin}
                   isSelected={snifferId === sniffer.id}
-                  onEditSniffer={() => onEditSniffer()}
+                  onEditSniffer={() => onEditSniffer(sniffer)}
                   onDeleteSniffer={() => onDeleteSniffer(sniffer)}
                   name={sniffer.name}
                 />
@@ -160,13 +155,13 @@ export const SideBarItem = ({
   LeftIcon,
 }: SnifferProps) => {
   const editSniffer = (event: any) => {
-    event.stopPropagation();
     onEditSniffer && onEditSniffer();
+    event.stopPropagation();
   };
 
   const deleteSniffer = (event: any) => {
-    event.stopPropagation();
     onDeleteSniffer && onDeleteSniffer();
+    event.stopPropagation();
   };
 
   return (
