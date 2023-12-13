@@ -10,7 +10,7 @@ const Sniffer: React.FC = () => {
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
   const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId)
+    s.sniffers.find((s) => s.id === snifferId),
   );
   const { loadingSniffers } = useSniffersStore();
   if (!sniffer)
