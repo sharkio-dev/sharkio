@@ -3,11 +3,13 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { Button, Modal, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { importRequestFromCurl } from "../../api/api";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { Endpoint } from "./Endpoint";
+import queryString from "query-string";
+import { routes } from "../../constants/routes";
 
 type EndpointSideBarProps = {
   showAdd?: boolean;
@@ -15,7 +17,9 @@ type EndpointSideBarProps = {
 export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
   const [showImport, setShowImport] = useState(false);
   const navigate = useNavigate();
-  const { snifferId, endpointId } = useParams();
+  const { endpointId } = useParams();
+  const location = useLocation();
+  const { snifferId } = queryString.parse(location.search);
   const { endpoints } = useSniffersStore();
 
   const handleImportClicked = () => {
@@ -29,7 +33,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
           <div
             className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
             onClick={() =>
-              navigate(`/sniffers/${snifferId}/invocations/create`)
+              navigate(routes.CREATE_ENDPOINT + `?snifferId=${snifferId}`)
             }
           >
             <div className="flex text-sm overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
@@ -54,20 +58,20 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
           onClose={() => {
             setShowImport(false);
           }}
-          snifferId={snifferId ?? ""}
+          snifferId={(snifferId as string) ?? ""}
         />
       )}
 
-      {endpoints.map((request) => {
+      {endpoints.map((endpoint) => {
         return (
           <Endpoint
-            isSelected={request.id === endpointId}
+            isSelected={endpoint.id === endpointId}
             onClick={() =>
-              navigate(`/sniffers/${snifferId}/endpoints/${request.id}`)
+              navigate(`/endpoints/${endpoint.id}` + `?snifferId=${snifferId}`)
             }
-            key={request.id}
-            method={request.method}
-            url={request.url}
+            key={endpoint.id}
+            method={endpoint.method}
+            url={endpoint.url}
           />
         );
       })}

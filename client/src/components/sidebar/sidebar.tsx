@@ -6,39 +6,40 @@ import { BiTestTube } from "react-icons/bi";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { VscTypeHierarchy } from "react-icons/vsc";
 import { MdOutlineEmergencyRecording } from "react-icons/md";
+import { MdOutlineDashboard } from "react-icons/md";
 
 interface IMenuItem {
   to: string;
   title: string;
   Icon: React.FC<any>;
-  identifier: string;
 }
 
 const menus: IMenuItem[] = [
   {
-    to: routes.LIVE,
-    title: "Live",
-    Icon: MdOutlineEmergencyRecording,
-    identifier: "live",
+    to: routes.PROXIES,
+    title: "Sniffers",
+    Icon: MdOutlineDashboard,
   },
   {
-    to: routes.SNIFFERS,
+    to: routes.REQUESTS,
+    title: "Live",
+    Icon: MdOutlineEmergencyRecording,
+  },
+  {
+    to: routes.ENDPOINTS,
     title: "Requests",
     Icon: VscTypeHierarchy,
-    identifier: "sniffers",
   },
 
   {
     to: routes.TEST_SUITES,
     title: "Test Suites",
     Icon: BiTestTube,
-    identifier: "test-suites",
   },
   {
     to: routes.MOCKS,
     title: "Mocks",
     Icon: HiOutlineClipboardDocumentList,
-    identifier: "mocks",
   },
 ];
 
@@ -54,7 +55,7 @@ export const SideBar: React.FC = () => {
     <div className="sticky flex-col bg-primary border-r border-border-color w-[56px] min-w-[56px]">
       <Logo />
       <div className="flex flex-col justify-center items-center py-4 space-y-4">
-        {menus.map(({ Icon, to, title, identifier }, index) => (
+        {menus.map(({ Icon, to, title }, index) => (
           <div
             onClick={() => onIconClicked(to)}
             key={index}
@@ -63,7 +64,8 @@ export const SideBar: React.FC = () => {
             <Icon
               key={index}
               className={`text-2xl cursor-pointer hover:scale-110 rounded-md hover:cursor-pointer active:scale-100 w-full ${
-                location.pathname.includes(identifier)
+                location.pathname.startsWith(to) ||
+                (location.pathname === routes.ROOT && to === routes.PROXIES)
                   ? "text-blue-400"
                   : "text-white"
               }`}

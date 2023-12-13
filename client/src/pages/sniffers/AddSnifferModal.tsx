@@ -10,6 +10,7 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import randomString from "random-string";
 import { useNavigate } from "react-router-dom";
+import { routes } from "../../constants/routes";
 
 type AddSnifferModalProps = {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [subdomain, setSubdomain] = useState<string>(
-    randomString({ length: 5 }).toLowerCase(),
+    randomString({ length: 5 }).toLowerCase()
   );
   const { createSniffer } = useSniffersStore();
 
@@ -48,10 +49,11 @@ export const AddSnifferModal = ({ isOpen, onClose }: AddSnifferModalProps) => {
         setName("");
         setDownstreamUrl("");
         onClose();
-        console.log({ res });
         if (res?.id) {
-          console.log({ res });
-          navigator(`/sniffers/${res?.id}`);
+          const params = new URLSearchParams();
+          params.append("snifferId", res.id);
+          const queryString = params.toString();
+          navigator(routes.ENDPOINTS + "?" + queryString);
         }
       })
       .catch(() => {

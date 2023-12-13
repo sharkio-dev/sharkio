@@ -1,18 +1,21 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { LoadingIcon } from "../LoadingIcon";
 import { useSniffersStore } from "../../../stores/sniffersStores";
+import queryString from "query-string";
 
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();
   const { show: showSnackbar } = useSnackbar();
-  const { snifferId, endpointId, invocationId } = useParams();
+  const { endpointId, invocationId } = useParams();
   const { invocations, loadingInvocations, loadInvocations, resetInvocations } =
     useSniffersStore();
   const invocation = invocations?.find((i) => i.id === invocationId);
+  const location = useLocation();
+  const { snifferId } = queryString.parse(location.search);
 
   // Invocations source function
   const refreshInvocations = (endpointId: string) => {
@@ -32,7 +35,7 @@ export const SnifferData: React.FC = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/sniffers/${snifferId}/endpoints/${endpointId}/invocations/${invocationId}`,
+      `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`
     );
   };
   const bottomBarHeight = !invocationId

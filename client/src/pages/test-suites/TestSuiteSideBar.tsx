@@ -1,6 +1,6 @@
 import React from "react";
 import { AiOutlinePlayCircle, AiOutlinePlus } from "react-icons/ai";
-import { TestTree } from "./TestTree";
+import { TestList } from "./TestTree";
 import {
   FormControl,
   InputLabel,
@@ -32,7 +32,7 @@ export const TestSuiteSideBar = () => {
   const navigator = useNavigate();
   const [selectValue, setSelectValue] = React.useState<string>("");
   const selectedTestSuite = testSuites.find(
-    (testSuite) => testSuite.id === selectValue,
+    (testSuite) => testSuite.id === selectValue
   );
   const { testSuiteId } = useParams();
   const { tests, executeTest } = useTestStore();
@@ -55,11 +55,11 @@ export const TestSuiteSideBar = () => {
     }
     const combinedArray = Object.values(tests).reduce(
       (acc, array) => [...acc, ...array],
-      [],
+      []
     );
     setLoading(true);
     return Promise.all(
-      combinedArray.map((test) => executeTest(testSuiteId, test.id)),
+      combinedArray.map((test) => executeTest(testSuiteId, test.id))
     )
       .then(() => {
         navigator("/test-suites/" + testSuiteId);
@@ -146,7 +146,7 @@ export const TestSuiteSideBar = () => {
             <p className="text-gray-500 text-center">Select a test suite</p>
           </div>
         )}
-        {testSuiteId && <TestTree />}
+        {testSuiteId && <TestList />}
       </div>
       <AddTestSuiteModal
         open={addTestSuiteModalOpen}

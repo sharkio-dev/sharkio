@@ -4,7 +4,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -12,58 +12,34 @@ import { LoadingIcon } from "./LoadingIcon";
 import { AddSnifferModal } from "./AddSnifferModal";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
+import queryString from "query-string";
+import { routes } from "../../constants/routes";
 
 export const SniffersSideBar = () => {
-  const [selectedSniffer, setSelectedSniffer] = useState<SnifferType | null>(
-    null,
-  );
-  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const { sniffers } = useSniffersStore();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { snifferId } = useParams();
   const { loadEndpoints, resetEndpoints, loadingEndpoints } =
     useSniffersStore();
+  const location = useLocation();
+
+  const { snifferId } = queryString.parse(location.search);
 
   useEffect(() => {
     if (!snifferId) {
       if (sniffers.length > 0) {
-        navigator(`/sniffers/${sniffers[0].id}`);
+        let params = new URLSearchParams();
+        params.append("snifferId", sniffers[0].id);
+        let queryString = params.toString();
+        navigator(routes.ENDPOINTS + "?" + queryString);
       }
       resetEndpoints();
       return;
     }
-    loadEndpoints(snifferId).catch(() => {
+    loadEndpoints(snifferId as string).catch(() => {
       showSnackbar("Failed to get endpoints", "error");
     });
   }, [snifferId, sniffers]);
-
-  const onAddSnifferModalClose = () => {
-    setIsAddModalOpen(false);
-  };
-
-  const onEditSnifferModalClose = () => {
-    setSelectedSniffer(null);
-    setIsEditModalOpen(false);
-  };
-
-  const onEditSniffer = (sniffer: SnifferType) => {
-    setSelectedSniffer(sniffer);
-    setIsEditModalOpen(true);
-  };
-
-  const onDeleteModalClose = () => {
-    navigator(`/sniffers`);
-    setSelectedSniffer(null);
-    setIsDeleteModalOpen(false);
-  };
-
-  const onDeleteSniffer = (sniffer: SnifferType) => {
-    setSelectedSniffer(sniffer);
-    setIsDeleteModalOpen(true);
-  };
 
   return (
     <>
@@ -72,30 +48,17 @@ export const SniffersSideBar = () => {
         <FormControl fullWidth size="small" variant="outlined">
           <InputLabel>Sniffers</InputLabel>
           <Select value={snifferId || ""} label="Sniffers">
-            <MenuItem
-              onClick={() => setIsAddModalOpen(true)}
-              value={"addSniffer"}
-            >
-              <SideBarItem
-                LeftIcon={AiOutlinePlus}
-                isSelected={false}
-                onClick={() => setIsAddModalOpen(true)}
-                name={"Add Sniffer"}
-              />
-            </MenuItem>
             {sniffers.map((sniffer, i) => (
               <MenuItem
                 key={i}
                 onClick={() => {
-                  navigator(`/sniffers/${sniffer.id}`);
+                  navigator(routes.ENDPOINTS + "?snifferId=" + sniffer.id);
                 }}
                 value={sniffer.id}
               >
                 <SideBarItem
                   LeftIcon={GiSharkFin}
                   isSelected={snifferId === sniffer.id}
-                  onEditSniffer={() => onEditSniffer(sniffer)}
-                  onDeleteSniffer={() => onDeleteSniffer(sniffer)}
                   name={sniffer.name}
                 />
               </MenuItem>
@@ -114,25 +77,6 @@ export const SniffersSideBar = () => {
           </div>
         )}
       </div>
-
-      <AddSnifferModal
-        isOpen={isAddModalOpen}
-        onClose={onAddSnifferModalClose}
-      />
-      {selectedSniffer && (
-        <EditSnifferModal
-          isOpen={isEditModalOpen}
-          onClose={onEditSnifferModalClose}
-          sniffer={selectedSniffer}
-        />
-      )}
-      {selectedSniffer && (
-        <DeleteSnifferModal
-          isOpen={isDeleteModalOpen}
-          onClose={onDeleteModalClose}
-          sniffer={selectedSniffer}
-        />
-      )}
     </>
   );
 };

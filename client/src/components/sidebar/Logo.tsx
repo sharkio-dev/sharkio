@@ -3,7 +3,7 @@ import React from "react";
 export const Logo: React.FC = () => {
   return (
     <div className="flex h-14 w-full items-center justify-center border-b border-border-color">
-      <a href="/live">
+      <a href="/">
         <img
           src="/shark-logo.png"
           alt="Logo"

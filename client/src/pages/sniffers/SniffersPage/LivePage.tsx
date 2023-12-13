@@ -40,9 +40,9 @@ export const LivePage = () => {
 
   const onInvocationClick = useCallback(
     (id: string) => {
-      navigator(`/live/invocations/${id}`);
+      navigator(`/requests/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
@@ -73,7 +73,7 @@ export const LivePage = () => {
           <div className="flex flex-col justify-center items-center space-y-4">
             <h1 className="text-2xl font-semibold ">No Live Requests</h1>
             <h2 className="text-lg font-medium ">
-              <a href="/sniffers" className="text-blue-400">
+              <a href="/proxies/create" className="text-blue-400">
                 Create
               </a>{" "}
               a new sniffer to start sniffing

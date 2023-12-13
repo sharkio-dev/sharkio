@@ -29,10 +29,10 @@ export const EditSnifferModal = ({
 }: EdirSnifferModalProps) => {
   const [name, setName] = useState<string>(sniffer.name);
   const [downstreamUrl, setDownstreamUrl] = useState<string>(
-    sniffer.downstreamUrl,
+    sniffer.downstreamUrl
   );
   const [subdomain, setSubdomain] = useState<string>(
-    splitByLast(sniffer.subdomain, "-")[1],
+    splitByLast(sniffer.subdomain, "-")[1]
   );
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);

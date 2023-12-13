@@ -5,9 +5,10 @@ import { InvocationDetails } from "./InvocationDetails";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { BackendAxios } from "../../api/backendAxios";
+import queryString from "query-string";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
@@ -16,7 +17,6 @@ type InvocationUpperBarProps = {
 export const InvocationUpperBar = ({
   activeInvocation,
 }: InvocationUpperBarProps) => {
-  const { snifferId } = useParams();
   const [editedInvocation, setEditedInvocation] = useState<InvocationType>({
     method: "GET",
     url: "/",
@@ -28,11 +28,13 @@ export const InvocationUpperBar = ({
       status: 0,
     },
   } as InvocationType);
+  const location = useLocation();
+  const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const [defaultTab, setDefaultTab] = useState("1");
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
   );
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export const InvocationUpperBar = ({
     if (!editedInvocation) {
       return;
     }
-    const sid = snifferId || editedInvocation.snifferId;
+    const sid = (snifferId as string) || editedInvocation.snifferId;
     if (!sid) {
       return;
     }

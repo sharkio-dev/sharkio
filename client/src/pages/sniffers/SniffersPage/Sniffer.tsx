@@ -3,12 +3,14 @@ import { useSniffersStore } from "../../../stores/sniffersStores";
 import { AiOutlineBank, AiOutlineDatabase } from "react-icons/ai";
 import List from "@mui/material/List";
 import UrlItem from "../UrlItem";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import queryString from "query-string";
 
 const Sniffer: React.FC = () => {
-  const { snifferId } = useParams<{ snifferId: string }>();
+  const location = useLocation();
+  const { snifferId } = queryString.parse(location.search);
   const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId),
+    s.sniffers.find((s) => s.id === snifferId)
   );
   const { loadingSniffers } = useSniffersStore();
   if (!sniffer)
@@ -38,20 +40,12 @@ const Sniffer: React.FC = () => {
           borderRadius: "20px",
         }}
       >
-        <p className="flex flex-row text-gray-400 text-center">
-          Every request sent to the&nbsp;
-          <p className="text-white font-bold">sniffer's</p>&nbsp;domain
-        </p>
         <UrlItem
           SnifferURL={FullSnifferUrl}
           Icon={AiOutlineDatabase}
           Label="Sniffer's Domain"
           Title="Copy Sniffer Domain to clipboard"
         />
-        <p className="flex flex-row text-gray-400 text-center">
-          will be recorded and redirected to the&nbsp;
-          <p className="text-white font-bold">server's</p>&nbsp;domain.
-        </p>
         <UrlItem
           SnifferURL={sniffer.downstreamUrl}
           Icon={AiOutlineBank}
