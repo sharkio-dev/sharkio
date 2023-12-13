@@ -3,14 +3,14 @@ import { useSniffersStore } from "../../../stores/sniffersStores";
 import { AiOutlineBank, AiOutlineDatabase } from "react-icons/ai";
 import List from "@mui/material/List";
 import UrlItem from "../UrlItem";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 
 const Sniffer: React.FC = () => {
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
   const sniffer = useSniffersStore((s) =>
-    s.sniffers.find((s) => s.id === snifferId),
+    s.sniffers.find((s) => s.id === snifferId)
   );
   const { loadingSniffers } = useSniffersStore();
   if (!sniffer)

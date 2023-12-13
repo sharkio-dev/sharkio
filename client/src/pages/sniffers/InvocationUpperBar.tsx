@@ -5,7 +5,7 @@ import { InvocationDetails } from "./InvocationDetails";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { BackendAxios } from "../../api/backendAxios";
 import queryString from "query-string";
@@ -34,7 +34,7 @@ export const InvocationUpperBar = ({
   const [defaultTab, setDefaultTab] = useState("1");
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
   );
 
   useEffect(() => {

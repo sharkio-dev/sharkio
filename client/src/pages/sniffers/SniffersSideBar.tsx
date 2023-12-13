@@ -1,17 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
-import { AiOutlinePlus } from "react-icons/ai";
-import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { LoadingIcon } from "./LoadingIcon";
-import { AddSnifferModal } from "./AddSnifferModal";
-import { EditSnifferModal } from "./EditSnifferModal";
-import { DeleteSnifferModal } from "./DeleteSnifferModal";
 import queryString from "query-string";
 import { routes } from "../../constants/routes";
 
