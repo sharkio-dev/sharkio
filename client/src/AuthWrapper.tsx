@@ -22,8 +22,9 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
           return;
         }
         const userDetails = session?.user.user_metadata;
-        BackendAxios.defaults.headers.common["Authorization"] =
-          `Bearer ${session?.access_token}`;
+        BackendAxios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${session?.access_token}`;
 
         signIn({
           id: session?.user.id ?? "",
@@ -44,8 +45,9 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
     } = supabaseClient.auth.onAuthStateChange((authEvent, session) => {
       switch (authEvent) {
         case "SIGNED_IN": {
-          BackendAxios.defaults.headers.common["Authorization"] =
-            `Bearer ${session?.access_token}`;
+          BackendAxios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${session?.access_token}`;
           setLoading(false);
 
           const userDetails = session?.user.user_metadata;
@@ -58,7 +60,7 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
 
           // Create a guard against renavigation when returning to the session
           if (window.location.pathname === "/login") {
-            navigate(routes.REQUESTS);
+            navigate(routes.LIVE_INVOCATIONS);
           }
           break;
         }

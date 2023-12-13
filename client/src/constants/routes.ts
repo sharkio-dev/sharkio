@@ -5,8 +5,8 @@ export const routes = {
   PROXIES: "/proxies",
   PROXY_CREATE: "/proxies/create",
 
-  REQUESTS: "/live-invocations",
-  REQUEST: "/live-invocations/:invocationId",
+  LIVE_INVOCATIONS: "/live-invocations",
+  LIVE_INVOCATION: "/live-invocations/:invocationId",
 
   ENDPOINTS: "/endpoints",
   ENDPOINT: "/endpoints/:endpointId",

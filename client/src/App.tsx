@@ -350,7 +350,7 @@ const AddSnifferPage = () => {
   const [name, setName] = React.useState("");
   const { createSniffer, loadingSniffers } = useSniffersStore();
   const [subdomain, _] = React.useState<string>(
-    randomString({ length: 5 }).toLowerCase(),
+    randomString({ length: 5 }).toLowerCase()
   );
   const navigator = useNavigate();
 
@@ -457,7 +457,7 @@ function App(): React.JSX.Element {
       { path: routes.PROXIES, element: <HomePage /> },
       { path: routes.PROXY_CREATE, element: <AddSnifferPage /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.REQUESTS, element: <LivePage /> },
+      { path: routes.LIVE_INVOCATIONS, element: <LivePage /> },
       { path: routes.ENDPOINTS, element: <SnifferPage /> },
       { path: routes.ENDPOINT, element: <SnifferEndpointPage /> },
       { path: routes.ENDPOINTS_INVOCATION, element: <SnifferEndpointPage /> },
@@ -465,7 +465,7 @@ function App(): React.JSX.Element {
         path: routes.CREATE_ENDPOINT,
         element: <CreateInvocationPage />,
       },
-      { path: routes.REQUEST, element: <LivePage /> },
+      { path: routes.LIVE_INVOCATION, element: <LivePage /> },
       { path: routes.CHAT, element: <ChatPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },

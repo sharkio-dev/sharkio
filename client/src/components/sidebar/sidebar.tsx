@@ -21,7 +21,7 @@ const menus: IMenuItem[] = [
     Icon: MdOutlineDashboard,
   },
   {
-    to: routes.REQUESTS,
+    to: routes.LIVE_INVOCATIONS,
     title: "Live",
     Icon: MdOutlineEmergencyRecording,
   },

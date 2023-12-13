@@ -4,6 +4,7 @@ import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import { routes } from "../../../constants/routes";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
@@ -40,9 +41,9 @@ export const LivePage = () => {
 
   const onInvocationClick = useCallback(
     (id: string) => {
-      navigator(`/requests/${id}`);
+      navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
