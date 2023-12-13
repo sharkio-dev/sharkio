@@ -136,7 +136,7 @@ export const useTestStore = create<TestStore>((set, get) => ({
   },
 
   resetTests: () => {
-    set({ tests: {} });
+    set({ tests: [] });
   },
   executeTest: async (testSuiteId: string, testId: string) => {
     set((state) => ({

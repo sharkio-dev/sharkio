@@ -53,14 +53,8 @@ export const TestSuiteSideBar = () => {
     if (!testSuiteId) {
       return;
     }
-    const combinedArray = Object.values(tests).reduce(
-      (acc, array) => [...acc, ...array],
-      []
-    );
     setLoading(true);
-    return Promise.all(
-      combinedArray.map((test) => executeTest(testSuiteId, test.id))
-    )
+    return Promise.all(tests.map((test) => executeTest(testSuiteId, test.id)))
       .then(() => {
         navigator("/test-suites/" + testSuiteId);
       })

@@ -42,7 +42,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`/requests/${id}`);
     },
-    [invocationId]
+    [invocationId],
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"

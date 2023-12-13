@@ -3,7 +3,7 @@ import { useSniffersStore } from "../../../stores/sniffersStores";
 import { AiOutlineBank, AiOutlineDatabase } from "react-icons/ai";
 import List from "@mui/material/List";
 import UrlItem from "../UrlItem";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 
 const Sniffer: React.FC = () => {
