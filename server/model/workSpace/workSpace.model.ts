@@ -90,7 +90,7 @@ export class WorkspaceRepository {
   changeWorkspaceName(workspaceId: string, newWorkspaceName: string) {
     return this.repository.update(
       { id: workspaceId },
-      { name: newWorkspaceName },
+      { name: newWorkspaceName, updatedAt: new Date() }
     );
   }
 }

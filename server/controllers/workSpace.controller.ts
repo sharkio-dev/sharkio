@@ -2,11 +2,13 @@ import { WorkspaceService } from "../services/workspace/workspace.service";
 import PromiseRouter from "express-promise-router";
 import { IRouterConfig } from "./router.interface";
 import { Request, Response } from "express";
+import { requestValidator } from "../lib/request-validator/request-validator";
+import { z } from "zod";
 
 export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly baseUrl: string = "/sharkio/workspace",
+    private readonly baseUrl: string = "/sharkio/workspace"
   ) {}
 
   getRouter(): IRouterConfig {
@@ -29,15 +31,11 @@ export class WorkspaceController {
          */
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
-          if (userId === undefined) {
-            res.sendStatus(400);
-            return;
-          }
           const workspaces = await this.workspaceService.getUserWorkspaces(
-            userId,
+            userId
           );
           res.json(workspaces);
-        },
+        }
       )
       .post(
         /**
@@ -52,47 +50,24 @@ export class WorkspaceController {
          *        content:
          *          application/json:
          */
+        requestValidator({
+          body: z.object({
+            newWorkSpaceName: z.string().min(1),
+          }),
+        }),
         async (req: Request, res: Response) => {
           const { newWorkSpaceName } = req.body;
           const userId = res.locals.auth.user.id;
-          if (newWorkSpaceName === "" || userId === undefined) {
-            res.sendStatus(400);
-            return;
-          }
           const newWorkspace = await this.workspaceService.createWorkspace(
             newWorkSpaceName,
-            userId,
+            userId
           );
           res.json(newWorkspace);
-        },
+        }
       );
 
     router
       .route("/:workspaceId")
-      // .get(
-      //   /**
-      //    * @openapi
-      //    * /sharkio/workspace:
-      //    *   get:
-      //    *     tags:
-      //    *      - workspace
-      //    *     description: get requested workspace
-      //    *     responses:
-      //    *       200:
-      //    *         description: Returns requested workspace
-      //    *       500:
-      //    *         description: Server error
-      //    */
-      //   async (req: Request, res: Response) => {
-      //     const userId = res.locals.auth.user.id;
-      //     const { workspaceId } = req.params;
-      //     const workspace = await this.workspaceService.getWorkspace(
-      //       userId,
-      //       workspaceId,
-      //     );
-      //     res.json(workspace);
-      //   },
-      // )
       .delete(
         /**
          * @openapi
@@ -107,16 +82,15 @@ export class WorkspaceController {
          *       500:
          *         description: Server error
          */
+        requestValidator({
+          params: z.object({ workspaceId: z.string().uuid() }),
+        }),
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
           const { workspaceId } = req.params;
-          if (userId === undefined || workspaceId === "") {
-            res.sendStatus(400);
-            return;
-          }
           await this.workspaceService.deleteWorkspace(userId, workspaceId);
           res.json({ success: true });
-        },
+        }
       )
       .put(
         /**
@@ -132,19 +106,23 @@ export class WorkspaceController {
          *       500:
          *         description: Server error
          */
+        requestValidator({
+          params: z.object({
+            workspaceId: z.string().uuid(),
+          }),
+          body: z.object({
+            newWorkspaceName: z.string().min(1),
+          }),
+        }),
         async (req: Request, res: Response) => {
           const { workspaceId } = req.params;
           const { newWorkspaceName } = req.body;
-          if (workspaceId === "" || newWorkspaceName === "") {
-            res.sendStatus(400);
-            return;
-          }
           const newWorkspace = await this.workspaceService.changeWorkspaceName(
             workspaceId,
-            newWorkspaceName,
+            newWorkspaceName
           );
           res.json(newWorkspace);
-        },
+        }
       );
 
     return {
