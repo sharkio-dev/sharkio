@@ -49,7 +49,8 @@ export class RequestInterceptor {
     const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
       | string
       | undefined;
-    req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
+    // delete req.headers["host"];
+    // req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
     req.headers["ngrok-skip-browser-warning"] = "true";
 
     const request = await this.endpointService.findOrCreate(
