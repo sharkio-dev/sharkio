@@ -6,7 +6,7 @@ import {
   createProxyMiddleware,
   fixRequestBody,
 } from "http-proxy-middleware";
-import { RequestInterceptor } from "./request-interceptor";
+import { RequestInterceptor } from "./interceptor.middleware";
 import type * as http from "http";
 
 const logger = useLog({

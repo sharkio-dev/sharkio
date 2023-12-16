@@ -6,7 +6,7 @@ import "reflect-metadata";
 import { useLog } from "../lib/log";
 import { logMiddleware } from "./middlewares/log.middleware";
 import { ProxyMiddleware } from "./middlewares/proxy.middleware";
-import { RequestInterceptor } from "./middlewares/request-interceptor";
+import { RequestInterceptor } from "./middlewares/interceptor.middleware";
 import https from "https";
 import fs from "fs";
 import MockMiddleware from "./middlewares/mock.middleware";
@@ -36,10 +36,11 @@ export class ProxyServer {
     this.app.use(express.raw());
     this.app.use(express.urlencoded());
     this.app.use(cookieParser());
-    this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
+    // **IMPORTANT** request interceptor must be before mock middleware
     this.app.use(
       this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
     );
+    this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
     this.app.use(this.proxyMiddleware.getMiddleware());
   }
 
