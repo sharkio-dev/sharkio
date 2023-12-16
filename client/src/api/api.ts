@@ -8,7 +8,9 @@ import { SnifferType } from "../stores/sniffersStores";
 import { Mock } from "../stores/mockStore";
 
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
-  return BackendAxios.post("/sniffer", config);
+  return BackendAxios.post("/sniffer", config).then((res) => {
+    return res.data;
+  });
 };
 
 export const getSniffers = () => {

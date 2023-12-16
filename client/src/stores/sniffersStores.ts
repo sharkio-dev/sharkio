@@ -32,7 +32,7 @@ interface SniffersState {
   loadingExecution: boolean;
   loadSniffers: (force?: boolean) => Promise<SnifferType[]>;
   setSelectedSniffer: (sniffer: SnifferType | null) => void;
-  createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<void>;
+  createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<any>;
   deleteSniffer: (snifferId: string) => Promise<void>;
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
   loadEndpoints: (
@@ -77,7 +77,6 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     return getSniffers()
       .then((res) => {
         set({ sniffers: res.data || [] });
-        console.log(res.data);
         return res.data;
       })
       .finally(() => set({ loadingSniffers: false }));
@@ -86,10 +85,12 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     set({ selectedSniffer: sniffer });
   },
   createSniffer: (sniffer: Omit<SnifferType, "id">) => {
-    return createSniffer(sniffer).then(() => {
+    return createSniffer(sniffer).then((res) => {
       get()
         .loadSniffers(true)
         .then((res) => set({ sniffers: res }));
+
+      return res;
     });
   },
   deleteSniffer: (snifferId: string) => {

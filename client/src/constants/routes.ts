@@ -1,23 +1,29 @@
 export const routes = {
+  ROOT: "/",
   LOGIN: "/login",
-  COLLECTION_REQUEST: "/collection/:collectionId/request/:requestId",
-  LIVE: "/live",
-  LIVE_INVOCATION: "/live/invocations/:invocationId",
-  SNIFFERS: "/sniffers",
-  SNIFFER: "/sniffers/:snifferId",
-  SNIFFER_CREATE_INVOCATION: "/sniffers/:snifferId/invocations/create",
-  SNIFFER_ENDPOINT: "/sniffers/:snifferId/endpoints/:endpointId",
-  SNIFFER_ENDPOINT_INVOCATION:
-    "/sniffers/:snifferId/endpoints/:endpointId/invocations/:invocationId",
+
+  PROXIES: "/proxies",
+  PROXY_CREATE: "/proxies/create",
+
+  LIVE_INVOCATIONS: "/live-invocations",
+  LIVE_INVOCATION: "/live-invocations/:invocationId",
+
+  ENDPOINTS: "/endpoints",
+  ENDPOINT: "/endpoints/:endpointId",
+  ENDPOINTS_INVOCATION: "/endpoints/:endpointId/invocations/:invocationId",
+  CREATE_ENDPOINT: "/endpoints/create",
+
   API_KEYS: "/api-keys",
+
   DOCS_GETTING_STARTED: "/docs/getting-started",
   DOCS_SETUP: "/docs/setup",
   CHAT: "/chat",
+
   TEST_SUITES: "/test-suites",
   TEST_SUITE: "/test-suites/:testSuiteId",
-  TEST_ENDPOINT: "/test-suites/:testSuiteId/endpoints/:endpointId",
-  TEST_SUITE_TEST:
-    "/test-suites/:testSuiteId/endpoints/:endpointId/tests/:testId",
+  TEST_ENDPOINT: "/test-suites/:testSuiteId/tests/:testId",
+  TEST_SUITE_TEST: "/test-suites/:testSuiteId/tests/:testId",
+
   MOCKS: "/mocks",
   MOCK: "/mocks/:mockId",
 };
