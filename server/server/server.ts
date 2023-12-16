@@ -27,11 +27,12 @@ export class Server {
     this.app = express();
     this.app.use(logMiddleware);
     this.app.use(cors({ origin: "*" }));
-    this.app.use(json({ limit: "50mb" }));
-    this.app.use(urlencoded({ extended: true, limit: "50mb" }));
+    this.app.use(express.json());
+    this.app.use(express.text());
+    this.app.use(express.raw());
+    this.app.use(express.urlencoded({ extended: true, limit: "50mb" }));
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
-
     this.app.use(authMiddleware);
     routers.forEach((router) => {
       this.app.use(router.path, router.router);
@@ -43,7 +44,7 @@ export class Server {
     err: Error,
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ) {
     if (req.xhr) {
       log.error(`${req.method} ${req.path} FAILED`);

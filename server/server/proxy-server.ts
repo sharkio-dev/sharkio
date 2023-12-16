@@ -1,4 +1,3 @@
-import { json, urlencoded } from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Express } from "express";
@@ -30,11 +29,12 @@ export class ProxyServer {
     private readonly mockMiddleware: MockMiddleware,
   ) {
     this.app = express();
-
     this.app.use(logMiddleware);
     this.app.use(cors({ origin: "*" }));
-    this.app.use(json({ limit: "50mb" }));
-    this.app.use(urlencoded({ extended: true, limit: "50mb" }));
+    this.app.use(express.json());
+    this.app.use(express.text());
+    this.app.use(express.raw());
+    this.app.use(express.urlencoded());
     this.app.use(cookieParser());
     this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
     this.app.use(
