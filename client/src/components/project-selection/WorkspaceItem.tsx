@@ -6,7 +6,7 @@ interface projectItemProps {
   handleEditWorkspace: (e: React.MouseEvent, workSpace: workSpaceType) => void;
   handleDeleteWorkspace: (
     e: React.MouseEvent,
-    workSpace: workSpaceType
+    workSpace: workSpaceType,
   ) => void;
 }
 const WorkspaceItem: React.FC<projectItemProps> = ({

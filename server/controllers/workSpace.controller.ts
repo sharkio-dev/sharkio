@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly baseUrl: string = "/sharkio/workspace"
+    private readonly baseUrl: string = "/sharkio/workspace",
   ) {}
 
   getRouter(): IRouterConfig {
@@ -34,10 +34,10 @@ export class WorkspaceController {
             return;
           }
           const workspaces = await this.workspaceService.getUserWorkspaces(
-            userId
+            userId,
           );
           res.json(workspaces);
-        }
+        },
       )
       .post(
         /**
@@ -61,10 +61,10 @@ export class WorkspaceController {
           }
           const newWorkspace = await this.workspaceService.createWorkspace(
             newWorkSpaceName,
-            userId
+            userId,
           );
           res.json(newWorkspace);
-        }
+        },
       );
 
     router
@@ -116,7 +116,7 @@ export class WorkspaceController {
           }
           await this.workspaceService.deleteWorkspace(userId, workspaceId);
           res.json({ success: true });
-        }
+        },
       )
       .put(
         /**
@@ -141,10 +141,10 @@ export class WorkspaceController {
           }
           const newWorkspace = await this.workspaceService.changeWorkspaceName(
             workspaceId,
-            newWorkspaceName
+            newWorkspaceName,
           );
           res.json(newWorkspace);
-        }
+        },
       );
 
     return {

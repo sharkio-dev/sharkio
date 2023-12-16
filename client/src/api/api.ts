@@ -198,4 +198,3 @@ export const editMockAPI = (
 ) => {
   return BackendAxios.patch(`/mocks/${mockId}`, mock);
 };
-

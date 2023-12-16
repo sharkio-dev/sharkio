@@ -45,7 +45,7 @@ const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
       {snackBar}
       <GenericEditingModal
         modalProps={{
-          open: isModalOpen ,
+          open: isModalOpen,
           onClose: onCancel,
         }}
         paperHeadLine="Edit Project"
