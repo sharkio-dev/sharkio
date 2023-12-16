@@ -6,7 +6,7 @@ interface projectItemProps {
   handleEditWorkspace: (e: React.MouseEvent, workSpace: workSpaceType) => void;
   handleDeleteWorkspace: (
     e: React.MouseEvent,
-    workSpace: workSpaceType,
+    workSpace: workSpaceType
   ) => void;
 }
 const WorkspaceItem: React.FC<projectItemProps> = ({
@@ -15,19 +15,23 @@ const WorkspaceItem: React.FC<projectItemProps> = ({
   handleDeleteWorkspace,
 }: any) => {
   return (
-    <div className="flex items-center w-full justify-between">
-      <div>{workspace.name}</div>
-      <div className="flex items-end space-x-2">
-        <AiOutlineEdit
-          className="text-amber-200 text-lg"
-          onClick={(e: React.MouseEvent) => handleEditWorkspace(e, workspace)}
-        />
-        <AiOutlineDelete
-          className="text-red-200 text-lg"
-          onClick={(e: React.MouseEvent) => handleDeleteWorkspace(e, workspace)}
-        />
+    <>
+      <div className="flex items-center w-full justify-between">
+        <div className="font-bold hover:text-green-100">{workspace.name}</div>
+        <div className="flex items-end space-x-2">
+          <AiOutlineEdit
+            className="text-amber-500 text-lg hover:text-amber-700"
+            onClick={(e: React.MouseEvent) => handleEditWorkspace(e, workspace)}
+          />
+          <AiOutlineDelete
+            className="text-red-500 text-lg hover:text-red-700"
+            onClick={(e: React.MouseEvent) =>
+              handleDeleteWorkspace(e, workspace)
+            }
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

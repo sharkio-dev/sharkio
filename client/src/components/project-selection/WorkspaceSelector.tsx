@@ -11,18 +11,25 @@ export type openModal = "create" | "edit" | "delete" | "none";
 const emptyWorkSpace: workSpaceType = {
   id: "",
   name: "",
-  isOpen: false,
 };
 const ISHIDDEN: boolean = true;
 const WorkspaceSelector = () => {
-  const [modalIsOpen, setModalIsOpen] = useState<openModal>("none");
+  const [isModalOpen, setIsModalOpen] = useState<openModal>("none");
   const [workSpaceToEdit, setWorkSpaceToEdit] =
     useState<workSpaceType>(emptyWorkSpace);
-  const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
-    useWorkspaceStore();
+  const {
+    setWorkspaces,
+    workspaces,
+    openWorkspace,
+    changeBetweenWorkSpaces,
+    getWorkspaces,
+  } = useWorkspaceStore();
 
   useEffect(() => {
-    getWorkspaces();
+    getWorkspaces().then((res) => {
+      setWorkspaces(res.data);
+      changeBetweenWorkSpaces(res.data[0].id);
+    });
   }, []);
 
   const handleChangeWorkspace = async (workSpaceId: string) => {
@@ -31,45 +38,44 @@ const WorkspaceSelector = () => {
 
   const handleEditWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType,
+    workSpace: workSpaceType
   ) => {
     e.stopPropagation();
     setWorkSpaceToEdit(workSpace);
-    setModalIsOpen("edit");
+    setIsModalOpen("edit");
   };
 
   const handleDeleteWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType,
+    workSpace: workSpaceType
   ) => {
     e.stopPropagation();
-    setModalIsOpen("delete");
     setWorkSpaceToEdit(workSpace);
+    setIsModalOpen("delete");
   };
 
   const handleModalIsClosed = () => {
     setWorkSpaceToEdit(emptyWorkSpace);
-    setModalIsOpen("none");
+    setIsModalOpen("none");
   };
   return (
     <div>
-      {!ISHIDDEN && (
+      {ISHIDDEN && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
             <Select
               style={{ width: "200px" }}
-              value={openWorkspace.name}
-              label="workspace"
+              value={openWorkspace.id}
+              label="Workspace"
+              onChange={(e) => handleChangeWorkspace(e.target.value as string)}
             >
-              <NewWorkspaceItem setModalIsOpen={setModalIsOpen} />
+              <NewWorkspaceItem
+                setIsModalOpen={() => setIsModalOpen("create")}
+              />
               {workspaces.map((workspace: workSpaceType) => {
                 return (
-                  <MenuItem
-                    key={workspace.id}
-                    value={workspace.name}
-                    onClick={() => handleChangeWorkspace(workspace.id)}
-                  >
+                  <MenuItem key={workspace.id} value={workspace.id}>
                     <WorkspaceItem
                       workspace={workspace}
                       handleEditWorkspace={handleEditWorkspace}
@@ -81,16 +87,16 @@ const WorkspaceSelector = () => {
             </Select>
           </FormControl>
           <NewWorkspaceModal
-            modalIsOpen={modalIsOpen}
+            isModalOpen={isModalOpen === "create"}
             onCancel={handleModalIsClosed}
           />
           <EditWorkspaceModal
-            modalIsOpen={modalIsOpen}
+            isModalOpen={isModalOpen === "edit"}
             onCancel={handleModalIsClosed}
             workSpace={workSpaceToEdit}
           />
           <DeleteWorkspaceModal
-            modalIsOpen={modalIsOpen}
+            isModalOpen={isModalOpen === "delete"}
             onCancel={handleModalIsClosed}
             workSpace={workSpaceToEdit}
           />

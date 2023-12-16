@@ -1,6 +1,7 @@
-import { Column, DataSource, Entity, PrimaryColumn, Repository } from "typeorm";
+import { Column, DataSource, Entity, JoinTable, ManyToMany, PrimaryColumn, Repository } from "typeorm";
 
 import { useLog } from "../../lib/log";
+import { Workspace } from "../workSpace/workSpace.model";
 
 const log = useLog({
   dirname: __dirname,

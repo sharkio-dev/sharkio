@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
-import { openModal } from "./WorkspaceSelector";
 import GenericEditingModal from "./GenericEditingModal";
 
 interface EditWorkspaceModalProps {
-  modalIsOpen: openModal;
+  isModalOpen: boolean;
   onCancel: () => void;
   workSpace: workSpaceType;
 }
 
 const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
-  modalIsOpen,
+  isModalOpen,
   onCancel,
   workSpace,
 }) => {
@@ -26,9 +25,8 @@ const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
     }
 
     setIsLoading(true);
-    console.log("edit");
 
-    editWorkSpaceName(editedWorkSpaceName, workSpace.id) //api call
+    editWorkSpaceName(editedWorkSpaceName, workSpace.id)
       .then(() => {
         onCancel(), showSnackbar("Project edited", "success");
       })
@@ -47,7 +45,7 @@ const EditWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
       {snackBar}
       <GenericEditingModal
         modalProps={{
-          open: modalIsOpen === "edit",
+          open: isModalOpen ,
           onClose: onCancel,
         }}
         paperHeadLine="Edit Project"

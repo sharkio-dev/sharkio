@@ -1,17 +1,15 @@
 import { create } from "zustand";
 import {
   deleteWorkSpace,
-  getChangeBetweenWorkSpaces,
-  getProjects,
+  getUserWorkspaces,
   postAddNewWorkspace,
   putEditWorkSpaceName,
-} from "../api/api";
+} from "../api/workspacesApi";
+import { AxiosResponse } from "axios";
 
 export interface workSpaceType {
   name: string;
   id: string;
-  isOpen: boolean;
-  userId?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -19,10 +17,11 @@ export interface workSpaceType {
 interface workspaceStore {
   workspaces: workSpaceType[];
   openWorkspace: workSpaceType;
-  getWorkspaces: () => void;
+  setWorkspaces: (workspaces: workSpaceType[]) => void;
+  getWorkspaces: () => Promise<AxiosResponse<workSpaceType[], any>>;
   changeBetweenWorkSpaces: (workSpaceId: string) => void;
   editWorkSpaceName: (name: string, id: string) => Promise<void>;
-  createWorkspace: (name: string) => Promise<void>;
+  createWorkspace: (name: string) => void;
   deleteWorkspace: (id: string) => Promise<void>;
 }
 
@@ -31,37 +30,53 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   openWorkspace: {
     name: "",
     id: "",
-    isOpen: false,
   },
 
   getWorkspaces: () => {
-    getProjects().then((res) => {
-      set({ workspaces: res.data });
-    });
+    return getUserWorkspaces();
   },
-  changeBetweenWorkSpaces: (workSpaceId: string) => {
-    set({ openWorkspace: get().workspaces.find((w) => w.id === workSpaceId) });
-    // return getChangeBetweenWorkSpaces(workSpaceId).then((res) => {
-    //   set({ openWorkspace: res.data });
-    //   get().getWorkspaces();
-    // });
-    //? 1 - Every time i change workspace i should call it form the db and update the isOpen property.
-    //? 2 - Should i just find it in the workspaces array and removed the isOpen property (and the first one in the array will be the default project when you open the app). (later we can add feature to change the array order)
+  setWorkspaces: (workspaces: workSpaceType[]) => {
+    set({ workspaces: workspaces });
+  },
+  changeBetweenWorkSpaces: (workspaceId: string) => {
+    set({ openWorkspace: get().workspaces.find((w) => w.id === workspaceId) });
   },
 
   editWorkSpaceName: (newWorkspaceName: string, workspaceId: string) => {
+    const workspace = get().workspaces.find((w) => w.name === newWorkspaceName);
+    if (workspace !== undefined) {
+      return Promise.reject("Workspace already exists");
+    }
     return putEditWorkSpaceName(newWorkspaceName, workspaceId).then(() => {
-      get().getWorkspaces();
+      get()
+        .getWorkspaces()
+        .then((res) => {
+          set({ workspaces: res.data });
+        });
     });
   },
-  createWorkspace: (newWorkSpaceName: string) => {
-    return postAddNewWorkspace(newWorkSpaceName).then(() => {
-      get().getWorkspaces();
-    });
+
+  createWorkspace: async (newWorkspaceName: string) => {
+    await postAddNewWorkspace(newWorkspaceName);
+    get()
+      .getWorkspaces()
+      .then((res) => {
+        set({ workspaces: res.data });
+        set({
+          openWorkspace: res.data.find((w) => w.name === newWorkspaceName),
+        });
+      });
   },
   deleteWorkspace: (workspaceId: string) => {
     return deleteWorkSpace(workspaceId).then(() => {
-      get().getWorkspaces();
+      get()
+        .getWorkspaces()
+        .then((res) => {
+          set({ workspaces: res.data });
+          if (get().openWorkspace.id === workspaceId) {
+            get().changeBetweenWorkSpaces(get().workspaces[0].id);
+          }
+        });
     });
   },
 }));

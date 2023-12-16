@@ -6,7 +6,6 @@ import {
 import { BackendAxios } from "./backendAxios";
 import { SnifferType } from "../stores/sniffersStores";
 import { Mock } from "../stores/mockStore";
-import { workSpaceType } from "../stores/workspaceStore";
 export const createSniffer = (config: Omit<SnifferCreateConfig, "id">) => {
   return BackendAxios.post("/sniffer", config);
 };
@@ -200,28 +199,3 @@ export const editMockAPI = (
   return BackendAxios.patch(`/mocks/${mockId}`, mock);
 };
 
-export const getProjects = async () => {
-  return await BackendAxios.get<workSpaceType[]>("/workspace");
-};
-export const getChangeBetweenWorkSpaces = async (workspaceId: string) => {
-  return await BackendAxios.get(`/workspace/${workspaceId}`);
-}; //? needed?
-
-export const deleteWorkSpace = async (workSpaceId: string) => {
-  return await BackendAxios.delete(`/workspace/${workSpaceId}`);
-};
-
-export const postAddNewWorkspace = async (newWorkSpaceName: string) => {
-  return await BackendAxios.post(`/workspace`, {
-    newWorkSpaceName,
-  });
-};
-
-export const putEditWorkSpaceName = async (
-  newWorkspaceName: string,
-  workspaceId: string,
-) => {
-  return await BackendAxios.put(`/workspace/${workspaceId}`, {
-    newWorkspaceName,
-  });
-};

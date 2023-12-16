@@ -1,8 +1,16 @@
-import { Column, DataSource, Entity, PrimaryColumn, Repository } from "typeorm";
+import {
+  Column,
+  DataSource,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  Repository,
+} from "typeorm";
 
 import { useLog } from "../../lib/log";
+import { User } from "../user/user.model";
 
-// ? what is this for?
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
@@ -10,14 +18,11 @@ const log = useLog({
 
 @Entity({ name: "workspace", schema: "public" })
 export class Workspace {
-  @PrimaryColumn("uuid")
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   name: string;
-
-  @Column({ name: "user_id" })
-  userId: string;
 
   @Column({ name: "created_at" })
   createdAt: Date;
@@ -25,15 +30,14 @@ export class Workspace {
   @Column({ name: "updated_at" })
   updatedAt: Date;
 
-  @Column({ name: "is_open" })
-  isOpen: boolean;
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: "users_workspaces",
+    joinColumn: { name: "workspace_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
+  })
+  users: User[];
 }
-
-//   @ManyToOne(() => User, user => user.workspaces)
-//   user: User;
-
-//   @OneToMany(() => Workspace, workspace => workspace.user)
-//   workspaces: Workspace[];
 
 export class WorkspaceRepository {
   repository: Repository<Workspace>;
@@ -42,37 +46,52 @@ export class WorkspaceRepository {
     this.repository = appDataSource.manager.getRepository(Workspace);
   }
 
-  getById(userId: string, workspaceId: string) {
-    const moveToWorkspace = this.repository.findOne({
-      where: { id: workspaceId, userId },
+  async createNewWorkspace(workspaceName: string, userId: string) {
+    const newWorkspace = this.repository.create({
+      name: workspaceName,
+      users: [{ id: userId }],
     });
-    if (moveToWorkspace === null) {
-      return;
+    const savedWorkspace = await this.repository.save(newWorkspace);
+    return savedWorkspace;
+  }
+
+  async getUserWorkspaces(userId: string) {
+    const result = await this.repository
+      .createQueryBuilder("workspace")
+      .select("workspace")
+      .innerJoin("workspace.users", "users")
+      .where("users.id = :userId", { userId })
+      .getMany();
+    return result;
+  }
+  async deleteWorkspaceToUser(userId: string, workspaceId: string) {
+    await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from("users_workspaces")
+      .where("user_id = :userId AND workspace_id = :workspaceId", {
+        userId,
+        workspaceId,
+      })
+      .execute();
+
+    const isWorkspaceUsed = await this.repository
+      .createQueryBuilder("workspace")
+      .select("COUNT(*)")
+      .innerJoin("workspace.users", "users")
+      .where("workspace.id = :workspaceId", { workspaceId })
+      .getCount();
+
+    if (isWorkspaceUsed === 0) {
+      this.repository.delete({ id: workspaceId });
     }
-    this.repository.update({ isOpen: true }, { isOpen: false });
-    this.repository.update({ id: workspaceId, userId }, { isOpen: true });
-    return;
   }
 
-  saveWorkspace(workspace: Workspace) {
-    return this.repository.save(workspace);
-  }
-
-  getUserWorkspaces(userId: string) {
-    return this.repository.find({ where: { userId } });
-  }
-  deleteWorkspace(userId: string, workspaceId: string) {
-    return this.repository.delete({ id: workspaceId, userId });
-  }
-
-  changeWorkspaceName(
-    userId: string,
-    workspaceId: string,
-    newWorkspaceName: string,
-  ) {
+  changeWorkspaceName(workspaceId: string, newWorkspaceName: string) {
     return this.repository.update(
-      { id: workspaceId, userId },
-      { name: newWorkspaceName },
+      { id: workspaceId },
+      { name: newWorkspaceName }
     );
   }
+  
 }

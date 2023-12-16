@@ -1,44 +1,44 @@
 import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
-import { openModal } from "./WorkspaceSelector";
 import GenericEditingModal from "./GenericEditingModal";
 
 interface EditWorkspaceModalProps {
-  modalIsOpen: openModal;
+  isModalOpen: boolean;
   onCancel: () => void;
 }
 const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
-  modalIsOpen,
+  isModalOpen,
   onCancel,
 }) => {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { createWorkspace, getWorkspaces } = useWorkspaceStore();
-  const handleNewWorkSpcaeSave = () => {
+  const { createWorkspace } = useWorkspaceStore();
+  const handleNewWorkSpcaeSave = async () => {
     if (newWorkSpaceName === "") {
       showSnackbar("Name cannot be empty or already exists", "error");
       return;
     }
-    setIsLoading(true);
-    createWorkspace(newWorkSpaceName) //api call
-      .then(() => {
-        onCancel(), showSnackbar("workspace added", "success");
-      })
-      .catch(() => showSnackbar("Error adding new workspace", "error"))
-      .finally(() => {
-        setIsLoading(false);
-        getWorkspaces();
-      });
-    setNewWorkSpaceName("");
+    try {
+      setIsLoading(true);
+      await createWorkspace(newWorkSpaceName);
+      onCancel();
+      showSnackbar("workspace added", "success");
+    } catch (err) {
+      showSnackbar("Error adding new workspace", "error");
+      return;
+    } finally {
+      setIsLoading(false);
+      setNewWorkSpaceName("");
+    }
   };
 
   return (
     <>
       {snackBar}
       <GenericEditingModal
-        modalProps={{ open: modalIsOpen === "create", onClose: onCancel }}
+        modalProps={{ open: isModalOpen, onClose: onCancel }}
         paperHeadLine="Add New Project"
         textFieldProps={{
           placeholder: "Workspace Name",

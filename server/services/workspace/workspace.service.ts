@@ -1,41 +1,33 @@
-import { UUID } from "crypto";
 import { WorkspaceRepository } from "../../model/workSpace/workSpace.model";
 
 export class WorkspaceService {
   constructor(private readonly workspaceRepository: WorkspaceRepository) {}
 
-  async getWorkspace(userId: string, workspaceId: string) {
-    return this.workspaceRepository.getById(userId, workspaceId);
-  }
-
-  async createWorkspace(workspaceName: string, userId: UUID) {
-    const createdWorkspace = this.workspaceRepository.repository.create({
-      name: workspaceName,
-      userId,
-    });
-    console.log("createdWorkspace", createdWorkspace);
-    const newWorkspace =
-      this.workspaceRepository.saveWorkspace(createdWorkspace);
-
-    return newWorkspace;
-  }
-
   async getUserWorkspaces(userId: string) {
-    return this.workspaceRepository.getUserWorkspaces(userId);
+    const allWorkspaces = await this.workspaceRepository.getUserWorkspaces(
+      userId
+    );
+    return allWorkspaces;
+  }
+
+  async createWorkspace(workspaceName: string, userId: string) {
+    const createdWorkspace = await this.workspaceRepository.createNewWorkspace(
+      workspaceName,
+      userId
+    );
+    return createdWorkspace;
   }
 
   async deleteWorkspace(userId: string, workspaceId: string) {
-    return this.workspaceRepository.deleteWorkspace(userId, workspaceId);
+    return this.workspaceRepository.deleteWorkspaceToUser(userId, workspaceId);
   }
-  async changeWorkspaceName(
-    userId: string,
-    workspaceId: string,
-    newWorkspaceName: string,
-  ) {
+
+  async changeWorkspaceName(workspaceId: string, newWorkspaceName: string) {
     return this.workspaceRepository.changeWorkspaceName(
-      userId,
       workspaceId,
-      newWorkspaceName,
+      newWorkspaceName
     );
   }
+
+ 
 }

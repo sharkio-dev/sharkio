@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
-import { openModal } from "./WorkspaceSelector";
 import GenericEditingModal from "./GenericEditingModal";
 
 type DeleteWorkspaceModalProps = {
   workSpace: workSpaceType;
-  modalIsOpen: openModal;
+  isModalOpen: boolean;
   onCancel: () => void;
 };
 export const DeleteWorkspaceModal = ({
   workSpace,
-  modalIsOpen,
+  isModalOpen,
   onCancel,
 }: DeleteWorkspaceModalProps) => {
   const [verifyDelete, setVerifyDelete] = useState("");
@@ -25,7 +24,7 @@ export const DeleteWorkspaceModal = ({
       return;
     }
     setIsLoading(true);
-    deleteWorkspace(workSpace.id) //api call
+    deleteWorkspace(workSpace.id)
       .then(() => {
         onCancel(), showSnackbar("workspace deleted", "success");
       })
@@ -47,7 +46,7 @@ export const DeleteWorkspaceModal = ({
       {snackBar}
       <GenericEditingModal
         modalProps={{
-          open: modalIsOpen === "delete",
+          open: isModalOpen,
           onClose: onCancel,
         }}
         paperHeadLine="Delete Project"
