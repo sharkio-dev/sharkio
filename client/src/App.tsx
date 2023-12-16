@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthWrapper } from "./AuthWrapper";
 import { LandingPage } from "./LandingPage";
@@ -23,6 +23,7 @@ import { MockPage } from "./pages/mocks/MockPage";
 import { LivePage } from "./pages/sniffers/SniffersPage/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
+import { FullStory } from "@fullstory/browser";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -33,6 +34,17 @@ function App(): React.JSX.Element {
       mode,
     },
   });
+  useEffect(() => {
+    if (import.meta.env.VITE_FULLSTORY_ORG_ID) {
+      FullStory("setProperties", {
+        type: "user",
+        properties: {
+          email: user?.email,
+          id: user?.id,
+        },
+      });
+    }
+  }, [user]);
 
   const routesWithAuth = () => {
     const routesWithAuth = [
