@@ -24,7 +24,7 @@ import { TestSuiteRepository } from "./model/testSuite/testSuite.model";
 import UserRepository from "./model/user/user.model";
 import { getAppDataSource } from "./server/app-data-source";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
-import { RequestInterceptor } from "./server/middlewares/request-interceptor";
+import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
 import { ProxyServer } from "./server/proxy-server";
 import { Server } from "./server/server";
 import { ChatService } from "./services/chat/chat.service";
@@ -147,7 +147,11 @@ async function main() {
     snifferService,
     requestInterceptorMiddleware,
   );
-  const mockMiddleware = new MockMiddleware(mockService, snifferService);
+  const mockMiddleware = new MockMiddleware(
+    mockService,
+    snifferService,
+    responseService,
+  );
 
   /* Servers */
   const proxyServer = new ProxyServer(

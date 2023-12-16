@@ -1,8 +1,12 @@
 import { Request } from "express";
 import { useLog } from "../../lib/log/index";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
-import { RequestHandler, createProxyMiddleware } from "http-proxy-middleware";
-import { RequestInterceptor } from "./request-interceptor";
+import {
+  RequestHandler,
+  createProxyMiddleware,
+  fixRequestBody,
+} from "http-proxy-middleware";
+import { RequestInterceptor } from "./interceptor.middleware";
 import type * as http from "http";
 
 const logger = useLog({
@@ -25,6 +29,7 @@ export class ProxyMiddleware {
       changeOrigin: true,
       followRedirects: true,
       selfHandleResponse: true,
+      onProxyReq: fixRequestBody,
       onProxyRes: (proxyRes, req, res) => {
         const invocationId = req.headers["x-sharkio-invocation-id"];
         const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
@@ -63,6 +68,7 @@ export class ProxyMiddleware {
                       .forEach(([key, value]) => {
                         value && res.setHeader(key, value);
                       });
+                    res.status(proxyRes.statusCode ?? 200);
                     res.end(
                       new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
                     );
@@ -77,6 +83,7 @@ export class ProxyMiddleware {
                   .forEach(([key, value]) => {
                     value && res.setHeader(key, value);
                   });
+                res.status(proxyRes.statusCode ?? 200);
                 res.end(
                   new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
                 );

@@ -25,6 +25,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fullstory/browser": "^2.0.0",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/lab": "^5.0.0-alpha.151",
@@ -51,6 +52,7 @@
     "react-json-pretty": "^2.2.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.10.0",
+    "reactflow": "^11.10.1",
     "swagger-ui-react": "^5.2.0",
     "zustand": "^4.4.1"
   },

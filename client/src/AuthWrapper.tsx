@@ -3,6 +3,7 @@ import { useAuthStore } from "./stores/authStore";
 import { supabaseClient } from "./utils/supabase-auth";
 import { BackendAxios } from "./api/backendAxios";
 import { useNavigate } from "react-router-dom";
+import { routes } from "./constants/routes";
 
 type AuthContextProviderProps = {
   children: React.ReactNode;
@@ -59,7 +60,7 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
 
           // Create a guard against renavigation when returning to the session
           if (window.location.pathname === "/login") {
-            navigate("/live");
+            navigate(routes.LIVE_INVOCATIONS);
           }
           break;
         }

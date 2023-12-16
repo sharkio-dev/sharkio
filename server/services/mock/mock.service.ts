@@ -43,6 +43,7 @@ export class MockService {
       userId,
       name,
       snifferId,
+      isActive: true,
     });
 
     return this.mockRepository.repository.save(createdMock);

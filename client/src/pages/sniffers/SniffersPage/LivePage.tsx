@@ -4,6 +4,7 @@ import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import { routes } from "../../../constants/routes";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
@@ -40,7 +41,7 @@ export const LivePage = () => {
 
   const onInvocationClick = useCallback(
     (id: string) => {
-      navigator(`/live/invocations/${id}`);
+      navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
     [invocationId],
   );
@@ -73,7 +74,7 @@ export const LivePage = () => {
           <div className="flex flex-col justify-center items-center space-y-4">
             <h1 className="text-2xl font-semibold ">No Live Requests</h1>
             <h2 className="text-lg font-medium ">
-              <a href="/sniffers" className="text-blue-400">
+              <a href="/proxies/create" className="text-blue-400">
                 Create
               </a>{" "}
               a new sniffer to start sniffing

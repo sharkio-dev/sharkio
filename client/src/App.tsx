@@ -1,5 +1,6 @@
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import React from "react";
+
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthWrapper } from "./AuthWrapper";
 import { LandingPage } from "./LandingPage";
@@ -20,6 +21,9 @@ import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
 import { MockPage } from "./pages/mocks/MockPage";
 import { LivePage } from "./pages/sniffers/SniffersPage/LivePage";
+import { HomePage } from "./pages/sniffers/HomePage";
+import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
+import { FullStory } from "@fullstory/browser";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -30,20 +34,29 @@ function App(): React.JSX.Element {
       mode,
     },
   });
+  useEffect(() => {
+    if (import.meta.env.VITE_FULLSTORY_ORG_ID) {
+      FullStory("setProperties", {
+        type: "user",
+        properties: {
+          email: user?.email,
+          id: user?.id,
+        },
+      });
+    }
+  }, [user]);
 
   const routesWithAuth = () => {
     const routesWithAuth = [
+      { path: routes.PROXIES, element: <HomePage /> },
+      { path: routes.PROXY_CREATE, element: <AddSnifferPage /> },
       { path: routes.API_KEYS, element: <APIKeys /> },
-      { path: routes.LIVE, element: <LivePage /> },
-      { path: routes.SNIFFER, element: <SnifferPage /> },
-      { path: routes.SNIFFERS, element: <SnifferPage /> },
-      { path: routes.SNIFFER_ENDPOINT, element: <SnifferEndpointPage /> },
+      { path: routes.LIVE_INVOCATIONS, element: <LivePage /> },
+      { path: routes.ENDPOINTS, element: <SnifferPage /> },
+      { path: routes.ENDPOINT, element: <SnifferEndpointPage /> },
+      { path: routes.ENDPOINTS_INVOCATION, element: <SnifferEndpointPage /> },
       {
-        path: routes.SNIFFER_ENDPOINT_INVOCATION,
-        element: <SnifferEndpointPage />,
-      },
-      {
-        path: routes.SNIFFER_CREATE_INVOCATION,
+        path: routes.CREATE_ENDPOINT,
         element: <CreateInvocationPage />,
       },
       { path: routes.LIVE_INVOCATION, element: <LivePage /> },
@@ -80,7 +93,7 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <PageTemplate>
-                  {user ? <LivePage /> : <LandingPage />}
+                  {user ? <HomePage /> : <LandingPage />}
                 </PageTemplate>
               }
             />
