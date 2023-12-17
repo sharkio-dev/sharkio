@@ -61,9 +61,14 @@ jobs:
              docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
             
 
-          # - name: Workflow Dispatch
-          #   uses: benc-uk/workflow-dispatch@v1.2.2
-          #   with:
-          #     workflow: sharkio-devops-cicd.yaml
-          #     ref: "${{ github.sha }}"
-          #     inputs: '{ "client_name": "${{ matrix.client_name }}", "env_to_deploy": "${{ inputs.env_to_deploy }}" }'
+          - name: Workflow Dispatch
+            uses: benc-uk/workflow-dispatch@v1.2.2
+            with:
+              workflow: sharkio-devops-cicd.yaml
+              repo: sharkio-dev/DevOps
+              # token: 
+              ref: "${{ github.sha }}"
+              inputs: |
+               '{ "image": "${{ github.event.inputs.service }}" }',
+               '{ "image_tag": "${{ github.sha  }} "}',
+               '{ "env": "production"}'
