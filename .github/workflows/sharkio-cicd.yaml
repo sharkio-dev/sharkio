@@ -1,7 +1,9 @@
 name: sharkio-cicd
 on:
   workflow_dispatch:
+    trigger:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+  
