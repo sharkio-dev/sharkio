@@ -71,7 +71,7 @@ jobs:
           - name: Workflow Dispatch
             uses: benc-uk/workflow-dispatch@v1.2.2
             with:
-              workflow: sharkio-devops-cicd.yaml
+              workflow: sharkio-devops-cicd
               repo: sharkio-dev/DevOps
               # token: 
               ref: "${{ github.sha }}"
