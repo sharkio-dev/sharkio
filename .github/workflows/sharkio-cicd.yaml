@@ -75,5 +75,5 @@ jobs:
               workflow: sharkio-devops-cicd
               repo: sharkio-dev/DevOps
               token: ${{ secrets.DEPLOY_KEY }}
-              ref: "${{ github.sha }}"
+              ref: CI
               inputs: '{"image": "${{ github.event.inputs.service }}", "image_tag": "${{ github.sha }}" ,"env": "${{ github.event.inputs.env }}"}'
