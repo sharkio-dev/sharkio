@@ -15,20 +15,6 @@ env:
 
 
 jobs:
-    setting_env:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Set working directory env variable
-          run: |
-            if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
-              echo "working_dir=./client" >> $GITHUB_ENV
-            elif [ "${{ github.event.inputs.service }}" == "backend" ]; then
-              echo "working_dir=./server" >> $GITHUB_ENV
-            fi
-
-        - name: Use working directory
-          run: echo "Working directory is ${{ env.working_dir }}"
-
     deploy:
         runs-on: ubuntu-latest
         permissions:
@@ -51,7 +37,21 @@ jobs:
             id: login-ecr
             uses: aws-actions/amazon-ecr-login@v2
 
+
+          - name: Set working directory env variable
+            run: |
+              if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
+                echo "working_dir=./client" >> $GITHUB_ENV
+              elif [ "${{ github.event.inputs.service }}" == "backend" ]; then
+                echo "working_dir=./server" >> $GITHUB_ENV
+              fi
+  
+          - name: Use working directory
+            run: echo "Working directory is ${{ env.working_dir }}"
+
+
           - name: Build, tag, and push docker image to Amazon ECR
+            working-directory: ${{ env.working_dir }}
             env:
               REGISTRY: ${{ steps.login-ecr.outputs.registry }}
               REPOSITORY: ${{ github.event.inputs.service }}
@@ -59,6 +59,7 @@ jobs:
             run: |
              docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
              docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            
 
           # - name: Workflow Dispatch
           #   uses: benc-uk/workflow-dispatch@v1.2.2
