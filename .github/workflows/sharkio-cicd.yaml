@@ -1,14 +1,36 @@
 name: sharkio-cicd
 on:
   workflow_dispatch:
+    inputs:
+      service:
+        type: choice
+        description: "Choose Which Image to Build"
+        required: true
+        options:
+        - frontend
+        - backend
+
+env:
+  region: eu-central-1
 
 
 jobs:
+    setting_env:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Set working directory env variable
+          run: |
+            if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
+              echo "working_dir=./client" >> $GITHUB_ENV
+            elif [ "${{ github.event.inputs.service }}" == "backend" ]; then
+              echo "working_dir=./server" >> $GITHUB_ENV
+            fi
+
+        - name: Use working directory
+          run: echo "Working directory is ${{ env.working_dir }}"
+
     deploy:
         runs-on: ubuntu-latest
-        defaults:
-          run:
-            working-directory: ./client
         permissions:
             contents: 'read'
             id-token: 'write'
@@ -17,14 +39,13 @@ jobs:
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
-    
+
           - name: Configure AWS credentials
             uses: aws-actions/configure-aws-credentials@v4
             with:
-                # role-to-assume: arn:aws:iam::aws_account_id:user/GitHubActionsUser ### change to OIDC later? ###
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: eu-central-1
+                aws-region: ${{ env.region }}
 
           - name: Login to Amazon ECR
             id: login-ecr
@@ -33,8 +54,15 @@ jobs:
           - name: Build, tag, and push docker image to Amazon ECR
             env:
               REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-              REPOSITORY: frontend
+              REPOSITORY: ${{ github.event.inputs.service }}
               IMAGE_TAG: ${{ github.sha }}
             run: |
              docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
              docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+          # - name: Workflow Dispatch
+          #   uses: benc-uk/workflow-dispatch@v1.2.2
+          #   with:
+          #     workflow: sharkio-devops-cicd.yaml
+          #     ref: "${{ github.sha }}"
+          #     inputs: '{ "client_name": "${{ matrix.client_name }}", "env_to_deploy": "${{ inputs.env_to_deploy }}" }'
