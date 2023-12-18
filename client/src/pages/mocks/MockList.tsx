@@ -36,7 +36,7 @@ export const MockList = () => {
               className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
             >
               <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
-              New
+              New Mock
             </div>
           </div>
         </div>
