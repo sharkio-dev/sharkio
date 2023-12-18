@@ -30,7 +30,7 @@ export const MockSideBar = () => {
 
   useEffect(() => {
     if (selectedSniffer && !snifferId) {
-      navigator(`/mocks?${queryString}?snifferId=${selectedSniffer.id}`);
+      navigator(`/mocks?snifferId=${selectedSniffer.id}`);
     } else if (sniffers.length > 0 && !selectedSniffer) {
       setSelectedSniffer(sniffers[0]);
       return;
@@ -47,7 +47,7 @@ export const MockSideBar = () => {
               key={i}
               value={sniffer.id}
               onClick={() => {
-                navigator(`/mocks?${queryString}?snifferId=${sniffer.id}`);
+                navigator(`/mocks?snifferId=${sniffer.id}`);
               }}
             >
               <SideBarItem
