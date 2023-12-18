@@ -23,51 +23,47 @@ export const MockList = () => {
 
   return (
     <>
-      <div className="flex flex-col w-full overflow-y-auto">
-        <div
-          className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md
-  ${isNew ? "bg-primary" : ""}`}
-          onClick={() => {
-            let params = new URLSearchParams();
-            params.append("isNew", "true");
-            params.append("snifferId", snifferId?.toString() || "");
-            let queryString = params.toString();
-            navigator(`/mocks?${queryString}`);
-          }}
-        >
+      <div className="flex flex-col w-full ">
+        <div className="border-b border-border-color pb-2 mb-2">
           <div
-            className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
+            className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md
+  ${isNew ? "bg-primary" : ""}`}
+            onClick={() => {
+              navigator(`/mocks?isNew=true&snifferId=${snifferId}`);
+            }}
           >
-            <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
-            New
+            <div
+              className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
+            >
+              <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1 mr-4" />
+              New
+            </div>
           </div>
         </div>
         {mocks.map((mock) => (
           <div
-            className={`flex flex-row w-full  items-center rounded-md space-x-4 justify-between hover:bg-primary cursor-pointer active:bg-tertiary
+            className={`flex flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
     ${mock.id === mockId ? "bg-primary" : ""}`}
           >
             <div
               className="flex flex-row items-center space-x-2  w-full"
               onClick={() => {
-                let params = new URLSearchParams();
-                params.append("snifferId", snifferId?.toString() || "");
-                navigator(`/mocks/${mock.id}?${params.toString()}`);
+                navigator(`/mocks/${mock.id}?snifferId=${snifferId}`);
               }}
             >
               {selectIconByMethod(mock.method)}
-              <div className="flex text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
+              <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
                 {mock.url}
               </div>
+              <Switch
+                checked={mock.isActive}
+                size="small"
+                onChange={(e) => {
+                  e.stopPropagation();
+                  onSwitchChange(mock.id, e.target.checked);
+                }}
+              />
             </div>
-            <Switch
-              checked={mock.isActive}
-              size="small"
-              onChange={(e) => {
-                e.stopPropagation();
-                onSwitchChange(mock.id, e.target.checked);
-              }}
-            ></Switch>
           </div>
         ))}
       </div>

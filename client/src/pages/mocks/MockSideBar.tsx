@@ -30,10 +30,7 @@ export const MockSideBar = () => {
 
   useEffect(() => {
     if (selectedSniffer && !snifferId) {
-      let params = new URLSearchParams();
-      params.append("snifferId", selectedSniffer.id);
-      let queryString = params.toString();
-      navigator(`/mocks?${queryString}`);
+      navigator(`/mocks?${queryString}?snifferId=${selectedSniffer.id}`);
     } else if (sniffers.length > 0 && !selectedSniffer) {
       setSelectedSniffer(sniffers[0]);
       return;
@@ -50,10 +47,7 @@ export const MockSideBar = () => {
               key={i}
               value={sniffer.id}
               onClick={() => {
-                let params = new URLSearchParams();
-                params.append("snifferId", sniffer.id);
-                let queryString = params.toString();
-                navigator(`/mocks?${queryString}`);
+                navigator(`/mocks?${queryString}?snifferId=${sniffer.id}`);
               }}
             >
               <SideBarItem
