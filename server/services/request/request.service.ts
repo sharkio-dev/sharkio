@@ -40,7 +40,7 @@ export class RequestService {
     const res = await axios
       .request({
         method,
-        url: `http://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
+        url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers: newHeaders,
         data: method === "GET" ? undefined : body,
         httpsAgent: agent,

@@ -17,7 +17,7 @@ const log = useLog({
 });
 
 export class ProxyServer {
-  private readonly httpPort: number = +(process.env.PROXY_HTTP_PORT ?? 8080);
+  private readonly httpPort: number = +(process.env.PROXY_HTTP_PORT ?? 80);
   private readonly httpsPort: number = +(process.env.PROXY_HTTPS_PORT ?? 443);
   private app: Express;
   private httpServer?: http.Server;
