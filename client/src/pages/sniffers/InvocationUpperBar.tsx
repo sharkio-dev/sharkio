@@ -34,7 +34,7 @@ export const InvocationUpperBar = ({
   const [defaultTab, setDefaultTab] = useState("1");
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
   );
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export const InvocationUpperBar = ({
   return (
     <>
       <div className="flex flex-row items-center space-x-4">
-        <div className="flex flex-row items-center w-40">
+        <div className="flex flex-row items-center w-28">
           <SelectMethodDropDown
             disabled={activeInvocation !== undefined}
             value={editedInvocation?.method || ""}
@@ -93,17 +93,26 @@ export const InvocationUpperBar = ({
             }}
           />
         </div>
+        {sniffer && (
+          <div className="flex flex-row items-center w-[550px]">
+            <TextField
+              disabled={true}
+              value={snifferUrl}
+              variant="outlined"
+              size="small"
+              style={{ width: "100%" }}
+            />
+          </div>
+        )}
         <TextField
           disabled={activeInvocation !== undefined}
-          value={snifferUrl + editedInvocation?.url}
+          value={editedInvocation?.url}
           onChange={(e: any) => {
             if (editedInvocation) {
-              if (e.target.value.startsWith(snifferUrl + "/")) {
-                setEditedInvocation({
-                  ...editedInvocation,
-                  url: e.target.value.replace(snifferUrl, ""),
-                });
-              }
+              setEditedInvocation({
+                ...editedInvocation,
+                url: e.target.value,
+              });
             }
           }}
           variant="outlined"
