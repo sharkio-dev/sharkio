@@ -30,11 +30,18 @@ export class RequestService {
       body,
       subdomain,
     });
-    return await axios
+    const newHeaders = Object.entries(headers)
+      .filter(([key, _]) => key !== "host" && key !== "content-length")
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
+
+    const res = await axios
       .request({
         method,
-        url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
-        headers,
+        url: `http://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
+        headers: newHeaders,
         data: method === "GET" ? undefined : body,
         httpsAgent: agent,
       })
@@ -42,6 +49,7 @@ export class RequestService {
         log.error(e);
         return e.response;
       });
+    return res;
   }
 
   async getByTestExecutionId(testExecutionId: string) {
