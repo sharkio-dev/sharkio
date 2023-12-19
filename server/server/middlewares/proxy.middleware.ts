@@ -5,6 +5,7 @@ import {
   RequestHandler,
   createProxyMiddleware,
   fixRequestBody,
+  responseInterceptor,
 } from "http-proxy-middleware";
 import { RequestInterceptor } from "./interceptor.middleware";
 import type * as http from "http";
@@ -30,73 +31,31 @@ export class ProxyMiddleware {
       followRedirects: true,
       selfHandleResponse: true,
       onProxyReq: fixRequestBody,
-      onProxyRes: (proxyRes, req, res) => {
-        const invocationId = req.headers["x-sharkio-invocation-id"];
-        const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
-        const userId = req.headers["x-sharkio-user-id"] as string;
-        const testExecutionId = req.headers[
-          "x-sharkio-test-execution-id"
-        ] as string;
+      onProxyRes: responseInterceptor(
+        async (responseBuffer, proxyRes, req, res) => {
+          const invocationId = req.headers["x-sharkio-invocation-id"];
+          const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
+          const userId = req.headers["x-sharkio-user-id"] as string;
+          const testExecutionId = req.headers[
+            "x-sharkio-test-execution-id"
+          ] as string;
+          const body = responseBuffer.toString("utf8");
 
-        try {
-          let body: any = [];
-          proxyRes.on("data", function (chunk) {
-            body.push(chunk);
-          });
-
-          proxyRes.on(
-            "end",
-            function (this: ProxyMiddleware) {
-              if (invocationId != null && typeof invocationId === "string") {
-                let escapedBody = body.toString();
-
-                this.requestInterceptor
-                  .interceptResponse(
-                    userId,
-                    snifferId,
-                    invocationId,
-                    {
-                      body: escapedBody,
-                      headers: proxyRes.headers,
-                      statusCode: proxyRes.statusCode,
-                    },
-                    testExecutionId,
-                  )
-                  .then((data) => {
-                    Object.entries(proxyRes.headers)
-                      .filter(([key, value]) => key != "content-length")
-                      .forEach(([key, value]) => {
-                        value && res.setHeader(key, value);
-                      });
-                    res.status(proxyRes.statusCode ?? 200);
-                    res.end(
-                      new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
-                    );
-                  })
-                  .catch((e) => {
-                    logger.error(e.message);
-                    res.sendStatus(500).end();
-                  });
-              } else {
-                Object.entries(proxyRes.headers)
-                  .filter(([key, value]) => key != "content-length")
-                  .forEach(([key, value]) => {
-                    value && res.setHeader(key, value);
-                  });
-                res.status(proxyRes.statusCode ?? 200);
-                res.end(
-                  new Uint8Array(body.map((a: any) => [...a]).flat()) || "",
-                );
-              }
-            }.bind(this),
+          await this.requestInterceptor.interceptResponse(
+            userId,
+            snifferId,
+            invocationId as string,
+            {
+              body: body,
+              headers: proxyRes.headers,
+              statusCode: proxyRes.statusCode,
+            },
+            testExecutionId,
           );
-        } catch (e) {
-          logger.error(
-            "failed to capture response for invocation id" + invocationId,
-            e,
-          );
-        }
-      },
+
+          return body;
+        },
+      ),
     });
   }
 
