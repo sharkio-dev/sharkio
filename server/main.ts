@@ -8,7 +8,7 @@ import { InvocationController } from "./controllers/invocation.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
-import { TestSuiteController } from "./controllers/tests/testSuite.controller";
+import { TestSuiteController } from "./controllers/tests/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import ApiKeyRepository from "./model/apikeys/apiKeys.model";
 import ChatRepository from "./model/chat/chat.model";
