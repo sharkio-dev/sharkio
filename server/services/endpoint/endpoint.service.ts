@@ -9,7 +9,7 @@ import { Sniffer } from "../../model/sniffer/sniffers.model";
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository,
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -38,16 +38,16 @@ export class EndpointService {
     return requests;
   }
 
-  async getById(id: string) {
+  async getById(userId: string, id: string) {
     return this.repository.repository.findOne({
-      where: { id },
+      where: { userId, id },
     });
   }
 
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -66,7 +66,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,

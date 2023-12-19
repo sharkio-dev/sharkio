@@ -17,7 +17,7 @@ export class EndpointController {
     private readonly endpointService: EndpointService,
     private readonly snifferService: SnifferService,
     private readonly requestService: RequestService,
-    private readonly importService: ImportService,
+    private readonly importService: ImportService
   ) {}
 
   getRouter(): IRouterConfig {
@@ -41,7 +41,38 @@ export class EndpointController {
         const limit = +(req.params.limit ?? 1000);
         const requests = await this.endpointService.getByUser(userId, limit);
         res.status(200).send(requests);
-      },
+      }
+    );
+
+    router.route("/:requestId").get(
+      /**
+       * @openapi
+       * /sharkio/request/{requestId}:
+       *   get:
+       *     tags:
+       *      - request
+       *     parameters:
+       *       - name: requestId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Request id
+       *         required: true
+       *     description: Get all requests
+       *     responses:
+       *       200:
+       *         description: Returns requests
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const requestId = req.params.requestId;
+
+        const limit = +(req.params.limit ?? 1000);
+        const requests = await this.endpointService.getById(userId, requestId);
+        res.status(200).send(requests);
+      }
     );
 
     router.route("/:requestId/invocation").get(
@@ -66,8 +97,11 @@ export class EndpointController {
        *         description: Server error
        */
       async (req, res) => {
+        const userId = res.locals.auth.user.id;
+
         const request = await this.endpointService.getById(
-          req.params.requestId,
+          userId,
+          req.params.requestId
         );
         if (request === null) {
           return res.status(404).send("Request not found");
@@ -76,7 +110,7 @@ export class EndpointController {
         const requests =
           (await this.endpointService.getInvocations(request)) || [];
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/execute").post(
@@ -123,7 +157,7 @@ export class EndpointController {
           }
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
           if (!sniffer) {
             return res.status(404).send("Sniffer not found");
@@ -157,7 +191,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     router.route("/import/curl").post(
@@ -192,7 +226,7 @@ export class EndpointController {
 
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
 
           if (!sniffer) {
@@ -202,7 +236,7 @@ export class EndpointController {
           const newEndpoint = await this.importService.importFromCurl(
             userId,
             snifferId,
-            curl,
+            curl
           );
 
           res.status(200).json(newEndpoint);
@@ -210,7 +244,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     router.route("/import/curl").post(
@@ -249,7 +283,7 @@ export class EndpointController {
 
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
 
           if (!sniffer) {
@@ -259,7 +293,7 @@ export class EndpointController {
           const newEndpoint = await this.importService.importFromCurl(
             userId,
             snifferId,
-            curl,
+            curl
           );
 
           res.status(200).json(newEndpoint);
@@ -267,7 +301,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     router.route("/import/:snifferId/swagger").post(
@@ -309,7 +343,7 @@ export class EndpointController {
 
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
 
           if (!sniffer) {
@@ -319,7 +353,7 @@ export class EndpointController {
           const newEndpoints = await this.importService.importFromSwagger(
             userId,
             snifferId,
-            swagger,
+            swagger
           );
 
           res.status(200).json(newEndpoints);
@@ -327,7 +361,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     router.route("/import/curl").post(
@@ -362,7 +396,7 @@ export class EndpointController {
 
           const sniffer = await this.snifferService.getSniffer(
             res.locals.auth.userId,
-            snifferId,
+            snifferId
           );
 
           if (!sniffer) {
@@ -372,7 +406,7 @@ export class EndpointController {
           const newEndpoint = await this.importService.importFromCurl(
             userId,
             snifferId,
-            curl,
+            curl
           );
 
           res.status(200).json(newEndpoint);
@@ -380,7 +414,7 @@ export class EndpointController {
           log.error(e);
           res.status(500).send("Internal server error");
         }
-      },
+      }
     );
 
     return { router, path: "/sharkio/request" };
