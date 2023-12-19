@@ -1,0 +1,75 @@
+name: sharkio-cicd
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        type: choice
+        description: "Choose Which Image to Build"
+        required: true
+        options:
+          - frontend
+          - backend
+      env:
+        type: choice
+        description: "Choose Which Env to Deploy To"
+        required: true
+        default: production
+        options:
+          - dev
+          - production
+
+env:
+  region: eu-central-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set working directory env variable
+        run: |
+          if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
+            echo "working_dir=./client" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.service }}" == "backend" ]; then
+            echo "working_dir=./server" >> $GITHUB_ENV
+          fi
+
+      - name: Use working directory
+        run: echo "Working directory is ${{ env.working_dir }}"
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        working-directory: ${{ env.working_dir }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ github.event.inputs.service }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Workflow Dispatch
+        uses: benc-uk/workflow-dispatch@v1.2.2
+        with:
+          workflow: sharkio-devops-cicd
+          repo: "sharkio-dev/DevOps"
+          token: ${{ secrets.DEPLOY_KEY }}
+          ref: "main"
+          inputs: '{"image": "${{ github.event.inputs.service }}", "image_tag": "${{ github.sha }}" ,"env": "${{ github.event.inputs.env }}"}'

@@ -62,7 +62,7 @@ export const MockMainSection = () => {
         isActive: true,
       });
     }
-  }, [mockId, isNew]);
+  }, [mockId, isNew, mocks]);
 
   const onClickSave = () => {
     let newMock = {

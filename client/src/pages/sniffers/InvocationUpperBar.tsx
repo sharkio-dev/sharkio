@@ -1,14 +1,18 @@
-import { TextField } from "@mui/material";
+import { TextField, Tooltip } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import { InvocationType } from "./types";
 import { InvocationDetails } from "./InvocationDetails";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { BackendAxios } from "../../api/backendAxios";
 import queryString from "query-string";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+import { useMockStore } from "../../stores/mockStore";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 type InvocationUpperBarProps = {
   activeInvocation?: InvocationType;
@@ -30,13 +34,17 @@ export const InvocationUpperBar = ({
   } as InvocationType);
   const location = useLocation();
   const { endpointId } = useParams();
+  const [loading, setLoading] = useState(false);
   const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const [defaultTab, setDefaultTab] = useState("1");
   const { sniffers } = useSniffersStore();
+  const { createMock } = useMockStore();
+  const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
   );
+  const navigator = useNavigate();
 
   useEffect(() => {
     if (activeInvocation) {
@@ -81,14 +89,40 @@ export const InvocationUpperBar = ({
       }
     });
   };
+
+  const importMock = () => {
+    if (!sniffer || !editedInvocation || !editedInvocation.response) {
+      return;
+    }
+    setLoading(true);
+    return createMock(sniffer.id, {
+      method: editedInvocation?.method,
+      url: editedInvocation?.url,
+      headers: editedInvocation?.response?.headers as Record<string, string>,
+      body: editedInvocation?.response?.body,
+      status: editedInvocation?.response?.status?.toString(),
+      isActive: true,
+    })
+      .then((res) => {
+        navigator(`/mocks/${res?.id}?snifferId=${sniffer.id}`);
+      })
+      .catch(() => {
+        show("This endpoint already has a mock", "warning");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const snifferUrl = `https://${sniffer?.subdomain}.${
     import.meta.env.VITE_PROXY_DOMAIN
   }`;
 
   return (
     <>
-      <div className="flex flex-row items-center space-x-4">
-        <div className="flex flex-row items-center w-40">
+      <div className="flex flex-row items-center space-x-2">
+        {component}
+        <div className="flex flex-row items-center w-28">
           <SelectMethodDropDown
             disabled={activeInvocation !== undefined}
             value={editedInvocation?.method || ""}
@@ -102,31 +136,59 @@ export const InvocationUpperBar = ({
             }}
           />
         </div>
+        {sniffer && (
+          <div className="flex flex-row items-center w-[550px]">
+            <TextField
+              disabled={true}
+              value={snifferUrl}
+              variant="outlined"
+              size="small"
+              style={{ width: "100%" }}
+            />
+          </div>
+        )}
         <TextField
           disabled={activeInvocation !== undefined}
-          value={snifferUrl + editedInvocation?.url}
+          value={editedInvocation?.url}
           onChange={(e: any) => {
             if (editedInvocation) {
-              if (e.target.value.startsWith(snifferUrl + "/")) {
-                setEditedInvocation({
-                  ...editedInvocation,
-                  url: e.target.value.replace(snifferUrl, ""),
-                });
-              }
+              setEditedInvocation({
+                ...editedInvocation,
+                url: e.target.value,
+              });
             }
           }}
           variant="outlined"
           size="small"
           style={{ width: "100%" }}
         />
-        {loadingExecution ? (
-          <LoadingIcon />
-        ) : (
-          <PlayArrow
-            className="text-green-500 cursor-pointer"
-            onClick={executeRequest}
-          />
-        )}
+        <div className="flex flex-row items-center justify-between h-full">
+          <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+            <Tooltip title="Mock Request">
+              <div onClick={importMock}>
+                {loading ? (
+                  <LoadingIcon />
+                ) : (
+                  <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
+                )}
+              </div>
+            </Tooltip>
+          </div>
+          <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+            <Tooltip title="Execute Request">
+              <div>
+                {loadingExecution ? (
+                  <LoadingIcon />
+                ) : (
+                  <PlayArrow
+                    className="text-green-500 cursor-pointer"
+                    onClick={executeRequest}
+                  />
+                )}
+              </div>
+            </Tooltip>
+          </div>
+        </div>
       </div>
       <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
         {editedInvocation && (
