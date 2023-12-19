@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import Sniffer from "./SniffersPage/Sniffer";
 
@@ -25,18 +26,28 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
   }, [userId]);
 
   return (
-    <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
-      {snackBar}
-      <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
-        <SniffersSideBar />
+    <PanelGroup direction={"horizontal"}>
+      <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
+        {snackBar}
+        <Panel defaultSize={20}>
+          <div className="flex flex-col h-full min-w-[240px]  border-r border-border-color bg-secondary">
+            <SniffersSideBar />
+          </div>
+        </Panel>
+        <div className="relative w-[1px]  h-full  hover:bg-blue-300">
+          <PanelResizeHandle
+            className={`w-[30px] h-full absolute left-[-15px] top-0 `}
+          />
+        </div>
+        <Panel>
+          <div
+            className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)]`}
+          >
+            {children}
+          </div>
+        </Panel>
       </div>
-
-      <div
-        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)]`}
-      >
-        {children}
-      </div>
-    </div>
+    </PanelGroup>
   );
 };
 
