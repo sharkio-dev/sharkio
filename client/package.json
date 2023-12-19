@@ -51,6 +51,7 @@
     "react-json-editor-ajrm": "^2.5.14",
     "react-json-pretty": "^2.2.0",
     "react-markdown": "^9.0.1",
+    "react-resizable-panels": "^1.0.3",
     "react-router-dom": "^6.10.0",
     "reactflow": "^11.10.1",
     "swagger-ui-react": "^5.2.0",
