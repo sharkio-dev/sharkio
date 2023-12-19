@@ -625,6 +625,7 @@ input[type="checkbox"]:checked ~ svg .tsd-checkbox-checkmark {
   list-style: square;
   margin: 0;
 }
+
 .tsd-hierarchy .target {
   font-weight: bold;
 }
@@ -632,6 +633,7 @@ input[type="checkbox"]:checked ~ svg .tsd-checkbox-checkmark {
 .tsd-panel-group.tsd-index-group {
   margin-bottom: 0;
 }
+
 .tsd-index-panel .tsd-index-list {
   list-style: none;
   line-height: 1.333em;
@@ -643,16 +645,19 @@ input[type="checkbox"]:checked ~ svg .tsd-checkbox-checkmark {
   column-gap: 1rem;
   grid-template-rows: auto;
 }
+
 @media (max-width: 1024px) {
   .tsd-index-panel .tsd-index-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 @media (max-width: 768px) {
   .tsd-index-panel .tsd-index-list {
     grid-template-columns: repeat(1, 1fr);
   }
 }
+
 .tsd-index-panel .tsd-index-list li {
   -webkit-page-break-inside: avoid;
   -moz-page-break-inside: avoid;

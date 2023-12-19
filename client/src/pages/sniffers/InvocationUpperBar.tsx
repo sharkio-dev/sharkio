@@ -5,7 +5,7 @@ import { InvocationDetails } from "./InvocationDetails";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "./LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { BackendAxios } from "../../api/backendAxios";
 import queryString from "query-string";
@@ -29,6 +29,7 @@ export const InvocationUpperBar = ({
     },
   } as InvocationType);
   const location = useLocation();
+  const { endpointId } = useParams();
   const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const [defaultTab, setDefaultTab] = useState("1");
@@ -44,8 +45,16 @@ export const InvocationUpperBar = ({
           setEditedInvocation(res.data);
         }
       });
+    } else {
+      if (endpointId != null) {
+        BackendAxios.get(`/request/${endpointId}`).then((res) => {
+          if (res) {
+            setEditedInvocation(res.data);
+          }
+        });
+      }
     }
-  }, [activeInvocation]);
+  }, [endpointId]);
 
   const executeRequest = () => {
     if (!editedInvocation) {
