@@ -9,7 +9,7 @@ import {
 } from "react-icons/tb";
 
 export const selectIconByMethod = (method: string) => {
-  switch (method) {
+  switch (method.toUpperCase()) {
     case "GET":
       return (
         <div className="w-[24px] h-[24px]">
