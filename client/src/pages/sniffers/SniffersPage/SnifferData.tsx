@@ -25,14 +25,6 @@ export const SnifferData: React.FC = () => {
     });
   };
 
-  // populate the invocations
-  useEffect(() => {
-    if (endpointId) {
-      resetInvocations();
-      refreshInvocations(endpointId);
-    }
-  }, [endpointId]);
-
   const onInvocationClick = (invocationId: string) => {
     navigator(
       `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`,
