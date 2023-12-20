@@ -53,6 +53,12 @@ export const importRequestFromCurl = (
   });
 };
 
+export const importRequestFromSwagger = (
+  snifferId: string,
+  swagger: string,
+) => {
+  return BackendAxios.post(`/request/import/${snifferId}/swagger`, swagger);
+};
 export const getAllMocks = () => {
   return BackendAxios.get("/sniffer/action/getMocks");
 };

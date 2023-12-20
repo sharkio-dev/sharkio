@@ -1,15 +1,12 @@
-import Editor from "@monaco-editor/react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { Button, Modal, Paper, Typography } from "@mui/material";
+import queryString from "query-string";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { importRequestFromCurl } from "../../api/api";
-import { useSnackbar } from "../../hooks/useSnackbar";
+import { routes } from "../../constants/routes";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { Endpoint } from "./Endpoint";
-import queryString from "query-string";
-import { routes } from "../../constants/routes";
+import { ImportRequestModal } from "./import-reques-modal/import-request-modal";
 
 type EndpointSideBarProps = {
   showAdd?: boolean;
@@ -76,66 +73,5 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
         );
       })}
     </>
-  );
-};
-
-const ImportRequestModal = ({
-  onClose,
-  snifferId,
-}: {
-  onClose: () => void;
-  snifferId: string;
-}) => {
-  const [value, setValue] = useState("");
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
-
-  const handleImportClicked = () => {
-    importRequestFromCurl(snifferId, value)
-      .then(() => {
-        showSnackbar("Imported successfully", "success");
-      })
-      .catch(() => {
-        showSnackbar("Failed to import", "error");
-      });
-  };
-
-  return (
-    <Modal
-      open={true}
-      className="h-full w-full flex items-center justify-center"
-      onClose={onClose}
-    >
-      <Paper className="h-fit w-1/2 p-5">
-        {snackBar}
-        <div className="mb-4 flex ">
-          <Typography variant="h6">Import a Request from Curl</Typography>
-        </div>
-        <div className="w-full border-b-[0.05px] my-4" />
-        <Editor
-          width={"100%"}
-          height={"300px"}
-          theme="vs-dark"
-          language={""}
-          value={value}
-          onChange={(v) => {
-            setValue(v ?? "");
-          }}
-          options={{
-            minimap: {
-              enabled: false,
-            },
-          }}
-        />
-        <div className="flex justify-end pt-5">
-          <Button
-            onClick={handleImportClicked}
-            variant="contained"
-            color="primary"
-          >
-            import
-          </Button>
-        </div>
-      </Paper>
-    </Modal>
   );
 };
