@@ -11,7 +11,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import queryString from "query-string";
 import { routes } from "../../constants/routes";
 
-export const SniffersSideBar = () => {
+export const SniffersSideBar: React.FC = () => {
   const { sniffers } = useSniffersStore();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
