@@ -8,10 +8,11 @@ type BodySectionProps = {
 export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
   const onChangeBodyValue = (value: any) => {
     try {
-      JSON.parse(value);
       onBodyChange(value);
     } catch (error) {}
   };
+  const type =
+    typeof body === "string" && body.includes("html") ? "html" : "json";
 
   return (
     <div className="flex flex-col space-y-4 w-full">
@@ -21,9 +22,7 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
         theme="vs-dark"
         defaultLanguage="json"
         value={body}
-        language={
-          typeof body === "string" && body.includes("html") ? "html" : "json"
-        }
+        language={type}
         onChange={(value) => onChangeBodyValue(value)}
         options={{
           readOnly: !onBodyChange,
