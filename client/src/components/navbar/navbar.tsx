@@ -4,6 +4,7 @@ import LoginComponent from "../login-component/login-component";
 import axios from "axios";
 import { Logo } from "../sidebar/Logo";
 import { BsGithub } from "react-icons/bs";
+import WorkspaceSelector from "../project-selection/WorkspaceSelector";
 
 export const Navbar: React.FC = () => {
   const { user } = useAuthStore();
@@ -12,6 +13,8 @@ export const Navbar: React.FC = () => {
 
   return (
     <div className="flex w-full h-14 bg-primary border-b border-border-color px-4 py-2 justify-between">
+      {!isLoggedOut && <WorkspaceSelector />}
+
       <div className="items-center flex space-x-2">
         {isLoggedOut && (
           <>
@@ -22,6 +25,7 @@ export const Navbar: React.FC = () => {
           </>
         )}
       </div>
+
       <div className="items-center flex">
         {!isLoggedOut && <LoginComponent />}
         {isLoggedOut && <GithubStarButton />}

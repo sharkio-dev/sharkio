@@ -43,6 +43,9 @@ import { EnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
 import { ImportService } from "./services/imports/imports.service";
+import { WorkspaceRepository } from "./model/workSpace/workSpace.model";
+import { WorkspaceService } from "./services/workspace/workspace.service";
+import { WorkspaceController } from "./controllers/workSpace.controller";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -73,6 +76,7 @@ async function main() {
   const testSuiteRepository = new TestSuiteRepository(appDataSource);
   const testRepository = new TestRepository(appDataSource);
   const testExecutionRepository = new TextExecutionRepository(appDataSource);
+  const workspaceRepository = new WorkspaceRepository(appDataSource);
 
   /* Services */
   const mockService = new MockService(mockRepository);
@@ -93,6 +97,7 @@ async function main() {
     testExecutionRepository,
   );
   const importService = new ImportService(endpointService);
+  const workspaceService = new WorkspaceService(workspaceRepository);
 
   /* Controllers */
   const mockController = new MockController(mockService);
@@ -130,6 +135,7 @@ async function main() {
     snifferService,
     testExecutionService,
   );
+  const workspaceController = new WorkspaceController(workspaceService);
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
@@ -164,6 +170,7 @@ async function main() {
       chatController.getRouter(),
       testSuiteController.getRouter(),
       mockController.getRouter(),
+      workspaceController.getRouter(),
     ],
     swaggerUi,
   );
@@ -172,5 +179,6 @@ async function main() {
   snifferManagerServer.start();
   proxyServer.start();
 }
+console.log("setupFilePath", setupFilePath);
 
 main();
