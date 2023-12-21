@@ -8,7 +8,7 @@ import { useMockStore } from "../../stores/mockStore";
 import queryString from "query-string";
 import { MockList } from "./MockList";
 
-export const MockSideBar = () => {
+export const MockSideBar: React.FC = () => {
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
   const { sniffers, loadSniffers, selectedSniffer, setSelectedSniffer } =
