@@ -1,8 +1,6 @@
 import Editor from "@monaco-editor/react";
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
   MenuItem,
   Modal,
   Paper,
@@ -16,8 +14,8 @@ import {
   importRequestFromSwagger,
 } from "../../../api/api";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import { LoadingIcon } from "../LoadingIcon";
 import { useSniffersStore } from "../../../stores/sniffersStores";
+import { LoadingIcon } from "../LoadingIcon";
 
 export const ImportRequestModal = ({
   onClose,
@@ -29,15 +27,14 @@ export const ImportRequestModal = ({
   const [value, setValue] = useState("");
   const [type, setType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isGenerateMocks, setIsGenerateMocks] = useState(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadSniffers } = useSniffersStore();
+  const { loadEndpoints } = useSniffersStore();
 
   const handleImportClicked = () => {
     setIsLoading(true);
     (type === "curl" ? importRequestFromCurl : importRequestFromSwagger)(
       snifferId,
-      value,
+      value
     )
       .then(() => {
         showSnackbar("Imported successfully", "success");
@@ -47,7 +44,7 @@ export const ImportRequestModal = ({
       })
       .then(() => {
         showSnackbar("Reloading sniffers", "success");
-        return loadSniffers();
+        return loadEndpoints(snifferId, true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -92,16 +89,6 @@ export const ImportRequestModal = ({
             }}
           />
         </div>
-        <div>
-          <FormControlLabel
-            value={isGenerateMocks}
-            control={<Checkbox value={isGenerateMocks} />}
-            onChange={(e, checked) => {
-              setIsGenerateMocks(checked);
-            }}
-            label="Generate mocks?"
-          />
-        </div>
         <div className="flex justify-end pt-5 gap-5">
           <Button
             onClick={handleImportClicked}
@@ -114,7 +101,7 @@ export const ImportRequestModal = ({
             </div>
           </Button>
           <Button onClick={onClose} color="error" variant="contained">
-            Cancel
+            Close
           </Button>
         </div>
       </Paper>

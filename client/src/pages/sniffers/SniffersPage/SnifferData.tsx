@@ -1,11 +1,10 @@
-import { useEffect } from "react";
+import queryString from "query-string";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import { useSniffersStore } from "../../../stores/sniffersStores";
 import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { LoadingIcon } from "../LoadingIcon";
-import { useSniffersStore } from "../../../stores/sniffersStores";
-import queryString from "query-string";
 
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();

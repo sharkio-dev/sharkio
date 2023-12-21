@@ -42,7 +42,7 @@ export const InvocationUpperBar = ({
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
   );
   const navigator = useNavigate();
 
@@ -117,7 +117,6 @@ export const InvocationUpperBar = ({
   const snifferUrl = `https://${sniffer?.subdomain}.${
     import.meta.env.VITE_PROXY_DOMAIN
   }`;
-
   return (
     <>
       <div className="flex flex-row items-center space-x-2">
