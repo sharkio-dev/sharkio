@@ -20,7 +20,7 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
   useEffect(() => {
     setVerifyDelete("");
     const existedWorkspace = workspaces.find(
-      (w) => w.id === deletedWorkspaceId,
+      (w) => w.id === deletedWorkspaceId
     );
     if (existedWorkspace) {
       setWorkspace(existedWorkspace);
@@ -41,7 +41,7 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
       .then(() => {
         handleModalClose(), showSnackbar("workspace deleted", "success");
       })
-      .catch((e) => {
+      .catch(() => {
         showSnackbar("Error deleting workspace", "error");
       })
       .finally(() => {
