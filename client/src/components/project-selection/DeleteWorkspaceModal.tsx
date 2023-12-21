@@ -14,6 +14,7 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
   const { deleteWorkspace, workspaces } = useWorkspaceStore();
   const [workspace, setWorkspace] = useState<workSpaceType>(emptyWorkSpace);
 
+  const navigate = useNavigate();
   const { deletedWorkspaceId } = queryString.parse(useLocation().search);
 
   useEffect(() => {
@@ -26,8 +27,8 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
     }
   }, [deletedWorkspaceId]);
 
-  const handleCancelClick = () => {
-    setWorkspace(emptyWorkSpace);
+  const handleModalClose = () => {
+    navigate(-1);
   };
 
   const handleDeleteProjectAccept = () => {
@@ -38,7 +39,7 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
     setIsLoading(true);
     deleteWorkspace(workspace.id)
       .then(() => {
-        handleCancelClick(), showSnackbar("workspace deleted", "success");
+        handleModalClose(), showSnackbar("workspace deleted", "success");
       })
       .catch((e) => {
         console.log(e);
@@ -54,8 +55,8 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
       {snackBar}
       <GenericEditingModal
         modalProps={{
-          open: workspace.id !== "",
-          onClose: handleCancelClick,
+          open: deletedWorkspaceId ? true : false,
+          onClose: handleModalClose,
         }}
         paperHeadLine="Delete Project"
         textFieldProps={{
@@ -71,7 +72,7 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
         }}
         acceptButtonValue="Delete"
         cancelButtonProps={{
-          onClick: handleCancelClick,
+          onClick: handleModalClose,
         }}
         cancelButtonValue="Cancel"
         isLoading={isLoading}

@@ -11,19 +11,13 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState("");
   const { show: showSnackbar, component: SnackbarComponent } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { createWorkspace } = useWorkspaceStore();
+  const { createWorkspace, openWorkspace } = useWorkspaceStore();
 
   const navigate = useNavigate();
   const { addWorkspace } = queryString.parse(useLocation().search);
 
-  useEffect(() => {
-    if (!addWorkspace) return;
-    setIsModalOpen(true);
-  }, [addWorkspace]);
-
-  const handleCancelClick = () => {
-    setIsModalOpen(false);
+  const handleModalClose = () => {
+    navigate(-1);
   };
   const handleNewWorkspaceSave = async () => {
     if (newWorkSpaceName === "") {
@@ -34,7 +28,7 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
     try {
       setIsLoading(true);
       await createWorkspace(newWorkSpaceName);
-      handleCancelClick();
+      handleModalClose();
       showSnackbar("Workspace added", "success");
     } catch (err) {
       showSnackbar("Error adding new workspace", "error");
@@ -44,7 +38,10 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
     }
   };
 
-  const modalProps = { open: isModalOpen, onClose: handleCancelClick };
+  const modalProps = {
+    open: addWorkspace ? true : false,
+    onClose: handleModalClose,
+  };
   const textFieldProps = {
     placeholder: "Workspace Name",
     label: "Workspace Name",
@@ -55,7 +52,7 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
     onClick: handleNewWorkspaceSave,
     disabled: isLoading,
   };
-  const cancelButtonProps = { onClick: handleCancelClick, disabled: isLoading };
+  const cancelButtonProps = { onClick: handleModalClose, disabled: isLoading };
 
   return (
     <>

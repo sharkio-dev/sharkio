@@ -31,6 +31,7 @@ const WorkspaceSelector = () => {
 
   useEffect(() => {
     getWorkspaces().then((workspaces) => {
+      console.log("on start");
       if (workspaces.length > 0 && !workspaceId) {
         setWorkspaceIdQuery(workspaces[0].id);
       }
@@ -42,6 +43,7 @@ const WorkspaceSelector = () => {
 
   useEffect(() => {
     if (!workspaceId && openWorkspace) {
+      console.log("on change");
       setWorkspaceIdQuery(openWorkspace.id);
     }
   }, [workspaceId, openWorkspace, location.search]);
@@ -58,7 +60,7 @@ const WorkspaceSelector = () => {
             <InputLabel>workspaces</InputLabel>
             <Select
               style={{ width: "200px" }}
-              value={openWorkspace.id || ""}
+              value={openWorkspace?.id || ""}
               label="Workspace"
               onChange={(e) => handleChangeWorkspace(e.target.value as string)}
             >

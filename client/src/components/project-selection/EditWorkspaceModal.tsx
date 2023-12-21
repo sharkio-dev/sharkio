@@ -13,6 +13,7 @@ const EditWorkspaceModal = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { editWorkSpaceName, workspaces } = useWorkspaceStore();
   const { editedWorkspaceId } = queryString.parse(useLocation().search);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const existedWorkspace = workspaces.find(
@@ -24,8 +25,9 @@ const EditWorkspaceModal = () => {
     }
   }, [editedWorkspaceId]);
 
-  const handleCancelClick = () => {
-    setWorkspace(emptyWorkSpace);
+  const handleModalClose = () => {
+    //setWorkspace(emptyWorkSpace);
+    navigate(-1);
   };
 
   const handleEditedProjectSave = () => {
@@ -38,7 +40,7 @@ const EditWorkspaceModal = () => {
 
     editWorkSpaceName(editedWorkSpaceName, workspace.id)
       .then(() => {
-        handleCancelClick(), showSnackbar("Project edited", "success");
+        handleModalClose(), showSnackbar("Project edited", "success");
       })
       .catch(() => showSnackbar("Error editing project", "error"))
       .finally(() => {
@@ -51,8 +53,8 @@ const EditWorkspaceModal = () => {
       {snackBar}
       <GenericEditingModal
         modalProps={{
-          open: workspace.id !== "",
-          onClose: handleCancelClick,
+          open: editedWorkspaceId ? true : false,
+          onClose: handleModalClose,
         }}
         paperHeadLine="Edit Project"
         textFieldProps={{
@@ -63,7 +65,7 @@ const EditWorkspaceModal = () => {
         }}
         acceptButtonValue="Save"
         cancelButtonValue="Cancel"
-        cancelButtonProps={{ onClick: handleCancelClick }}
+        cancelButtonProps={{ onClick: handleModalClose }}
         acceptButtonProps={{
           onClick: handleEditedProjectSave,
           disabled: isLoading,

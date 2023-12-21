@@ -57,7 +57,11 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
       get()
         .getWorkspaces()
         .then((res) => {
-          if (res.length > 0) {
+          if (
+            res.length > 0 &&
+            get().workspaces.find((w) => w.id === get().openWorkspace.id) ===
+              undefined
+          ) {
             set({ openWorkspace: res[0] });
           }
         });
