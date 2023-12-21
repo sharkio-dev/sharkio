@@ -18,7 +18,7 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
     <div className="flex flex-col space-y-4 w-full">
       <Editor
         height="50vh"
-        width={"100%"}
+        width="100%"
         theme="vs-dark"
         defaultLanguage="json"
         value={body}

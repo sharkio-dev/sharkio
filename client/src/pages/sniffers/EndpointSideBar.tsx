@@ -23,15 +23,19 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
     setShowImport(true);
   };
 
+  const handleEndpointClicked = (endpointId: string) => {
+    navigate(`/endpoints/${endpointId}` + `?snifferId=${snifferId}`);
+  };
+
   return (
     <>
       {showAdd && (
         <div className="border-b border-border-color pb-2 mb-2">
           <div
             className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
-            onClick={() =>
-              navigate(routes.CREATE_ENDPOINT + `?snifferId=${snifferId}`)
-            }
+            onClick={() => {
+              navigate(routes.CREATE_ENDPOINT + `?snifferId=${snifferId}`);
+            }}
           >
             <div className="flex text-sm overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
               <AiOutlinePlus className="text-blue-500 text-xl h-[25px] w-[25px]" />
@@ -63,9 +67,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
         return (
           <Endpoint
             isSelected={endpoint.id === endpointId}
-            onClick={() =>
-              navigate(`/endpoints/${endpoint.id}` + `?snifferId=${snifferId}`)
-            }
+            onClick={() => handleEndpointClicked(endpoint.id)}
             key={endpoint.id}
             method={endpoint.method}
             url={endpoint.url}

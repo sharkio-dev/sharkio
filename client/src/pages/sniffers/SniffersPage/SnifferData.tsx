@@ -26,7 +26,7 @@ export const SnifferData: React.FC = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`,
+      `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`
     );
   };
 

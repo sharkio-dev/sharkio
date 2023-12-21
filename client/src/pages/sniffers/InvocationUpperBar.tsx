@@ -42,7 +42,7 @@ export const InvocationUpperBar = ({
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation.snifferId
   );
   const navigator = useNavigate();
 
@@ -55,11 +55,14 @@ export const InvocationUpperBar = ({
       });
     } else {
       if (endpointId != null) {
-        BackendAxios.get(`/request/${endpointId}`).then((res) => {
-          if (res) {
-            setEditedInvocation(res.data);
-          }
-        });
+        setLoading(true);
+        BackendAxios.get(`/request/${endpointId}`)
+          .then((res) => {
+            if (res) {
+              setEditedInvocation(res.data);
+            }
+          })
+          .finally(() => setLoading(false));
       }
     }
   }, [endpointId, activeInvocation]);
@@ -119,85 +122,91 @@ export const InvocationUpperBar = ({
   }`;
   return (
     <>
-      <div className="flex flex-row items-center space-x-2">
-        {component}
-        <div className="flex flex-row items-center w-28">
-          <SelectMethodDropDown
-            disabled={activeInvocation !== undefined}
-            value={editedInvocation?.method || ""}
-            onChange={(value: string) => {
-              if (editedInvocation) {
-                setEditedInvocation({
-                  ...editedInvocation,
-                  method: value,
-                });
-              }
-            }}
-          />
-        </div>
-        {sniffer && (
-          <div className="flex flex-row items-center w-[550px]">
+      {loading ? (
+        <LoadingIcon />
+      ) : (
+        <>
+          <div className="flex flex-row items-center space-x-2">
+            {component}
+            <div className="flex flex-row items-center w-28">
+              <SelectMethodDropDown
+                disabled={activeInvocation !== undefined}
+                value={editedInvocation?.method || ""}
+                onChange={(value: string) => {
+                  if (editedInvocation) {
+                    setEditedInvocation({
+                      ...editedInvocation,
+                      method: value,
+                    });
+                  }
+                }}
+              />
+            </div>
+            {sniffer && (
+              <div className="flex flex-row items-center w-[550px]">
+                <TextField
+                  disabled={true}
+                  value={snifferUrl}
+                  variant="outlined"
+                  size="small"
+                  style={{ width: "100%" }}
+                />
+              </div>
+            )}
             <TextField
-              disabled={true}
-              value={snifferUrl}
+              disabled={activeInvocation !== undefined}
+              value={editedInvocation?.url}
+              onChange={(e: any) => {
+                if (editedInvocation) {
+                  setEditedInvocation({
+                    ...editedInvocation,
+                    url: e.target.value,
+                  });
+                }
+              }}
               variant="outlined"
               size="small"
               style={{ width: "100%" }}
             />
-          </div>
-        )}
-        <TextField
-          disabled={activeInvocation !== undefined}
-          value={editedInvocation?.url}
-          onChange={(e: any) => {
-            if (editedInvocation) {
-              setEditedInvocation({
-                ...editedInvocation,
-                url: e.target.value,
-              });
-            }
-          }}
-          variant="outlined"
-          size="small"
-          style={{ width: "100%" }}
-        />
-        <div className="flex flex-row items-center justify-between h-full">
-          <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-            <Tooltip title="Mock Request">
-              <div onClick={importMock}>
-                {loading ? (
-                  <LoadingIcon />
-                ) : (
-                  <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
-                )}
+            <div className="flex flex-row items-center justify-between h-full">
+              <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+                <Tooltip title="Mock Request">
+                  <div onClick={importMock}>
+                    {loading ? (
+                      <LoadingIcon />
+                    ) : (
+                      <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
+                    )}
+                  </div>
+                </Tooltip>
               </div>
-            </Tooltip>
-          </div>
-          <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-            <Tooltip title="Execute Request">
-              <div>
-                {loadingExecution ? (
-                  <LoadingIcon />
-                ) : (
-                  <PlayArrow
-                    className="text-green-500 cursor-pointer"
-                    onClick={executeRequest}
-                  />
-                )}
+              <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+                <Tooltip title="Execute Request">
+                  <div>
+                    {loadingExecution ? (
+                      <LoadingIcon />
+                    ) : (
+                      <PlayArrow
+                        className="text-green-500 cursor-pointer"
+                        onClick={executeRequest}
+                      />
+                    )}
+                  </div>
+                </Tooltip>
               </div>
-            </Tooltip>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
-        {editedInvocation && (
-          <InvocationDetails
-            defaultTab={defaultTab}
-            invocation={editedInvocation}
-            setInvocation={setEditedInvocation}
-          />
-        )}
-      </div>
+          <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
+            {editedInvocation && (
+              <InvocationDetails
+                defaultTab={defaultTab}
+                invocation={editedInvocation}
+                setInvocation={setEditedInvocation}
+              />
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };
