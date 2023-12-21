@@ -38,7 +38,6 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
         }
         onMount={(editor) => {
           setEditor(editor);
-          console.log("mount");
         }}
         onChange={(value) => onChangeBodyValue(value)}
         options={{
