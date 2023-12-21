@@ -41,8 +41,8 @@ export class TextExecutionRepository {
     this.repository = this.appDataSource.getRepository(TestExecution);
   }
 
-  async create(testId: string) {
-    return await this.repository.save({
+  create(testId: string) {
+    return this.repository.save({
       testId,
     });
   }
