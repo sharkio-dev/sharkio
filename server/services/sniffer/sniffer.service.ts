@@ -42,9 +42,8 @@ export class SnifferService {
       subdomain,
     });
 
-    const newSniffer = await this.snifferRepository.repository.save(
-      snifferEntity,
-    );
+    const newSniffer =
+      await this.snifferRepository.repository.save(snifferEntity);
     return newSniffer;
   }
 
