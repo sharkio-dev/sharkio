@@ -44,7 +44,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
 
   return (
@@ -54,8 +54,7 @@ export const LivePage = () => {
           {snackBar}
           <PanelGroup direction={"vertical"}>
             <Panel
-              defaultSize={invocationId ? 40 : 0}
-              minSize={25}
+              minSize={50}
               className={invocationId ? `max-h-full` : "max-h-0"}
             >
               {invocationId && (
