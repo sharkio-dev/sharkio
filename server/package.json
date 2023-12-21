@@ -16,7 +16,8 @@
     "build": "tsc",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
-    "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
+    "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
+    "yair": "nodemon ./controllers/tests/test-result-analyzer.ts"
   },
   "nodemonConfig": {
     "ignore": [
@@ -64,6 +65,7 @@
     "@types/express-http-proxy": "^1.6.3",
     "@types/jest": "^29.5.7",
     "@types/jsonwebtoken": "^9.0.5",
+    "@types/lodash": "^4.14.202",
     "@types/node": "^20.8.7",
     "@types/random-string": "^0.0.31",
     "@types/supertest": "^2.0.12",
