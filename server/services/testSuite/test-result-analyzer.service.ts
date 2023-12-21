@@ -109,7 +109,7 @@ class TestHeaderAnalyzer {
         return this.isGreaterThan(
           headers,
           rules.targetPath,
-          rules.expectedValue
+          rules.expectedValue,
         );
       case "lt":
         return (
