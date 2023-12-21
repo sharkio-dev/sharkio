@@ -1,6 +1,6 @@
-import { RequestService } from "../../services/request/request.service";
+import { RequestService } from "../request/request.service";
 import { Test } from "../../model/testSuite/test.model";
-import { TestResultAnalyzer } from "./test-result-analyzer";
+import { TestResultAnalyzer } from "./test-result-analyzer.service";
 
 export class TestExecutor {
   private readonly testAnalyzer: TestResultAnalyzer;
