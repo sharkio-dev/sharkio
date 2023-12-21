@@ -17,7 +17,7 @@ export const postAddNewWorkspace = async (newWorkSpaceName: string) => {
 
 export const putEditWorkSpaceName = async (
   newWorkspaceName: string,
-  workspaceId: string
+  workspaceId: string,
 ) => {
   return await BackendAxios.put(`/workspace/${workspaceId}`, {
     newWorkspaceName,

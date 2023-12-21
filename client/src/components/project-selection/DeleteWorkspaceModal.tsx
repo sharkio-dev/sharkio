@@ -42,7 +42,6 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
         handleModalClose(), showSnackbar("workspace deleted", "success");
       })
       .catch((e) => {
-        console.log(e);
         showSnackbar("Error deleting workspace", "error");
       })
       .finally(() => {

@@ -17,7 +17,7 @@ const EditWorkspaceModal = () => {
 
   useEffect(() => {
     const existedWorkspace = workspaces.find(
-      (workspace) => workspace.id === editedWorkspaceId
+      (workspace) => workspace.id === editedWorkspaceId,
     );
     if (existedWorkspace) {
       setWorkspace(existedWorkspace);

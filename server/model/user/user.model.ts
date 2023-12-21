@@ -38,7 +38,6 @@ class UserRepository {
   getById(id: string) {
     return this.repository.findOne({ where: { id } });
   }
-
 }
 
 export default UserRepository;

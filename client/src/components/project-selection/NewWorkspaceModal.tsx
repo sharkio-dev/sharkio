@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
 import GenericEditingModal from "./GenericEditingModal";
@@ -11,7 +11,7 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState("");
   const { show: showSnackbar, component: SnackbarComponent } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
-  const { createWorkspace, openWorkspace } = useWorkspaceStore();
+  const { createWorkspace } = useWorkspaceStore();
 
   const navigate = useNavigate();
   const { addWorkspace } = queryString.parse(useLocation().search);

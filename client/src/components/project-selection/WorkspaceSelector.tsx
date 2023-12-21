@@ -31,7 +31,6 @@ const WorkspaceSelector = () => {
 
   useEffect(() => {
     getWorkspaces().then((workspaces) => {
-      console.log("on start");
       if (workspaces.length > 0 && !workspaceId) {
         setWorkspaceIdQuery(workspaces[0].id);
       }
@@ -43,7 +42,6 @@ const WorkspaceSelector = () => {
 
   useEffect(() => {
     if (!workspaceId && openWorkspace) {
-      console.log("on change");
       setWorkspaceIdQuery(openWorkspace.id);
     }
   }, [workspaceId, openWorkspace, location.search]);
@@ -54,7 +52,7 @@ const WorkspaceSelector = () => {
 
   return (
     <div>
-      {ISHIDDEN && (
+      {!ISHIDDEN && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>

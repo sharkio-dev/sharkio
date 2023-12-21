@@ -1,5 +1,5 @@
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import {  workSpaceType } from "../../stores/workspaceStore";
+import { workSpaceType } from "../../stores/workspaceStore";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface projectItemProps {
@@ -8,11 +8,10 @@ interface projectItemProps {
 const WorkspaceItem: React.FC<projectItemProps> = ({ workspace }: any) => {
   const navigate = useNavigate();
   const location = useLocation();
- 
 
   const handleEditWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType
+    workSpace: workSpaceType,
   ) => {
     e.stopPropagation();
     const params = new URLSearchParams(location.search);
@@ -22,7 +21,7 @@ const WorkspaceItem: React.FC<projectItemProps> = ({ workspace }: any) => {
   };
   const handleDeleteWorkspace = (
     e: React.MouseEvent,
-    workSpace: workSpaceType
+    workSpace: workSpaceType,
   ) => {
     e.stopPropagation();
     const params = new URLSearchParams(location.search);

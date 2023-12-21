@@ -12,7 +12,7 @@ import { Test } from "../model/testSuite/test.model";
 import { TestExecution } from "../model/testSuite/testExecution.model";
 import { Mock } from "../model/mock/mock.model";
 import { Workspace } from "../model/workSpace/workSpace.model";
-import {UsersWorkspaces} from "../model/usersWorkspaces/usersWorkspaces.model";
+import { UsersWorkspaces } from "../model/usersWorkspaces/usersWorkspaces.model";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 

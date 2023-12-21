@@ -11,7 +11,6 @@ export class WorkspaceController {
     private readonly baseUrl: string = "/sharkio/workspace",
   ) {}
 
-
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
     router
