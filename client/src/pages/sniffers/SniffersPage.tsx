@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useAuthStore } from "../../stores/authStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
-import Sniffer from "./SniffersPage/Sniffer";
 import InnerPageTemplate from "../../components/inner-page-template/inner-page-template";
+import Sniffer from "./SniffersPage/Sniffer";
 
 interface SnifferPageTemplateProps {
   children?: React.ReactNode;

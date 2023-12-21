@@ -26,16 +26,17 @@ export const SnifferData: React.FC = () => {
 
   const onInvocationClick = (invocationId: string) => {
     navigator(
-      `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`,
+      `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`
     );
   };
+
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
     : "h-1/3 max-h-[calc(33vh-16px)]";
 
   return (
     <>
-      <div className={`flex flex-col  w-full`}>
+      <div className={`flex flex-col w-full`}>
         <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
           <InvocationUpperBar activeInvocation={invocation} />
         </div>

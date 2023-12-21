@@ -4,6 +4,7 @@ import { Navbar } from "../navbar/navbar";
 import { SideBar } from "../sidebar/sidebar";
 import { SiOpenai } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
+import styles from "./page-template.module.scss";
 
 export const PageTemplate: React.FC<
   PropsWithChildren & { isSideBar?: boolean }
@@ -11,15 +12,15 @@ export const PageTemplate: React.FC<
   const { user } = useAuthStore();
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-row h-full w-full flex-1">
+    <div className={styles.pageTemplate}>
+      <div className={styles.sidebarContainer}>
         {user && isSideBar && <SideBar />}
-        <div className="flex flex-col w-full bg-tertiary h-[calc(100vh-40px)]">
-          <Navbar />
-          {children}
-        </div>
       </div>
-      {user && <BottomBar />}
+      <div className={styles.navbarContainer}>
+        <Navbar />
+      </div>
+      <div className={styles.contentContainer}>{children}</div>
+      <div className={styles.bottomBarContainer}>{user && <BottomBar />}</div>
     </div>
   );
 };
