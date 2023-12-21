@@ -16,7 +16,8 @@
     "build": "tsc",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
-    "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
+    "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
+    "yair": "nodemon ./controllers/tests/test-result-analyzer.ts"
   },
   "nodemonConfig": {
     "ignore": [
