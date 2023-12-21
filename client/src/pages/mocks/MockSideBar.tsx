@@ -33,7 +33,7 @@ export const MockSideBar = () => {
       let params = new URLSearchParams();
       params.append("snifferId", selectedSniffer.id);
       let queryString = params.toString();
-      navigator(`/mocks?${queryString}`);
+      navigator({ search: queryString }, { replace: true });
     } else if (sniffers.length > 0 && !selectedSniffer) {
       setSelectedSniffer(sniffers[0]);
       return;

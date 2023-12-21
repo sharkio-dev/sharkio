@@ -19,26 +19,37 @@ const WorkspaceSelector = () => {
     useWorkspaceStore();
   const location = useLocation();
   const navigate = useNavigate();
+
   const { workspaceId } = queryString.parse(location.search);
+
+  const setWorkspaceIdQuery = (workspaceId: string) => {
+    const params = new URLSearchParams(location.search);
+    params.set("workspaceId", workspaceId);
+    navigate({ search: params.toString() }, { replace: true });
+    changeBetweenWorkSpaces(workspaceId);
+  };
+
   useEffect(() => {
-    getWorkspaces();
+    getWorkspaces().then((workspaces) => {
+      if (workspaces.length > 0 && !workspaceId) {
+        setWorkspaceIdQuery(workspaces[0].id);
+      }
+      if (workspaceId) {
+        changeBetweenWorkSpaces(workspaceId as string);
+      }
+    });
   }, []);
 
   useEffect(() => {
-    if (
-      !location.search.includes("workspaceId") ||
-      workspaceId !== openWorkspace.id
-    ) {
-      console.log("incudes");
-      const params = new URLSearchParams(location.search);
-      params.set("workspaceId", openWorkspace.id || "");
-      navigate({ search: params.toString() });
+    if (!workspaceId && openWorkspace) {
+      setWorkspaceIdQuery(openWorkspace.id);
     }
-  }, [location.search, navigate, openWorkspace]);
+  }, [workspaceId, openWorkspace, location.search]);
 
   const handleChangeWorkspace = async (workSpaceId: string) => {
-    changeBetweenWorkSpaces(workSpaceId);
+    setWorkspaceIdQuery(workSpaceId);
   };
+
   return (
     <div>
       {ISHIDDEN && (
@@ -47,7 +58,7 @@ const WorkspaceSelector = () => {
             <InputLabel>workspaces</InputLabel>
             <Select
               style={{ width: "200px" }}
-              value={openWorkspace.id}
+              value={openWorkspace.id || ""}
               label="Workspace"
               onChange={(e) => handleChangeWorkspace(e.target.value as string)}
             >

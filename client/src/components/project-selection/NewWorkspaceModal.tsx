@@ -24,7 +24,6 @@ const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
 
   const handleCancelClick = () => {
     setIsModalOpen(false);
-    navigate({ search: "" });
   };
   const handleNewWorkspaceSave = async () => {
     if (newWorkSpaceName === "") {

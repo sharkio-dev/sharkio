@@ -23,10 +23,10 @@ export const SniffersSideBar = () => {
   useEffect(() => {
     if (!snifferId) {
       if (sniffers.length > 0) {
-        let params = new URLSearchParams();
+        const params = new URLSearchParams(location.search);
         params.append("snifferId", sniffers[0].id);
         let queryString = params.toString();
-        navigator(routes.ENDPOINTS + "?" + queryString);
+        navigator({ search: queryString }, { replace: true });
       }
       resetEndpoints();
       return;
@@ -34,7 +34,7 @@ export const SniffersSideBar = () => {
     loadEndpoints(snifferId as string).catch(() => {
       showSnackbar("Failed to get endpoints", "error");
     });
-  }, [snifferId, sniffers]);
+  }, [snifferId, sniffers, location.search]);
 
   return (
     <>

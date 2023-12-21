@@ -14,7 +14,6 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
   const { deleteWorkspace, workspaces } = useWorkspaceStore();
   const [workspace, setWorkspace] = useState<workSpaceType>(emptyWorkSpace);
 
-  const navigate = useNavigate();
   const { deletedWorkspaceId } = queryString.parse(useLocation().search);
 
   useEffect(() => {
@@ -28,7 +27,6 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
   }, [deletedWorkspaceId]);
 
   const handleCancelClick = () => {
-    navigate({ search: "" });
     setWorkspace(emptyWorkSpace);
   };
 

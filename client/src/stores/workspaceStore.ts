@@ -16,7 +16,7 @@ export interface workSpaceType {
 interface workspaceStore {
   workspaces: workSpaceType[];
   openWorkspace: workSpaceType;
-  getWorkspaces: () => void;
+  getWorkspaces: () => Promise<workSpaceType[]>;
   changeBetweenWorkSpaces: (workSpaceId: string) => void;
   editWorkSpaceName: (name: string, id: string) => Promise<void>;
   createWorkspace: (name: string) => void;
@@ -31,15 +31,9 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   },
 
   getWorkspaces: () => {
-    getUserWorkspaces().then((res) => {
+    return getUserWorkspaces().then((res) => {
       set({ workspaces: res.data });
-      if (
-        get().openWorkspace.id === "" ||
-        get().workspaces.find((w) => w.id === get().openWorkspace.id) ===
-          undefined
-      ) {
-        set({ openWorkspace: res.data[0] || { name: "", id: "" } });
-      }
+      return res.data;
     });
   },
   changeBetweenWorkSpaces: (workspaceId: string) => {
@@ -60,7 +54,13 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   },
   deleteWorkspace: (workspaceId: string) => {
     return deleteWorkSpace(workspaceId).then(() => {
-      get().getWorkspaces();
+      get()
+        .getWorkspaces()
+        .then((res) => {
+          if (res.length > 0) {
+            set({ openWorkspace: res[0] });
+          }
+        });
     });
   },
 }));

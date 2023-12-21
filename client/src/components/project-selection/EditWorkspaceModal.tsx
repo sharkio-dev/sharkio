@@ -12,7 +12,6 @@ const EditWorkspaceModal = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { editWorkSpaceName, workspaces } = useWorkspaceStore();
-  const navigate = useNavigate();
   const { editedWorkspaceId } = queryString.parse(useLocation().search);
 
   useEffect(() => {
@@ -26,7 +25,6 @@ const EditWorkspaceModal = () => {
   }, [editedWorkspaceId]);
 
   const handleCancelClick = () => {
-    navigate({ search: "" });
     setWorkspace(emptyWorkSpace);
   };
 
