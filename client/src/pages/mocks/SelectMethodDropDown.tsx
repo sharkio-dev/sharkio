@@ -23,7 +23,7 @@ export const SelectMethodDropDown = ({
         { value: "DELETE", label: "DELETE" },
       ]}
       title={title}
-      value={value}
+      value={value.toUpperCase()}
       setValue={(value) => {
         onChange(value);
       }}
