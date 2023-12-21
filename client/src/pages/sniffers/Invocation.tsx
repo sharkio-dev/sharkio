@@ -41,7 +41,6 @@ export const Invocation = ({
         </div>
         <div className="flex flex-row items-center space-x-4">
           {selectIconByStatus(status)}
-
           <div className="flex text-xs text-gray-500">{date}</div>
         </div>
       </div>
