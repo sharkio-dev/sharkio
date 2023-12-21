@@ -20,7 +20,7 @@ export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
   useEffect(() => {
     setVerifyDelete("");
     const existedWorkspace = workspaces.find(
-      (w) => w.id === deletedWorkspaceId
+      (w) => w.id === deletedWorkspaceId,
     );
     if (existedWorkspace) {
       setWorkspace(existedWorkspace);
