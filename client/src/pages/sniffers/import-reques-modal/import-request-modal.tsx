@@ -34,7 +34,7 @@ export const ImportRequestModal = ({
     setIsLoading(true);
     (type === "curl" ? importRequestFromCurl : importRequestFromSwagger)(
       snifferId,
-      value
+      value,
     )
       .then(() => {
         showSnackbar("Imported successfully", "success");
