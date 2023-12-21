@@ -19,7 +19,7 @@ export const PageTemplate: React.FC<
       <div className={styles.navbarContainer}>
         <Navbar />
       </div>
-      <div className={styles.contentContainer}>{children}</div>
+      <div className={`${styles.contentContainer} bg-tertiary`}>{children}</div>
       <div className={styles.bottomBarContainer}>{user && <BottomBar />}</div>
     </div>
   );
