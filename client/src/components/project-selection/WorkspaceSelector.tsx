@@ -52,7 +52,7 @@ const WorkspaceSelector = () => {
 
   return (
     <div>
-      {ISHIDDEN && (
+      {!ISHIDDEN && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
