@@ -5,7 +5,6 @@ import {
   postAddNewWorkspace,
   putEditWorkSpaceName,
 } from "../api/workspacesApi";
-import { AxiosResponse } from "axios";
 
 export interface workSpaceType {
   name: string;
@@ -17,8 +16,7 @@ export interface workSpaceType {
 interface workspaceStore {
   workspaces: workSpaceType[];
   openWorkspace: workSpaceType;
-  setWorkspaces: (workspaces: workSpaceType[]) => void;
-  getWorkspaces: () => Promise<AxiosResponse<workSpaceType[], any>>;
+  getWorkspaces: () => void;
   changeBetweenWorkSpaces: (workSpaceId: string) => void;
   editWorkSpaceName: (name: string, id: string) => Promise<void>;
   createWorkspace: (name: string) => void;
@@ -33,50 +31,36 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   },
 
   getWorkspaces: () => {
-    return getUserWorkspaces();
-  },
-  setWorkspaces: (workspaces: workSpaceType[]) => {
-    set({ workspaces: workspaces });
+    getUserWorkspaces().then((res) => {
+      set({ workspaces: res.data });
+      if (
+        get().openWorkspace.id === "" ||
+        get().workspaces.find((w) => w.id === get().openWorkspace.id) ===
+          undefined
+      ) {
+        set({ openWorkspace: res.data[0] || { name: "", id: "" } });
+      }
+    });
   },
   changeBetweenWorkSpaces: (workspaceId: string) => {
     set({ openWorkspace: get().workspaces.find((w) => w.id === workspaceId) });
   },
 
   editWorkSpaceName: (newWorkspaceName: string, workspaceId: string) => {
-    const workspace = get().workspaces.find((w) => w.name === newWorkspaceName);
-    if (workspace !== undefined) {
-      return Promise.reject("Workspace already exists");
-    }
     return putEditWorkSpaceName(newWorkspaceName, workspaceId).then(() => {
-      get()
-        .getWorkspaces()
-        .then((res) => {
-          set({ workspaces: res.data });
-        });
+      get().getWorkspaces();
     });
   },
 
   createWorkspace: async (newWorkspaceName: string) => {
-    await postAddNewWorkspace(newWorkspaceName);
-    get()
-      .getWorkspaces()
-      .then((res) => {
-        set({ workspaces: res.data });
-        set({
-          openWorkspace: res.data.find((w) => w.name === newWorkspaceName),
-        });
-      });
+    return postAddNewWorkspace(newWorkspaceName).then(({ data }) => {
+      set({ openWorkspace: data });
+      get().getWorkspaces();
+    });
   },
   deleteWorkspace: (workspaceId: string) => {
     return deleteWorkSpace(workspaceId).then(() => {
-      get()
-        .getWorkspaces()
-        .then((res) => {
-          set({ workspaces: res.data });
-          if (get().openWorkspace.id === workspaceId) {
-            get().changeBetweenWorkSpaces(get().workspaces[0].id);
-          }
-        });
+      get().getWorkspaces();
     });
   },
 }));

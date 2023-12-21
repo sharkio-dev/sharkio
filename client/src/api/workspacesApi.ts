@@ -10,6 +10,7 @@ export const deleteWorkSpace = async (workSpaceId: string) => {
 };
 
 export const postAddNewWorkspace = async (newWorkSpaceName: string) => {
+  console.log(newWorkSpaceName);
   return await BackendAxios.post(`/workspace`, {
     newWorkSpaceName,
   });
@@ -17,7 +18,7 @@ export const postAddNewWorkspace = async (newWorkSpaceName: string) => {
 
 export const putEditWorkSpaceName = async (
   newWorkspaceName: string,
-  workspaceId: string,
+  workspaceId: string
 ) => {
   return await BackendAxios.put(`/workspace/${workspaceId}`, {
     newWorkspaceName,

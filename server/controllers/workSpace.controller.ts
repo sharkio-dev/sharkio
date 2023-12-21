@@ -8,8 +8,9 @@ import { z } from "zod";
 export class WorkspaceController {
   constructor(
     private readonly workspaceService: WorkspaceService,
-    private readonly baseUrl: string = "/sharkio/workspace"
+    private readonly baseUrl: string = "/sharkio/workspace",
   ) {}
+
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
@@ -32,10 +33,10 @@ export class WorkspaceController {
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
           const workspaces = await this.workspaceService.getUserWorkspaces(
-            userId
+            userId,
           );
           res.json(workspaces);
-        }
+        },
       )
       .post(
         /**
@@ -60,10 +61,10 @@ export class WorkspaceController {
           const userId = res.locals.auth.user.id;
           const newWorkspace = await this.workspaceService.createWorkspace(
             newWorkSpaceName,
-            userId
+            userId,
           );
           res.json(newWorkspace);
-        }
+        },
       );
 
     router
@@ -90,7 +91,7 @@ export class WorkspaceController {
           const { workspaceId } = req.params;
           await this.workspaceService.deleteWorkspace(userId, workspaceId);
           res.json({ success: true });
-        }
+        },
       )
       .put(
         /**
@@ -119,10 +120,10 @@ export class WorkspaceController {
           const { newWorkspaceName } = req.body;
           const newWorkspace = await this.workspaceService.changeWorkspaceName(
             workspaceId,
-            newWorkspaceName
+            newWorkspaceName,
           );
           res.json(newWorkspace);
-        }
+        },
       );
 
     return {

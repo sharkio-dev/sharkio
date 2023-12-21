@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import WorkspaceItem from "./WorkspaceItem";
 import NewWorkspaceModal from "./NewWorkspaceModal";
@@ -6,57 +6,38 @@ import EditWorkspaceModal from "./EditWorkspaceModal";
 import NewWorkspaceItem from "./NewWorkspaceItem";
 import { DeleteWorkspaceModal } from "./DeleteWorkspaceModal";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
+import { useLocation, useNavigate } from "react-router-dom";
+import queryString from "query-string";
 
-export type openModal = "create" | "edit" | "delete" | "none";
-const emptyWorkSpace: workSpaceType = {
+export const emptyWorkSpace: workSpaceType = {
   id: "",
   name: "",
 };
 const ISHIDDEN: boolean = true;
 const WorkspaceSelector = () => {
-  const [isModalOpen, setIsModalOpen] = useState<openModal>("none");
-  const [workSpaceToEdit, setWorkSpaceToEdit] =
-    useState<workSpaceType>(emptyWorkSpace);
-  const {
-    setWorkspaces,
-    workspaces,
-    openWorkspace,
-    changeBetweenWorkSpaces,
-    getWorkspaces,
-  } = useWorkspaceStore();
+  const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
+    useWorkspaceStore();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { workspaceId } = queryString.parse(location.search);
+  useEffect(() => {
+    getWorkspaces();
+  }, []);
 
   useEffect(() => {
-    getWorkspaces().then((res) => {
-      setWorkspaces(res.data);
-      changeBetweenWorkSpaces(res.data[0].id);
-    });
-  }, []);
+    if (
+      !location.search.includes("workspaceId") ||
+      workspaceId !== openWorkspace.id
+    ) {
+      console.log("incudes");
+      const params = new URLSearchParams(location.search);
+      params.set("workspaceId", openWorkspace.id || "");
+      navigate({ search: params.toString() });
+    }
+  }, [location.search, navigate, openWorkspace]);
 
   const handleChangeWorkspace = async (workSpaceId: string) => {
     changeBetweenWorkSpaces(workSpaceId);
-  };
-
-  const handleEditWorkspace = (
-    e: React.MouseEvent,
-    workSpace: workSpaceType,
-  ) => {
-    e.stopPropagation();
-    setWorkSpaceToEdit(workSpace);
-    setIsModalOpen("edit");
-  };
-
-  const handleDeleteWorkspace = (
-    e: React.MouseEvent,
-    workSpace: workSpaceType,
-  ) => {
-    e.stopPropagation();
-    setWorkSpaceToEdit(workSpace);
-    setIsModalOpen("delete");
-  };
-
-  const handleModalIsClosed = () => {
-    setWorkSpaceToEdit(emptyWorkSpace);
-    setIsModalOpen("none");
   };
   return (
     <div>
@@ -70,36 +51,19 @@ const WorkspaceSelector = () => {
               label="Workspace"
               onChange={(e) => handleChangeWorkspace(e.target.value as string)}
             >
-              <NewWorkspaceItem
-                setIsModalOpen={() => setIsModalOpen("create")}
-              />
+              <NewWorkspaceItem />
               {workspaces.map((workspace: workSpaceType) => {
                 return (
                   <MenuItem key={workspace.id} value={workspace.id}>
-                    <WorkspaceItem
-                      workspace={workspace}
-                      handleEditWorkspace={handleEditWorkspace}
-                      handleDeleteWorkspace={handleDeleteWorkspace}
-                    />
+                    <WorkspaceItem workspace={workspace} />
                   </MenuItem>
                 );
               })}
             </Select>
           </FormControl>
-          <NewWorkspaceModal
-            isModalOpen={isModalOpen === "create"}
-            onCancel={handleModalIsClosed}
-          />
-          <EditWorkspaceModal
-            isModalOpen={isModalOpen === "edit"}
-            onCancel={handleModalIsClosed}
-            workSpace={workSpaceToEdit}
-          />
-          <DeleteWorkspaceModal
-            isModalOpen={isModalOpen === "delete"}
-            onCancel={handleModalIsClosed}
-            workSpace={workSpaceToEdit}
-          />
+          <NewWorkspaceModal />
+          <EditWorkspaceModal />
+          <DeleteWorkspaceModal />
         </>
       )}
     </div>

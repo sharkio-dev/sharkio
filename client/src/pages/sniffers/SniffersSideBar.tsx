@@ -20,7 +20,6 @@ export const SniffersSideBar = () => {
   const location = useLocation();
 
   const { snifferId } = queryString.parse(location.search);
-
   useEffect(() => {
     if (!snifferId) {
       if (sniffers.length > 0) {

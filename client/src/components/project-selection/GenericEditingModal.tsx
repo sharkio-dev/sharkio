@@ -14,12 +14,13 @@ interface EditingModalProps {
   modalProps: Partial<ModalProps<"div", {}>> & { open: boolean };
   paperHeadLine?: string;
   textFieldProps: Partial<TextFieldProps>;
-  acceptButtonProps: Partial<ExtendButtonBase<ButtonTypeMap>>;
+  acceptButtonProps?: Partial<ExtendButtonBase<ButtonTypeMap>>;
   acceptButtonValue?: string;
-  cancelButtonProps: Partial<ExtendButtonBase<ButtonTypeMap>>;
+  cancelButtonProps?: Partial<ExtendButtonBase<ButtonTypeMap>>;
   cancelButtonValue?: string;
   isLoading: boolean;
 }
+
 const GenericEditingModal: React.FC<EditingModalProps> = ({
   paperHeadLine: headLine,
   acceptButtonProps,

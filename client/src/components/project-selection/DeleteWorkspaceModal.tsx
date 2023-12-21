@@ -2,31 +2,45 @@ import { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 import GenericEditingModal from "./GenericEditingModal";
+import { useLocation, useNavigate } from "react-router-dom";
+import { emptyWorkSpace } from "./WorkspaceSelector";
+import queryString from "query-string";
 
-type DeleteWorkspaceModalProps = {
-  workSpace: workSpaceType;
-  isModalOpen: boolean;
-  onCancel: () => void;
-};
-export const DeleteWorkspaceModal = ({
-  workSpace,
-  isModalOpen,
-  onCancel,
-}: DeleteWorkspaceModalProps) => {
+type DeleteWorkspaceModalProps = {};
+export const DeleteWorkspaceModal = ({}: DeleteWorkspaceModalProps) => {
   const [verifyDelete, setVerifyDelete] = useState("");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { deleteWorkspace } = useWorkspaceStore();
+  const { deleteWorkspace, workspaces } = useWorkspaceStore();
+  const [workspace, setWorkspace] = useState<workSpaceType>(emptyWorkSpace);
+
+  const navigate = useNavigate();
+  const { deletedWorkspaceId } = queryString.parse(useLocation().search);
+
+  useEffect(() => {
+    setVerifyDelete("");
+    const existedWorkspace = workspaces.find(
+      (w) => w.id === deletedWorkspaceId
+    );
+    if (existedWorkspace) {
+      setWorkspace(existedWorkspace);
+    }
+  }, [deletedWorkspaceId]);
+
+  const handleCancelClick = () => {
+    navigate({ search: "" });
+    setWorkspace(emptyWorkSpace);
+  };
 
   const handleDeleteProjectAccept = () => {
-    if (workSpace.name !== verifyDelete) {
+    if (workspace.name !== verifyDelete) {
       showSnackbar("Please type the name of the workspace to delete", "error");
       return;
     }
     setIsLoading(true);
-    deleteWorkspace(workSpace.id)
+    deleteWorkspace(workspace.id)
       .then(() => {
-        onCancel(), showSnackbar("workspace deleted", "success");
+        handleCancelClick(), showSnackbar("workspace deleted", "success");
       })
       .catch((e) => {
         console.log(e);
@@ -37,22 +51,18 @@ export const DeleteWorkspaceModal = ({
       });
   };
 
-  useEffect(() => {
-    setVerifyDelete("");
-  }, [workSpace]);
-
   return (
     <>
       {snackBar}
       <GenericEditingModal
         modalProps={{
-          open: isModalOpen,
-          onClose: onCancel,
+          open: workspace.id !== "",
+          onClose: handleCancelClick,
         }}
         paperHeadLine="Delete Project"
         textFieldProps={{
-          placeholder: `Type "${workSpace.name}" to delete`,
-          label: "Delete: " + workSpace.name,
+          placeholder: `Type "${workspace.name}" to delete`,
+          label: "Delete: " + workspace.name,
           value: verifyDelete,
           onChange: (e) => setVerifyDelete(e.target.value),
         }}
@@ -63,7 +73,7 @@ export const DeleteWorkspaceModal = ({
         }}
         acceptButtonValue="Delete"
         cancelButtonProps={{
-          onClick: onCancel,
+          onClick: handleCancelClick,
         }}
         cancelButtonValue="Cancel"
         isLoading={isLoading}

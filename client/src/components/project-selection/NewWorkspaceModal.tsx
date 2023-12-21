@@ -1,59 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
 import GenericEditingModal from "./GenericEditingModal";
+import { useLocation, useNavigate } from "react-router-dom";
+import queryString from "query-string";
 
-interface EditWorkspaceModalProps {
-  isModalOpen: boolean;
-  onCancel: () => void;
-}
-const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({
-  isModalOpen,
-  onCancel,
-}) => {
+interface EditWorkspaceModalProps {}
+
+const NewWorkspaceModal: React.FC<EditWorkspaceModalProps> = ({}) => {
   const [newWorkSpaceName, setNewWorkSpaceName] = useState("");
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { show: showSnackbar, component: SnackbarComponent } = useSnackbar();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { createWorkspace } = useWorkspaceStore();
-  const handleNewWorkSpcaeSave = async () => {
+
+  const navigate = useNavigate();
+  const { addWorkspace } = queryString.parse(useLocation().search);
+
+  useEffect(() => {
+    if (!addWorkspace) return;
+    setIsModalOpen(true);
+  }, [addWorkspace]);
+
+  const handleCancelClick = () => {
+    setIsModalOpen(false);
+    navigate({ search: "" });
+  };
+  const handleNewWorkspaceSave = async () => {
     if (newWorkSpaceName === "") {
       showSnackbar("Name cannot be empty or already exists", "error");
       return;
     }
+
     try {
       setIsLoading(true);
       await createWorkspace(newWorkSpaceName);
-      onCancel();
-      showSnackbar("workspace added", "success");
+      handleCancelClick();
+      showSnackbar("Workspace added", "success");
     } catch (err) {
       showSnackbar("Error adding new workspace", "error");
-      return;
     } finally {
       setIsLoading(false);
       setNewWorkSpaceName("");
     }
   };
 
+  const modalProps = { open: isModalOpen, onClose: handleCancelClick };
+  const textFieldProps = {
+    placeholder: "Workspace Name",
+    label: "Workspace Name",
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+      setNewWorkSpaceName(e.target.value),
+  };
+  const acceptButtonProps = {
+    onClick: handleNewWorkspaceSave,
+    disabled: isLoading,
+  };
+  const cancelButtonProps = { onClick: handleCancelClick, disabled: isLoading };
+
   return (
     <>
-      {snackBar}
+      {SnackbarComponent}
       <GenericEditingModal
-        modalProps={{ open: isModalOpen, onClose: onCancel }}
+        modalProps={modalProps}
         paperHeadLine="Add New Project"
-        textFieldProps={{
-          placeholder: "Workspace Name",
-          label: "Workspace Name",
-          onChange: (e) => setNewWorkSpaceName(e.target.value),
-        }}
+        textFieldProps={textFieldProps}
         acceptButtonValue="Add"
-        acceptButtonProps={{
-          onClick: handleNewWorkSpcaeSave,
-          disabled: isLoading,
-        }}
-        cancelButtonProps={{
-          onClick: onCancel,
-          disabled: isLoading,
-        }}
+        acceptButtonProps={acceptButtonProps}
+        cancelButtonProps={cancelButtonProps}
         isLoading={isLoading}
       />
     </>

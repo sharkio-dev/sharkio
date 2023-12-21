@@ -1,14 +1,20 @@
 import { AiOutlinePlus } from "react-icons/ai";
 import { MenuItem } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 
-interface NewProjectItemProps {
-  setIsModalOpen: () => void;
-}
-const NewWorkspaceItem: React.FC<NewProjectItemProps> = ({
-  setIsModalOpen,
-}) => {
+const NewWorkspaceItem = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleAddWorkspace = () => {
+    const params = new URLSearchParams(location.search);
+    params.set("addWorkspace", "true");
+    location.search = params.toString();
+    navigate(location);
+  };
+
   return (
-    <MenuItem onClick={setIsModalOpen} value="New workspace">
+    <MenuItem onClick={handleAddWorkspace} value="New workspace">
       <div className="flex items-center text-green-300 hover:text-green-500 gap-1 font-bold ">
         Add workspace
         <AiOutlinePlus className="text-xl" />
