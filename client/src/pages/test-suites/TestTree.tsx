@@ -44,7 +44,7 @@ export const TestList = () => {
           >
             <div className="flex text-sm overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
               <AiOutlinePlus className="text-blue-500 text-xl h-[25px] w-[25px]" />
-              <div>New</div>
+              <div>New Test</div>
             </div>
           </div>
         </div>

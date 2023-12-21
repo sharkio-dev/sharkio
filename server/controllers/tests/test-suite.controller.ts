@@ -1,12 +1,13 @@
-import EndpointService from "../services/endpoint/endpoint.service";
-import { TestSuiteService } from "../services/testSuite/testSuite.service";
-import { TestService } from "../services/testSuite/test.service";
+import EndpointService from "../../services/endpoint/endpoint.service";
+import { TestSuiteService } from "../../services/testSuite/testSuite.service";
+import { TestService } from "../../services/testSuite/test.service";
 import { NextFunction, Request, Response, Router } from "express";
-import { Rule } from "../model/testSuite/types";
-import { RequestService } from "../services/request/request.service";
-import { SnifferService } from "../services/sniffer/sniffer.service";
-import { useLog } from "../lib/log";
-import { TestExecutionService } from "../services/testSuite/testExecution.service";
+import { Rule } from "../../model/testSuite/types";
+import { RequestService } from "../../services/request/request.service";
+import { SnifferService } from "../../services/sniffer/sniffer.service";
+import { useLog } from "../../lib/log";
+import { TestExecutionService } from "../../services/testSuite/testExecution.service";
+import { TestExecutor } from "./test-executor";
 
 const log = useLog({
   dirname: __dirname,
@@ -14,6 +15,7 @@ const log = useLog({
 });
 
 export class TestSuiteController {
+  private readonly testExecutor: TestExecutor;
   constructor(
     private readonly testSuiteService: TestSuiteService,
     private readonly endpointService: EndpointService,
@@ -21,7 +23,9 @@ export class TestSuiteController {
     private readonly requestService: RequestService,
     private readonly snifferService: SnifferService,
     private readonly testExecutionService: TestExecutionService,
-  ) {}
+  ) {
+    this.testExecutor = new TestExecutor(this.requestService);
+  }
 
   getRouter() {
     const router = Router();
@@ -230,6 +234,7 @@ export class TestSuiteController {
           if (!testSuite) {
             return res.status(404).send();
           }
+
           const test = await this.testService.getById(testId);
           if (!test) {
             return res.status(404).send();
@@ -245,61 +250,15 @@ export class TestSuiteController {
 
           const testExecution = await this.testExecutionService.create(testId);
 
-          const headers = {
-            ...test.headers,
-            "x-sharkio-test-execution-id": testExecution.id,
-          };
-
-          await this.requestService.execute({
-            method: test.method,
-            url: test.url,
-            headers: headers,
-            body: test.body,
-            subdomain: sniffer.subdomain,
-          });
-          const request = await this.requestService.getByTestExecutionId(
+          const results = await this.testExecutor.execute(
+            test,
+            sniffer.subdomain,
             testExecution.id,
           );
-          const response = request?.response[0];
 
-          const checks = test.rules.map((rule) => {
-            const { type, comparator, expectedValue, targetPath } = rule;
-            if (type === "status_code") {
-              return {
-                type,
-                comparator,
-                expectedValue,
-                targetPath,
-                actualValue: response?.status,
-                isPassed:
-                  response?.status.toString() === expectedValue.toString(),
-              };
-            }
-            if (type === "body") {
-              return {
-                type,
-                comparator,
-                expectedValue,
-                targetPath,
-                actualValue: response?.body,
-                isPassed: response?.body === expectedValue,
-              };
-            }
+          await this.testExecutionService.update(testExecution.id, results);
 
-            if (type === "header") {
-              return {
-                type,
-                comparator,
-                expectedValue,
-                targetPath,
-                actualValue: response?.headers[targetPath],
-                isPassed: response?.headers[targetPath] === expectedValue,
-              };
-            }
-          });
-          await this.testExecutionService.update(testExecution.id, checks);
-
-          res.status(204).send();
+          return res.status(204).send(results);
         } catch (e) {
           log.error(e);
           res.status(500).send();

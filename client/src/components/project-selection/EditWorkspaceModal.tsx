@@ -26,7 +26,6 @@ const EditWorkspaceModal = () => {
   }, [editedWorkspaceId]);
 
   const handleModalClose = () => {
-    //setWorkspace(emptyWorkSpace);
     navigate(-1);
   };
 

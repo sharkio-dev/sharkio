@@ -50,10 +50,7 @@ export const MockSideBar = () => {
               key={i}
               value={sniffer.id}
               onClick={() => {
-                let params = new URLSearchParams();
-                params.append("snifferId", sniffer.id);
-                let queryString = params.toString();
-                navigator(`/mocks?${queryString}`);
+                navigator(`/mocks?snifferId=${sniffer.id}`);
               }}
             >
               <SideBarItem
