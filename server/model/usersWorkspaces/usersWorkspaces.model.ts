@@ -1,12 +1,4 @@
-import {
-  Column,
-  DataSource,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryColumn,
-  Repository,
-} from "typeorm";
+import { Entity, PrimaryColumn } from "typeorm";
 
 import { useLog } from "../../lib/log";
 
