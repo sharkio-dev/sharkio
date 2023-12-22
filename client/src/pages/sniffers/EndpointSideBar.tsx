@@ -17,14 +17,16 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
   const { endpointId } = useParams();
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
-  const { endpoints } = useSniffersStore();
+  const { endpoints, loadInvocations } = useSniffersStore();
 
   const handleImportClicked = () => {
     setShowImport(true);
   };
 
   const handleEndpointClicked = (endpointId: string) => {
-    navigate(`/endpoints/${endpointId}` + `?snifferId=${snifferId}`);
+    loadInvocations(endpointId).then((res) => {
+      navigate(`/endpoints/${endpointId}` + `?snifferId=${snifferId}`);
+    });
   };
 
   return (

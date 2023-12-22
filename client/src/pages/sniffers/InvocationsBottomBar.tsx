@@ -40,6 +40,10 @@ export const InvocationsBottomBar = ({
       return filterByMethod || filterByUrl || filterByDate;
     }) || [];
 
+  const handleInvocationClicked = (invocationId: string) => {
+    setActiveInvocation(invocationId);
+  };
+
   return (
     <>
       <div className="flex flex-row justify-between items-center text-center mb-4">
@@ -80,7 +84,7 @@ export const InvocationsBottomBar = ({
               <Invocation
                 method={invocation.method}
                 isSelected={invocation.id === activeInvocation?.id}
-                onClick={() => setActiveInvocation(invocation.id)}
+                onClick={() => handleInvocationClicked(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}

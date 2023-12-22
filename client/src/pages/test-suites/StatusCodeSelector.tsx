@@ -3,9 +3,11 @@ import { SelectComponent } from "./SelectComponent";
 const StatusCodeSelector = ({
   value,
   setValue,
+  isDisabled = false,
 }: {
   value: string;
   setValue?: (value: string) => void;
+  isDisabled?: boolean;
 }) => {
   const options = [
     { value: "100", label: "100 Continue" },
@@ -78,6 +80,7 @@ const StatusCodeSelector = ({
       options={options}
       title="Expected Status Code"
       value={value}
+      disabled={isDisabled}
       setValue={setValue}
     />
   );

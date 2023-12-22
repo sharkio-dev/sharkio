@@ -1,4 +1,4 @@
-import { InvocationType } from "../pages/sniffers/types";
+import { EndpointType, InvocationType } from "../pages/sniffers/types";
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
@@ -76,7 +76,7 @@ export function generateJsonSchema(jsonObject: JsonObject): JsonSchema {
 export function jsonSchemaToTypescriptInterface(
   schema: JsonSchema,
   interfaceName = "",
-  isNested = false,
+  isNested = false
 ): string {
   let output = isNested ? "" : `type${" " + interfaceName + " "} = {\n`;
 
@@ -88,7 +88,7 @@ export function jsonSchemaToTypescriptInterface(
     output += `  ${jsonSchemaToTypescriptInterface(
       schema.items,
       "",
-      true,
+      true
     )}[];\n`;
   } else if (schema.type === "string") {
     output += "string;\n";
@@ -102,7 +102,9 @@ export function jsonSchemaToTypescriptInterface(
   return output;
 }
 
-export function generateCurlCommand(req: InvocationType): string {
+export function generateCurlCommand(
+  req: InvocationType | EndpointType
+): string {
   const host = req?.headers?.host;
   let curlCommand = `curl -X ${req?.method} http://${host}${req.url} \\\n`;
 
@@ -126,7 +128,7 @@ export function generateCurlCommand(req: InvocationType): string {
 
 export function generateApiRequestSnippet(
   language: string,
-  req: InvocationType,
+  req: InvocationType | EndpointType
 ) {
   let snippet = "";
 
@@ -137,7 +139,7 @@ export function generateApiRequestSnippet(
         req.url,
         req.method,
         req.headers,
-        req.body,
+        req.body
       );
       break;
     case "python":
@@ -146,7 +148,7 @@ export function generateApiRequestSnippet(
         req.url,
         req.method,
         req.headers,
-        req.body,
+        req.body
       );
       break;
     case "java":
@@ -155,7 +157,7 @@ export function generateApiRequestSnippet(
         req.url,
         req.method,
         req.headers,
-        req.body,
+        req.body
       );
       break;
     case "golang":
@@ -164,7 +166,7 @@ export function generateApiRequestSnippet(
         req.url,
         req.method,
         req.headers,
-        req.body,
+        req.body
       );
       break;
     case "php":
@@ -173,7 +175,7 @@ export function generateApiRequestSnippet(
         req.url,
         req.method,
         req.headers,
-        req.body,
+        req.body
       );
       break;
     case "bash":
@@ -191,7 +193,7 @@ const generateGoLangSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any,
+  requestBody: any
 ) => {
   snippet += `package main
 
@@ -261,7 +263,7 @@ const generateJavaOkHttpSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any,
+  requestBody: any
 ) => {
   snippet += `import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -290,7 +292,7 @@ public class Main {
     snippet += `
     MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
     RequestBody body = RequestBody.create(mediaType, "${JSON.stringify(
-      requestBody,
+      requestBody
     )}");
     requestBuilder.method("${method}", body);`;
   }
@@ -319,7 +321,7 @@ const generatePythonSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any,
+  requestBody: any
 ) => {
   snippet += `import requests
 
@@ -354,7 +356,7 @@ const generateJsSnippet = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any,
+  requestBody: any
 ) => {
   snippet += `fetch('${url}', {
       method: '${method}',
@@ -380,7 +382,7 @@ const generatePhpGuzzle = (
   url: string,
   method: string,
   headers: any,
-  requestBody: any,
+  requestBody: any
 ) => {
   snippet += `<?php
       use GuzzleHttp\Client;

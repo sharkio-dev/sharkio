@@ -2,13 +2,13 @@ import Editor from "@monaco-editor/react";
 
 type BodySectionProps = {
   body: any;
-  onBodyChange: (body: any) => void;
+  onBodyChange?: (body: any) => void;
 };
 
 export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
   const onChangeBodyValue = (value: any) => {
     try {
-      onBodyChange(value);
+      onBodyChange?.(value);
     } catch (error) {}
   };
   const type =
@@ -17,8 +17,8 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
   return (
     <div className="flex flex-col space-y-4 w-full">
       <Editor
-        height="50vh"
         width="100%"
+        className="min-h-[50vh] max-h-[80vh]"
         theme="vs-dark"
         defaultLanguage="json"
         value={body}
