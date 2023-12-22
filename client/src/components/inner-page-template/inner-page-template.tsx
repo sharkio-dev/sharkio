@@ -9,7 +9,7 @@ export const InnerPageTemplate: React.FC<innerPageTemplateProps> = ({
 }) => {
   return (
     <PanelGroup direction={"horizontal"} className="max-w-[calc(100vw-56px)]">
-      <Panel maxSize={90}>
+      <Panel defaultSize={20} maxSize={90}>
         <div className="flex flex-col h-full border-r border-border-color bg-secondary py-4">
           <SideBarComponent />
         </div>
