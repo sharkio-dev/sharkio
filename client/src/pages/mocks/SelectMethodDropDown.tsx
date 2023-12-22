@@ -3,18 +3,17 @@ import { SelectComponent } from "../test-suites/SelectComponent";
 type SelectMethodDropDownProps = {
   value: string;
   onChange: (value: any) => void;
-  title?: string;
   disabled?: boolean;
 };
 export const SelectMethodDropDown = ({
   value,
   disabled,
   onChange,
-  title = "Method",
 }: SelectMethodDropDownProps) => {
   return (
     <SelectComponent
       disabled={disabled}
+      inputClassName="min-w-[10ch]"
       options={[
         { value: "GET", label: "GET" },
         { value: "POST", label: "POST" },
@@ -22,7 +21,6 @@ export const SelectMethodDropDown = ({
         { value: "PATCH", label: "PATCH" },
         { value: "DELETE", label: "DELETE" },
       ]}
-      title={title}
       value={value.toUpperCase()}
       setValue={(value) => {
         onChange(value);

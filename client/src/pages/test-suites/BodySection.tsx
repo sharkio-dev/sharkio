@@ -15,7 +15,7 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
     typeof body === "string" && body.includes("html") ? "html" : "json";
 
   return (
-    <div className="flex flex-col space-y-4 w-full">
+    <div className="flex flex-col space-y-4 w-full min-h-[50vh]">
       <Editor
         width="100%"
         className="min-h-[50vh] max-h-[80vh]"

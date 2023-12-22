@@ -35,7 +35,7 @@ export const InvocationUpperBar = ({
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId
+    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
   );
   const navigator = useNavigate();
 
@@ -166,13 +166,11 @@ export const InvocationUpperBar = ({
         </div>
       </div>
       <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
-        {editedInvocation && (
-          <InvocationDetails
-            showResponseTab={showResponseTab}
-            invocation={editedInvocation}
-            setInvocation={setEditedInvocation}
-          />
-        )}
+        <InvocationDetails
+          showResponseTab={showResponseTab}
+          invocation={editedInvocation}
+          setInvocation={setEditedInvocation}
+        />
       </div>
     </>
   );

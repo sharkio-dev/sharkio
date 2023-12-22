@@ -42,7 +42,7 @@ export const SnifferData: React.FC = () => {
     setEditedInvocation(invocation);
     navigator(
       `/endpoints/${endpointId}/invocations/${invocationId}?snifferId=${snifferId}`,
-      { replace: true }
+      { replace: true },
     );
   };
 
@@ -93,7 +93,7 @@ const defaultInvocation: InvocationType = {
 };
 export const CreateInvocation: React.FC = () => {
   const [invocation, setInvocation] = useState<EndpointType | undefined>(
-    defaultInvocation
+    defaultInvocation,
   );
   return (
     <div className={`flex flex-col w-full`}>
@@ -104,6 +104,7 @@ export const CreateInvocation: React.FC = () => {
           setEditedInvocation={(v) => {
             setInvocation(v);
           }}
+          showResponseTab={false}
         />
       </div>
     </div>

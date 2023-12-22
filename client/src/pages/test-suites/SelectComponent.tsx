@@ -5,8 +5,10 @@ import Select from "@mui/material/Select";
 
 type SelectComponentProps = {
   options: { value: string; label: string }[];
-  title: string;
   value: string;
+  title?: string;
+  className?: string;
+  inputClassName?: string;
   setValue?: (value: string) => void;
   disabled?: boolean;
 };
@@ -17,21 +19,26 @@ export function SelectComponent({
   value,
   setValue,
   disabled,
+  className,
+  inputClassName,
 }: SelectComponentProps) {
   return (
-    <FormControl sx={{ width: "100%" }} size="small" disabled={disabled}>
-      <InputLabel>{title}</InputLabel>
-      <Select
-        value={value}
-        label={title}
-        onChange={(event) => setValue && setValue(event.target.value)}
-      >
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <div className={className}>
+      <FormControl size="small" disabled={disabled}>
+        {title && <InputLabel>{title}</InputLabel>}
+        <Select
+          value={value}
+          label={title}
+          className={inputClassName}
+          onChange={(event) => setValue && setValue(event.target.value)}
+        >
+          {options.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
   );
 }
