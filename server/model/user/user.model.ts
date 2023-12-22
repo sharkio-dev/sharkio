@@ -16,13 +16,19 @@ const log = useLog({
   filename: __filename,
 });
 
-@Entity({ name: "users", schema: "auth" })
+@Entity({ name: "users", schema: "public" })
 export class User {
   @PrimaryColumn("uuid")
   id: string;
 
   @Column()
   email: string;
+
+  @Column()
+  fullName: string;
+
+  @Column({ nullable: true })
+  profileImg: string;
 }
 
 class UserRepository {
@@ -37,6 +43,10 @@ class UserRepository {
 
   getById(id: string) {
     return this.repository.findOne({ where: { id } });
+  }
+
+  async upsert(user: User) {
+    return this.repository.save(user);
   }
 }
 
