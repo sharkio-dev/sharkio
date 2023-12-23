@@ -52,7 +52,7 @@ const logger = useLog({ dirname: __dirname, filename: __filename });
 export const setupFilePath =
   process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
 
-async function main() {
+async function main(isProxy = true, isServer = true) {
   const envsValidator = new EnvValidator();
   try {
     envsValidator.validate();
@@ -84,7 +84,7 @@ async function main() {
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
-    invocationRepository,
+    invocationRepository
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -94,7 +94,7 @@ async function main() {
   const testService = new TestService(testRepository);
   const requestService = new RequestService(invocationRepository);
   const testExecutionService = new TestExecutionService(
-    testExecutionRepository,
+    testExecutionRepository
   );
   const importService = new ImportService(endpointService);
   const workspaceService = new WorkspaceService(workspaceRepository);
@@ -106,25 +106,25 @@ async function main() {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService,
+    snifferService
   );
   const snifferController = new SnifferController(
     snifferService,
     docGenerator,
     endpointService,
-    mockService,
+    mockService
   );
   const endpointController = new EndpointController(
     endpointService,
     snifferService,
     requestService,
-    importService,
+    importService
   );
   const invocationController = new InvocationController(endpointService);
   const chatController = new ChatController(
     snifferService,
     endpointService,
-    chatService,
+    chatService
   );
   const swaggerUi = new SwaggerUiController();
   const testSuiteController = new TestSuiteController(
@@ -133,7 +133,7 @@ async function main() {
     testService,
     requestService,
     snifferService,
-    testExecutionService,
+    testExecutionService
   );
   const workspaceController = new WorkspaceController(workspaceService);
 
@@ -141,24 +141,25 @@ async function main() {
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     endpointService,
-    responseService,
+    responseService
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware,
+    requestInterceptorMiddleware
   );
   const mockMiddleware = new MockMiddleware(
     mockService,
     snifferService,
-    responseService,
+    responseService
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
     requestInterceptorMiddleware,
-    mockMiddleware,
+    mockMiddleware
   );
+
   const snifferManagerServer = new Server(
     [
       authController.getRouter(),
@@ -172,13 +173,18 @@ async function main() {
       mockController.getRouter(),
       workspaceController.getRouter(),
     ],
-    swaggerUi,
+    swaggerUi
   );
 
   // /* Start Servers */
-  snifferManagerServer.start();
-  proxyServer.start();
+  if (isProxy) proxyServer.start();
+  if (isServer) snifferManagerServer.start();
 }
-console.log("setupFilePath", setupFilePath);
+const IS_PROXY = process.env.IS_PROXY === "true";
+const IS_SERVER = process.env.IS_SERVER === "true";
 
-main();
+if (process.env.NODE_ENV === "production") {
+  main(IS_PROXY, IS_SERVER);
+} else {
+  main();
+}
