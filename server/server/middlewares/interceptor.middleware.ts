@@ -3,9 +3,9 @@ import { useLog } from "../../lib/log/index";
 import EndpointService from "../../services/endpoint/endpoint.service";
 import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
-import { User } from "../../model/user/user.model";
-import { Sniffer } from "../../model/sniffer/sniffers.model";
-import { Request as RequestModel } from "../../model/request/request.model";
+import { User } from "../../model/entities/Users";
+import { Sniffer } from "../../model/entities/Sniffer";
+import { Request as RequestModel } from "../../model/entities/Request";
 
 const logger = useLog({
   dirname: __dirname,
@@ -16,7 +16,7 @@ export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
     private readonly endpointService: EndpointService,
-    private readonly responseService: ResponseService,
+    private readonly responseService: ResponseService
   ) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
@@ -56,7 +56,7 @@ export class RequestInterceptor {
     const request = await this.endpointService.findOrCreate(
       req,
       sniffer.id,
-      sniffer.userId,
+      sniffer.userId
     );
 
     const invocation = await this.endpointService.addInvocation({
@@ -76,7 +76,7 @@ export class RequestInterceptor {
       statusCode: number | undefined;
       body: any;
     },
-    testExecutionId?: string,
+    testExecutionId?: string
   ) {
     return await this.responseService.addResponse({
       userId,

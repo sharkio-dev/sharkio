@@ -1,43 +1,5 @@
-import {
-  Column,
-  DataSource,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  Repository,
-} from "typeorm";
-
-import { useLog } from "../../lib/log";
-import { User } from "../user/user.model";
-
-const log = useLog({
-  dirname: __dirname,
-  filename: __filename,
-});
-
-@Entity({ name: "workspace", schema: "public" })
-export class Workspace {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column()
-  name: string;
-
-  @Column({ name: "created_at" })
-  createdAt: Date;
-
-  @Column({ name: "updated_at" })
-  updatedAt: Date;
-
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: "users_workspaces",
-    joinColumn: { name: "workspace_id", referencedColumnName: "id" },
-    inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
-  })
-  users: User[];
-}
+import { DataSource, Repository } from "typeorm";
+import { Workspace } from "../entities/Workspace";
 
 export class WorkspaceRepository {
   repository: Repository<Workspace>;
@@ -90,7 +52,7 @@ export class WorkspaceRepository {
   changeWorkspaceName(workspaceId: string, newWorkspaceName: string) {
     return this.repository.update(
       { id: workspaceId },
-      { name: newWorkspaceName, updatedAt: new Date() },
+      { name: newWorkspaceName, updatedAt: new Date() }
     );
   }
 }

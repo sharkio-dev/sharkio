@@ -1,15 +1,14 @@
 import { Request as ExpressRequest } from "express";
-import { Request, RequestRepository } from "../../model/request/request.model";
-import {
-  Endpoint,
-  EndpointRepository,
-} from "../../model/endpoint/endpoint.model";
-import { Sniffer } from "../../model/sniffer/sniffers.model";
+import { RequestRepository } from "../../model/repositories/request.model";
+import { Request } from "../../model/entities/Request";
+import { Endpoint } from "../../model/entities/Endpoint";
+import { EndpointRepository } from "../../model/repositories/endpoint.model";
+import { Sniffer } from "../../model/entities/Sniffer";
 
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository,
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -47,14 +46,14 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
       userId,
       url: req.path,
       method: req.method,
-      headers: req.headers,
+      headers: req.headers as Record<string, string>,
       body: req.body,
     });
     return this.repository.repository.save(newRequest);
@@ -66,7 +65,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -111,17 +110,17 @@ export class EndpointService {
     return this.requestRepository.repository.save(theInvocation);
   }
 
-  async getInvocations(request: Endpoint) {
+  async getInvocations(endpoint: Endpoint) {
     const invocations = await this.requestRepository.repository.find({
       relations: {
-        response: true,
+        responses: true,
       },
       where: {
-        endpointId: request.id,
-        snifferId: request.snifferId,
-        userId: request.userId,
-        method: request.method,
-        url: request.url,
+        endpointId: endpoint.id,
+        snifferId: endpoint.snifferId,
+        userId: endpoint.userId,
+        method: endpoint.method,
+        url: endpoint.url,
       },
       take: 100,
       order: {
@@ -132,7 +131,7 @@ export class EndpointService {
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
       let response = undefined;
-      const responses = invocation.response;
+      const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
       }
@@ -156,7 +155,7 @@ export class EndpointService {
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
       let response = undefined;
-      const responses = invocation.response;
+      const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
       }
@@ -174,14 +173,14 @@ export class EndpointService {
       },
       take: 100,
       relations: {
-        response: true,
+        responses: true,
       },
     });
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
       let response = undefined;
-      const responses = invocation.response;
+      const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
       }
@@ -194,7 +193,7 @@ export class EndpointService {
   async getInvocationById(id: string, userId: string) {
     const invocation = await this.requestRepository.repository.findOne({
       relations: {
-        response: true,
+        responses: true,
       },
       where: {
         id,
@@ -207,7 +206,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     let response = undefined;
-    const responses = invocation.response;
+    const responses = invocation.responses;
     if (responses && responses.length > 0) {
       response = responses[0];
     }

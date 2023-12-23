@@ -1,28 +1,11 @@
 import crypto from "crypto";
-import { Column, Entity, PrimaryColumn, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { DataSource } from "typeorm/browser";
+import { ApiKey } from "../entities/ApiKey";
 
 enum ApiKeyStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
-}
-
-@Entity()
-export class ApiKey {
-  @PrimaryColumn("uuid")
-  id: string;
-
-  @Column()
-  key: string;
-
-  @Column()
-  name: string;
-
-  @Column()
-  userId: string;
-
-  @Column({ type: "enum", enum: ApiKeyStatus, default: ApiKeyStatus.ACTIVE })
-  status: ApiKeyStatus;
 }
 
 class ApiKeyRepository {
@@ -61,7 +44,7 @@ class ApiKeyRepository {
   remove(userId: string, apiKeyId: string) {
     return this.repository.update(
       { userId, id: apiKeyId },
-      { status: ApiKeyStatus.INACTIVE },
+      { status: ApiKeyStatus.INACTIVE }
     );
   }
 

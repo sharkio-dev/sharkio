@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useLog } from "../../lib/log";
-import { RequestRepository } from "../../model/request/request.model";
+import { RequestRepository } from "../../model/repositories/request.model";
 import https from "https";
 
 const log = useLog({
@@ -32,21 +32,18 @@ export class RequestService {
     });
     const newHeaders = Object.entries(headers)
       .filter(([key, _]) => key !== "host" && key !== "content-length")
-      .reduce(
-        (acc, [key, value]) => {
-          acc[key] = value;
-          return acc;
-        },
-        {} as Record<string, string>,
-      );
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
 
     const res = await axios
       .request({
         method,
-        url: `https://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
+        url: `http://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` + url,
         headers: newHeaders,
         data: method === "GET" ? undefined : body,
-        httpsAgent: agent,
+        // httpsAgent: agent,
       })
       .catch((e) => {
         log.error(e);

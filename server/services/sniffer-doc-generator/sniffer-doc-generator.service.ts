@@ -1,19 +1,18 @@
 import EndpointService from "../endpoint/endpoint.service";
 import { SnifferService } from "../sniffer/sniffer.service";
 import { generateOpenApi } from "../code-generator/open-api-generator";
-import swaggerUi from "swagger-ui-express";
 
 export class SnifferDocGenerator {
   constructor(
     private readonly snifferManager: SnifferService,
-    private readonly requestService: EndpointService,
+    private readonly endpointService: EndpointService
   ) {}
 
   async generateDocForSniffer(userId: string, snifferId: string) {
     const sniffer = await this.snifferManager.getSniffer(userId, snifferId);
-    const snifferRequests = await this.requestService.getBySnifferId(
+    const snifferRequests = await this.endpointService.getBySnifferId(
       userId,
-      snifferId,
+      snifferId
     );
 
     const generatedSwagger = generateOpenApi(snifferRequests);

@@ -1,4 +1,5 @@
-import UserRepository, { User } from "../../model/user/user.model";
+import UserRepository from "../../model/repositories/user.model";
+import { User } from "../../model/entities/Users";
 
 class UserService {
   constructor(private readonly repository: UserRepository) {}

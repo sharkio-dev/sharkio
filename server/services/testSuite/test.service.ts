@@ -1,5 +1,5 @@
-import { TestRepository } from "../../model/testSuite/test.model";
-import { Rule } from "../../model/testSuite/types";
+import { TestRepository } from "../../model/repositories/testSuite/test.model";
+import { Rule } from "../../model/repositories/testSuite/types";
 
 export class TestService {
   constructor(private readonly testRepository: TestRepository) {}
@@ -12,7 +12,7 @@ export class TestService {
     body: string,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[],
+    rules?: Rule[]
   ) {
     return this.testRepository.create(
       name,
@@ -22,7 +22,7 @@ export class TestService {
       body,
       headers,
       method,
-      rules,
+      rules
     );
   }
 
@@ -51,7 +51,7 @@ export class TestService {
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
-    },
+    }
   ) {
     return this.testRepository.updateById(id, test);
   }

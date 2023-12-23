@@ -1,7 +1,5 @@
-import {
-  Response,
-  ResponseRepository,
-} from "../../model/response/response.model";
+import { ResponseRepository } from "../../model/repositories/response.model";
+import { Response } from "../../model/entities/Response";
 
 export class ResponseService {
   constructor(private readonly responseRepository: ResponseRepository) {}

@@ -1,10 +1,10 @@
-import ApiKeyRepository from "../../model/apikeys/apiKeys.model";
-import UserRepository from "../../model/user/user.model";
+import ApiKeyRepository from "../../model/repositories/apiKeys.model";
+import UserRepository from "../../model/repositories/user.model";
 
 class APIKeysService {
   constructor(
     private readonly repository: ApiKeyRepository,
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: UserRepository
   ) {}
 
   async getAll(userId: string) {

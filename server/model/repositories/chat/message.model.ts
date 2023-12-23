@@ -1,29 +1,6 @@
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import { Column, DataSource, Entity, PrimaryColumn, Repository } from "typeorm";
-
-@Entity({ name: "message" })
-export class Message {
-  @PrimaryColumn("uuid")
-  id: string;
-
-  @Column({ name: "user_id" })
-  userId: string;
-
-  @Column({ name: "chat_id" })
-  chatId: string;
-
-  @Column()
-  content: string;
-
-  @Column()
-  role: string;
-
-  @Column({ name: "created_at" })
-  createdAt: Date;
-
-  @Column({ name: "updated_at" })
-  updatedAt: Date;
-}
+import { DataSource, Repository } from "typeorm";
+import { Message } from "../../entities/Message";
 
 class MessageRepository {
   repository: Repository<Message>;
@@ -48,7 +25,7 @@ class MessageRepository {
         ({
           role: message.role,
           content: message.content,
-        }) as ChatCompletionMessageParam,
+        } as ChatCompletionMessageParam)
     );
   }
 

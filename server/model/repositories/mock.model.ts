@@ -1,49 +1,5 @@
-import {
-  Column,
-  DataSource,
-  Entity,
-  PrimaryGeneratedColumn,
-  Repository,
-} from "typeorm";
-
-@Entity({ name: "mock" })
-export class Mock {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column()
-  name: string;
-
-  @Column({ name: "user_id" })
-  userId: string;
-
-  @Column({ name: "sniffer_id" })
-  snifferId: string;
-
-  @Column()
-  method: string;
-
-  @Column()
-  url: string;
-
-  @Column()
-  body: string;
-
-  @Column({ type: "json" })
-  headers: Record<string, string>;
-
-  @Column()
-  status: number;
-
-  @Column({ name: "is_active" })
-  isActive: boolean;
-
-  @Column({ name: "created_at" })
-  createdAt: Date;
-
-  @Column({ name: "updated_at" })
-  updatedAt: Date;
-}
+import { DataSource, Repository } from "typeorm";
+import { Mock } from "../entities/Mock";
 
 export class MockRepository {
   repository: Repository<Mock>;

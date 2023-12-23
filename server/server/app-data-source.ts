@@ -1,44 +1,47 @@
 import { DataSource } from "typeorm";
-import { Sniffer } from "../model/sniffer/sniffers.model";
-import { ApiKey } from "../model/apikeys/apiKeys.model";
-import { Endpoint } from "../model/endpoint/endpoint.model";
-import { User } from "../model/user/user.model";
-import { Chat } from "../model/chat/chat.model";
-import { Message } from "../model/chat/message.model";
-import { Request } from "../model/request/request.model";
-import { Response } from "../model/response/response.model";
-import { TestSuite } from "../model/testSuite/testSuite.model";
-import { Test } from "../model/testSuite/test.model";
-import { TestExecution } from "../model/testSuite/testExecution.model";
-import { Mock } from "../model/mock/mock.model";
-import { Workspace } from "../model/workSpace/workSpace.model";
-import { UsersWorkspaces } from "../model/usersWorkspaces/usersWorkspaces.model";
+import { Sniffer } from "../model/entities/Sniffer";
+import { ApiKey } from "../model/entities/ApiKey";
+import { Endpoint } from "../model/entities/Endpoint";
+import { User } from "../model/entities/Users";
+import { Chat } from "../model/entities/Chat";
+import { Message } from "../model/entities/Message";
+import { Request } from "../model/entities/Request";
+import { Response } from "../model/entities/Response";
+import { TestSuite } from "../model/entities/TestSuite";
+import { TestExecution } from "../model/entities/TestExecution";
+import { Test } from "../model/entities/Test";
+import { Mock } from "../model/entities/Mock";
+import { Workspace } from "../model/entities/Workspace";
 
 const appDataSource: { pg: DataSource | undefined } = { pg: undefined };
 
 export const getAppDataSource = async () => {
   if (!appDataSource.pg) {
     const dataSource = new DataSource({
+      name: "default",
       type: "postgres",
-      url: process.env.DATABASE_URL,
+      host: "localhost",
+      port: 5432,
+      username: "postgres",
+      password: "mysecretpassword",
+      database: "postgres",
       synchronize: false,
       logging: process.env.LOG_SQL == "true" ?? false,
       entities: [
+        User,
         Sniffer,
+        Test,
         ApiKey,
         Endpoint,
-        User,
         Chat,
         Message,
         Request,
-        Response,
         TestSuite,
         TestExecution,
-        Test,
         Response,
         Mock,
         Workspace,
-        UsersWorkspaces,
+        Response,
       ],
       subscribers: [],
       migrations: [],
