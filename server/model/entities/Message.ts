@@ -6,7 +6,7 @@ import {
   PrimaryColumn,
   Relation,
 } from "typeorm";
-import { User } from "./Users";
+import { Users } from "./Users";
 
 @Entity("message", { schema: "public" })
 export class Message {
@@ -39,7 +39,7 @@ export class Message {
   @Column("text", { name: "role", nullable: true })
   role: string | null;
 
-  @ManyToOne(() => User, (users) => users.messages)
+  @ManyToOne(() => Users, (users) => users.messages)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<User>;
+  user: Relation<Users>;
 }

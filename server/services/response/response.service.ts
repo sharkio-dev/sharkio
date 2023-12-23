@@ -1,4 +1,4 @@
-import { ResponseRepository } from "../../model/repositories/response.model";
+import { ResponseRepository } from "../../model/repositories/response.repository";
 import { Response } from "../../model/entities/Response";
 
 export class ResponseService {

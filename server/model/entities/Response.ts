@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Request } from "./Request";
 import { TestExecution } from "./TestExecution";
-import { User } from "./Users";
+import { Users } from "./Users";
 
 @Index("response_pk", ["id"], { unique: true })
 @Entity("response", { schema: "public" })
@@ -66,9 +66,9 @@ export class Response {
   @JoinColumn([{ name: "test_execution_id", referencedColumnName: "id" }])
   testExecution: Relation<TestExecution>;
 
-  @ManyToOne(() => User, (users) => users.responses)
+  @ManyToOne(() => Users, (users) => users.responses)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<User>;
+  user: Relation<Users>;
 
   // @ManyToOne(() => Sniffer, (sniffer) => sniffer.responses, {
   //   onDelete: "CASCADE",

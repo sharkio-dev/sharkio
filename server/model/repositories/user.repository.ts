@@ -1,10 +1,10 @@
 import { DataSource, Repository } from "typeorm";
-import { User } from "../entities/Users";
+import { Users } from "../entities/Users";
 
 class UserRepository {
-  repository: Repository<User>;
+  repository: Repository<Users>;
   constructor(private readonly appDataSource: DataSource) {
-    this.repository = appDataSource.manager.getRepository(User);
+    this.repository = appDataSource.manager.getRepository(Users);
   }
 
   getByEmail(email: string) {
@@ -15,7 +15,7 @@ class UserRepository {
     return this.repository.findOne({ where: { id } });
   }
 
-  async upsert(user: User) {
+  async upsert(user: Users) {
     return this.repository.save(user);
   }
 }

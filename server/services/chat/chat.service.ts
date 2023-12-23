@@ -1,12 +1,12 @@
-import ChatRepository from "../../model/repositories/chat/chat.model";
-import MessageRepository from "../../model/repositories/chat/message.model";
+import ChatRepository from "../../model/repositories/chat/chat.repository";
+import MessageRepository from "../../model/repositories/chat/message.repository";
 
 import { v4 } from "uuid";
 
 export class ChatService {
   constructor(
     private readonly chatRepository: ChatRepository,
-    private readonly messageRepository: MessageRepository,
+    private readonly messageRepository: MessageRepository
   ) {}
 
   async loadMessagesByChatId(chatId: string) {

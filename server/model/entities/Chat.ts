@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { User } from "./Users";
+import { Users } from "./Users";
 
 @Entity("chat", { schema: "public" })
 export class Chat {
@@ -26,7 +26,7 @@ export class Chat {
   })
   updatedAt: Date | null;
 
-  @ManyToOne(() => User, (users) => users.chats)
+  @ManyToOne(() => Users, (users) => users.chats)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Promise<User>;
+  user: Promise<Users>;
 }

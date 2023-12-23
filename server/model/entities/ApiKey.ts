@@ -6,7 +6,7 @@ import {
   ManyToOne,
   Relation,
 } from "typeorm";
-import { User } from "./Users";
+import { Users } from "./Users";
 
 @Index("api_key_pkey", ["id"], { unique: true })
 @Entity("api_key", { schema: "public" })
@@ -36,7 +36,7 @@ export class ApiKey {
   @Column("text", { name: "status" })
   status: string;
 
-  @ManyToOne(() => User, async (user) => user.apiKeys)
+  @ManyToOne(() => Users, async (user) => user.apiKeys)
   @JoinColumn({ name: "user_id" })
-  user: Relation<User>;
+  user: Relation<Users>;
 }

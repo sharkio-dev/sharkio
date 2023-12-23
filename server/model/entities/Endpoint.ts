@@ -6,7 +6,7 @@ import {
   ManyToOne,
   OneToMany,
 } from "typeorm";
-import { User } from "./Users";
+import { Users } from "./Users";
 import { Request } from "./Request";
 
 @Index("request_pkey", ["id"], { unique: true })
@@ -50,9 +50,9 @@ export class Endpoint {
   })
   updatedAt: Date | null;
 
-  @ManyToOne(() => User, (users) => users.endpoints)
+  @ManyToOne(() => Users, (users) => users.endpoints)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: User;
+  user: Users;
 
   // @ManyToOne(() => Sniffer, (sniffer) => sniffer.endpoints, {
   //   onDelete: "CASCADE",

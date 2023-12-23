@@ -8,7 +8,7 @@ import {
   Relation,
 } from "typeorm";
 import { Test } from "./Test";
-import { User } from "./Users";
+import { Users } from "./Users";
 
 @Index("test_suite_pkey", ["id"], { unique: true })
 @Entity("test_suite", { schema: "public" })
@@ -35,7 +35,7 @@ export class TestSuite {
   @OneToMany(() => Test, (test) => test.testSuite)
   tests: Test[];
 
-  @ManyToOne(() => User, (users) => users.testSuites)
+  @ManyToOne(() => Users, (users) => users.testSuites)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<User>;
+  user: Relation<Users>;
 }

@@ -1,14 +1,14 @@
 import { Request as ExpressRequest } from "express";
-import { RequestRepository } from "../../model/repositories/request.model";
+import { RequestRepository } from "../../model/repositories/request.repository";
 import { Request } from "../../model/entities/Request";
 import { Endpoint } from "../../model/entities/Endpoint";
-import { EndpointRepository } from "../../model/repositories/endpoint.model";
+import { EndpointRepository } from "../../model/repositories/endpoint.repository";
 import { Sniffer } from "../../model/entities/Sniffer";
 
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository,
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -46,7 +46,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -65,7 +65,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,

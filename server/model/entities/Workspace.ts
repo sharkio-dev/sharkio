@@ -1,5 +1,5 @@
 import { Column, Entity, Index, ManyToMany } from "typeorm";
-import { User } from "./Users";
+import { Users } from "./Users";
 
 @Index("workspace_pkey", ["id"], { unique: true })
 @Entity("workspace", { schema: "public" })
@@ -29,6 +29,6 @@ export class Workspace {
   })
   updatedAt: Date;
 
-  @ManyToMany(() => User, (users) => users.workspaces)
-  users: User[];
+  @ManyToMany(() => Users, (users) => users.workspaces)
+  users: Users[];
 }

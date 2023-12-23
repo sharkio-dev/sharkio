@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { Endpoint } from "./Endpoint";
 import { TestExecution } from "./TestExecution";
-import { User } from "./Users";
+import { Users } from "./Users";
 import { Response } from "./Response";
 
 @Index("invocation_pkey", ["id"], { unique: true })
@@ -73,9 +73,9 @@ export class Request {
   @JoinColumn([{ name: "test_execution_id", referencedColumnName: "id" }])
   testExecution: TestExecution;
 
-  @ManyToOne(() => User, (users) => users.requests)
+  @ManyToOne(() => Users, (users) => users.requests)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<User>;
+  user: Relation<Users>;
 
   // @ManyToOne(() => Sniffer, (sniffer) => sniffer.requests, {
   //   onDelete: "CASCADE",

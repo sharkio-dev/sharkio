@@ -18,7 +18,7 @@ import { Workspace } from "./Workspace";
 
 @Index("users_pkey", ["id"], { unique: true })
 @Entity("users", { schema: "public" })
-export class User {
+export class Users {
   @Column("uuid", { primary: true, name: "id" })
   id: string;
 

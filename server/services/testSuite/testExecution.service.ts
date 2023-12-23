@@ -1,8 +1,8 @@
-import { TextExecutionRepository } from "../../model/repositories/testSuite/testExecution.model";
+import { TextExecutionRepository } from "../../model/repositories/testSuite/testExecution.repository";
 
 export class TestExecutionService {
   constructor(
-    private readonly testExecutionRepository: TextExecutionRepository,
+    private readonly testExecutionRepository: TextExecutionRepository
   ) {}
 
   async create(testId: string) {

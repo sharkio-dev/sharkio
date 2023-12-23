@@ -1,4 +1,4 @@
-import { TestRepository } from "../../model/repositories/testSuite/test.model";
+import { TestRepository } from "../../model/repositories/testSuite/test.repository";
 import { Rule } from "../../model/repositories/testSuite/types";
 
 export class TestService {
@@ -12,7 +12,7 @@ export class TestService {
     body: string,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[],
+    rules?: Rule[]
   ) {
     return this.testRepository.create(
       name,
@@ -22,7 +22,7 @@ export class TestService {
       body,
       headers,
       method,
-      rules,
+      rules
     );
   }
 
@@ -51,7 +51,7 @@ export class TestService {
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
-    },
+    }
   ) {
     return this.testRepository.updateById(id, test);
   }

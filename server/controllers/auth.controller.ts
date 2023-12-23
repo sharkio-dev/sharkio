@@ -4,7 +4,7 @@ import { useLog } from "../lib/log";
 import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import UserService from "../services/user/user";
 import { IRouterConfig } from "./router.interface";
-import { User } from "../model/entities/Users";
+import { Users } from "../model/entities/Users";
 
 const log = useLog({
   dirname: __dirname,
@@ -56,7 +56,7 @@ export class AuthController {
         } catch (err) {
           res.sendStatus(401);
         }
-      },
+      }
     );
 
     router.post("/sharkio/sync-user", async (req: Request, res: Response) => {
@@ -68,7 +68,7 @@ export class AuthController {
           email,
           fullName,
           profileImg,
-        } as User);
+        } as Users);
 
         res.status(200).send(user);
       } catch (err) {

@@ -1,4 +1,4 @@
-import { TestSuiteRepository } from "../../model/repositories/testSuite/testSuite.model";
+import { TestSuiteRepository } from "../../model/repositories/testSuite/testSuite.repository";
 
 export class TestSuiteService {
   constructor(private readonly testSuiteRepository: TestSuiteRepository) {}
