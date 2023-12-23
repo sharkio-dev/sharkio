@@ -56,7 +56,7 @@ export class AuthController {
         } catch (err) {
           res.sendStatus(401);
         }
-      },
+      }
     );
 
     router.post("/sharkio/sync-user", async (req: Request, res: Response) => {
