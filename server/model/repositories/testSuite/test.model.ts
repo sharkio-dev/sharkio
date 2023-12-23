@@ -26,7 +26,7 @@ export class TestRepository {
       headers?: Record<string, any>;
       method?: string;
       rules?: Rule[];
-    }
+    },
   ) {
     return this.repository.update(id, test);
   }
@@ -39,7 +39,7 @@ export class TestRepository {
     body: string,
     headers: Record<string, any>,
     method: string,
-    rules?: Rule[]
+    rules?: Rule[],
   ): Promise<Test> {
     const newTest = this.repository.create({
       name,

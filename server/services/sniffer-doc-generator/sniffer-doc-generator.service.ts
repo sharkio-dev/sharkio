@@ -5,14 +5,14 @@ import { generateOpenApi } from "../code-generator/open-api-generator";
 export class SnifferDocGenerator {
   constructor(
     private readonly snifferManager: SnifferService,
-    private readonly endpointService: EndpointService
+    private readonly endpointService: EndpointService,
   ) {}
 
   async generateDocForSniffer(userId: string, snifferId: string) {
     const sniffer = await this.snifferManager.getSniffer(userId, snifferId);
     const snifferRequests = await this.endpointService.getBySnifferId(
       userId,
-      snifferId
+      snifferId,
     );
 
     const generatedSwagger = generateOpenApi(snifferRequests);

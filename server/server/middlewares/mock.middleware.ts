@@ -8,7 +8,7 @@ export default class MockMiddleware {
   constructor(
     private readonly mockService: MockService,
     private readonly snifferService: SnifferService,
-    private readonly responseService: ResponseService
+    private readonly responseService: ResponseService,
   ) {}
 
   async mock(req: Request, res: Response, next: NextFunction) {
@@ -20,7 +20,7 @@ export default class MockMiddleware {
         sniffer?.userId,
         sniffer?.id,
         req.url,
-        req.method
+        req.method,
       );
 
       if (mock != null && mock.isActive === true) {
