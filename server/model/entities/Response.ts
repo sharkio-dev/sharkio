@@ -9,6 +9,7 @@ import {
 import { Request } from "./Request";
 import { TestExecution } from "./TestExecution";
 import { Users } from "./Users";
+import { Sniffer } from "./Sniffer";
 
 @Index("response_pk", ["id"], { unique: true })
 @Entity("response", { schema: "public" })
@@ -70,9 +71,9 @@ export class Response {
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Relation<Users>;
 
-  // @ManyToOne(() => Sniffer, (sniffer) => sniffer.responses, {
-  //   onDelete: "CASCADE",
-  // })
-  // @JoinColumn([{ name: "sniffer", referencedColumnName: "id" }])
-  // sniffer: Relation<Sniffer>;
+  @ManyToOne(() => Sniffer, (sniffer) => sniffer.responses, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn([{ name: "sniffer", referencedColumnName: "id" }])
+  sniffer: Relation<Sniffer>;
 }

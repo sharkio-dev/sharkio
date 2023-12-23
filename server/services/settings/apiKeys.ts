@@ -4,7 +4,7 @@ import UserRepository from "../../model/repositories/user.repository";
 class APIKeysService {
   constructor(
     private readonly repository: ApiKeyRepository,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
   ) {}
 
   async getAll(userId: string) {

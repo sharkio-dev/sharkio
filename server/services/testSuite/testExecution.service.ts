@@ -2,7 +2,7 @@ import { TextExecutionRepository } from "../../model/repositories/testSuite/test
 
 export class TestExecutionService {
   constructor(
-    private readonly testExecutionRepository: TextExecutionRepository
+    private readonly testExecutionRepository: TextExecutionRepository,
   ) {}
 
   async create(testId: string) {

@@ -10,7 +10,7 @@ import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
 import { TestSuiteController } from "./controllers/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
-import { dataSource } from "./model/app-data-source";
+import { dataSource } from "./model/ormconfig";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
 import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
 import { ProxyServer } from "./server/proxy-server";

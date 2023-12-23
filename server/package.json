@@ -17,7 +17,7 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
-    "yair": "nodemon ./controllers/tests/test-result-analyzer.ts"
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d ./model/ormconfig.ts"
   },
   "nodemonConfig": {
     "ignore": [
@@ -49,6 +49,7 @@
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "ts-node": "^10.9.2",
     "typeorm": "^0.3.17",
     "uuid": "^9.0.0",
     "winston": "^3.11.0",

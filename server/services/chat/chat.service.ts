@@ -6,7 +6,7 @@ import { v4 } from "uuid";
 export class ChatService {
   constructor(
     private readonly chatRepository: ChatRepository,
-    private readonly messageRepository: MessageRepository
+    private readonly messageRepository: MessageRepository,
   ) {}
 
   async loadMessagesByChatId(chatId: string) {
