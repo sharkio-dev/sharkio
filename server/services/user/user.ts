@@ -1,4 +1,5 @@
-import UserRepository, { User } from "../../model/user/user.model";
+import UserRepository from "../../model/repositories/user.repository";
+import { Users } from "../../model/entities/Users";
 
 class UserService {
   constructor(private readonly repository: UserRepository) {}
@@ -11,7 +12,7 @@ class UserService {
     return this.repository.getById(id);
   }
 
-  async upsertUser(user: User) {
+  async upsertUser(user: Users) {
     return this.repository.upsert(user);
   }
 }

@@ -4,6 +4,7 @@ import { useLog } from "../lib/log";
 import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import UserService from "../services/user/user";
 import { IRouterConfig } from "./router.interface";
+import { Users } from "../model/entities/Users";
 
 const log = useLog({
   dirname: __dirname,
@@ -67,7 +68,7 @@ export class AuthController {
           email,
           fullName,
           profileImg,
-        });
+        } as Users);
 
         res.status(200).send(user);
       } catch (err) {

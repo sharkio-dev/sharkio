@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { Rule } from "../model/testSuite/types";
+import { Rule } from "../model/repositories/testSuite/types";
 import { RequestService } from "../services/request/request.service";
 import { SnifferService } from "../services/sniffer/sniffer.service";
 import { useLog } from "../lib/log";
@@ -285,12 +285,12 @@ export class TestSuiteController {
           const result: any = {};
           if (
             !testExecution.request[0] ||
-            !testExecution.request[0].response[0]
+            !testExecution.request[0].responses[0]
           ) {
             continue;
           }
           result["request"] = testExecution.request[0];
-          result["response"] = testExecution.request[0].response[0];
+          result["response"] = testExecution.request[0].responses[0];
           result["testExecution"] = { ...testExecution, test: undefined };
           result["test"] = testExecution.test;
           result["checks"] = testExecution.checks || [];
@@ -328,14 +328,14 @@ export class TestSuiteController {
         for (const testExecution of testExecutions) {
           if (
             !testExecution.request[0] ||
-            !testExecution.request[0].response[0]
+            !testExecution.request[0].responses[0]
           ) {
             continue;
           }
           const result: any = {};
           result["request"] = testExecution.request[0];
-          if (testExecution.request[0].response != null) {
-            result["response"] = testExecution.request[0].response[0];
+          if (testExecution.request[0].responses != null) {
+            result["response"] = testExecution.request[0].responses[0];
           }
           result["testExecution"] = { ...testExecution, test: undefined };
           result["test"] = test;

@@ -10,19 +10,7 @@ import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
 import { TestSuiteController } from "./controllers/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
-import ApiKeyRepository from "./model/apikeys/apiKeys.model";
-import ChatRepository from "./model/chat/chat.model";
-import MessageRepository from "./model/chat/message.model";
-import { MockRepository } from "./model/mock/mock.model";
-import { EndpointRepository } from "./model/endpoint/endpoint.model";
-import { RequestRepository } from "./model/request/request.model";
-import { ResponseRepository } from "./model/response/response.model";
-import { SnifferRepository } from "./model/sniffer/sniffers.model";
-import { TestRepository } from "./model/testSuite/test.model";
-import { TextExecutionRepository } from "./model/testSuite/testExecution.model";
-import { TestSuiteRepository } from "./model/testSuite/testSuite.model";
-import UserRepository from "./model/user/user.model";
-import { getAppDataSource } from "./server/app-data-source";
+import { createConnection } from "./model/ormconfig";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
 import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
 import { ProxyServer } from "./server/proxy-server";
@@ -43,9 +31,21 @@ import { ServerEnvValidator, ProxyEnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
 import { ImportService } from "./services/imports/imports.service";
-import { WorkspaceRepository } from "./model/workSpace/workSpace.model";
 import { WorkspaceService } from "./services/workspace/workspace.service";
 import { WorkspaceController } from "./controllers/workSpace.controller";
+import UserRepository from "./model/repositories/user.repository";
+import { EndpointRepository } from "./model/repositories/endpoint.repository";
+import { ResponseRepository } from "./model/repositories/response.repository";
+import { RequestRepository } from "./model/repositories/request.repository";
+import { SnifferRepository } from "./model/repositories/sniffers.repository";
+import ApiKeyRepository from "./model/repositories/apiKeys.repository";
+import ChatRepository from "./model/repositories/chat/chat.repository";
+import MessageRepository from "./model/repositories/chat/message.repository";
+import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.repository";
+import { TestRepository } from "./model/repositories/testSuite/test.repository";
+import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
+import { MockRepository } from "./model/repositories/mock.repository";
+import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -73,7 +73,7 @@ async function main(isProxy = true, isServer = true) {
   if (isProxy) validateProxyEnv();
   if (isServer) validateServerEnv();
 
-  const appDataSource = await getAppDataSource();
+  const appDataSource = await createConnection().initialize();
 
   /* Repositories */
   const mockRepository = new MockRepository(appDataSource);

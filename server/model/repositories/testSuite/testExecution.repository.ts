@@ -1,38 +1,5 @@
-import {
-  Column,
-  DataSource,
-  Entity,
-  In,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Repository,
-} from "typeorm";
-import { Test } from "./test.model";
-import { Request } from "../request/request.model";
-
-@Entity()
-export class TestExecution {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column({ name: "created_at" })
-  createdAt: Date;
-
-  @Column({ name: "test_id" })
-  testId: string;
-
-  @Column({ type: "json" })
-  checks?: any;
-
-  @ManyToOne(() => Test, (test) => test.id)
-  @JoinColumn({ name: "test_id" })
-  test: Test;
-
-  @OneToMany(() => Request, (request) => request.testExecution)
-  request: Request[];
-}
+import { DataSource, In, Repository } from "typeorm";
+import { TestExecution } from "../../entities/TestExecution";
 
 export class TextExecutionRepository {
   private readonly repository: Repository<TestExecution>;
@@ -53,7 +20,7 @@ export class TextExecutionRepository {
       relations: {
         test: true,
         request: {
-          response: true,
+          responses: true,
         },
       },
       order: {

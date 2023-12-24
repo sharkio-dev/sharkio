@@ -1,25 +1,5 @@
-import {
-  Column,
-  DataSource,
-  Entity,
-  PrimaryGeneratedColumn,
-  Repository,
-} from "typeorm";
-
-@Entity()
-export class TestSuite {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column()
-  name: string;
-
-  @Column({ name: "created_at" })
-  createdAt: Date;
-
-  @Column({ name: "user_id" })
-  userId: string;
-}
+import { DataSource, Repository } from "typeorm";
+import { TestSuite } from "../../entities/TestSuite";
 
 export class TestSuiteRepository {
   private readonly repository: Repository<TestSuite>;

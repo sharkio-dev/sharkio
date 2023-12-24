@@ -3,9 +3,9 @@ import { useLog } from "../../lib/log/index";
 import EndpointService from "../../services/endpoint/endpoint.service";
 import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
-import { User } from "../../model/user/user.model";
-import { Sniffer } from "../../model/sniffer/sniffers.model";
-import { Request as RequestModel } from "../../model/request/request.model";
+import { Users } from "../../model/entities/Users";
+import { Sniffer } from "../../model/entities/Sniffer";
+import { Request as RequestModel } from "../../model/entities/Request";
 
 const logger = useLog({
   dirname: __dirname,
@@ -66,7 +66,7 @@ export class RequestInterceptor {
   }
 
   async interceptResponse(
-    userId: User["id"],
+    userId: Users["id"],
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
     res: {

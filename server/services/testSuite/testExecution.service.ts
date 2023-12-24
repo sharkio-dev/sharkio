@@ -1,4 +1,4 @@
-import { TextExecutionRepository } from "../../model/testSuite/testExecution.model";
+import { TextExecutionRepository } from "../../model/repositories/testSuite/testExecution.repository";
 
 export class TestExecutionService {
   constructor(

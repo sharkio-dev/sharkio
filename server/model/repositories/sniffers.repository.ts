@@ -1,17 +1,5 @@
-import {
-  Column,
-  DataSource,
-  Entity,
-  In,
-  PrimaryGeneratedColumn,
-  Repository,
-} from "typeorm";
-import { useLog } from "../../lib/log";
-
-const log = useLog({
-  dirname: __dirname,
-  filename: __filename,
-});
+import { DataSource, In, Repository } from "typeorm";
+import { Sniffer } from "../entities/Sniffer";
 
 export class SnifferRepository {
   repository: Repository<Sniffer>;
@@ -42,31 +30,4 @@ export class SnifferRepository {
   findByPorts(userId: string, ports: number[]) {
     return this.repository.find({ where: { userId, port: In(ports) } });
   }
-}
-
-@Entity()
-export class Sniffer {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Column()
-  name: string;
-
-  @Column({ name: "created_at" })
-  createdAt: Date;
-
-  @Column({ name: "updated_at" })
-  updatedAt: Date;
-
-  @Column({ name: "downstream_url" })
-  downstreamUrl: string;
-
-  @Column({ name: "user_id" })
-  userId: string;
-
-  @Column()
-  subdomain: string;
-
-  @Column()
-  port: number;
 }

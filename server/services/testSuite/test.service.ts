@@ -1,5 +1,5 @@
-import { TestRepository } from "../../model/testSuite/test.model";
-import { Rule } from "../../model/testSuite/types";
+import { TestRepository } from "../../model/repositories/testSuite/test.repository";
+import { Rule } from "../../model/repositories/testSuite/types";
 
 export class TestService {
   constructor(private readonly testRepository: TestRepository) {}

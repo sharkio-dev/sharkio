@@ -1,5 +1,5 @@
 import { RequestService } from "../request/request.service";
-import { Test } from "../../model/testSuite/test.model";
+import { Test } from "../../model/entities/Test";
 import { TestResultAnalyzer } from "./test-result-analyzer.service";
 
 export class TestExecutor {
