@@ -16,7 +16,7 @@ export class RequestInterceptor {
   constructor(
     private readonly snifferService: SnifferService,
     private readonly endpointService: EndpointService,
-    private readonly responseService: ResponseService,
+    private readonly responseService: ResponseService
   ) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
@@ -49,14 +49,12 @@ export class RequestInterceptor {
     const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
       | string
       | undefined;
-    // delete req.headers["host"];
-    // req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
     req.headers["ngrok-skip-browser-warning"] = "true";
 
     const request = await this.endpointService.findOrCreate(
       req,
       sniffer.id,
-      sniffer.userId,
+      sniffer.userId
     );
 
     const invocation = await this.endpointService.addInvocation({
@@ -76,7 +74,7 @@ export class RequestInterceptor {
       statusCode: number | undefined;
       body: any;
     },
-    testExecutionId?: string,
+    testExecutionId?: string
   ) {
     return await this.responseService.addResponse({
       userId,
