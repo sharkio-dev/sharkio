@@ -11,6 +11,7 @@ import { Endpoint } from "./Endpoint";
 import { TestExecution } from "./TestExecution";
 import { Users } from "./Users";
 import { Response } from "./Response";
+import { Sniffer } from "./Sniffer";
 
 @Index("invocation_pkey", ["id"], { unique: true })
 @Entity("request", { schema: "public" })
@@ -77,11 +78,11 @@ export class Request {
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Relation<Users>;
 
-  // @ManyToOne(() => Sniffer, (sniffer) => sniffer.requests, {
-  //   onDelete: "CASCADE",
-  // })
-  // @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
-  // sniffer: Promise<Sniffer>;
+  @ManyToOne(() => Sniffer, (sniffer) => sniffer.requests, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
+  sniffer: Promise<Sniffer>;
 
   @OneToMany(() => Response, (response) => response.request)
   responses: Response[];

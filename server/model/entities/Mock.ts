@@ -7,6 +7,7 @@ import {
   Relation,
 } from "typeorm";
 import { Users } from "./Users";
+import { Sniffer } from "./Sniffer";
 
 @Index("mock_pk", ["id"], { unique: true })
 @Index("mock_un", ["method", "snifferId", "url"], { unique: true })
@@ -67,7 +68,7 @@ export class Mock {
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Relation<Users>;
 
-  // @ManyToOne(() => Sniffer, (sniffer) => sniffer.mocks, { onDelete: "CASCADE" })
-  // @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
-  // sniffer: Sniffer;
+  @ManyToOne(() => Sniffer, (sniffer) => sniffer.mocks, { onDelete: "CASCADE" })
+  @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
+  sniffer: Relation<Sniffer>;
 }

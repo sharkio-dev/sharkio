@@ -5,10 +5,12 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Relation,
 } from "typeorm";
 import { TestSuite } from "./TestSuite";
 import { TestExecution } from "./TestExecution";
 import { Rule } from "../repositories/testSuite/types";
+import { Sniffer } from "./Sniffer";
 
 @Index("test_pkey", ["id"], { unique: true })
 @Entity("test", { schema: "public" })
@@ -56,11 +58,11 @@ export class Test {
   @JoinColumn([{ name: "test_suite_id", referencedColumnName: "id" }])
   testSuite: TestSuite;
 
-  // @ManyToOne(() => Sniffer, (sniffer) => sniffer.id, {
-  //   onDelete: "SET NULL",
-  // })
-  // @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
-  // sniffer: Relation<Sniffer>;
+  @ManyToOne(() => Sniffer, (sniffer) => sniffer.id, {
+    onDelete: "SET NULL",
+  })
+  @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
+  sniffer: Relation<Sniffer>;
 
   @OneToMany(() => TestExecution, (testExecution) => testExecution.test)
   testExecutions: TestExecution[];

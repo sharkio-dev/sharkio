@@ -5,9 +5,11 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  Relation,
 } from "typeorm";
 import { Users } from "./Users";
 import { Request } from "./Request";
+import { Sniffer } from "./Sniffer";
 
 @Index("request_pkey", ["id"], { unique: true })
 @Entity("endpoint", { schema: "public" })
@@ -54,11 +56,11 @@ export class Endpoint {
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Users;
 
-  // @ManyToOne(() => Sniffer, (sniffer) => sniffer.endpoints, {
-  //   onDelete: "CASCADE",
-  // })
-  // @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
-  // sniffer: Sniffer;
+  @ManyToOne(() => Sniffer, (sniffer) => sniffer.endpoints, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
+  sniffer: Relation<Sniffer>;
 
   @OneToMany(() => Request, (request) => request.endpoint)
   requests: Request[];

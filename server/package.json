@@ -17,7 +17,7 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d ./model/ormconfig.ts"
+    "migration:up": "typeorm-ts-node-commonjs migration:run -d ./model/ormconfig-migrations.ts"
   },
   "nodemonConfig": {
     "ignore": [

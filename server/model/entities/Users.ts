@@ -15,6 +15,7 @@ import { Request } from "./Request";
 import { Response } from "./Response";
 import { TestSuite } from "./TestSuite";
 import { Workspace } from "./Workspace";
+import { Sniffer } from "./Sniffer";
 
 @Index("users_pkey", ["id"], { unique: true })
 @Entity("users", { schema: "public" })
@@ -58,8 +59,8 @@ export class Users {
   @OneToMany(() => Response, (response) => response.user)
   responses: Response[];
 
-  // @OneToMany(() => Sniffer, (sniffer) => sniffer.user)
-  // sniffers: Sniffer[];
+  @OneToMany(() => Sniffer, (sniffer) => sniffer.user)
+  sniffers: Sniffer[];
 
   @OneToMany(() => TestSuite, (testSuite) => testSuite.user)
   testSuites: TestSuite[];
