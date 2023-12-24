@@ -37,12 +37,12 @@ interface SniffersState {
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
   loadEndpoints: (
     snifferId: string,
-    force?: boolean,
+    force?: boolean
   ) => Promise<EndpointType[]>;
   resetEndpoints: () => void;
   loadInvocations: (
     endpointId: string,
-    force?: boolean,
+    force?: boolean
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   loadLiveInvocations: () => Promise<InvocationType[]>;
@@ -127,17 +127,17 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     set({ endpoints: [] });
   },
   loadInvocations: (endpointId: string, force = false) => {
-    // if (get().invocationCache[endpointId] && !force) {
-    //   set({ invocations: get().invocationCache[endpointId] });
-    //   return Promise.resolve(get().invocationCache[endpointId]);
-    // }
-    // set({ loadingInvocations: true });
+    if (get().invocationCache[endpointId] && !force) {
+      set({ invocations: get().invocationCache[endpointId] });
+      return Promise.resolve(get().invocationCache[endpointId]);
+    }
+    set({ loadingInvocations: true });
     return getInvocations(endpointId)
       .then((res) => {
-        // set({
-        //   invocations: res || [],
-        //   invocationCache: { ...get().invocationCache, [endpointId]: res },
-        // });
+        set({
+          invocations: res || [],
+          invocationCache: { ...get().invocationCache, [endpointId]: res },
+        });
         return res;
       })
       .finally(() => set({ loadingInvocations: false }));
@@ -166,7 +166,6 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     endpointId?: string;
   }) => {
     set({ loadingExecution: true });
-    alert(data.body);
     return executeInvocationAPI({
       testId: data.testId,
       snifferId: data.snifferId,
