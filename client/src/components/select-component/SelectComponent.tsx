@@ -19,26 +19,23 @@ export function SelectComponent({
   value,
   setValue,
   disabled,
-  className,
   inputClassName,
 }: SelectComponentProps) {
   return (
-    <div className={className}>
-      <FormControl size="small" disabled={disabled}>
-        {title && <InputLabel>{title}</InputLabel>}
-        <Select
-          value={value}
-          label={title}
-          className={inputClassName}
-          onChange={(event) => setValue && setValue(event.target.value)}
-        >
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl size="small" disabled={disabled} className="w-full">
+      {title && <InputLabel>{title}</InputLabel>}
+      <Select
+        value={value}
+        label={title}
+        className={`w-full ${inputClassName}`}
+        onChange={(event) => setValue && setValue(event.target.value)}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }

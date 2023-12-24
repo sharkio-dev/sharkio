@@ -1,4 +1,4 @@
-import { SelectComponent } from "./SelectComponent";
+import { SelectComponent } from "../../components/select-component/SelectComponent";
 
 const StatusCodeSelector = ({
   value,

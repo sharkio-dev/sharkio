@@ -1,4 +1,4 @@
-import { SelectComponent } from "../test-suites/SelectComponent";
+import { SelectComponent } from "../../components/select-component/SelectComponent";
 
 type SelectMethodDropDownProps = {
   value: string;
