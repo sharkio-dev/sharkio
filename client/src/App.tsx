@@ -24,16 +24,19 @@ import { LivePage } from "./pages/sniffers/SniffersPage/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
+import { useSniffersStore } from "./stores/sniffersStores";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
   const { user } = useAuthStore();
+  const { loadSniffers } = useSniffersStore();
 
   const theme = createTheme({
     palette: {
       mode,
     },
   });
+
   useEffect(() => {
     if (import.meta.env.VITE_FULLSTORY_ORG_ID) {
       FullStory("setProperties", {
@@ -43,6 +46,9 @@ function App(): React.JSX.Element {
           id: user?.id,
         },
       });
+    }
+    if (user && user.id) {
+      loadSniffers();
     }
   }, [user]);
 

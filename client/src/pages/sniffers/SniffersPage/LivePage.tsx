@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { SetStateAction, useCallback, useEffect } from "react";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,12 +6,13 @@ import { useSniffersStore } from "../../../stores/sniffersStores";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { routes } from "../../../constants/routes";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { EndpointType } from "../types";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadLiveInvocations, invocations, loadingInvocations, loadSniffers } =
+  const { loadLiveInvocations, invocations, loadingInvocations } =
     useSniffersStore();
 
   const invocation =
@@ -25,9 +26,6 @@ export const LivePage = () => {
       showSnackbar("Failed to get live invocations", "error");
     });
   };
-  useEffect(() => {
-    loadSniffers();
-  }, [invocationId]);
 
   useEffect(() => {
     loadInvocations();
@@ -44,7 +42,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
 
   return (
@@ -59,7 +57,14 @@ export const LivePage = () => {
             >
               {invocationId && (
                 <div className="flex flex-col p-4 px-4 border-b border-border-color h-full">
-                  <InvocationUpperBar activeInvocation={invocation} />
+                  <InvocationUpperBar
+                    activeInvocation={invocation}
+                    setEditedInvocation={function (
+                      value: SetStateAction<EndpointType | undefined>
+                    ): void {
+                      throw new Error("Function not implemented.");
+                    }}
+                  />
                 </div>
               )}
             </Panel>

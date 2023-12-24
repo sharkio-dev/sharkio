@@ -35,7 +35,7 @@ export const InvocationUpperBar = ({
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId
   );
   const navigator = useNavigate();
 
@@ -90,9 +90,11 @@ export const InvocationUpperBar = ({
       });
   };
 
-  const snifferUrl = `https://${sniffer?.subdomain}.${
-    import.meta.env.VITE_PROXY_DOMAIN
-  }`;
+  const snifferUrl =
+    sniffer == null
+      ? ""
+      : `https://${sniffer?.subdomain}.${import.meta.env.VITE_PROXY_DOMAIN}`;
+
   return (
     <>
       <div className="flex flex-row items-center space-x-2">
@@ -111,17 +113,15 @@ export const InvocationUpperBar = ({
             }}
           />
         </div>
-        {sniffer && (
-          <div className="flex flex-row items-center w-[550px]">
-            <TextField
-              disabled={true}
-              value={snifferUrl}
-              variant="outlined"
-              size="small"
-              style={{ width: "100%" }}
-            />
-          </div>
-        )}
+        <div className="flex flex-row items-center w-[550px]">
+          <TextField
+            disabled={true}
+            value={snifferUrl}
+            variant="outlined"
+            size="small"
+            style={{ width: "100%" }}
+          />
+        </div>
         <TextField
           disabled={isDisabled}
           value={editedInvocation?.url}
