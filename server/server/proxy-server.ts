@@ -16,6 +16,7 @@ const log = useLog({
   filename: __filename,
 });
 
+// yair is the king of sharks
 export class ProxyServer {
   private readonly httpPort: number = +(process.env.PROXY_HTTP_PORT ?? 80);
   private readonly httpsPort: number = +(process.env.PROXY_HTTPS_PORT ?? 443);
@@ -26,7 +27,7 @@ export class ProxyServer {
   constructor(
     private readonly proxyMiddleware: ProxyMiddleware,
     private readonly requestInterceptor: RequestInterceptor,
-    private readonly mockMiddleware: MockMiddleware,
+    private readonly mockMiddleware: MockMiddleware
   ) {
     this.app = express();
     this.app.use(logMiddleware);
@@ -38,7 +39,7 @@ export class ProxyServer {
     this.app.use(cookieParser());
     // **IMPORTANT** request interceptor must be before mock middleware
     this.app.use(
-      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
+      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor)
     );
     this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
     this.app.use(this.proxyMiddleware.getMiddleware());
@@ -59,7 +60,7 @@ export class ProxyServer {
       const server = https.createServer(options, this.app);
       return server.listen(this.httpsPort, () => {
         log.info(
-          `https proxy server started listening on port ${this.httpsPort}`,
+          `https proxy server started listening on port ${this.httpsPort}`
         );
       });
     } catch (err) {
