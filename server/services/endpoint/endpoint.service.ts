@@ -8,7 +8,7 @@ import { Sniffer } from "../../model/entities/Sniffer";
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
-    private readonly requestRepository: RequestRepository,
+    private readonly requestRepository: RequestRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -46,7 +46,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -65,7 +65,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -95,7 +95,7 @@ export class EndpointService {
     return this.createFromExpressReq(req, snifferId, userId);
   }
 
-  async addInvocation(request: Partial<Request>) {
+  async addInvocation(request: Partial<Omit<Request, "sniffer">>) {
     const theInvocation = this.requestRepository.repository.create({
       endpointId: request.id,
       snifferId: request.snifferId,
