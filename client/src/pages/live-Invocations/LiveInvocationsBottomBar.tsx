@@ -1,11 +1,11 @@
 import { CgSearch } from "react-icons/cg";
-import { InvocationType } from "./types";
-import { Invocation } from "./Invocation";
+import { InvocationType } from "../sniffers/types";
+import { Invocation } from "../sniffers/Invocation";
 import { useState } from "react";
 import { TextField } from "@mui/material";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type InvocationsBottomBarProps = {
   activeInvocation?: InvocationType;

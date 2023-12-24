@@ -1,9 +1,9 @@
 import { TextField, Tooltip } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
-import { InvocationType } from "./types";
-import { InvocationDetails } from "./InvocationDetails";
+import { InvocationType } from "../sniffers/types";
+import { InvocationDetails } from "../sniffers/InvocationDetails";
 import { useEffect, useState } from "react";
-import { LoadingIcon } from "./LoadingIcon";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import { InvocationUpperBar } from "../InvocationUpperBar";
-import { InvocationsBottomBar } from "../InvocationsBottomBar";
+import { InvocationUpperBar } from "../../live-Invocations/LiveInvocationUpperBar";
+import { InvocationsBottomBar } from "../../live-Invocations/LiveInvocationsBottomBar";
 import { LoadingIcon } from "../LoadingIcon";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import queryString from "query-string";

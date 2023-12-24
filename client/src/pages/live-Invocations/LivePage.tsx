@@ -1,10 +1,12 @@
 import { useCallback, useEffect } from "react";
-import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { InvocationUpperBar } from ".././InvocationUpperBar";
+import { InvocationsBottomBar } from "./LiveInvocationsBottomBar";
+import { InvocationUpperBar } from "./LiveInvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSniffersStore } from "../../../stores/sniffersStores";
-import { useSnackbar } from "../../../hooks/useSnackbar";
-import { routes } from "../../../constants/routes";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { routes } from "../../constants/routes";
+import { SniffersSideBar } from "../sniffers/SniffersSideBar";
+import LiveInvocationsSideBar from "./LiveInvocationsSideBar";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
@@ -43,7 +45,7 @@ export const LivePage = () => {
     (id: string) => {
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
@@ -51,6 +53,9 @@ export const LivePage = () => {
 
   return (
     <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
+      <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
+        <LiveInvocationsSideBar />
+      </div>
       {(invocations.length > 0 || loadingInvocations) && (
         <div className={`flex flex-col w-full`}>
           {snackBar}

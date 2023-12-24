@@ -20,7 +20,7 @@ import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
 import { MockPage } from "./pages/mocks/MockPage";
-import { LivePage } from "./pages/sniffers/SniffersPage/LivePage";
+import { LivePage } from "./pages/live-Invocations/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
