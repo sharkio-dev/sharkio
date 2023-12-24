@@ -27,7 +27,7 @@ import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
-import { EnvValidator } from "./env.validator";
+import { ServerEnvValidator, ProxyEnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
 import { ImportService } from "./services/imports/imports.service";
@@ -49,17 +49,29 @@ import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
-export const setupFilePath =
-  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
-
-async function main() {
-  const envsValidator = new EnvValidator();
+const validateServerEnv = () => {
+  const envsValidator = new ServerEnvValidator();
   try {
     envsValidator.validate();
   } catch (e) {
-    logger.error("Missing environment variables");
+    logger.error("Missing server environment variables");
     logger.error(e);
   }
+};
+
+const validateProxyEnv = () => {
+  const envsValidator = new ProxyEnvValidator();
+  try {
+    envsValidator.validate();
+  } catch (e) {
+    logger.error("Missing proxy environment variables");
+    logger.error(e);
+  }
+};
+
+async function main(isProxy = true, isServer = true) {
+  if (isProxy) validateProxyEnv();
+  if (isServer) validateServerEnv();
 
   const appDataSource = await createConnection().initialize();
 
@@ -159,6 +171,7 @@ async function main() {
     requestInterceptorMiddleware,
     mockMiddleware
   );
+
   const snifferManagerServer = new Server(
     [
       authController.getRouter(),
@@ -176,9 +189,14 @@ async function main() {
   );
 
   // /* Start Servers */
-  snifferManagerServer.start();
-  proxyServer.start();
+  if (isProxy) proxyServer.start();
+  if (isServer) snifferManagerServer.start();
 }
-console.log("setupFilePath", setupFilePath);
+const IS_PROXY = process.env.IS_PROXY === "true";
+const IS_SERVER = process.env.IS_SERVER === "true";
 
-main();
+if (process.env.NODE_ENV === "production") {
+  main(IS_PROXY, IS_SERVER);
+} else {
+  main();
+}
