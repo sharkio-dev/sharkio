@@ -30,7 +30,10 @@ export const MockSideBar: React.FC = () => {
 
   useEffect(() => {
     if (selectedSniffer && !snifferId) {
-      navigator(`/mocks?snifferId=${selectedSniffer.id}`);
+      let params = new URLSearchParams();
+      params.append("snifferId", selectedSniffer.id);
+      let queryString = params.toString();
+      navigator({ search: queryString }, { replace: true });
     } else if (sniffers.length > 0 && !selectedSniffer) {
       setSelectedSniffer(sniffers[0]);
       return;

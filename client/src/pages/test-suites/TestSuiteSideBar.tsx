@@ -44,7 +44,7 @@ export const TestSuiteSideBar: React.FC = () => {
         setSelectValue(testSuiteId);
       }
       if (res.length > 0) {
-        navigator("/test-suites/" + res[0].id);
+        navigator("/test-suites/" + res[0].id, { replace: true });
       }
     });
   };

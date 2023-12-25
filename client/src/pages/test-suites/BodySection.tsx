@@ -1,4 +1,6 @@
 import Editor from "@monaco-editor/react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 type BodySectionProps = {
   body: any;
@@ -11,6 +13,16 @@ export const BodySection = ({
   language,
   onBodyChange,
 }: BodySectionProps) => {
+  const params = useParams();
+  const [invocationId, setInvoationId] = useState(params.invocationId);
+  const [editor, setEditor] = useState<any>(null);
+  useEffect(() => {
+    if (editor && invocationId !== params.invocationId) {
+      editor.trigger("anyString", "editor.action.formatDocument", {});
+      setInvoationId(invocationId);
+    }
+  }, [editor, invocationId, params.invocationId, body]);
+
   const onChangeBodyValue = (value: any) => {
     try {
       onBodyChange?.(value);
@@ -22,14 +34,17 @@ export const BodySection = ({
       : "json";
 
   return (
-    <div className="flex flex-col space-y-4 w-full">
+    <div className="flex w-full flex-col space-y-4">
       <Editor
         width="100%"
-        className="min-h-[50vh]"
         theme="vs-dark"
+        className="min-h-[50vh]"
         defaultLanguage="json"
         value={body}
         language={type}
+        onMount={(editor) => {
+          setEditor(editor);
+        }}
         onChange={(value) => onChangeBodyValue(value)}
         options={{
           readOnly: !onBodyChange,

@@ -4,13 +4,12 @@ import { useLog } from "../lib/log";
 import { supabaseClient } from "../lib/supabase-client/supabase-client";
 import UserService from "../services/user/user";
 import { IRouterConfig } from "./router.interface";
+import { Users } from "../model/entities/Users";
 
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
 });
-
-const cookieKey = process.env.SUPABASE_COOKIE_KEY!;
 
 export class AuthController {
   constructor(private readonly userService: UserService) {}
@@ -57,8 +56,26 @@ export class AuthController {
         } catch (err) {
           res.sendStatus(401);
         }
-      },
+      }
     );
+
+    router.post("/sharkio/sync-user", async (req: Request, res: Response) => {
+      try {
+        const { id, email, fullName, profileImg } = req.body;
+
+        const user = await this.userService.upsertUser({
+          id,
+          email,
+          fullName,
+          profileImg,
+        } as Users);
+
+        res.status(200).send(user);
+      } catch (err) {
+        log.error(err);
+        res.sendStatus(500);
+      }
+    });
 
     return { router, path: "" };
   }

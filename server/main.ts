@@ -8,21 +8,9 @@ import { InvocationController } from "./controllers/invocation.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
-import { TestSuiteController } from "./controllers/tests/test-suite.controller";
+import { TestSuiteController } from "./controllers/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
-import ApiKeyRepository from "./model/apikeys/apiKeys.model";
-import ChatRepository from "./model/chat/chat.model";
-import MessageRepository from "./model/chat/message.model";
-import { MockRepository } from "./model/mock/mock.model";
-import { EndpointRepository } from "./model/endpoint/endpoint.model";
-import { RequestRepository } from "./model/request/request.model";
-import { ResponseRepository } from "./model/response/response.model";
-import { SnifferRepository } from "./model/sniffer/sniffers.model";
-import { TestRepository } from "./model/testSuite/test.model";
-import { TextExecutionRepository } from "./model/testSuite/testExecution.model";
-import { TestSuiteRepository } from "./model/testSuite/testSuite.model";
-import UserRepository from "./model/user/user.model";
-import { getAppDataSource } from "./server/app-data-source";
+import { createConnection } from "./model/ormconfig";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
 import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
 import { ProxyServer } from "./server/proxy-server";
@@ -39,26 +27,53 @@ import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
-import { EnvValidator } from "./env.validator";
+import { ServerEnvValidator, ProxyEnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
 import { ImportService } from "./services/imports/imports.service";
+import { WorkspaceService } from "./services/workspace/workspace.service";
+import { WorkspaceController } from "./controllers/workSpace.controller";
+import UserRepository from "./model/repositories/user.repository";
+import { EndpointRepository } from "./model/repositories/endpoint.repository";
+import { ResponseRepository } from "./model/repositories/response.repository";
+import { RequestRepository } from "./model/repositories/request.repository";
+import { SnifferRepository } from "./model/repositories/sniffers.repository";
+import ApiKeyRepository from "./model/repositories/apiKeys.repository";
+import ChatRepository from "./model/repositories/chat/chat.repository";
+import MessageRepository from "./model/repositories/chat/message.repository";
+import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.repository";
+import { TestRepository } from "./model/repositories/testSuite/test.repository";
+import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
+import { MockRepository } from "./model/repositories/mock.repository";
+import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
-export const setupFilePath =
-  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
-
-async function main() {
-  const envsValidator = new EnvValidator();
+const validateServerEnv = () => {
+  const envsValidator = new ServerEnvValidator();
   try {
     envsValidator.validate();
   } catch (e) {
-    logger.error("Missing environment variables");
+    logger.error("Missing server environment variables");
     logger.error(e);
   }
+};
 
-  const appDataSource = await getAppDataSource();
+const validateProxyEnv = () => {
+  const envsValidator = new ProxyEnvValidator();
+  try {
+    envsValidator.validate();
+  } catch (e) {
+    logger.error("Missing proxy environment variables");
+    logger.error(e);
+  }
+};
+
+async function main(isProxy = true, isServer = true) {
+  if (isProxy) validateProxyEnv();
+  if (isServer) validateServerEnv();
+
+  const appDataSource = await createConnection().initialize();
 
   /* Repositories */
   const mockRepository = new MockRepository(appDataSource);
@@ -73,6 +88,7 @@ async function main() {
   const testSuiteRepository = new TestSuiteRepository(appDataSource);
   const testRepository = new TestRepository(appDataSource);
   const testExecutionRepository = new TextExecutionRepository(appDataSource);
+  const workspaceRepository = new WorkspaceRepository(appDataSource);
 
   /* Services */
   const mockService = new MockService(mockRepository);
@@ -93,6 +109,7 @@ async function main() {
     testExecutionRepository,
   );
   const importService = new ImportService(endpointService);
+  const workspaceService = new WorkspaceService(workspaceRepository);
 
   /* Controllers */
   const mockController = new MockController(mockService);
@@ -130,6 +147,7 @@ async function main() {
     snifferService,
     testExecutionService,
   );
+  const workspaceController = new WorkspaceController(workspaceService);
 
   /* Middlewares */
   const requestInterceptorMiddleware = new RequestInterceptor(
@@ -153,6 +171,7 @@ async function main() {
     requestInterceptorMiddleware,
     mockMiddleware,
   );
+
   const snifferManagerServer = new Server(
     [
       authController.getRouter(),
@@ -164,13 +183,20 @@ async function main() {
       chatController.getRouter(),
       testSuiteController.getRouter(),
       mockController.getRouter(),
+      workspaceController.getRouter(),
     ],
     swaggerUi,
   );
 
   // /* Start Servers */
-  snifferManagerServer.start();
-  proxyServer.start();
+  if (isProxy) proxyServer.start();
+  if (isServer) snifferManagerServer.start();
 }
+const IS_PROXY = process.env.IS_PROXY === "true";
+const IS_SERVER = process.env.IS_SERVER === "true";
 
-main();
+if (process.env.NODE_ENV === "production") {
+  main(IS_PROXY, IS_SERVER);
+} else {
+  main();
+}

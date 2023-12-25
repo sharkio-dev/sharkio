@@ -1,5 +1,5 @@
-import ApiKeyRepository from "../../model/apikeys/apiKeys.model";
-import UserRepository from "../../model/user/user.model";
+import ApiKeyRepository from "../../model/repositories/apiKeys.repository";
+import UserRepository from "../../model/repositories/user.repository";
 
 class APIKeysService {
   constructor(
