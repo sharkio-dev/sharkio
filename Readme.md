@@ -54,6 +54,46 @@ Request mocking.
 - sharkio admin start
 - sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
 
+## Configuration
+
+Configuration Options
+You can use both the CLI and the programming model for your Pulumi configuration.
+
+The CLI offers a config command with set and get subcommands for managing key-value pairs.
+The programming model offers a Config object with various getters for retrieving values.
+All shell environment variables are passed to the running program and can be accessed using standard runtime APIs, such as process.env in Node.js and os.environ in Python, which can also be used for dynamic behavior. Configuration is preferable, however, because it is designed for multi-stack collaborative scenarios.
+
+
+The pulumi config CLI command can get, set, or list configuration key-value pairs in your current project stack:
+
+pulumi config set <key> [value] sets a configuration entry <key> to [value].
+pulumi config get <key> gets an existing configuration value with the key <key>.
+
+pulumi config gets all configuration key-value pairs in the current stack (as JSON if --json is passed).
+
+When using the config set command, any existing values for <key> will be overridden without warning.
+For example, to set and then get the current AWS region in the aws package, you would run the following:
+
+pulumi config set aws:region us-west-2
+pulumi config get aws:region
+us-west-2
+
+To set and get configuration in the current project (named broome-proj for example), we can use the simplified key name:
+
+pulumi config set name BroomeLLC
+pulumi config get name
+BroomeLLC
+
+
+If [value] is not specified when setting a configuration key, the CLI will prompt for it interactively. Alternatively, the value can be set from standard input, which is useful for multiline values or any value that must be escaped on the command line:
+
+cat my_key.pub | pulumi config set publicKey
+
+
+Accessing Configuration from Code
+Configuration values can be retrieved for a given stack using either Config.get or Config.require
+
+source : https://www.pulumi.com/docs/concepts/config/
 ## 🚀 Getting started
 
 ### Running in development
