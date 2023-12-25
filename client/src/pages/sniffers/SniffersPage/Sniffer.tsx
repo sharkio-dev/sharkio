@@ -10,14 +10,13 @@ import "reactflow/dist/style.css";
 import { VscTypeHierarchy } from "react-icons/vsc";
 
 const SnifferNode = (props: NodeProps) => {
-  const truncatedAddress = `${props.data.address.substring(0, 40)}...`;
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="text-[6px]">{props.data.label}</div>
       <div className="flex flex-row items-center gap-2 w-24 bg-primary p-2 rounded-lg shadow-md justify-center">
         <VscTypeHierarchy className="text-2xl" />
       </div>
-      <div className="text-[6px]">{truncatedAddress}</div>
+      <div className="text-[6px] max-w-[105px] truncate">{props.data.address}</div>
       <Handle type="source" position={Position.Right} id="a" />
       <Handle type="target" position={Position.Left} id="b" />
     </div>
