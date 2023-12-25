@@ -1,13 +1,12 @@
-import { SetStateAction, useCallback, useEffect } from "react";
-import { InvocationsBottomBar } from "../InvocationsBottomBar";
-import { InvocationUpperBar } from ".././InvocationUpperBar";
-import { useNavigate, useParams } from "react-router-dom";
-import { useSniffersStore } from "../../../stores/sniffersStores";
-import { useSnackbar } from "../../../hooks/useSnackbar";
-import { routes } from "../../../constants/routes";
+import { useCallback, useEffect } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { EndpointType } from "../types";
+import { useNavigate, useParams } from "react-router-dom";
 import { BackendAxios } from "../../../api/backendAxios";
+import { routes } from "../../../constants/routes";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import { useSniffersStore } from "../../../stores/sniffersStores";
+import { InvocationUpperBar } from ".././InvocationUpperBar";
+import { InvocationsBottomBar } from "../InvocationsBottomBar";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
@@ -53,7 +52,7 @@ export const LivePage = () => {
 
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
 
   return (
@@ -70,9 +69,7 @@ export const LivePage = () => {
                 <div className="flex flex-col p-4 px-4 border-b border-border-color h-full">
                   <InvocationUpperBar
                     activeInvocation={invocation}
-                    setEditedInvocation={function (
-                      value: SetStateAction<EndpointType | undefined>,
-                    ): void {
+                    setEditedInvocation={function (): void {
                       throw new Error("Function not implemented.");
                     }}
                   />

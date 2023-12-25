@@ -24,7 +24,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
   };
 
   const handleEndpointClicked = (endpointId: string) => {
-    loadInvocations(endpointId).then((res) => {
+    loadInvocations(endpointId).then(() => {
       navigate(`/endpoints/${endpointId}` + `?snifferId=${snifferId}`);
     });
   };

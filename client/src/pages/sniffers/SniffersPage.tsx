@@ -26,10 +26,13 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
   }, [userId]);
 
   return (
-    <InnerPageTemplate
-      sideBarComponent={SniffersSideBar}
-      contentComponent={() => <>{children}</>}
-    />
+    <>
+      {snackBar}
+      <InnerPageTemplate
+        sideBarComponent={SniffersSideBar}
+        contentComponent={() => <>{children}</>}
+      />
+    </>
   );
 };
 

@@ -13,7 +13,6 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 export const TestList = () => {
   const { testSuiteId } = useParams();
   const [testModalOpen, setTestModalOpen] = React.useState<boolean>(false);
-  const [loading, setLoading] = React.useState<boolean>(false);
   const { loadTests, tests, resetTests } = useTestStore();
 
   const fetchTestTree = () => {
@@ -21,10 +20,7 @@ export const TestList = () => {
       resetTests();
       return;
     }
-    setLoading(true);
-    loadTests(testSuiteId).finally(() => {
-      setLoading(false);
-    });
+    loadTests(testSuiteId).finally(() => {});
   };
 
   React.useEffect(() => {

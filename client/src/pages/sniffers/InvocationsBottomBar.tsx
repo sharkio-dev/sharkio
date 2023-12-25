@@ -5,10 +5,10 @@ import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { Invocation } from "./Invocation";
 import { LoadingIcon } from "./LoadingIcon";
-import { InvocationType } from "./types";
+import { EndpointType, InvocationType } from "./types";
 
 type InvocationsBottomBarProps = {
-  activeInvocation?: InvocationType;
+  activeInvocation?: InvocationType | EndpointType;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
   refresh?: () => void;
