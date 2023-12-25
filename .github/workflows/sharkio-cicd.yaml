@@ -9,6 +9,7 @@ on:
         options:
           - frontend
           - backend
+          - migrations
       env:
         type: choice
         description: "Choose Which Env to Deploy To"
