@@ -38,12 +38,12 @@ interface SniffersState {
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
   loadEndpoints: (
     snifferId: string,
-    force?: boolean
+    force?: boolean,
   ) => Promise<EndpointType[]>;
   resetEndpoints: () => void;
   loadInvocations: (
     endpointId: string,
-    force?: boolean
+    force?: boolean,
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   setInvocation: (invocation: InvocationType) => void;
@@ -149,7 +149,7 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     set((state) => {
       newInvocations = [...state.invocations];
       const invocationIndex = state.invocations.findIndex(
-        (i) => i.id === invocation.id
+        (i) => i.id === invocation.id,
       );
       if (invocationIndex > 0) {
         newInvocations[invocationIndex] = invocation;

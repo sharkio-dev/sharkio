@@ -53,7 +53,7 @@ export const LivePage = () => {
 
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId]
+    [invocationId],
   );
 
   return (
@@ -71,7 +71,7 @@ export const LivePage = () => {
                   <InvocationUpperBar
                     activeInvocation={invocation}
                     setEditedInvocation={function (
-                      value: SetStateAction<EndpointType | undefined>
+                      value: SetStateAction<EndpointType | undefined>,
                     ): void {
                       throw new Error("Function not implemented.");
                     }}
