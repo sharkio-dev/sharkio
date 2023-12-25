@@ -11,7 +11,7 @@ const log = useLog({
 export const authMiddleware = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   ``;
   try {
@@ -27,9 +27,8 @@ export const authMiddleware = async (
     const authorization = req.headers["authorization"];
     const access_token = authorization?.split(" ")[1];
 
-    const { data: user, error } = await supabaseClient.auth.getUser(
-      access_token
-    );
+    const { data: user, error } =
+      await supabaseClient.auth.getUser(access_token);
 
     if (error || !user) {
       log.error(error);

@@ -20,8 +20,6 @@ export const createConnection = () => {
     database: "postgres",
     synchronize: false,
     url: process.env.DATABASE_URL,
-    password: "mysecretpassword",
-    username: "postgres",
     logging: process.env.LOG_SQL == "true" ?? false,
     entities: [
       Users,
