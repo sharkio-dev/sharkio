@@ -7,13 +7,18 @@ import { useSnackbar } from "../../../hooks/useSnackbar";
 import { routes } from "../../../constants/routes";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { EndpointType } from "../types";
+import { BackendAxios } from "../../../api/backendAxios";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadLiveInvocations, invocations, loadingInvocations } =
-    useSniffersStore();
+  const {
+    loadLiveInvocations,
+    setInvocation,
+    invocations,
+    loadingInvocations,
+  } = useSniffersStore();
 
   const invocation =
     (invocations &&
@@ -40,9 +45,15 @@ export const LivePage = () => {
 
   const onInvocationClick = useCallback(
     (id: string) => {
+      BackendAxios.get(`/invocation/${id}`).then((res) => {
+        if (res) {
+          setInvocation(res.data);
+        }
+      });
+
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId],
+    [invocationId]
   );
 
   return (
@@ -50,7 +61,7 @@ export const LivePage = () => {
       {(invocations.length > 0 || loadingInvocations) && (
         <div className={`flex flex-col w-full h-full`}>
           {snackBar}
-          <PanelGroup direction={"vertical"}>
+          <PanelGroup direction={"vertical"} className="h-full">
             <Panel
               minSize={50}
               className={invocationId ? `max-h-full` : "max-h-0"}
@@ -60,7 +71,7 @@ export const LivePage = () => {
                   <InvocationUpperBar
                     activeInvocation={invocation}
                     setEditedInvocation={function (
-                      value: SetStateAction<EndpointType | undefined>,
+                      value: SetStateAction<EndpointType | undefined>
                     ): void {
                       throw new Error("Function not implemented.");
                     }}
