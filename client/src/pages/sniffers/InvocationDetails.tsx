@@ -34,7 +34,7 @@ export function InvocationDetails({
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status"
+    "Status",
   );
 
   const handleChange = (_: any, newValue: string) => {
@@ -64,10 +64,13 @@ export function InvocationDetails({
     if (invocation) {
       setInvocation({
         ...invocation,
-        headers: headers.reduce((acc, header) => {
-          acc[header.name] = header.value;
-          return acc;
-        }, {} as { [key: string]: any }),
+        headers: headers.reduce(
+          (acc, header) => {
+            acc[header.name] = header.value;
+            return acc;
+          },
+          {} as { [key: string]: any },
+        ),
       });
     }
   };
@@ -135,7 +138,7 @@ export function InvocationDetails({
                     Object.keys(newHeaders).map((key) => ({
                       name: key,
                       value: invocation?.headers[key],
-                    }))
+                    })),
                   );
                 }
               }}
@@ -181,7 +184,7 @@ export function InvocationDetails({
               {section === "Headers" && (
                 <HeaderSection
                   headers={Object.entries(
-                    responseData(invocation?.response).headers || {}
+                    responseData(invocation?.response).headers || {},
                   ).map(([key, value]) => ({
                     name: key,
                     value,

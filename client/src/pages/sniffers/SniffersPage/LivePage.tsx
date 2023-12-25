@@ -52,7 +52,7 @@ export const LivePage = () => {
 
       navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
     },
-    [invocationId]
+    [invocationId],
   );
 
   return (
