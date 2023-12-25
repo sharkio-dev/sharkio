@@ -20,10 +20,9 @@ export const createConnection = () => {
     database: "postgres",
     synchronize: false,
     host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT),
+    port: parseInt(process.env.DB_PORT ?? "5432"),
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    // url: process.env.DATABASE_URL,
     logging: process.env.LOG_SQL == "true" ?? false,
     entities: [
       Users,
