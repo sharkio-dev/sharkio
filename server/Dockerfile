@@ -10,5 +10,6 @@ RUN npm run build
 
 EXPOSE 5012
 EXPOSE 80
+EXPOSE 8080
 
 CMD npm run prod

@@ -4,15 +4,18 @@ import "dotenv/config";
 const serverVarsValidator = z.object({
   NODE_ENV: z.string().optional().default("development"),
   DATABASE_URL: z.string(),
-  VITE_SUPABASE_PROJECT_URL: z.string(),
+  VITE_SUPABASE_PROJECT_URL: z
+    .string()
+    .default("https://rlhmecfbrihwgltuacbn.supabase.co"),
   VITE_SUPABASE_ANON: z.string(),
-  LOG_LEVEL: z.string(),
+  LOG_LEVEL: z.string().optional().default("debug"),
   LOG_SQL: z
     .string()
     .transform((str) => {
       return str.toLowerCase() === "true";
     })
-    .optional(),
+    .optional()
+    .default("false"),
   PROXY_SERVER_DOMAIN: z.string(),
   OPEN_AI_KEY: z.string().optional(),
 });
