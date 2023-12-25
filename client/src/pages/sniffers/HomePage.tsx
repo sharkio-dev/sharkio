@@ -81,7 +81,7 @@ export const HomePage = () => {
 
   return (
     <div
-      className={`flex flex-col bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px)] p-4 overflow-y-auto`}
+      className={`flex flex-col bg-tertiary h-full w-[calc(100vw-56px)] p-4 overflow-y-auto`}
     >
       <div className="flex flex-row justify-between items-center">
         <div className="text-2xl font-bold">Sniffers</div>

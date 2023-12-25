@@ -1,31 +1,27 @@
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  max-height: 100%;
+.pageTemplate {
+  display: grid;
+  grid-template-areas: "a b" "a c" "d d";
+  grid-template-rows: 56px 1fr 42px;
+  grid-template-columns: 56px 1fr;
+  height: 100vh;
+  width: 100vw;
+  max-height: 100vh;
   overflow: hidden;
 }
 
-.navbar {
-  width: 100%;
-  height: fit-content;
+.sidebarContainer {
+  grid-area: a;
 }
 
-.content {
-  box-sizing: border-box;
-  padding: 30px;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+.navbarContainer {
+  grid-area: b;
 }
 
-.page {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  max-width: 100%;
-  overflow: auto;
-  height: 100vh;
+.contentContainer {
+  grid-area: c;
+  max-height: calc(100vh - 56px - 40px);
+}
+
+.bottomBarContainer {
+  grid-area: d;
 }

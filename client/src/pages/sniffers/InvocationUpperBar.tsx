@@ -1,58 +1,43 @@
-import { TextField, Tooltip } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
-import { InvocationType } from "./types";
-import { InvocationDetails } from "./InvocationDetails";
-import { useEffect, useState } from "react";
-import { LoadingIcon } from "./LoadingIcon";
-import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useSniffersStore } from "../../stores/sniffersStores";
-import { BackendAxios } from "../../api/backendAxios";
+import { TextField, Tooltip } from "@mui/material";
 import queryString from "query-string";
+import { useState } from "react";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { useMockStore } from "../../stores/mockStore";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useMockStore } from "../../stores/mockStore";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
+import { InvocationDetails } from "./InvocationDetails";
+import { LoadingIcon } from "./LoadingIcon";
+import { EndpointType, InvocationType } from "./types";
 
 type InvocationUpperBarProps = {
-  activeInvocation?: InvocationType;
+  setEditedInvocation: React.Dispatch<
+    React.SetStateAction<EndpointType | undefined>
+  >;
+  activeInvocation?: InvocationType | EndpointType | undefined;
+  isDisabled?: boolean;
+  showResponseTab?: boolean;
 };
 
 export const InvocationUpperBar = ({
-  activeInvocation,
+  activeInvocation: editedInvocation,
+  setEditedInvocation,
+  isDisabled = true,
+  showResponseTab = true,
 }: InvocationUpperBarProps) => {
-  const [editedInvocation, setEditedInvocation] = useState<InvocationType>({
-    method: "GET",
-    url: "/",
-    headers: {},
-    body: "",
-    response: {
-      headers: {},
-      body: "",
-      status: 0,
-    },
-  } as InvocationType);
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
-  const [defaultTab, setDefaultTab] = useState("1");
   const { sniffers } = useSniffersStore();
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
   );
   const navigator = useNavigate();
-
-  useEffect(() => {
-    if (activeInvocation) {
-      BackendAxios.get(`/invocation/${activeInvocation.id}`).then((res) => {
-        if (res) {
-          setEditedInvocation(res.data);
-        }
-      });
-    }
-  }, [activeInvocation]);
 
   const executeRequest = () => {
     if (!editedInvocation) {
@@ -65,17 +50,18 @@ export const InvocationUpperBar = ({
     executeInvocation({ ...editedInvocation, snifferId: sid }).then((res) => {
       if (res) {
         setEditedInvocation((prevState) => {
-          return {
-            ...prevState,
-            response: {
-              ...prevState.response,
-              status: res?.status || 0,
-              headers: res?.headers || {},
-              body: res?.body || "",
-            },
-          };
+          if (prevState) {
+            return {
+              ...prevState,
+              response: {
+                ...prevState.response,
+                status: res?.status || 0,
+                headers: res?.headers || {},
+                body: res?.body || "",
+              },
+            };
+          }
         });
-        setDefaultTab("3");
       }
     });
   };
@@ -104,9 +90,10 @@ export const InvocationUpperBar = ({
       });
   };
 
-  const snifferUrl = `https://${sniffer?.subdomain}.${
-    import.meta.env.VITE_PROXY_DOMAIN
-  }`;
+  const snifferUrl =
+    sniffer == null
+      ? ""
+      : `https://${sniffer?.subdomain}.${import.meta.env.VITE_PROXY_DOMAIN}`;
 
   return (
     <>
@@ -114,7 +101,7 @@ export const InvocationUpperBar = ({
         {component}
         <div className="flex flex-row items-center w-28">
           <SelectMethodDropDown
-            disabled={activeInvocation !== undefined}
+            disabled={isDisabled}
             value={editedInvocation?.method || ""}
             onChange={(value: string) => {
               if (editedInvocation) {
@@ -126,19 +113,17 @@ export const InvocationUpperBar = ({
             }}
           />
         </div>
-        {sniffer && (
-          <div className="flex flex-row items-center w-[550px]">
-            <TextField
-              disabled={true}
-              value={snifferUrl}
-              variant="outlined"
-              size="small"
-              style={{ width: "100%" }}
-            />
-          </div>
-        )}
+        <div className="flex flex-row items-center w-[550px]">
+          <TextField
+            disabled={true}
+            value={snifferUrl}
+            variant="outlined"
+            size="small"
+            style={{ width: "100%" }}
+          />
+        </div>
         <TextField
-          disabled={activeInvocation !== undefined}
+          disabled={isDisabled}
           value={editedInvocation?.url}
           onChange={(e: any) => {
             if (editedInvocation) {
@@ -181,13 +166,11 @@ export const InvocationUpperBar = ({
         </div>
       </div>
       <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
-        {editedInvocation && (
-          <InvocationDetails
-            defaultTab={defaultTab}
-            invocation={editedInvocation}
-            setInvocation={setEditedInvocation}
-          />
-        )}
+        <InvocationDetails
+          showResponseTab={showResponseTab}
+          invocation={editedInvocation}
+          setInvocation={setEditedInvocation}
+        />
       </div>
     </>
   );

@@ -1,14 +1,14 @@
-import { CgSearch } from "react-icons/cg";
-import { InvocationType } from "./types";
-import { Invocation } from "./Invocation";
-import { useState } from "react";
 import { TextField } from "@mui/material";
+import { useState } from "react";
+import { CgSearch } from "react-icons/cg";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
+import { Invocation } from "./Invocation";
 import { LoadingIcon } from "./LoadingIcon";
+import { EndpointType, InvocationType } from "./types";
 
 type InvocationsBottomBarProps = {
-  activeInvocation?: InvocationType;
+  activeInvocation?: InvocationType | EndpointType;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
   refresh?: () => void;
@@ -22,6 +22,7 @@ export const InvocationsBottomBar = ({
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const { invocations, loadingInvocations } = useSniffersStore();
+
   const filteredInvocations =
     invocations?.filter((invocation) => {
       if (!search) return true;
@@ -38,6 +39,10 @@ export const InvocationsBottomBar = ({
 
       return filterByMethod || filterByUrl || filterByDate;
     }) || [];
+
+  const handleInvocationClicked = (invocationId: string) => {
+    setActiveInvocation(invocationId);
+  };
 
   return (
     <>
@@ -79,7 +84,7 @@ export const InvocationsBottomBar = ({
               <Invocation
                 method={invocation.method}
                 isSelected={invocation.id === activeInvocation?.id}
-                onClick={() => setActiveInvocation(invocation.id)}
+                onClick={() => handleInvocationClicked(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}

@@ -52,6 +52,12 @@ export const importRequestFromCurl = (
   });
 };
 
+export const importRequestFromSwagger = (
+  snifferId: string,
+  swagger: string,
+) => {
+  return BackendAxios.post(`/request/import/${snifferId}/swagger`, swagger);
+};
 export const getAllMocks = () => {
   return BackendAxios.get("/sniffer/action/getMocks");
 };
@@ -117,6 +123,12 @@ export const saveRequestToCollection = (
   return BackendAxios.post(`/collection/${id}/request`, { request });
 };
 
+export const getInvocation = (invocationId: string) => {
+  return BackendAxios.get(`/invocation/${invocationId}`).then((res) => {
+    return res.data;
+  });
+};
+
 export const getInvocations = (requestId: string) => {
   return BackendAxios.get(`/request/${requestId}/invocation`).then((res) => {
     return res.data;
@@ -142,10 +154,7 @@ export const executeInvocationAPI = (invocation: {
   headers: Record<string, string>;
   body: string;
 }) => {
-  const url = invocation.url;
-  const method = invocation.method;
-  const headers = invocation.headers;
-  const body = invocation.body;
+  const { url, method, headers, body } = invocation;
 
   return BackendAxios.post("/request/execute", {
     snifferId: invocation.snifferId,

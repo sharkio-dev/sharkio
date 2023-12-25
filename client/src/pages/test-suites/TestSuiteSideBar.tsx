@@ -21,7 +21,7 @@ import { VscChecklist } from "react-icons/vsc";
 import { useTestStore } from "../../stores/testStore";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
-export const TestSuiteSideBar = () => {
+export const TestSuiteSideBar: React.FC = () => {
   const [addTestSuiteModalOpen, setAddTestSuiteModalOpen] =
     React.useState<boolean>(false);
   const [editTestSuiteModalOpen, setEditTestSuiteModalOpen] =
