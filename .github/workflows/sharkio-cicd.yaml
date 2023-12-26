@@ -63,9 +63,13 @@ jobs:
           REPOSITORY: ${{ github.event.inputs.service }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          echo "before if"
+          pwd
           if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
             docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           else
+            echo "after if"
+            pwd 
             docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f $working_dir/Dockerfile.${{ github.event.inputs.service }} .
           fi
             docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
