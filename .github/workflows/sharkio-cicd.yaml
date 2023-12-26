@@ -49,7 +49,7 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
             echo "working_dir=./client" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.service }}" == "backend" ]; then
+          else
             echo "working_dir=./server" >> $GITHUB_ENV
           fi
 
