@@ -9,6 +9,33 @@
   overflow: hidden;
 }
 
+.pageTemplate[data-no-sidebar="true"] {
+  display: grid;
+  grid-template-areas: "b b" "c c" "d d";
+  grid-template-rows: 56px 1fr 42px;
+  grid-template-columns: 56px 1fr;
+  height: 100vh;
+  width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.pageTemplate[data-no-bottombar="true"][data-no-sidebar="false"] {
+  display: grid;
+  grid-template-areas: "a b" "a c" "c c";
+}
+
+.pageTemplate[data-no-bottombar="true"][data-no-sidebar="true"] {
+  display: grid;
+  grid-template-areas: "b b" "c c";
+  grid-template-rows: 56px 1fr;
+}
+
+.pageTemplate[data-no-bottombar="true"] .contentContainer {
+  grid-area: c;
+  max-height: calc(100vh - 56px);
+}
+
 .sidebarContainer {
   grid-area: a;
 }
