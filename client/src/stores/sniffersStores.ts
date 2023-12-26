@@ -4,6 +4,7 @@ import {
   deleteSniffer,
   editSniffer,
   getEnpoints,
+  getFilteredLiveInvocations,
   getInvocations,
   getLiveInvocations,
   getSniffers,
@@ -37,12 +38,12 @@ interface SniffersState {
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
   loadEndpoints: (
     snifferId: string,
-    force?: boolean,
+    force?: boolean
   ) => Promise<EndpointType[]>;
   resetEndpoints: () => void;
   loadInvocations: (
     endpointId: string,
-    force?: boolean,
+    force?: boolean
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   loadLiveInvocations: () => Promise<InvocationType[]>;
@@ -55,6 +56,13 @@ interface SniffersState {
     body: string;
     endpointId?: string;
   }) => Promise<any>;
+  loadFilteredLiveInvocations: (
+    statusCodes?: string[],
+    methods?: string[],
+    dateStart?: string,
+    dateEnd?: string,
+    url?: string
+  ) => Promise<InvocationType[]>;
 }
 
 export const useSniffersStore = create<SniffersState>((set, get) => ({
@@ -148,6 +156,29 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
   loadLiveInvocations: () => {
     set({ loadingInvocations: true });
     return getLiveInvocations()
+      .then((res) => {
+        set({ invocations: res });
+        return res;
+      })
+      .finally(() => {
+        set({ loadingInvocations: false });
+      });
+  },
+  loadFilteredLiveInvocations: (
+    statusCodes?: string[],
+    methods?: string[],
+    fromDate?: string | null,
+    toDate?: string | null,
+    url?: string
+  ) => {
+    set({ loadingInvocations: true });
+    return getFilteredLiveInvocations(
+      statusCodes,
+      methods,
+      fromDate,
+      toDate,
+      url
+    )
       .then((res) => {
         set({ invocations: res });
         return res;

@@ -11,14 +11,14 @@ type StatusCode = {
 
 export const MultiAutocomplete = () => {
   const [selectedStatusCodes, setSelectedStatusCodes] = useState<StatusCode[]>(
-    []
+    [],
   );
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const savedStatusCodes = searchParams.get("statusCodes")?.split(",") || [];
     const selectedCodes = allStatusCodes.filter((code) =>
-      savedStatusCodes.includes(code.value)
+      savedStatusCodes.includes(code.value),
     );
     setSelectedStatusCodes(selectedCodes);
   }, []);

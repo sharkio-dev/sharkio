@@ -32,13 +32,6 @@ export const LivePage = () => {
 
   useEffect(() => {
     loadInvocations();
-    const int = setInterval(() => {
-      loadInvocations();
-    }, 60000);
-
-    return () => {
-      clearInterval(int);
-    };
   }, []);
 
   const onInvocationClick = useCallback(

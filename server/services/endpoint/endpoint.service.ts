@@ -5,11 +5,14 @@ import {
   EndpointRepository,
 } from "../../model/endpoint/endpoint.model";
 import { Sniffer } from "../../model/sniffer/sniffers.model";
+import { Between, In } from "typeorm";
+import { ResponseRepository } from "../../model/response/response.model";
 
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
     private readonly requestRepository: RequestRepository,
+    private readonly responseRepository: ResponseRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -47,7 +50,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -66,7 +69,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -142,10 +145,35 @@ export class EndpointService {
     return mapped;
   }
 
-  async getInvocationsByUser(userId: string, limit: number) {
+  async getInvocationsByUser(
+    userId: string,
+    limit: number,
+    statusCodes: string[],
+    methods: string[],
+    url: string,
+    fromDate: Date | undefined,
+    toDate: Date | undefined
+  ) {
     const invocations = await this.requestRepository.repository.find({
       where: {
         userId,
+        method: methods === undefined ? undefined : In(methods),
+        url: url === undefined ? undefined : url,
+        createdAt:
+          fromDate === undefined || toDate === undefined
+            ? undefined
+            : Between(fromDate, toDate),
+        response: {
+          status: statusCodes === undefined ? undefined : In(statusCodes),
+        },
+      },
+      relations: {
+        response: true,
+      },
+      select: {
+        response: {
+          status: true,
+        },
       },
       take: limit,
       order: {
@@ -153,7 +181,7 @@ export class EndpointService {
       },
     });
 
-    // make sure only one response is returned
+    //make sure only one response is returned
     const mapped = invocations.map((invocation) => {
       let response = undefined;
       const responses = invocation.response;

@@ -1,21 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import {
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormLabel,
+  Button,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "@mui/material";
 import { MultiAutocomplete } from "./MultiSelector";
 import { useSearchParams } from "react-router-dom";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+import dayjs from "dayjs";
+
 type CheckedMethods = {
-  get: boolean;
-  post: boolean;
-  put: boolean;
-  delete: boolean;
+  [key: string]: boolean;
+  GET: boolean;
+  POST: boolean;
+  PUT: boolean;
+  DELETE: boolean;
 };
 const LiveInvocationsSideBar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const { loadFilteredLiveInvocations } = useSniffersStore();
   const [checkedMethods, setCheckedMethods] = useState<CheckedMethods>({
-    get: false,
-    post: false,
-    put: false,
-    delete: false,
+    GET: false,
+    POST: false,
+    PUT: false,
+    DELETE: false,
   });
 
   useEffect(() => {
@@ -25,10 +41,10 @@ const LiveInvocationsSideBar = () => {
 
     setCheckedMethods((prev) => ({
       ...prev,
-      get: methods.includes("get"),
-      post: methods.includes("post"),
-      put: methods.includes("put"),
-      delete: methods.includes("delete"),
+      GET: methods.includes("GET"),
+      POST: methods.includes("POST"),
+      PUT: methods.includes("PUT"),
+      DELETE: methods.includes("DELETE"),
     }));
   }, []);
 
@@ -49,65 +65,157 @@ const LiveInvocationsSideBar = () => {
       [method]: !prev[method],
     }));
   };
+  const handleFilterClick = () => {
+    const statusCodes = searchParams.get("statusCodes")
+      ? searchParams.get("statusCodes")!.split(",")
+      : [];
+    const methods = searchParams.get("filteredMethods")
+      ? searchParams.get("filteredMethods")!.split(",")
+      : [];
+
+    const fromDate = searchParams.get("FromDateFilter");
+    const toDate = searchParams.get("ToDateFilter");
+
+    loadFilteredLiveInvocations(
+      statusCodes,
+      methods,
+      fromDate || undefined,
+      toDate || undefined
+    );
+  };
+
+  const handleFromDateChange = (date: Date | null) => {
+    console.log(date);
+    setSearchParams((prevSearchParams) => {
+      const newSearchParams = new URLSearchParams(prevSearchParams);
+      newSearchParams.set("FromDateFilter", date?.toString() || "");
+      return newSearchParams;
+    });
+  };
+  const handleToDateChange = (date: Date | null) => {
+    setSearchParams((prevSearchParams) => {
+      const newSearchParams = new URLSearchParams(prevSearchParams);
+
+      // Check if "To" date is after "From" date
+      const fromDate = newSearchParams.get("FromDateFilter");
+      if (fromDate && date && dayjs(date).isBefore(dayjs(fromDate))) {
+        // If "To" date is before "From" date, set "To" date to "From" date
+        handleFromDateChange(date);
+        newSearchParams.set("ToDateFilter", fromDate);
+      } else {
+        newSearchParams.set("ToDateFilter", date?.toString() || "");
+      }
+
+      return newSearchParams;
+    });
+  };
 
   return (
-    <div className="flex flex-col px-3 pt-3 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
+    <div className="flex flex-col px-2 pt-2 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
+      <FormLabel className="flex ">Live Invocation Filters</FormLabel>
       <MultiAutocomplete />
       <FormGroup>
+        <FormLabel>Methods</FormLabel>
         <FormControlLabel
           control={
             <Checkbox
-              checked={checkedMethods.get}
-              onChange={() => handleCheckboxChange("get")}
+              checked={checkedMethods.GET}
+              onChange={() => handleCheckboxChange("GET")}
               color="success"
               size="small"
               sx={{ color: "success.main" }}
             />
           }
-          label="Get"
+          label="GET"
         />
         <FormControlLabel
           control={
             <Checkbox
-              checked={checkedMethods.post}
-              onChange={() => handleCheckboxChange("post")}
+              checked={checkedMethods.POST}
+              onChange={() => handleCheckboxChange("POST")}
               color="primary"
               size="small"
               sx={{ color: "primary.main" }}
             />
           }
-          label="Post"
+          label="POST"
         />
         <FormControlLabel
           control={
             <Checkbox
-              checked={checkedMethods.put}
-              onChange={() => handleCheckboxChange("put")}
+              checked={checkedMethods.PUT}
+              onChange={() => handleCheckboxChange("PUT")}
               color="warning"
               size="small"
+              sx={{ color: "warning.main" }}
             />
           }
-          sx={{ color: "warning.main" }}
-          label="Put"
+          label="PUT"
         />
         <FormControlLabel
           control={
             <Checkbox
-              checked={checkedMethods.delete}
-              onChange={() => handleCheckboxChange("delete")}
+              checked={checkedMethods.DELETE}
+              onChange={() => handleCheckboxChange("DELETE")}
               color="error"
               size="small"
+              sx={{ color: "error.main" }}
             />
           }
-          sx={{ color: "error.main" }}
-          label="Delete"
+          label="DELETE"
         />
       </FormGroup>
-      {/* <ToggleButtonGroup>
-        <ToggleButton value={"get"} selected={checkedItems.get}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div>
+          <DateTimePicker
+            label="From"
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+              seconds: renderTimeViewClock,
+            }}
+            value={
+              dayjs(searchParams.get("FromDateFilter")) || null || undefined
+            }
+            format="DD/MM/YYYY HH:mm a"
+            onChange={(date: Date | null) => handleFromDateChange(date)}
+          />
+          <Button
+            sx={{ height: "23px" }}
+            onClick={() => handleFromDateChange(null)}
+          >
+            Clear
+          </Button>
+        </div>
+        <div>
+          <DateTimePicker
+            label="To"
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+              seconds: renderTimeViewClock,
+            }}
+            format="DD/MM/YYYY HH:mm a"
+            onChange={(date: Date | null) => handleToDateChange(date)}
+            value={dayjs(searchParams.get("ToDateFilter")) || null || undefined}
+          />
+          <Button
+            sx={{ height: "23px" }}
+            onClick={() => handleToDateChange(null)}
+          >
+            Clear
+          </Button>
+        </div>
+      </LocalizationProvider>
+      <Button variant="outlined" onClick={() => handleFilterClick()}>
+        Filter
+      </Button>
+      {/* <ToggleButtonGroup className="flex flex-col">
+
+        <ToggleButton value={"get"} selected={checkedMethods.GET} onClick={() => handleCheckboxChange("GET")} color="success" size="small" sx={{ color: "success.main" }}>
         Get
         </ToggleButton>
-        <ToggleButton value={"post"} selected={checkedItems.post}>
+        <ToggleButton value={"post"}>
         Post
         </ToggleButton>
       </ToggleButtonGroup> */}

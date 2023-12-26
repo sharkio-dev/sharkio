@@ -85,6 +85,8 @@ async function main() {
   const endpointService = new EndpointService(
     endpointRepository,
     invocationRepository,
+    responseRepository
+
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
