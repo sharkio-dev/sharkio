@@ -12,7 +12,7 @@ export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
     private readonly requestRepository: RequestRepository,
-    private readonly responseRepository: ResponseRepository
+    private readonly responseRepository: ResponseRepository,
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -50,7 +50,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string
+    userId: string,
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -69,7 +69,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string
+    userId: string,
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -152,7 +152,7 @@ export class EndpointService {
     methods: string[],
     url: string,
     fromDate: Date | undefined,
-    toDate: Date | undefined
+    toDate: Date | undefined,
   ) {
     const invocations = await this.requestRepository.repository.find({
       where: {

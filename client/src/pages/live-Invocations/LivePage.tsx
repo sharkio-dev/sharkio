@@ -5,8 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { routes } from "../../constants/routes";
-import { SniffersSideBar } from "../sniffers/SniffersSideBar";
-import LiveInvocationsSideBar from "./LiveInvocationsSideBar";
+import LiveInvocationsSideBar from "./live-invocations-side-bar/LiveInvocationsSideBar";
 
 export const LivePage = () => {
   const { invocationId } = useParams();
@@ -14,6 +13,8 @@ export const LivePage = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadLiveInvocations, invocations, loadingInvocations, loadSniffers } =
     useSniffersStore();
+
+  //TODO add back button when click on invocation
 
   const invocation =
     (invocations &&
@@ -36,7 +37,10 @@ export const LivePage = () => {
 
   const onInvocationClick = useCallback(
     (id: string) => {
-      navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
+      const currentSearchParams = new URLSearchParams(window.location.search);
+      navigator(
+        `${routes.LIVE_INVOCATIONS}/${id}?${currentSearchParams.toString()}`
+      );
     },
     [invocationId]
   );

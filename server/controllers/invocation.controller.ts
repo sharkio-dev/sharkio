@@ -35,14 +35,9 @@ export class InvocationController {
         const statusCodes = req.query.statusCodes as string[];
         const methods = req.query.methods as string[];
         const url = req.query.urls as string;
-        const fromDate = (req.query.fromDate as string)
-          ? dayJs(req.query.fromDate as string).toDate()
-          : undefined;
-        const toDate = (req.query.toDate as string)
-          ? dayJs(req.query.toDate as string).toDate()
-          : undefined;
-        console.log("all", req.query);
-        console.log("from", fromDate);
+        const fromDate = req.query.fromDate as Date | undefined;
+        const toDate = req.query.toDate as Date | undefined;
+        
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
           limit,
@@ -50,10 +45,10 @@ export class InvocationController {
           methods,
           url,
           fromDate,
-          toDate
+          toDate,
         );
         res.status(200).send(requests);
-      }
+      },
     );
 
     router.route("/:id").get(
@@ -81,10 +76,10 @@ export class InvocationController {
         const { id } = req.params;
         const request = await this.endpointService.getInvocationById(
           id,
-          userId
+          userId,
         );
         res.status(200).send(request);
-      }
+      },
     );
 
     return { router, path: "/sharkio/invocation" };
