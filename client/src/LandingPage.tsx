@@ -6,7 +6,7 @@ export const LandingPage = () => {
 
   return (
     <div
-      className="flex flex-1 items-center justify-center"
+      className="flex flex-1 items-center justify-center h-full"
       style={{
         background: `linear-gradient(to right, #181818, #2d2d2d, #181818)`,
       }}
