@@ -34,7 +34,7 @@ export function InvocationDetails({
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status",
+    "Status"
   );
 
   const handleChange = (_: any, newValue: string) => {
@@ -60,17 +60,11 @@ export function InvocationDetails({
     }
   };
 
-  const onHeadersChange = (headers: { name: string; value: any }[]) => {
+  const onHeadersChange = (headers: { [key: string]: string }) => {
     if (invocation) {
       setInvocation({
         ...invocation,
-        headers: headers.reduce(
-          (acc, header) => {
-            acc[header.name] = header.value;
-            return acc;
-          },
-          {} as { [key: string]: any },
-        ),
+        headers,
       });
     }
   };
@@ -116,36 +110,7 @@ export function InvocationDetails({
                     }))
                   : []
               }
-              addHeader={() => {
-                onHeadersChange([
-                  ...(invocation?.headers
-                    ? Object.keys(invocation?.headers).map((key) => ({
-                        name: key,
-                        value: invocation?.headers[key],
-                      }))
-                    : []),
-                  { name: "", value: "" },
-                ]);
-              }}
-              deleteHeader={(index) => {
-                const headerName =
-                  invocation?.headers &&
-                  Object.keys(invocation?.headers)[index];
-                if (headerName) {
-                  const newHeaders = { ...invocation?.headers };
-                  delete newHeaders[headerName];
-                  onHeadersChange(
-                    Object.keys(newHeaders).map((key) => ({
-                      name: key,
-                      value: invocation?.headers[key],
-                    })),
-                  );
-                }
-              }}
-              setHeaders={() => {
-                // TODO: implement
-                // onHeadersChange();
-              }}
+              handleHeadersChange={onHeadersChange}
             />
           </div>
         </TabPanel>
@@ -182,14 +147,7 @@ export function InvocationDetails({
                 <BodySection body={responseData(invocation?.response).body} />
               )}
               {section === "Headers" && (
-                <HeaderSection
-                  headers={Object.entries(
-                    responseData(invocation?.response).headers || {},
-                  ).map(([key, value]) => ({
-                    name: key,
-                    value,
-                  }))}
-                />
+                <HeaderSection headers={invocation?.response?.headers || {}} />
               )}
             </div>
           </TabPanel>

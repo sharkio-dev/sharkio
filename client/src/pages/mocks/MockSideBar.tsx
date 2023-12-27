@@ -11,8 +11,7 @@ import { MockList } from "./MockList";
 export const MockSideBar: React.FC = () => {
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
-  const { sniffers, loadSniffers, selectedSniffer, setSelectedSniffer } =
-    useSniffersStore();
+  const { sniffers, loadSniffers } = useSniffersStore();
   const { loadMocks, resetMocks } = useMockStore();
   const navigator = useNavigate();
 
@@ -22,20 +21,15 @@ export const MockSideBar: React.FC = () => {
 
   useEffect(() => {
     if (snifferId) {
-      loadMocks(snifferId as string, true);
+      loadMocks(snifferId as string);
     } else {
       resetMocks();
     }
   }, [snifferId]);
 
   useEffect(() => {
-    if (selectedSniffer && !snifferId) {
-      let params = new URLSearchParams();
-      params.append("snifferId", selectedSniffer.id);
-      let queryString = params.toString();
-      navigator({ search: queryString }, { replace: true });
-    } else if (sniffers.length > 0 && !selectedSniffer) {
-      setSelectedSniffer(sniffers[0]);
+    if (!snifferId && sniffers.length > 0) {
+      navigator(`/mocks?snifferId=${sniffers[0].id}`);
       return;
     }
   }, [sniffers]);

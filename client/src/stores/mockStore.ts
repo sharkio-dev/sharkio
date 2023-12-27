@@ -8,14 +8,23 @@ import {
   getMocksAPI,
 } from "../api/api";
 
+export interface MockResponse {
+  id: string;
+  name: string;
+  body: string;
+  headers: object;
+  status: number;
+}
+
 export interface Mock {
   id: string;
   url: string;
-  body: string;
-  headers: Record<string, string>;
   method: string;
-  status: string;
   isActive: boolean;
+  selectedResponse: string;
+  snifferId: string;
+  createdAt: string;
+  responses: MockResponse[];
 }
 
 interface MockState {
@@ -31,12 +40,12 @@ interface MockState {
   deleteMock: (snifferId: string, mockId: string) => Promise<void>;
   createMock: (
     snifferId: string,
-    mock: Omit<Mock, "id">,
+    mock: Omit<Mock, "id">
   ) => Promise<{ id: string }>;
   editMock: (
     snifferId: string,
     mockId: string,
-    mock: Partial<Mock>,
+    mock: Partial<Mock>
   ) => Promise<void>;
 }
 

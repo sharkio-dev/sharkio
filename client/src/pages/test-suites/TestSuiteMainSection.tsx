@@ -17,20 +17,13 @@ export const TestSuiteMainSection = () => {
   const { testSuiteId, testId, endpointId } = useParams();
   const [tabNumber, setTabNumber] = React.useState("1");
   const [showConfig, setShowConfig] = React.useState<boolean>(true);
-  const [requestHeaders, setRequestHeaders] = React.useState<any[]>([]);
 
   const { getTest, editTest, setCurrentTest, currentTest } = useTestStore();
   React.useEffect(() => {
     if (!testSuiteId || !testId) {
       return;
     }
-    getTest(testSuiteId, testId).then((data: TestType) => {
-      const headers = Object.entries(data?.headers || []).map((h: any) => ({
-        name: h[0],
-        value: h[1],
-      }));
-      setRequestHeaders(headers);
-    });
+    getTest(testSuiteId, testId);
   }, [testSuiteId, testId]);
 
   const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null);
@@ -57,7 +50,7 @@ export const TestSuiteMainSection = () => {
   const saveTest = (
     testSuiteId: string | undefined,
     testId: string | undefined,
-    currentTest: TestType,
+    currentTest: TestType
   ) => {
     if (!testSuiteId || !testId || !currentTest) {
       return;
@@ -95,8 +88,6 @@ export const TestSuiteMainSection = () => {
                 <RequestTab
                   onDebounceSave={handleDebounceDataSave}
                   onTestMethodChange={handleDataSave}
-                  requestHeaders={requestHeaders}
-                  setRequestHeaders={setRequestHeaders}
                 />
               </TabContext>
             ) : (

@@ -8,6 +8,7 @@ const StatusCodeSelector = ({
   value: string;
   setValue?: (value: string) => void;
   isDisabled?: boolean;
+  className?: string;
 }) => {
   const options = [
     { value: "100", label: "100 Continue" },

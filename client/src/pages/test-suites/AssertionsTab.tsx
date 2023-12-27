@@ -31,23 +31,25 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
     comparator: "equals",
   };
   const headerRules = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header"),
+    s.currentTest.rules.filter((rule) => rule.type === "header")
   );
 
-  const onChangeHeader = (index: number, value: any, targetPath: string) => {
-    const newHeaders = [...headerRules];
-    newHeaders[index] = {
-      ...newHeaders[index],
-      targetPath: targetPath,
-      expectedValue: value,
-    };
-    handleHeadersChange(newHeaders);
-  };
-
-  const handleHeadersChange = (newHeaders: Rule[]) => {
+  const handleHeadersChange = (newHeaders: { [key: string]: any }) => {
     onDebounceSave({
       ...currentTest,
-      rules: [statusCodeRule, bodyRule, ...newHeaders],
+      rules: [
+        statusCodeRule,
+        bodyRule,
+        ...Object.entries(newHeaders).map(
+          ([name, value]) =>
+            ({
+              type: "header",
+              targetPath: name,
+              expectedValue: value,
+              comparator: "equals",
+            } as Rule)
+        ),
+      ],
     });
   };
 
@@ -89,25 +91,16 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
       )}
       {AssertionPart === "Headers" && (
         <HeaderSection
-          headers={headerRules.map((rule) => ({
-            name: (rule.targetPath as string) || "",
-            value: rule.expectedValue,
-          }))}
-          setHeaders={onChangeHeader}
-          addHeader={() => {
-            handleHeadersChange([
-              ...headerRules,
-              {
-                type: "header",
-                expectedValue: "",
-                targetPath: "",
-                comparator: "equals",
-              },
-            ]);
+          headers={{
+            ...headerRules.reduce(
+              (acc, rule) => ({
+                ...acc,
+                [rule.targetPath as string]: rule.expectedValue,
+              }),
+              {}
+            ),
           }}
-          deleteHeader={(index) =>
-            handleHeadersChange(headerRules.filter((_, i) => i !== index))
-          }
+          handleHeadersChange={handleHeadersChange}
         />
       )}
       {AssertionPart === "Body" && (

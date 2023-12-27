@@ -11,6 +11,7 @@ import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "./InvocationDetails";
 import { LoadingIcon } from "./LoadingIcon";
 import { EndpointType, InvocationType } from "./types";
+import { getSnifferDomain } from "../../utils/getSnifferUrl";
 
 type InvocationUpperBarProps = {
   setEditedInvocation: React.Dispatch<
@@ -35,7 +36,7 @@ export const InvocationUpperBar = ({
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
+    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId
   );
   const navigator = useNavigate();
 
@@ -90,10 +91,7 @@ export const InvocationUpperBar = ({
       });
   };
 
-  const snifferUrl =
-    sniffer == null
-      ? ""
-      : `https://${sniffer?.subdomain}.${import.meta.env.VITE_PROXY_DOMAIN}`;
+  const snifferUrl = sniffer == null ? "" : getSnifferDomain(sniffer.subdomain);
 
   return (
     <>
