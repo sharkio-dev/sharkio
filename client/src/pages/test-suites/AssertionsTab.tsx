@@ -31,7 +31,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
     comparator: "equals",
   };
   const headerRules = useTestStore((s) =>
-    s.currentTest.rules.filter((rule) => rule.type === "header")
+    s.currentTest.rules.filter((rule) => rule.type === "header"),
   );
 
   const handleHeadersChange = (newHeaders: { [key: string]: any }) => {
@@ -47,7 +47,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
               targetPath: name,
               expectedValue: value,
               comparator: "equals",
-            } as Rule)
+            }) as Rule,
         ),
       ],
     });
@@ -97,7 +97,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
                 ...acc,
                 [rule.targetPath as string]: rule.expectedValue,
               }),
-              {}
+              {},
             ),
           }}
           handleHeadersChange={handleHeadersChange}

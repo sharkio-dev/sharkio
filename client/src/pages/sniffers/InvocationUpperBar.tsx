@@ -36,7 +36,7 @@ export const InvocationUpperBar = ({
   const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId
+    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
   );
   const navigator = useNavigate();
 

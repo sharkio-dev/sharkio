@@ -21,7 +21,7 @@ export interface Mock {
   url: string;
   method: string;
   isActive: boolean;
-  selectedResponse: string;
+  selectedResponseId: string;
   snifferId: string;
   createdAt: string;
   responses: MockResponse[];
