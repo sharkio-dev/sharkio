@@ -23,14 +23,14 @@ export const HeaderSection = ({
   useEffect(() => {
     if (!headers) return;
     setNewHeaders(
-      Object.entries(headers).map(([name, value]) => ({ name, value }))
+      Object.entries(headers).map(([name, value]) => ({ name, value })),
     );
   }, [headers]);
 
   const onHeadersChange = (headers: { name: string; value: any }[]) => {
     handleHeadersChange &&
       handleHeadersChange(
-        headers.reduce((acc, h) => ({ ...acc, [h.name]: h.value }), {})
+        headers.reduce((acc, h) => ({ ...acc, [h.name]: h.value }), {}),
       );
   };
 

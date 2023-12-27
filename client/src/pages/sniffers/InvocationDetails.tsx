@@ -34,7 +34,7 @@ export function InvocationDetails({
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Status"
+    "Status",
   );
 
   const handleChange = (_: any, newValue: string) => {
