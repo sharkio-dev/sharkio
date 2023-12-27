@@ -18,7 +18,7 @@ export class MockService {
     userId: string,
     mockId: string,
     url: string,
-    method: string,
+    method: string
   ): Promise<Mock | null> {
     return this.mockRepository.getByUrl(userId, mockId, url, method);
   }
@@ -39,7 +39,7 @@ export class MockService {
     headers: Record<string, string>,
     status: number,
     name: string,
-    snifferId: string,
+    snifferId: string
   ) {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -65,7 +65,7 @@ export class MockService {
     headers?: Record<string, string>,
     status?: number,
     name?: string,
-    snifferId?: string,
+    snifferId?: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
@@ -97,6 +97,24 @@ export class MockService {
       .where("id = :mockId AND userId = :userId", { mockId, userId })
       .set({
         isActive,
+      })
+      .returning("*")
+      .execute();
+  }
+
+  async setSelectedResponse(
+    userId: string,
+    mockId: string,
+    responseId: string
+  ) {
+    return this.mockRepository.repository
+      .createQueryBuilder()
+      .update()
+      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .set({
+        id: mockId,
+        userId,
+        selectedResponseId: responseId,
       })
       .returning("*")
       .execute();

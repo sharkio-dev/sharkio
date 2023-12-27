@@ -5,6 +5,7 @@ import { useLog } from "../lib/log";
 import { MockService } from "../services/mock/mock.service";
 import { IRouterConfig } from "./router.interface";
 import { requestValidator } from "../lib/request-validator/request-validator";
+import { MockResponseService } from "../services/mock-response/mock-response.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -12,7 +13,10 @@ const log = useLog({
 });
 
 export class MockController {
-  constructor(private readonly mockService: MockService) {}
+  constructor(
+    private readonly mockService: MockService,
+    private readonly mockResponseService: MockResponseService
+  ) {}
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
@@ -37,7 +41,7 @@ export class MockController {
           const limit = +(req.params.limit ?? 1000);
           const requests = await this.mockService.getByUser(userId, limit);
           res.status(200).send(requests);
-        },
+        }
       )
       .post(
         /**
@@ -109,10 +113,10 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId,
+            snifferId
           );
           res.status(200).send(mock);
-        },
+        }
       );
 
     router
@@ -148,7 +152,7 @@ export class MockController {
 
           const mock = await this.mockService.getById(userId, mockId);
           res.status(200).send(mock);
-        },
+        }
       )
       .delete(
         /**
@@ -176,7 +180,7 @@ export class MockController {
           const { mockId } = req.params;
           await this.mockService.delete(userId, mockId);
           res.sendStatus(200);
-        },
+        }
       )
       .patch(
         /**
@@ -258,12 +262,61 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId,
+            snifferId
           );
 
           res.json(updatedMock).status(200);
-        },
+        }
       );
+
+    router.route("/:mockId/selected-response").post(
+      /**
+       * @openapi
+       * /sharkio/mocks/{mockId}/selected-response:
+       *   post:
+       *     tags:
+       *      - mock
+       *     description: Set mock selected response
+       *     parameters:
+       *       - name: mockId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: mockId
+       *         required: true
+       *     requestBody:
+       *        description: Set mock selected response
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              required:
+       *                - responseId
+       *              properties:
+       *                responseId:
+       *                  type: string
+       *                  description: The id of the sniffer
+       *                  example: 121ed1e5-0502-4fd3-a3f0-4603fcca1cbc
+       *     responses:
+       *       200:
+       *         description: Selected response was set
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const { responseId } = req.body;
+        const { mockId } = req.params;
+
+        const mock = await this.mockService.setSelectedResponse(
+          userId,
+          mockId,
+          responseId
+        );
+
+        res.status(200).send(mock);
+      }
+    );
 
     router.route("/:mockId/activate").post(
       /**
@@ -293,10 +346,10 @@ export class MockController {
         const requests = await this.mockService.setIsActive(
           userId,
           mockId,
-          true,
+          true
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:mockId/deactivate").post(
@@ -328,10 +381,10 @@ export class MockController {
         const requests = await this.mockService.setIsActive(
           userId,
           mockId,
-          false,
+          false
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     return { router, path: "/sharkio/mocks" };
