@@ -100,11 +100,11 @@ async function main(isProxy = true, isServer = true) {
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
-    invocationRepository
+    invocationRepository,
   );
   const mockResponseService = new MockResponseService(
     mockRepository,
-    mockResponseRepository
+    mockResponseRepository,
   );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
@@ -114,14 +114,14 @@ async function main(isProxy = true, isServer = true) {
   const testService = new TestService(testRepository);
   const requestService = new RequestService(invocationRepository);
   const testExecutionService = new TestExecutionService(
-    testExecutionRepository
+    testExecutionRepository,
   );
   const importService = new ImportService(endpointService);
   const workspaceService = new WorkspaceService(workspaceRepository);
 
   /* Controllers */
   const mockResponseController = new MockResponseController(
-    mockResponseService
+    mockResponseService,
   );
   const mockController = new MockController(mockService, mockResponseService);
   const settingsController = new SettingsController(apiKeyService);
@@ -129,25 +129,25 @@ async function main(isProxy = true, isServer = true) {
   const cliController = new CLIController(
     apiKeyService,
     userService,
-    snifferService
+    snifferService,
   );
   const snifferController = new SnifferController(
     snifferService,
     docGenerator,
     endpointService,
-    mockService
+    mockService,
   );
   const endpointController = new EndpointController(
     endpointService,
     snifferService,
     requestService,
-    importService
+    importService,
   );
   const invocationController = new InvocationController(endpointService);
   const chatController = new ChatController(
     snifferService,
     endpointService,
-    chatService
+    chatService,
   );
   const swaggerUi = new SwaggerUiController();
   const testSuiteController = new TestSuiteController(
@@ -156,7 +156,7 @@ async function main(isProxy = true, isServer = true) {
     testService,
     requestService,
     snifferService,
-    testExecutionService
+    testExecutionService,
   );
   const workspaceController = new WorkspaceController(workspaceService);
 
@@ -164,23 +164,23 @@ async function main(isProxy = true, isServer = true) {
   const requestInterceptorMiddleware = new RequestInterceptor(
     snifferService,
     endpointService,
-    responseService
+    responseService,
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
-    requestInterceptorMiddleware
+    requestInterceptorMiddleware,
   );
   const mockMiddleware = new MockMiddleware(
     mockService,
     snifferService,
-    responseService
+    responseService,
   );
 
   /* Servers */
   const proxyServer = new ProxyServer(
     proxyMiddleware,
     requestInterceptorMiddleware,
-    mockMiddleware
+    mockMiddleware,
   );
 
   const snifferManagerServer = new Server(
@@ -197,7 +197,7 @@ async function main(isProxy = true, isServer = true) {
       mockController.getRouter(),
       workspaceController.getRouter(),
     ],
-    swaggerUi
+    swaggerUi,
   );
 
   // /* Start Servers */
