@@ -1,6 +1,7 @@
 import { useLog } from "../../lib/log";
 import { MockResponse } from "../../model/entities/MockResponse";
 import { MockResponseRepository } from "../../model/repositories/mock-response.repository";
+import { MockRepository } from "../../model/repositories/mock.repository";
 
 const log = useLog({
   dirname: __dirname,
@@ -9,7 +10,8 @@ const log = useLog({
 
 export class MockResponseService {
   constructor(
-    private readonly mockResponseRepository: MockResponseRepository,
+    private readonly mockRepository: MockRepository,
+    private readonly mockResponseRepository: MockResponseRepository
   ) {}
 
   getByUserId(userId: string) {
@@ -27,23 +29,38 @@ export class MockResponseService {
   editResponse(
     userId: string,
     mockResponseId: string,
-    mockResponse: Partial<MockResponse>,
+    mockResponse: Partial<MockResponse>
   ) {
     return this.mockResponseRepository.editById(
       userId,
       mockResponseId,
-      mockResponse,
+      mockResponse
     );
   }
 
-  createResponse(
+  async createResponse(
     userId: string,
     mockId: string,
     mockResponse: Omit<
       MockResponse,
       "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
-    >,
+    >
   ) {
-    return this.mockResponseRepository.create(userId, mockId, mockResponse);
+    const mock = await this.mockRepository.getById(userId, mockId);
+    const createdMock = await this.mockResponseRepository.create(
+      userId,
+      mockId,
+      mockResponse
+    );
+
+    if (mock?.selectedResponseId == null) {
+      await this.mockRepository.setDefaultResponse(
+        userId,
+        mockId,
+        createdMock.id
+      );
+    }
+
+    return createdMock;
   }
 }

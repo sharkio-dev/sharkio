@@ -56,4 +56,11 @@ export class MockRepository {
       .where("id = :mockId AND userId = :userId", { userId, mockId })
       .execute();
   }
+
+  setDefaultResponse(userId: string, mockId: string, responseId: string) {
+    return this.repository.update(
+      { userId, id: mockId },
+      { selectedResponseId: responseId }
+    );
+  }
 }

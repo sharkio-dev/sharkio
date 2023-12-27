@@ -35,11 +35,12 @@ export class MockResponseController {
 
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
-          const userMockResponses =
-            await this.mockResponseService.getByUserId(userId);
+          const userMockResponses = await this.mockResponseService.getByUserId(
+            userId
+          );
 
           res.send(userMockResponses).status(200);
-        },
+        }
       )
       .post(
         /**
@@ -65,21 +66,21 @@ export class MockResponseController {
          *                  type: string
          *                  description: The id of the sniffer
          *                  minimum: 0
-         *                  example: {"hello":"world"}
+         *                  example: e07e14fa-fe96-4807-a4a7-86d49f11fbbc
          *                mockId:
          *                  type: string
          *                  description: The id of the mock
          *                  minimum: 0
-         *                  example: {"hello":"world"}
+         *                  example: e07e14fa-fe96-4807-a4a7-86d49f11fbbc
          *                body:
          *                  type: string
          *                  description: The body of the mock response
          *                  minimum: 0
-         *                  example: {"hello":"world"}
+         *                  example: "{\"hello\":\"world\"}"
          *                headers:
          *                  type: string
          *                  description: The headers of the mock response
-         *                  example: example
+         *                  example: "{\"content-type\":\"application/json\"}"
          *                status:
          *                  type: number
          *                  description: The status of the response
@@ -107,10 +108,10 @@ export class MockResponseController {
               headers,
               status,
               name,
-            },
+            }
           );
           res.json(createdResponse).status(201);
-        },
+        }
       );
 
     router
@@ -145,7 +146,7 @@ export class MockResponseController {
 
           const mock = await this.mockResponseService.getById(userId, mockId);
           res.status(200).send(mock);
-        },
+        }
       )
       .delete(
         /**
@@ -170,10 +171,10 @@ export class MockResponseController {
          */
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
-          const { mockId } = req.params;
-          await this.mockResponseService.deleteById(userId, mockId);
+          const { mockResponseId } = req.params;
+          await this.mockResponseService.deleteById(userId, mockResponseId);
           res.sendStatus(200);
-        },
+        }
       )
       .patch(
         /**
@@ -238,11 +239,11 @@ export class MockResponseController {
               headers,
               status,
               name,
-            },
+            }
           );
 
           res.json(updatedMock).status(200);
-        },
+        }
       );
 
     return { router, path: "/sharkio/mock-responses" };

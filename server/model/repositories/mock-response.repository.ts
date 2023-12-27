@@ -35,14 +35,14 @@ export class MockResponseRepository {
   editById(
     userId: string,
     mockResponseId: string,
-    mockResponse: Partial<MockResponse>,
+    mockResponse: Partial<MockResponse>
   ) {
     return this.repository.update(
       {
         userId,
         id: mockResponseId,
       },
-      mockResponse,
+      mockResponse
     );
   }
 
@@ -52,7 +52,7 @@ export class MockResponseRepository {
     mockResponse: Omit<
       MockResponse,
       "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
-    >,
+    >
   ) {
     const createdResponse = this.repository.create({
       ...mockResponse,
