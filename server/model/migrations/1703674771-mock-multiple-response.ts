@@ -20,7 +20,7 @@ export class Migrations1703332511084 implements MigrationInterface {
         );
         ALTER TABLE public.mock ADD current_mock_response_id uuid NULL;
         ALTER TABLE public.mock ADD CONSTRAINT mock_fk FOREIGN KEY (current_mock_response_id) REFERENCES public.mock_response(id);
-      `
+      `,
     );
   }
 
