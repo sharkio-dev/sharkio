@@ -11,6 +11,9 @@ export class MockRepository {
   getById(userId: string, mockId: string) {
     return this.repository.findOne({
       where: { userId: userId, id: mockId },
+      relations: {
+        mockResponses: true,
+      },
     });
   }
 
@@ -18,6 +21,9 @@ export class MockRepository {
     return this.repository.find({
       where: { userId: userId },
       take: limit,
+      relations: {
+        mockResponses: true,
+      },
       order: { createdAt: "DESC" },
     });
   }
@@ -26,6 +32,9 @@ export class MockRepository {
     return this.repository.find({
       where: { userId, snifferId },
       order: { createdAt: "DESC" },
+      relations: {
+        mockResponses: true,
+      },
     });
   }
 
@@ -33,6 +42,9 @@ export class MockRepository {
     return this.repository.findOne({
       where: { userId, url, snifferId, method },
       order: { createdAt: "DESC" },
+      relations: {
+        mockResponses: true,
+      },
     });
   }
 

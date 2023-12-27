@@ -1,5 +1,6 @@
 import { useLog } from "../../lib/log";
 import { Mock } from "../../model/entities/Mock";
+import { MockResponse } from "../../model/entities/MockResponse";
 import { MockRepository } from "../../model/repositories/mock.repository";
 
 const log = useLog({
@@ -17,7 +18,7 @@ export class MockService {
     userId: string,
     mockId: string,
     url: string,
-    method: string,
+    method: string
   ): Promise<Mock | null> {
     return this.mockRepository.getByUrl(userId, mockId, url, method);
   }
@@ -38,7 +39,7 @@ export class MockService {
     headers: Record<string, string>,
     status: number,
     name: string,
-    snifferId: string,
+    snifferId: string
   ) {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -64,7 +65,7 @@ export class MockService {
     headers?: Record<string, string>,
     status?: number,
     name?: string,
-    snifferId?: string,
+    snifferId?: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()

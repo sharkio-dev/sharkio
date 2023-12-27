@@ -18,7 +18,7 @@ const MOCK_DEFAULT_STATE: Mock = {
   isActive: true,
   snifferId: "",
   selectedResponseId: "1",
-  responses: [
+  mockResponses: [
     {
       id: "1",
       name: "Response 1 (200)",
@@ -48,7 +48,7 @@ export const MockMainSection: React.FC = () => {
   const sniffer = sniffers.find((s) => s.id === snifferId);
 
   const getSelectedResponse = (mock: Mock) => {
-    return mock.responses.find((r) => r.id === mock.selectedResponseId);
+    return mock.mockResponses.find((r) => r.id === mock.selectedResponseId);
   };
 
   const selectedResponse = getSelectedResponse(editedMock);
@@ -94,14 +94,14 @@ export const MockMainSection: React.FC = () => {
   const onAddResponse = () => {
     const newResponse = {
       id: Math.random().toString(),
-      name: `Response ${editedMock.responses.length + 1} (200)`,
+      name: `Response ${editedMock.mockResponses.length + 1} (200)`,
       body: "",
       status: 200,
       headers: {},
     };
     setEditedMock((prev) => ({
       ...prev,
-      responses: [...prev.responses, newResponse],
+      mockResponses: [...prev.mockResponses, newResponse],
       selectedResponse: newResponse.id,
     }));
   };
@@ -150,7 +150,7 @@ export const MockMainSection: React.FC = () => {
         />
         <SelectComponent
           options={
-            editedMock?.responses.map((r) => ({
+            editedMock?.mockResponses.map((r) => ({
               value: r.id,
               label: r.name,
             })) || []
@@ -168,7 +168,7 @@ export const MockMainSection: React.FC = () => {
         hadnleResponseChange={(value: MockResponse) => {
           setEditedMock((prev) => ({
             ...prev,
-            responses: prev.responses.map((r, i) => {
+            mockResponses: prev.mockResponses.map((r, i) => {
               if (r.id === value.id) {
                 let name = `Response ${i} (${value.status})`;
                 return { ...value, name };

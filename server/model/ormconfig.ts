@@ -12,17 +12,21 @@ import { TestExecution } from "./entities/TestExecution";
 import { Test } from "./entities/Test";
 import { Mock } from "./entities/Mock";
 import { Workspace } from "./entities/Workspace";
+import { MockResponse } from "./entities/MockResponse";
+import "dotenv/config";
 
 export const createConnection = () => {
+  console.log(process.env);
   return new DataSource({
     name: "default",
     type: "postgres",
-    database: "postgres",
     synchronize: false,
-    url: process.env.DATABASE_URL,
-    password: "mysecretpassword",
-    username: "postgres",
+    database: "postgres",
+    host: process.env.DB_HOST,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     logging: process.env.LOG_SQL == "true" ?? false,
+    port: parseInt(process.env.DB_PORT ?? "5432"),
     entities: [
       Users,
       Sniffer,
@@ -36,6 +40,7 @@ export const createConnection = () => {
       TestExecution,
       Response,
       Mock,
+      MockResponse,
       Workspace,
       Response,
     ],
