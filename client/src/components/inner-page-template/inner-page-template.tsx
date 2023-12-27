@@ -20,7 +20,7 @@ export const InnerPageTemplate: React.FC<innerPageTemplateProps> = ({
         />
       </div>
       <Panel maxSize={90}>
-        <div className="flex flex-col p-4 space-y-4 overflow-y-auto">
+        <div className="flex flex-col p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-96px)] ">
           <ContentComponent />
         </div>
       </Panel>
