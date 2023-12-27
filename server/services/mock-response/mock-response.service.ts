@@ -9,7 +9,7 @@ const log = useLog({
 
 export class MockResponseService {
   constructor(
-    private readonly mockResponseRepository: MockResponseRepository
+    private readonly mockResponseRepository: MockResponseRepository,
   ) {}
 
   getByUserId(userId: string) {
@@ -27,7 +27,7 @@ export class MockResponseService {
   editResponse(
     userId: string,
     mockResponseId: string,
-    mockResponse: Partial<MockResponse>
+    mockResponse: Partial<MockResponse>,
   ) {
     return this.mockResponseRepository.editById(mockResponseId, mockResponse);
   }
@@ -38,7 +38,7 @@ export class MockResponseService {
     mockResponse: Omit<
       MockResponse,
       "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
-    >
+    >,
   ) {
     this.mockResponseRepository.create(userId, mockId, mockResponse);
   }

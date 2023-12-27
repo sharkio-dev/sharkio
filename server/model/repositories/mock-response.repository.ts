@@ -37,7 +37,7 @@ export class MockResponseRepository {
       {
         id: mockResponseId,
       },
-      mockResponse
+      mockResponse,
     );
   }
 
@@ -47,7 +47,7 @@ export class MockResponseRepository {
     mockResponse: Omit<
       MockResponse,
       "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
-    >
+    >,
   ) {
     const createdResponse = this.repository.create({
       ...mockResponse,
