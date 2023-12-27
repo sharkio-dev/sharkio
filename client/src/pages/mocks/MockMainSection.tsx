@@ -93,7 +93,7 @@ export const MockMainSection: React.FC = () => {
   const onAddResponse = () => {
     const newResponse = {
       id: Math.random().toString(),
-      name: `Response ${editedMock.mockResponses.length + 1} (200)`,
+      name: `Response ${editedMock.responses.length + 1} (200)`,
       body: "",
       status: 200,
       headers: {},
@@ -158,7 +158,7 @@ export const MockMainSection: React.FC = () => {
           <AiOutlinePlus className="flex text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
           <span className="hover:text-green-400">Add Response</span>
         </div>
-        {editedMock.responses.map((r, i) => (
+        {editedMock.responses?.map((r, i) => (
           <div
             className="flex flex-col border border-border-color p-4 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[64px] active:cursor-grabbing"
             key={i}
@@ -210,7 +210,7 @@ export const MockMainSection: React.FC = () => {
             {openResponseId === r.id && (
               <MockResponseDetails
                 response={r}
-                hadnleResponseChange={(value: MockResponse) => {
+                handleResponseChange={(value: MockResponse) => {
                   setEditedMock((prev) => ({
                     ...prev,
                     responses: prev.responses.map((r, i) => {
