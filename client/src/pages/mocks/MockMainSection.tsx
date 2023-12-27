@@ -163,21 +163,23 @@ export const MockMainSection: React.FC = () => {
           }}
         />
       </div>
-      <MockResponseDetails
-        response={selectedResponse as MockResponse}
-        hadnleResponseChange={(value: MockResponse) => {
-          setEditedMock((prev) => ({
-            ...prev,
-            mockResponses: prev.mockResponses.map((r, i) => {
-              if (r.id === value.id) {
-                let name = `Response ${i} (${value.status})`;
-                return { ...value, name };
-              }
-              return r;
-            }),
-          }));
-        }}
-      />
+      {selectedResponse && (
+        <MockResponseDetails
+          response={selectedResponse as MockResponse}
+          handleResponseChange={(value: MockResponse) => {
+            setEditedMock((prev) => ({
+              ...prev,
+              mockResponses: prev.mockResponses.map((r, i) => {
+                if (r.id === value.id) {
+                  let name = `Response ${i} (${value.status})`;
+                  return { ...value, name };
+                }
+                return r;
+              }),
+            }));
+          }}
+        />
+      )}
     </>
   );
 };

@@ -7,14 +7,14 @@ import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 
 interface MockResponseDetailsProps {
   response: MockResponse;
-  hadnleResponseChange: (value: MockResponse) => void;
+  handleResponseChange: (value: MockResponse) => void;
 }
 export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
   response,
-  hadnleResponseChange,
+  handleResponseChange,
 }) => {
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body",
+    "Body"
   );
 
   return (
@@ -28,13 +28,13 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
           <StatusCodeSelector
             value={response.status.toString() || ""}
             setValue={(value) => {
-              hadnleResponseChange({ ...response, status: +value });
+              handleResponseChange({ ...response, status: +value });
             }}
           />
           <BodySection
             body={response.body || ""}
             onBodyChange={(value: any) => {
-              hadnleResponseChange({ ...response, body: value });
+              handleResponseChange({ ...response, body: value });
             }}
           />
         </div>
@@ -44,7 +44,7 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
         <HeaderSection
           headers={response.headers || {}}
           handleHeadersChange={(headers: object) => {
-            hadnleResponseChange({ ...response, headers });
+            handleResponseChange({ ...response, headers });
           }}
         />
       )}
