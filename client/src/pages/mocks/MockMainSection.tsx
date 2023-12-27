@@ -1,18 +1,14 @@
-import { Button, TextField } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { BodySection } from "../test-suites/BodySection";
-import { HeaderSection } from "../test-suites/HeaderSection";
 import { Mock, MockResponse, useMockStore } from "../../stores/mockStore";
 import queryString from "query-string";
-import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { SelectMethodDropDown } from "./SelectMethodDropDown";
-import { BodyHeaderToggle } from "./BodyHeaderStatusToggle";
-import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { AiOutlinePlus } from "react-icons/ai";
+import { MockButton } from "./MockButton";
+import { MockUrlInput } from "./MockUrlInput";
+import { MockResponseDetails } from "./MockResponseDetails";
 
 const MOCK_DEFAULT_STATE = {
   id: "",
@@ -71,13 +67,6 @@ export const MockMainSection: React.FC = () => {
   const onClickSave = () => {
     let newMock = {
       ...editedMock,
-      headers: editedMock.headers.reduce(
-        (acc: object, header: { name: string; value: string }) => {
-          if (!header.name) return acc;
-          return { ...acc, [header.name]: header.value };
-        },
-        {}
-      ),
       isActive: true,
     };
     createMock(snifferId as string, newMock).then((res: any) => {
@@ -89,13 +78,6 @@ export const MockMainSection: React.FC = () => {
     if (!mockId) return;
     let newMock = {
       ...editedMock,
-      headers: editedMock.headers.reduce(
-        (acc: object, header: { name: string; value: string }) => {
-          if (!header.name) return acc;
-          return { ...acc, [header.name]: header.value };
-        },
-        {}
-      ),
       isActive: true,
     };
     editMock(snifferId as string, mockId as string, newMock);
@@ -197,127 +179,5 @@ export const MockMainSection: React.FC = () => {
         }}
       />
     </>
-  );
-};
-
-interface MockResponseDetailsProps {
-  response: MockResponse;
-  hadnleResponseChange: (value: MockResponse) => void;
-}
-
-const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
-  response,
-  hadnleResponseChange,
-}) => {
-  const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body"
-  );
-
-  return (
-    <div className="flex flex-col h-full py-2 rounded-md overflow-y-auto">
-      <BodyHeaderToggle
-        value={section}
-        setValue={(value: string) => setSection(value as any)}
-      />
-      {section === "Body" && (
-        <div className="flex flex-col items-center space-y-4">
-          <StatusCodeSelector
-            value={response.status.toString() || ""}
-            setValue={(value) => {
-              hadnleResponseChange({ ...response, status: +value });
-            }}
-          />
-          <BodySection
-            body={response.body || ""}
-            onBodyChange={(value: any) => {
-              hadnleResponseChange({ ...response, body: value });
-            }}
-          />
-        </div>
-      )}
-
-      {section === "Headers" && (
-        <HeaderSection
-          headers={response.headers || {}}
-          handleHeadersChange={(headers: object) => {
-            hadnleResponseChange({ ...response, headers });
-          }}
-        />
-      )}
-    </div>
-  );
-};
-
-interface MockUrlInputProps {
-  url?: string;
-  handleUrlChange: (value: string) => void;
-  method?: string;
-  handleMethodChange: (value: string) => void;
-  snifferDomain?: string;
-}
-
-const MockUrlInput: React.FC<MockUrlInputProps> = ({
-  url,
-  handleUrlChange,
-  method,
-  handleMethodChange,
-  snifferDomain,
-}) => {
-  return (
-    <>
-      <div className="flex flex-row items-center w-40">
-        <SelectMethodDropDown
-          value={method || ""}
-          onChange={(e: any) => {
-            handleMethodChange(e.target.value);
-          }}
-        />
-      </div>
-      <div className="flex flex-row items-center w-[550px]">
-        <TextField
-          disabled={true}
-          value={snifferDomain}
-          variant="outlined"
-          size="small"
-          style={{ width: "100%" }}
-        />
-      </div>
-      <TextField
-        value={url || ""}
-        onChange={(e) => {
-          handleUrlChange(e.target.value);
-        }}
-        variant="outlined"
-        size="small"
-        style={{ width: "100%" }}
-      />
-    </>
-  );
-};
-
-interface SaveMockButtonProps {
-  onClick: () => void;
-  text: string;
-  isLoading?: boolean;
-  color?:
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "info"
-    | "warning";
-}
-
-const MockButton: React.FC<SaveMockButtonProps> = ({
-  text,
-  onClick,
-  isLoading = false,
-  color = "primary",
-}) => {
-  return (
-    <Button variant="outlined" color={color} onClick={onClick}>
-      {isLoading ? <LoadingIcon /> : text}
-    </Button>
   );
 };
