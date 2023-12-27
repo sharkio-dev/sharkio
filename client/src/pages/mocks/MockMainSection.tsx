@@ -10,14 +10,14 @@ import { MockButton } from "./MockButton";
 import { MockUrlInput } from "./MockUrlInput";
 import { MockResponseDetails } from "./MockResponseDetails";
 
-const MOCK_DEFAULT_STATE = {
+const MOCK_DEFAULT_STATE: Mock = {
   id: "",
   method: "GET",
   url: "/",
   createdAt: "",
   isActive: true,
   snifferId: "",
-  selectedResponse: "1",
+  selectedResponseId: "1",
   responses: [
     {
       id: "1",
@@ -48,7 +48,7 @@ export const MockMainSection: React.FC = () => {
   const sniffer = sniffers.find((s) => s.id === snifferId);
 
   const getSelectedResponse = (mock: Mock) => {
-    return mock.responses.find((r) => r.id === mock.selectedResponse);
+    return mock.responses.find((r) => r.id === mock.selectedResponseId);
   };
 
   const selectedResponse = getSelectedResponse(editedMock);
@@ -156,7 +156,7 @@ export const MockMainSection: React.FC = () => {
             })) || []
           }
           title="Responses"
-          value={editedMock.selectedResponse}
+          value={editedMock.selectedResponseId}
           disabled={false}
           setValue={(value: string) => {
             setEditedMock((prev) => ({ ...prev, selectedResponse: value }));
