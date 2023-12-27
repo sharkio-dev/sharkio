@@ -60,7 +60,7 @@ export class MockRepository {
   setDefaultResponse(userId: string, mockId: string, responseId: string) {
     return this.repository.update(
       { userId, id: mockId },
-      { selectedResponseId: responseId }
+      { selectedResponseId: responseId },
     );
   }
 }
