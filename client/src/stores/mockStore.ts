@@ -40,12 +40,12 @@ interface MockState {
   deleteMock: (snifferId: string, mockId: string) => Promise<void>;
   createMock: (
     snifferId: string,
-    mock: Omit<Mock, "id">
+    mock: Omit<Mock, "id">,
   ) => Promise<{ id: string }>;
   editMock: (
     snifferId: string,
     mockId: string,
-    mock: Partial<Mock>
+    mock: Partial<Mock>,
   ) => Promise<void>;
 }
 
