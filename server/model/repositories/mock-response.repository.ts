@@ -32,9 +32,14 @@ export class MockResponseRepository {
     return this.repository.delete({ id: mockResponseId, userId });
   }
 
-  editById(mockResponseId: string, mockResponse: Partial<MockResponse>) {
+  editById(
+    userId: string,
+    mockResponseId: string,
+    mockResponse: Partial<MockResponse>,
+  ) {
     return this.repository.update(
       {
+        userId,
         id: mockResponseId,
       },
       mockResponse,

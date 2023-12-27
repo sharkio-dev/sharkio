@@ -29,7 +29,11 @@ export class MockResponseService {
     mockResponseId: string,
     mockResponse: Partial<MockResponse>,
   ) {
-    return this.mockResponseRepository.editById(mockResponseId, mockResponse);
+    return this.mockResponseRepository.editById(
+      userId,
+      mockResponseId,
+      mockResponse,
+    );
   }
 
   createResponse(
@@ -40,6 +44,6 @@ export class MockResponseService {
       "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
     >,
   ) {
-    this.mockResponseRepository.create(userId, mockId, mockResponse);
+    return this.mockResponseRepository.create(userId, mockId, mockResponse);
   }
 }
