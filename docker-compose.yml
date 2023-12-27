@@ -1,9 +1,9 @@
 version: "3"
 services:
-  backend:
+  server:
     depends_on:
       - migrations
-    build: ./server
+    build: ./server/Dockerfile.backend
     ports:
       - 5012:5012
       - 443:443
@@ -16,7 +16,8 @@ services:
       - VITE_SUPABASE_PROJECT_URL=${VITE_SUPABASE_PROJECT_URL}
       - VITE_SUPABASE_ANON=${VITE_SUPABASE_ANON}
       - PROXY_SERVER_DOMAIN=${PROXY_SERVER_DOMAIN}
-  frontend:
+    env_file: ./server/.env
+  client:
     build: ./client
     ports:
       - 8123:8080
@@ -27,6 +28,7 @@ services:
       - VITE_SERVER_URL=${VITE_SERVER_URL}
       - VITE_PROXY_DOMAIN=${VITE_PROXY_DOMAIN}
       - VITE_SERVER_PORT= 443
+    env_file: ./client/.env
   db:
     image: postgres
     ports:
@@ -35,7 +37,21 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   migrations:
-    build: ./server
+    build: ./server/Dockerfile.migrations
     depends_on:
       - db
     command: npm run migration:up
+    env_file: ./server/.env
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    # command:
+    #   - "start"
+    #   - "--all"
+    #   - "--config"
+    #   - "/etc/ngrok.yml"
+    # volumes:
+    #   - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 8123:8123
+      - 4040:4040
