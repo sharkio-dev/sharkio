@@ -43,6 +43,8 @@ export default class MockMiddleware {
           );
 
           res.status(selectedResponse.status).send(selectedResponse.body);
+        } else {
+          next();
         }
       } else {
         next();

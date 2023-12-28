@@ -6,7 +6,7 @@ export class DefaultResponseSelector implements IMockResponseSelector {
 
   async select(mock: Mock) {
     const selectedResponse = mock.mockResponses.find((mockResponse) => {
-      mockResponse.id === mock.selectedResponseId;
+      return mockResponse.id === mock.selectedResponseId;
     });
 
     return selectedResponse;
