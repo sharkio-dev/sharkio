@@ -38,7 +38,7 @@ const baseResponseMock: MockResponse = {
 
 describe("Sequential response selector service", () => {
   let sequentialResponseSelector: SequentialResponseSelector;
-  let mock: Mock;
+
   beforeAll(() => {
     sequentialResponseSelector = new SequentialResponseSelector();
   });
