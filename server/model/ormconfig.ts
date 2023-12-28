@@ -13,10 +13,11 @@ import { Test } from "./entities/Test";
 import { Mock } from "./entities/Mock";
 import { Workspace } from "./entities/Workspace";
 import { config } from "dotenv";
-
 config({
   path: "../.env",
 });
+
+console.log(process.env);
 
 export const createConnection = () => {
   return new DataSource({
