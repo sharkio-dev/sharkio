@@ -8,6 +8,7 @@ import { InvocationController } from "./controllers/invocation.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
+import { MockResponseController } from "./controllers/mock-response.controller";
 import { TestSuiteController } from "./controllers/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import { createConnection } from "./model/ormconfig";
@@ -20,6 +21,7 @@ import EndpointService from "./services/endpoint/endpoint.service";
 import { RequestService } from "./services/request/request.service";
 import ResponseService from "./services/response/response.service";
 import { MockService } from "./services/mock/mock.service";
+import { MockResponseService } from "./services/mock-response/mock-response.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
@@ -45,6 +47,7 @@ import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.re
 import { TestRepository } from "./model/repositories/testSuite/test.repository";
 import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
 import { MockRepository } from "./model/repositories/mock.repository";
+import { MockResponseRepository } from "./model/repositories/mock-response.repository";
 import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
@@ -76,6 +79,7 @@ async function main(isProxy = true, isServer = true) {
   const appDataSource = await createConnection().initialize();
 
   /* Repositories */
+  const mockResponseRepository = new MockResponseRepository(appDataSource);
   const mockRepository = new MockRepository(appDataSource);
   const endpointRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
@@ -98,6 +102,10 @@ async function main(isProxy = true, isServer = true) {
     endpointRepository,
     invocationRepository,
   );
+  const mockResponseService = new MockResponseService(
+    mockRepository,
+    mockResponseRepository,
+  );
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
   const docGenerator = new SnifferDocGenerator(snifferService, endpointService);
@@ -112,7 +120,10 @@ async function main(isProxy = true, isServer = true) {
   const workspaceService = new WorkspaceService(workspaceRepository);
 
   /* Controllers */
-  const mockController = new MockController(mockService);
+  const mockResponseController = new MockResponseController(
+    mockResponseService,
+  );
+  const mockController = new MockController(mockService, mockResponseService);
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const cliController = new CLIController(
@@ -175,6 +186,7 @@ async function main(isProxy = true, isServer = true) {
   const snifferManagerServer = new Server(
     [
       authController.getRouter(),
+      mockResponseController.getRouter(),
       snifferController.getRouter(),
       settingsController.getRouter(),
       invocationController.getRouter(),

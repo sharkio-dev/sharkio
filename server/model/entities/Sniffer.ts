@@ -13,6 +13,7 @@ import { Request } from "./Request";
 import { Response } from "./Response";
 import { Users } from "./Users";
 import { Test } from "./Test";
+import { MockResponse } from "./MockResponse";
 
 @Index("sniffer_pkey", ["id"], { unique: true })
 @Index("sniffer_subdomain_key", ["subdomain"], { unique: true })
@@ -75,4 +76,7 @@ export class Sniffer {
 
   @OneToMany(() => Test, (test) => test.id)
   tests: Test[];
+
+  @OneToMany(() => MockResponse, (mockResponse) => mockResponse.sniffer)
+  mockResponses: MockResponse[];
 }

@@ -1,5 +1,6 @@
 import { useLog } from "../../lib/log";
 import { Mock } from "../../model/entities/Mock";
+import { MockResponse } from "../../model/entities/MockResponse";
 import { MockRepository } from "../../model/repositories/mock.repository";
 
 const log = useLog({
@@ -96,6 +97,24 @@ export class MockService {
       .where("id = :mockId AND userId = :userId", { mockId, userId })
       .set({
         isActive,
+      })
+      .returning("*")
+      .execute();
+  }
+
+  async setSelectedResponse(
+    userId: string,
+    mockId: string,
+    responseId: string,
+  ) {
+    return this.mockRepository.repository
+      .createQueryBuilder()
+      .update()
+      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .set({
+        id: mockId,
+        userId,
+        selectedResponseId: responseId,
       })
       .returning("*")
       .execute();

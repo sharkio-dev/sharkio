@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { Radio, Tooltip } from "@mui/material";
+import queryString from "query-string";
+import React, { useEffect } from "react";
+import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import { IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Mock, MockResponse, useMockStore } from "../../stores/mockStore";
-import queryString from "query-string";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
-import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
-import { MockButton } from "./MockButton";
-import { MockUrlInput } from "./MockUrlInput";
-import { MockResponseDetails } from "./MockResponseDetails";
 import { selectIconByStatus } from "../sniffers/Invocation";
-import { IoIosArrowForward } from "react-icons/io";
-import { Radio, Tooltip } from "@mui/material";
-import Draggable from "react-draggable";
+import { MockButton } from "./MockButton";
+import { MockResponseDetails } from "./MockResponseDetails";
+import { MockUrlInput } from "./MockUrlInput";
 
 const MOCK_DEFAULT_STATE: Mock = {
   id: "",
@@ -21,15 +20,7 @@ const MOCK_DEFAULT_STATE: Mock = {
   isActive: true,
   snifferId: "",
   selectedResponseId: "1",
-  responses: [
-    {
-      id: "1",
-      name: "Response 1 (200)",
-      body: "",
-      status: 200,
-      headers: {},
-    },
-  ],
+  mockResponses: [],
 };
 
 export const MockMainSection: React.FC = () => {
@@ -94,20 +85,20 @@ export const MockMainSection: React.FC = () => {
   const onAddResponse = () => {
     const newResponse = {
       id: Math.random().toString(),
-      name: `Response ${editedMock.responses.length + 1} (200)`,
+      name: `Response ${editedMock.mockResponses.length + 1} (200)`,
       body: "",
       status: 200,
       headers: {},
     };
     setEditedMock((prev) => ({
       ...prev,
-      responses: [...prev.responses, newResponse],
+      responses: [...prev.mockResponses, newResponse],
       selectedResponseId: newResponse.id,
     }));
   };
 
   const handleSort = () => {
-    const newResponses = [...editedMock.responses];
+    const newResponses = [...editedMock.mockResponses];
     const draggedResponse = newResponses[dragResponnseRef.current];
     newResponses.splice(dragResponnseRef.current, 1);
     newResponses.splice(dragOverResponseRef.current, 0, draggedResponse);
@@ -159,7 +150,7 @@ export const MockMainSection: React.FC = () => {
           <AiOutlinePlus className="flex text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
           <span className="hover:text-green-400">Add Response</span>
         </div>
-        {editedMock.responses.map((r, i) => (
+        {editedMock.mockResponses?.map((r, i) => (
           <div
             className="flex flex-col border border-border-color p-4 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[64px] active:cursor-grabbing"
             key={i}
@@ -211,10 +202,10 @@ export const MockMainSection: React.FC = () => {
             {openResponseId === r.id && (
               <MockResponseDetails
                 response={r}
-                hadnleResponseChange={(value: MockResponse) => {
+                handleResponseChange={(value: MockResponse) => {
                   setEditedMock((prev) => ({
                     ...prev,
-                    responses: prev.responses.map((r, i) => {
+                    responses: prev.mockResponses.map((r, i) => {
                       if (r.id === value.id) {
                         let name = `Response ${i} (${value.status})`;
                         return { ...value, name };
@@ -235,13 +226,13 @@ export const MockMainSection: React.FC = () => {
         />
         <SelectComponent
           options={
-            editedMock?.responses.map((r) => ({
+            editedMock?.mockResponses.map((r) => ({
               value: r.id,
               label: r.name,
             })) || []
           }
           title="Responses"
-          value={editedMock.selectedResponse}
+          value={editedMock.selectedResponseId}
           disabled={false}
           setValue={(value: string) => {
             setEditedMock((prev) => ({ ...prev, selectedResponse: value }));
