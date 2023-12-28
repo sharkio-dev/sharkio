@@ -9,11 +9,12 @@ import {
 } from "../api/api";
 
 export interface MockResponse {
-  id: string;
+  id?: string;
   name: string;
   body: string;
   headers: object;
   status: number;
+  sequenceIndex: number;
 }
 
 export interface Mock {
@@ -24,7 +25,7 @@ export interface Mock {
   selectedResponseId: string;
   snifferId: string;
   createdAt: string;
-  mockResponses: MockResponse[];
+  mockResponses?: MockResponse[];
 }
 
 interface MockState {
@@ -47,6 +48,7 @@ interface MockState {
     mockId: string,
     mock: Partial<Mock>,
   ) => Promise<void>;
+  responsedOrder: () => void;
 }
 
 export const useMockStore = create<MockState>((set, get) => ({
@@ -62,8 +64,8 @@ export const useMockStore = create<MockState>((set, get) => ({
     set({ loadingMocks: true });
     return getMocksAPI(snifferId)
       .then((res) => {
-        set({ mocks: res.data });
-        return res.data;
+        set({ mocks: res.data || [] });
+        return res.data || [];
       })
       .finally(() => set({ loadingMocks: false }));
   },
@@ -104,5 +106,53 @@ export const useMockStore = create<MockState>((set, get) => ({
       .finally(() => {
         set({ loadingEditMock: false });
       });
+  },
+  responsedOrder: () => {
+    return;
+  },
+}));
+
+interface MockResponseState {
+  mock?: Mock;
+  loadingMock: boolean;
+  mockResponses?: MockResponse[];
+  loadingMockResponses: boolean;
+  loadMock: (snifferId: string, mockId: string) => Promise<Mock>;
+  resetMock: () => void;
+  postMockResponse: (
+    snifferId: string,
+    mockId: string,
+    mockResponse: Omit<MockResponse, "id">,
+  ) => Promise<{ id: string }>;
+  editMockResponse: (
+    snifferId: string,
+    mockId: string,
+    mockResponseId: string,
+    mockResponse: Partial<MockResponse>,
+  ) => Promise<void>;
+  deleteMockResponse: (
+    snifferId: string,
+    mockId: string,
+    mockResponseId: string,
+  ) => Promise<void>;
+}
+
+export const useMockResponseStore = create<MockResponseState>((set, get) => ({
+  mock: undefined,
+  loadingMock: false,
+  mockResponses: [],
+  loadingMockResponses: false,
+  loadMock: (snifferId, mockId) => {
+    return;
+  },
+  resetMock: () => set({ mock: {} as Mock, mockResponses: [] }),
+  postMockResponse: (snifferId, mockId, mockResponse) => {
+    return;
+  },
+  editMockResponse: (snifferId, mockId, mockResponseId, mockResponse) => {
+    return;
+  },
+  deleteMockResponse: (snifferId, mockId, mockResponseId) => {
+    return;
   },
 }));

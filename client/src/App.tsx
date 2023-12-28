@@ -98,15 +98,17 @@ function App(): React.JSX.Element {
             <Route
               path={"*"}
               element={
-                <PageTemplate>
-                  {user ? <HomePage /> : <LandingPage />}
-                </PageTemplate>
+                <>
+                  <PageTemplate withSideBar={true} withBottomBar={true}>
+                    {user ? <HomePage /> : <LandingPage />}
+                  </PageTemplate>
+                </>
               }
             />
             <Route
               path={routes.DOCS_GETTING_STARTED}
               element={
-                <PageTemplate isSideBar={false}>
+                <PageTemplate withSideBar={false}>
                   <SharkioDocsGettingStartedPage />
                 </PageTemplate>
               }
@@ -114,7 +116,7 @@ function App(): React.JSX.Element {
             <Route
               path={routes.DOCS_SETUP}
               element={
-                <PageTemplate isSideBar={false}>
+                <PageTemplate withSideBar={false}>
                   <SharkioDocsSetupPage />
                 </PageTemplate>
               }
@@ -122,7 +124,7 @@ function App(): React.JSX.Element {
             <Route
               path={routes.LOGIN}
               element={
-                <PageTemplate>
+                <PageTemplate withBottomBar={true} withSideBar={false}>
                   <AuthUI />
                 </PageTemplate>
               }

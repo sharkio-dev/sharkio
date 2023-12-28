@@ -13,40 +13,57 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
   response,
   handleResponseChange,
 }) => {
+  const [editedResponse, setEditedResponse] = React.useState<MockResponse>();
+
+  React.useEffect(() => {
+    if (response) {
+      setEditedResponse(response);
+    }
+  }, [response]);
+
+  const onResponseChange = (value: MockResponse) => {
+    setEditedResponse(value);
+    handleResponseChange(value);
+  };
+
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
     "Body",
   );
 
   return (
     <div className="flex flex-col h-full py-2 rounded-md overflow-y-auto">
-      <BodyHeaderToggle
-        value={section}
-        setValue={(value: string) => setSection(value as any)}
-      />
-      {section === "Body" && (
-        <div className="flex flex-col items-center space-y-4">
-          <StatusCodeSelector
-            value={response.status.toString() || ""}
-            setValue={(value) => {
-              handleResponseChange({ ...response, status: +value });
-            }}
+      {editedResponse && (
+        <>
+          <BodyHeaderToggle
+            value={section}
+            setValue={(value: string) => setSection(value as any)}
           />
-          <BodySection
-            body={response.body || ""}
-            onBodyChange={(value: any) => {
-              handleResponseChange({ ...response, body: value });
-            }}
-          />
-        </div>
-      )}
+          {section === "Body" && (
+            <div className="flex flex-col items-center space-y-4">
+              <StatusCodeSelector
+                value={editedResponse.status.toString() || ""}
+                setValue={(value) => {
+                  onResponseChange({ ...editedResponse, status: +value });
+                }}
+              />
+              <BodySection
+                body={editedResponse.body || ""}
+                onBodyChange={(value: any) => {
+                  onResponseChange({ ...editedResponse, body: value });
+                }}
+              />
+            </div>
+          )}
 
-      {section === "Headers" && (
-        <HeaderSection
-          headers={response.headers || {}}
-          handleHeadersChange={(headers: object) => {
-            handleResponseChange({ ...response, headers });
-          }}
-        />
+          {section === "Headers" && (
+            <HeaderSection
+              headers={editedResponse.headers || {}}
+              handleHeadersChange={(headers: object) => {
+                onResponseChange({ ...editedResponse, headers });
+              }}
+            />
+          )}
+        </>
       )}
     </div>
   );
