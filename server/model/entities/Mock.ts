@@ -69,6 +69,13 @@ export class Mock {
   @Column({ name: "selected_response_id", nullable: true })
   selectedResponseId: string;
 
+  @Column({
+    name: "response_selection_method",
+    nullable: false,
+    default: "default",
+  })
+  responseSelectionMethod: string;
+
   @ManyToOne(() => Users, (users) => users.mocks)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Relation<Users>;

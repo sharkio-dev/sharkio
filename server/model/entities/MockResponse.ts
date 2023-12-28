@@ -41,6 +41,9 @@ export class MockResponse {
   @Column({ name: "mock_id", type: "uuid" })
   mockId: string;
 
+  @Column({ name: "sequence_index", type: "int4" })
+  sequenceIndex: number;
+
   @Column("timestamp with time zone", {
     name: "created_at",
     default: () => "now()",
