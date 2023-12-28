@@ -15,7 +15,7 @@ import { Workspace } from "./entities/Workspace";
 import { config } from "dotenv";
 
 config({
-  path: "../.",
+  path: "../.env",
 });
 
 export const createConnection = () => {
