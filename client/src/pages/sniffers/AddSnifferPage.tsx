@@ -258,7 +258,7 @@ export const AddSnifferPage = () => {
   const [name, setName] = React.useState("");
   const { createSniffer, loadingSniffers } = useSniffersStore();
   const [subdomain, _] = React.useState<string>(
-    randomString({ length: 5 }).toLowerCase()
+    randomString({ length: 5 }).toLowerCase(),
   );
   const navigator = useNavigate();
 
