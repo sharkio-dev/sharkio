@@ -154,7 +154,7 @@ function NgrokComponent(props: {
         <List className="">
           <ListItem>
             <ListItemAvatar>
-              <Avatar>1.</Avatar>
+              <Avatar>1</Avatar>
             </ListItemAvatar>
             <Link href="https://ngrok.com/docs/getting-started/">
               <ListItemText primary="Install ngrok" />
@@ -162,7 +162,7 @@ function NgrokComponent(props: {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar>2.</Avatar>
+              <Avatar>2</Avatar>
             </ListItemAvatar>
             <div className="block w-full">
               <ListItemText primary="Run ngrok" />
@@ -176,7 +176,7 @@ function NgrokComponent(props: {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar>3.</Avatar>
+              <Avatar>3</Avatar>
             </ListItemAvatar>
             <ListItemText primary="Paste the link" />
             <OutlinedInput
@@ -258,7 +258,7 @@ export const AddSnifferPage = () => {
   const [name, setName] = React.useState("");
   const { createSniffer, loadingSniffers } = useSniffersStore();
   const [subdomain, _] = React.useState<string>(
-    randomString({ length: 5 }).toLowerCase(),
+    randomString({ length: 5 }).toLowerCase()
   );
   const navigator = useNavigate();
 
