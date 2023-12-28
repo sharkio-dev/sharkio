@@ -4,7 +4,12 @@ import React, { useEffect } from "react";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Mock, MockResponse, useMockStore } from "../../stores/mockStore";
+import {
+  Mock,
+  MockResponse,
+  useMockResponseStore,
+  useMockStore,
+} from "../../stores/mockStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { selectIconByStatus } from "../sniffers/Invocation";
@@ -32,23 +37,33 @@ export const MockMainSection: React.FC = () => {
     editMock,
     deleteMock,
     loadingDeleteMock,
+    responsedOrder,
   } = useMockStore();
   const { mockId } = useParams();
   const location = useLocation();
   const { sniffers } = useSniffersStore();
   const { isNew, snifferId } = queryString.parse(location.search);
   const navigator = useNavigate();
-  const [editedMock, setEditedMock] = React.useState(MOCK_DEFAULT_STATE);
+  const [editedMock, setEditedMock] = React.useState<Mock>(MOCK_DEFAULT_STATE);
   const sniffer = sniffers.find((s) => s.id === snifferId);
   const [openResponseId, setOpenResponseId] = React.useState<string>();
   const dragResponnseRef = React.useRef<number>(0);
   const dragOverResponseRef = React.useRef<number>(0);
+  const {
+    mock,
+    mockResponses,
+    editMockResponse,
+    deleteMockResponse,
+    postMockResponse,
+    resetMock,
+    loadMock,
+    loadingMock,
+    loadingMockResponses,
+  } = useMockResponseStore();
 
   useEffect(() => {
     if (mockId) {
-      const mock = mocks.find((mock) => mock.id === mockId);
-      if (!mock) return;
-      setEditedMock(mock);
+      loadMock(snifferId as string, mockId as string);
     }
     if (isNew) {
       setEditedMock(MOCK_DEFAULT_STATE);
@@ -83,26 +98,61 @@ export const MockMainSection: React.FC = () => {
   };
 
   const onAddResponse = () => {
+    let index = mockResponses ? mockResponses.length : 0;
     const newResponse = {
-      id: Math.random().toString(),
-      name: `Response ${editedMock.mockResponses.length + 1} (200)`,
+      name: `Response ${index} (200)`,
       body: "",
       status: 200,
       headers: {},
     };
-    setEditedMock((prev) => ({
-      ...prev,
-      responses: [...prev.mockResponses, newResponse],
-      selectedResponseId: newResponse.id,
-    }));
+    postMockResponse(snifferId as string, mockId as string, newResponse);
+  };
+
+  const onDeleteMock = () => {
+    deleteMock(snifferId as string, mockId as string).then(() => {
+      navigator(`/mocks?snifferId=${snifferId}`);
+    });
   };
 
   const handleSort = () => {
-    const newResponses = [...editedMock.mockResponses];
+    const newResponses = mockResponses ? [...mockResponses] : [];
     const draggedResponse = newResponses[dragResponnseRef.current];
     newResponses.splice(dragResponnseRef.current, 1);
     newResponses.splice(dragOverResponseRef.current, 0, draggedResponse);
-    setEditedMock((prev) => ({ ...prev, responses: newResponses }));
+    // TODO: implement this
+    responsedOrder();
+    setEditedMock((prev) => ({ ...prev, mockResponses: newResponses }));
+  };
+
+  const setDefaultResponse = (responseId: string) => {
+    setEditedMock((prev) => ({ ...prev, selectedResponseId: responseId }));
+  };
+
+  const onDeleteMockResponse = (responseId: string) => {
+    deleteMockResponse(snifferId as string, mockId as string, responseId);
+  };
+
+  const setOpenedResponse = (responseId: string) => {
+    if (openResponseId === responseId) {
+      setOpenResponseId(undefined);
+      return;
+    }
+    setOpenResponseId(responseId);
+  };
+
+  const onResponseChange = (value: MockResponse) => {
+    editMockResponse(snifferId as string, mockId as string, value);
+    setEditedMock((prev) => ({
+      ...prev,
+      mockResponses: prev.mockResponses
+        ? prev.mockResponses.map((r, i) => {
+            if (r.id === value.id) {
+              return value;
+            }
+            return r;
+          })
+        : [],
+    }));
   };
 
   return (
@@ -132,11 +182,7 @@ export const MockMainSection: React.FC = () => {
         {!isNew && (
           <MockButton
             text="Delete"
-            onClick={() => {
-              deleteMock(snifferId as string, mockId as string).then(() => {
-                navigator(`/mocks?snifferId=${snifferId}`);
-              });
-            }}
+            onClick={onDeleteMock}
             isLoading={loadingDeleteMock}
             color="error"
           />
@@ -144,19 +190,19 @@ export const MockMainSection: React.FC = () => {
       </div>
       <div className="flex-col">
         <div
-          className="flex flex-row items-center space-x-2 px-2 my-2 w-40 cursor-pointer"
+          className="flex flex-row items-center space-x-2 px-2 my-2 w-40 cursor-pointer select-none"
           onClick={onAddResponse}
         >
           <AiOutlinePlus className="flex text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
           <span className="hover:text-green-400">Add Response</span>
         </div>
-        {editedMock.mockResponses?.map((r, i) => (
+        {mockResponses?.map((r, i) => (
           <div
             className="flex flex-col border border-border-color p-4 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[64px] active:cursor-grabbing"
             key={i}
             draggable
-            onDragStart={(e) => (dragResponnseRef.current = i)}
-            onDragEnter={(e) => (dragOverResponseRef.current = i)}
+            onDragStart={() => (dragResponnseRef.current = i)}
+            onDragEnter={() => (dragOverResponseRef.current = i)}
             onDragEnd={handleSort}
             onDragOver={(e) => e.preventDefault()}
           >
@@ -165,36 +211,30 @@ export const MockMainSection: React.FC = () => {
                 <Tooltip title="Select as default response">
                   <Radio
                     checked={r.id === editedMock.selectedResponseId}
-                    onClick={() => {
-                      setEditedMock((prev) => ({
-                        ...prev,
-                        selectedResponseId: r.id,
-                      }));
-                    }}
+                    onClick={() => setDefaultResponse(r.id)}
                   />
                 </Tooltip>
                 {selectIconByStatus(r.status)}
-                <div className="flex flex-row items-center space-x-2 first:opacity-0 hover:first:opacity-100">
-                  <AiOutlineEdit className="text-gray-400 active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
+                <div className="flex flex-row items-center space-x-2 px-2">
+                  <div className="flex parent-hover:hover:opacity-100 opacity-0">
+                    <AiOutlineEdit className="text-gray-400 active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
+                  </div>
                   <span>{r.name}</span>
                 </div>
               </div>
               <div className="flex flex-row items-center space-x-2">
                 <AiOutlineDelete
                   className=" text-red-400 active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md"
-                  // onClick={() => invokeKey(row.id)}
+                  onClick={() => {
+                    onDeleteMockResponse(r.id);
+                  }}
                 />
-
                 <IoIosArrowForward
                   className={`active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md ${
                     openResponseId === r.id ? "rotate-90" : ""
                   }`}
                   onClick={() => {
-                    if (openResponseId === r.id) {
-                      setOpenResponseId(undefined);
-                      return;
-                    }
-                    setOpenResponseId(r.id);
+                    setOpenedResponse(r.id);
                   }}
                 />
               </div>
@@ -202,58 +242,12 @@ export const MockMainSection: React.FC = () => {
             {openResponseId === r.id && (
               <MockResponseDetails
                 response={r}
-                handleResponseChange={(value: MockResponse) => {
-                  setEditedMock((prev) => ({
-                    ...prev,
-                    responses: prev.mockResponses.map((r, i) => {
-                      if (r.id === value.id) {
-                        let name = `Response ${i} (${value.status})`;
-                        return { ...value, name };
-                      }
-                      return r;
-                    }),
-                  }));
-                }}
+                handleResponseChange={onResponseChange}
               />
             )}
           </div>
         ))}
       </div>
-      {/* <div className="flex flex-row items-center">
-        <AiOutlinePlus
-          className="text-blue-500 h-8 w-8 p-1 mr-4 cursor-pointer active:scale-95"
-          onClick={onAddResponse}
-        />
-        <SelectComponent
-          options={
-            editedMock?.mockResponses.map((r) => ({
-              value: r.id,
-              label: r.name,
-            })) || []
-          }
-          title="Responses"
-          value={editedMock.selectedResponseId}
-          disabled={false}
-          setValue={(value: string) => {
-            setEditedMock((prev) => ({ ...prev, selectedResponse: value }));
-          }}
-        />
-      </div>
-      <MockResponseDetails
-        response={selectedResponse as MockResponse}
-        hadnleResponseChange={(value: MockResponse) => {
-          setEditedMock((prev) => ({
-            ...prev,
-            responses: prev.responses.map((r, i) => {
-              if (r.id === value.id) {
-                let name = `Response ${i} (${value.status})`;
-                return { ...value, name };
-              }
-              return r;
-            }),
-          }));
-        }}
-      /> */}
     </div>
   );
 };
