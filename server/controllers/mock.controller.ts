@@ -5,6 +5,7 @@ import { useLog } from "../lib/log";
 import { requestValidator } from "../lib/request-validator/request-validator";
 import { MockService } from "../services/mock/mock.service";
 import { IRouterConfig } from "./router.interface";
+import { MockResponseService } from "../services/mock-response/mock-response.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -12,7 +13,10 @@ const log = useLog({
 });
 
 export class MockController {
-  constructor(private readonly mockService: MockService) {}
+  constructor(
+    private readonly mockService: MockService,
+    private readonly mockResponseService: MockResponseService,
+  ) {}
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
@@ -69,7 +73,7 @@ export class MockController {
          *                url:
          *                  type: string
          *                  description: The url of the mock
-         *                  example: /user
+         *                  example: /example
          *                body:
          *                  type: string
          *                  description: The body of the mock
@@ -91,6 +95,33 @@ export class MockController {
          *                  type: string
          *                  description: The id of the sniffer
          *                  example: 121ed1e5-0502-4fd3-a3f0-4603fcca1cbc
+         *                mockResponses:
+         *                  description: The id of the sniffer
+         *                  example: [{ "status":200,"body":"","headers":"example","name":"example-response-name","sequenceIndex":1}]
+         *                  type: array
+         *                  items:
+         *                    type: object
+         *                    properties:
+         *                      status:
+         *                        type: number
+         *                        description: The status of the response
+         *                        example: 200
+         *                      body:
+         *                        type: string
+         *                        description: The body of the response
+         *                        example: {"hello":"world"}
+         *                      headers:
+         *                        type: string
+         *                        description: The headers of the response
+         *                        example: example
+         *                      name:
+         *                        type: string
+         *                        description: The name of the response
+         *                        example: example-response-name
+         *                      sequenceIndex:
+         *                        type: number
+         *                        description: The sequence index of the response
+         *                        example: 1
          *     responses:
          *       200:
          *         description: Returns mocks
@@ -99,8 +130,16 @@ export class MockController {
          */
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
-          const { headers, body, status, url, snifferId, name, method } =
-            req.body;
+          const {
+            headers,
+            body,
+            status,
+            url,
+            snifferId,
+            name,
+            method,
+            mockResponses,
+          } = req.body;
           const mock = await this.mockService.create(
             userId,
             url,
@@ -110,7 +149,9 @@ export class MockController {
             status,
             name,
             snifferId,
+            mockResponses,
           );
+
           res.status(200).send(mock);
         },
       );

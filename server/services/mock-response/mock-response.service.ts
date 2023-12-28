@@ -10,7 +10,6 @@ const log = useLog({
 
 export class MockResponseService {
   constructor(
-    private readonly mockRepository: MockRepository,
     private readonly mockResponseRepository: MockResponseRepository,
   ) {}
 
@@ -46,20 +45,28 @@ export class MockResponseService {
       "id" | "createdAt" | "updatedAt" | "mockId" | "mock" | "sequenceIndex"
     >,
   ) {
-    const mock = await this.mockRepository.getById(userId, mockId);
     const createdMock = await this.mockResponseRepository.create(
       userId,
       mockId,
       mockResponse,
     );
 
-    if (mock?.selectedResponseId == null) {
-      await this.mockRepository.setDefaultResponse(
-        userId,
-        mockId,
-        createdMock.id,
-      );
-    }
+    return createdMock;
+  }
+
+  async createResponses(
+    userId: string,
+    mockId: string,
+    mockResponse: Omit<
+      MockResponse,
+      "id" | "createdAt" | "updatedAt" | "mockId" | "mock" | "sequenceIndex"
+    >[],
+  ) {
+    const createdMock = await this.mockResponseRepository.createMany(
+      userId,
+      mockId,
+      mockResponse,
+    );
 
     return createdMock;
   }

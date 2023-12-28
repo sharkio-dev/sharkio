@@ -73,4 +73,36 @@ export class MockResponseRepository {
       return entityManager.save(createdResponse);
     });
   }
+
+  createMany(
+    userId: string,
+    mockId: string,
+    mockResponses: Omit<
+      MockResponse,
+      "id" | "createdAt" | "updatedAt" | "mockId" | "mock" | "sequenceIndex"
+    >[],
+    shouldSave = true,
+  ) {
+    return this.repository.manager.transaction(async (entityManager) => {
+      const responseCount = await entityManager.count(MockResponse, {
+        where: {
+          userId,
+          mockId,
+        },
+      });
+
+      const createdResponses = mockResponses.map((response, index) => {
+        return entityManager.create<MockResponse>(MockResponse, {
+          ...response,
+          userId,
+          mockId,
+          sequenceIndex: responseCount + index,
+        });
+      });
+
+      return shouldSave
+        ? entityManager.save(createdResponses)
+        : createdResponses;
+    });
+  }
 }

@@ -96,17 +96,14 @@ async function main(isProxy = true, isServer = true) {
   const workspaceRepository = new WorkspaceRepository(appDataSource);
 
   /* Services */
-  const mockService = new MockService(mockRepository);
+  const mockService = new MockService(mockRepository, mockResponseRepository);
   const snifferService = new SnifferService(snifferRepository);
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
     invocationRepository,
   );
-  const mockResponseService = new MockResponseService(
-    mockRepository,
-    mockResponseRepository,
-  );
+  const mockResponseService = new MockResponseService(mockResponseRepository);
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
   const docGenerator = new SnifferDocGenerator(snifferService, endpointService);
@@ -125,7 +122,7 @@ async function main(isProxy = true, isServer = true) {
   const mockResponseController = new MockResponseController(
     mockResponseService,
   );
-  const mockController = new MockController(mockService);
+  const mockController = new MockController(mockService, mockResponseService);
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const cliController = new CLIController(

@@ -1,6 +1,7 @@
 import { useLog } from "../../lib/log";
 import { Mock } from "../../model/entities/Mock";
 import { MockResponse } from "../../model/entities/MockResponse";
+import { MockResponseRepository } from "../../model/repositories/mock-response.repository";
 import { MockRepository } from "../../model/repositories/mock.repository";
 
 const log = useLog({
@@ -8,7 +9,10 @@ const log = useLog({
   filename: __filename,
 });
 export class MockService {
-  constructor(private readonly mockRepository: MockRepository) {}
+  constructor(
+    private readonly mockRepository: MockRepository,
+    private readonly mockResponseRepository: MockResponseRepository,
+  ) {}
 
   getById(userId: string, mockId: string) {
     return this.mockRepository.getById(userId, mockId);
@@ -40,6 +44,7 @@ export class MockService {
     status: number,
     name: string,
     snifferId: string,
+    mockResponses?: MockResponse[],
   ) {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -53,7 +58,30 @@ export class MockService {
       isActive: true,
     });
 
-    return this.mockRepository.repository.save(createdMock);
+    return this.mockRepository.repository.manager.transaction(
+      async (entityManager) => {
+        const mock = await entityManager.save(createdMock);
+        let savedResponses;
+
+        if (mockResponses != null) {
+          const mappedResponses = mockResponses.map((response) => ({
+            ...response,
+            snifferId,
+          }));
+
+          const createdResponses = await this.mockResponseRepository.createMany(
+            userId,
+            mock.id,
+            mappedResponses,
+            false,
+          );
+
+          savedResponses = await entityManager.save(createdResponses);
+        }
+
+        return { ...mock, mockResponses: savedResponses };
+      },
+    );
   }
 
   async update(
