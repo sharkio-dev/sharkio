@@ -26,7 +26,7 @@ export class Migrations1703337975400 implements MigrationInterface {
         ALTER TABLE public.mock ADD response_selection_method varchar NOT NULL DEFAULT 'default';
         ALTER TABLE public.mock ADD CONSTRAINT mock_fk FOREIGN KEY (selected_response_id) REFERENCES public.mock_response(id);
         ALTER TABLE public.mock_response ADD CONSTRAINT mock_response_user_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-      `
+      `,
     );
   }
 

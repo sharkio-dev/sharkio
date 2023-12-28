@@ -11,7 +11,7 @@ export default class MockMiddleware {
     private readonly mockService: MockService,
     private readonly snifferService: SnifferService,
     private readonly responseService: ResponseService,
-    private readonly mockResponseSelector: MockResponseSelector
+    private readonly mockResponseSelector: MockResponseSelector,
   ) {}
 
   async mock(req: Request, res: Response, next: NextFunction) {
@@ -23,7 +23,7 @@ export default class MockMiddleware {
         sniffer?.userId,
         sniffer?.id,
         req.url,
-        req.method
+        req.method,
       );
 
       if (mock != null && mock.isActive === true) {
@@ -32,14 +32,14 @@ export default class MockMiddleware {
           Object.entries(selectedResponse.headers || {}).forEach(
             ([key, value]) => {
               res.setHeader(key, value);
-            }
+            },
           );
 
           await this.interceptMockResponse(req, selectedResponse);
           await this.updateSelectedResponse(
             sniffer.userId,
             mock,
-            selectedResponse.id
+            selectedResponse.id,
           );
 
           res.status(selectedResponse.status).send(selectedResponse.body);
@@ -76,12 +76,12 @@ export default class MockMiddleware {
   updateSelectedResponse(
     userId: string,
     mock: Mock,
-    selectedResponseId: string
+    selectedResponseId: string,
   ) {
     return this.mockService.setSelectedResponse(
       userId,
       mock.id,
-      selectedResponseId
+      selectedResponseId,
     );
   }
 }
