@@ -21,8 +21,8 @@ export const MockUrlInput: React.FC<MockUrlInputProps> = ({
       <div className="flex flex-row items-center w-40">
         <SelectMethodDropDown
           value={method || ""}
-          onChange={(e: any) => {
-            handleMethodChange(e.target.value);
+          onChange={(value: any) => {
+            handleMethodChange(value);
           }}
         />
       </div>

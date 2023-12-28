@@ -27,7 +27,7 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
   };
 
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body"
+    "Body",
   );
 
   return (

@@ -24,7 +24,7 @@ const MOCK_DEFAULT_STATE: Mock = {
   createdAt: "",
   isActive: true,
   snifferId: "",
-  selectedResponseId: "1",
+  selectedResponseId: "",
   mockResponses: [],
 };
 
@@ -51,7 +51,6 @@ export const MockMainSection: React.FC = () => {
   const dragOverResponseRef = React.useRef<number>(0);
   const {
     mock,
-    mockResponses,
     editMockResponse,
     deleteMockResponse,
     postMockResponse,
@@ -61,14 +60,19 @@ export const MockMainSection: React.FC = () => {
     loadingMockResponses,
   } = useMockResponseStore();
 
+  console.log(editedMock);
+
   useEffect(() => {
-    if (mockId) {
-      loadMock(snifferId as string, mockId as string);
-    }
-    if (isNew) {
+    if (mockId && !isNew && !mock) {
+      loadMock(snifferId as string, mockId as string).then((mock: Mock) => {
+        setEditedMock(mock);
+      });
+    } else if (mockId && !isNew && mock) {
+      setEditedMock(mock);
+    } else if (isNew) {
       setEditedMock(MOCK_DEFAULT_STATE);
     }
-  }, [mockId, isNew, mocks]);
+  }, [mockId, isNew, mock]);
 
   const onClickSave = () => {
     let newMock = {
@@ -86,7 +90,7 @@ export const MockMainSection: React.FC = () => {
       ...editedMock,
       isActive: true,
     };
-    editMock(snifferId as string, mockId as string, newMock);
+    // editMock(snifferId as string, mockId as string, newMock);
   };
 
   const handleUrlChange = (value: string) => {
@@ -94,18 +98,30 @@ export const MockMainSection: React.FC = () => {
   };
 
   const handleMethodChange = (value: string) => {
+    console.log(value);
     setEditedMock((prev) => ({ ...prev, method: value }));
   };
 
   const onAddResponse = () => {
-    let index = mockResponses ? mockResponses.length : 0;
+    let index = editedMock.mockResponses ? editedMock.mockResponses.length : 0;
     const newResponse = {
-      name: `Response ${index} (200)`,
+      id: `${index}`,
+      name: `Response ${index + 1}`,
       body: "",
       status: 200,
       headers: {},
+      sequenceIndex: index,
     };
-    postMockResponse(snifferId as string, mockId as string, newResponse);
+    setEditedMock((prev) => ({
+      ...prev,
+      selectedResponseId:
+        index === 0 ? newResponse.id : prev.selectedResponseId,
+      mockResponses: prev.mockResponses
+        ? [...prev.mockResponses, newResponse]
+        : [newResponse],
+    }));
+    // !isNew &&
+    // postMockResponse(snifferId as string, mockId as string, newResponse);
   };
 
   const onDeleteMock = () => {
@@ -115,12 +131,18 @@ export const MockMainSection: React.FC = () => {
   };
 
   const handleSort = () => {
-    const newResponses = mockResponses ? [...mockResponses] : [];
+    const newResponses = editedMock.mockResponses
+      ? [...editedMock.mockResponses]
+      : [];
     const draggedResponse = newResponses[dragResponnseRef.current];
     newResponses.splice(dragResponnseRef.current, 1);
     newResponses.splice(dragOverResponseRef.current, 0, draggedResponse);
+    newResponses.forEach((r, i) => {
+      r.sequenceIndex = i;
+      r.name = `Response ${i + 1}`;
+    });
     // TODO: implement this
-    responsedOrder();
+    // responsedOrder();
     setEditedMock((prev) => ({ ...prev, mockResponses: newResponses }));
   };
 
@@ -129,7 +151,13 @@ export const MockMainSection: React.FC = () => {
   };
 
   const onDeleteMockResponse = (responseId: string) => {
-    deleteMockResponse(snifferId as string, mockId as string, responseId);
+    setEditedMock((prev) => ({
+      ...prev,
+      mockResponses: prev.mockResponses
+        ? prev.mockResponses.filter((r) => r.id !== responseId)
+        : [],
+    }));
+    // deleteMockResponse(snifferId as string, mockId as string, responseId);
   };
 
   const setOpenedResponse = (responseId: string) => {
@@ -141,12 +169,13 @@ export const MockMainSection: React.FC = () => {
   };
 
   const onResponseChange = (value: MockResponse) => {
-    editMockResponse(snifferId as string, mockId as string, value);
+    // editMockResponse(snifferId as string, mockId as string, value);
     setEditedMock((prev) => ({
       ...prev,
       mockResponses: prev.mockResponses
         ? prev.mockResponses.map((r, i) => {
             if (r.id === value.id) {
+              value.name = `Response ${i + 1}`;
               return value;
             }
             return r;
@@ -196,7 +225,7 @@ export const MockMainSection: React.FC = () => {
           <AiOutlinePlus className="flex text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
           <span className="hover:text-green-400">Add Response</span>
         </div>
-        {mockResponses?.map((r, i) => (
+        {editedMock.mockResponses?.map((r, i) => (
           <div
             className="flex flex-col border border-border-color p-4 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[64px] active:cursor-grabbing"
             key={i}
@@ -215,10 +244,7 @@ export const MockMainSection: React.FC = () => {
                   />
                 </Tooltip>
                 {selectIconByStatus(r.status)}
-                <div className="flex flex-row items-center space-x-2 px-2">
-                  <div className="flex parent-hover:hover:opacity-100 opacity-0">
-                    <AiOutlineEdit className="text-gray-400 active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
-                  </div>
+                <div className="flex flex-row items-center space-x-2">
                   <span>{r.name}</span>
                 </div>
               </div>

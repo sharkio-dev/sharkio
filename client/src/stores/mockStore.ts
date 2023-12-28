@@ -9,11 +9,12 @@ import {
 } from "../api/api";
 
 export interface MockResponse {
-  id: string;
+  id?: string;
   name: string;
   body: string;
   headers: object;
   status: number;
+  sequenceIndex: number;
 }
 
 export interface Mock {
@@ -40,12 +41,12 @@ interface MockState {
   deleteMock: (snifferId: string, mockId: string) => Promise<void>;
   createMock: (
     snifferId: string,
-    mock: Omit<Mock, "id">
+    mock: Omit<Mock, "id">,
   ) => Promise<{ id: string }>;
   editMock: (
     snifferId: string,
     mockId: string,
-    mock: Partial<Mock>
+    mock: Partial<Mock>,
   ) => Promise<void>;
   responsedOrder: () => void;
 }
@@ -121,18 +122,18 @@ interface MockResponseState {
   postMockResponse: (
     snifferId: string,
     mockId: string,
-    mockResponse: Omit<MockResponse, "id">
+    mockResponse: Omit<MockResponse, "id">,
   ) => Promise<{ id: string }>;
   editMockResponse: (
     snifferId: string,
     mockId: string,
     mockResponseId: string,
-    mockResponse: Partial<MockResponse>
+    mockResponse: Partial<MockResponse>,
   ) => Promise<void>;
   deleteMockResponse: (
     snifferId: string,
     mockId: string,
-    mockResponseId: string
+    mockResponseId: string,
   ) => Promise<void>;
 }
 
