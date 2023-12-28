@@ -78,11 +78,11 @@ export class Mock {
 
   @ManyToOne(() => Users, (users) => users.mocks)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<Users>;
+  user?: Relation<Users>;
 
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.mocks, { onDelete: "CASCADE" })
   @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
-  sniffer: Relation<Sniffer>;
+  sniffer?: Relation<Sniffer>;
 
   @OneToMany(() => MockResponse, (mockResponse) => mockResponse.mock)
   mockResponses: MockResponse[];

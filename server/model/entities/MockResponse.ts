@@ -59,5 +59,5 @@ export class MockResponse {
 
   @ManyToOne(() => Mock, (mock) => mock.mockResponses, { onDelete: "CASCADE" })
   @JoinColumn([{ name: "mock_id", referencedColumnName: "id" }])
-  mock: Relation<Mock>;
+  mock?: Relation<Mock>;
 }
