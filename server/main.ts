@@ -50,6 +50,11 @@ import { MockRepository } from "./model/repositories/mock.repository";
 import { MockResponseRepository } from "./model/repositories/mock-response.repository";
 import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
 import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
+import {
+  DefaultResponseSelector,
+  RandomResponseSelector,
+  SequentialResponseSelector,
+} from "./services/mock-response-selector";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -116,7 +121,14 @@ async function main(isProxy = true, isServer = true) {
   );
   const importService = new ImportService(endpointService);
   const workspaceService = new WorkspaceService(workspaceRepository);
-  const mockResponseSelectorService = new MockResponseSelector();
+  const mockSelectionStrategies = {
+    default: new DefaultResponseSelector(),
+    random: new RandomResponseSelector(),
+    sequence: new SequentialResponseSelector(),
+  };
+  const mockResponseSelectorService = new MockResponseSelector(
+    mockSelectionStrategies,
+  );
 
   /* Controllers */
   const mockResponseController = new MockResponseController(

@@ -1,25 +1,32 @@
+import { DefaultResponseSelector } from ".";
 import { Mock } from "../../model/entities/Mock";
-import { DefaultResponseSelector } from "./default-response-selector";
-import { RandomResponseSelector } from "./random-response-selector";
-import { SequentialResponseSelector } from "./sequential-response-selector";
-import { IMockResponseSelector } from "./response-selectors.type";
+import {
+  IMockResponseSelector,
+  SelectionStrategy,
+} from "./response-selectors.type";
 
 export class MockResponseSelector implements IMockResponseSelector {
-  private selectionStrategies: Record<string, IMockResponseSelector>;
-
-  constructor() {
-    this.selectionStrategies = {
-      default: new DefaultResponseSelector(),
-      random: new RandomResponseSelector(),
-      sequence: new SequentialResponseSelector(),
-    };
+  constructor(
+    private readonly selectionStrategies: Record<
+      SelectionStrategy,
+      IMockResponseSelector
+    >,
+  ) {
+    if (this.selectionStrategies.default == null) {
+      this.selectionStrategies.default = new DefaultResponseSelector();
+    }
   }
 
   async select(mock: Mock) {
-    const selectedResponse =
-      await this.selectionStrategies[
-        mock.responseSelectionMethod ?? "default"
-      ].select(mock);
+    const selectionMethod = Object.keys(this.selectionStrategies).includes(
+      mock.responseSelectionMethod,
+    )
+      ? mock.responseSelectionMethod
+      : "default";
+
+    const selectedResponse = await this.selectionStrategies[
+      selectionMethod
+    ].select(mock);
 
     return selectedResponse;
   }
