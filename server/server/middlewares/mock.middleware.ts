@@ -5,6 +5,12 @@ import { MockService } from "../../services/mock/mock.service";
 import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { Mock } from "../../model/entities/Mock";
+import { useLog } from "../../lib/log";
+
+const logger = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export default class MockMiddleware {
   constructor(
@@ -35,14 +41,18 @@ export default class MockMiddleware {
             },
           );
 
-          await this.interceptMockResponse(req, selectedResponse);
-          await this.updateSelectedResponse(
-            sniffer.userId,
-            mock,
-            selectedResponse.id,
-          );
-
           res.status(selectedResponse.status).send(selectedResponse.body);
+
+          try {
+            await this.interceptMockResponse(req, selectedResponse);
+            await this.updateSelectedResponse(
+              sniffer.userId,
+              mock,
+              selectedResponse.id,
+            );
+          } catch (e) {
+            logger.error("Failed to intercept mock response", e);
+          }
         } else {
           next();
         }
