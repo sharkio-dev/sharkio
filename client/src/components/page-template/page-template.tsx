@@ -7,20 +7,30 @@ import { useNavigate } from "react-router-dom";
 import styles from "./page-template.module.scss";
 
 export const PageTemplate: React.FC<
-  PropsWithChildren & { isSideBar?: boolean }
-> = ({ children, isSideBar = true }) => {
+  PropsWithChildren & { withSideBar?: boolean; withBottomBar?: boolean }
+> = ({ children, withSideBar = true, withBottomBar = true }) => {
   const { user } = useAuthStore();
 
   return (
-    <div className={styles.pageTemplate}>
-      <div className={styles.sidebarContainer}>
-        {user && isSideBar && <SideBar />}
-      </div>
+    <div
+      className={styles.pageTemplate}
+      data-no-sidebar={!withSideBar}
+      data-no-bottombar={!withBottomBar}
+    >
+      {user && withSideBar && (
+        <div className={styles.sidebarContainer}>
+          <SideBar />
+        </div>
+      )}
       <div className={styles.navbarContainer}>
         <Navbar />
       </div>
       <div className={`${styles.contentContainer} bg-tertiary`}>{children}</div>
-      <div className={styles.bottomBarContainer}>{user && <BottomBar />}</div>
+      {withBottomBar && (
+        <div className={styles.bottomBarContainer}>
+          <BottomBar />
+        </div>
+      )}
     </div>
   );
 };
