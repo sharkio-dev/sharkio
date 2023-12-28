@@ -43,7 +43,7 @@ export class MockResponseService {
     mockId: string,
     mockResponse: Omit<
       MockResponse,
-      "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
+      "id" | "createdAt" | "updatedAt" | "mockId" | "mock" | "sequenceIndex"
     >,
   ) {
     const mock = await this.mockRepository.getById(userId, mockId);

@@ -1,11 +1,10 @@
-import z from "zod";
 import { NextFunction, Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
+import z from "zod";
 import { useLog } from "../lib/log";
+import { requestValidator } from "../lib/request-validator/request-validator";
 import { MockService } from "../services/mock/mock.service";
 import { IRouterConfig } from "./router.interface";
-import { requestValidator } from "../lib/request-validator/request-validator";
-import { MockResponseService } from "../services/mock-response/mock-response.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -13,10 +12,7 @@ const log = useLog({
 });
 
 export class MockController {
-  constructor(
-    private readonly mockService: MockService,
-    private readonly mockResponseService: MockResponseService,
-  ) {}
+  constructor(private readonly mockService: MockService) {}
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();

@@ -15,9 +15,10 @@ export class MockResponseRepository {
       },
     });
   }
-  getByMockId(userId: string, snifferId: string) {
+
+  getByMockId(userId: string, mockId: string) {
     return this.repository.find({
-      where: { userId, snifferId },
+      where: { userId, mockId },
       order: { createdAt: "DESC" },
     });
   }
@@ -51,14 +52,25 @@ export class MockResponseRepository {
     mockId: string,
     mockResponse: Omit<
       MockResponse,
-      "id" | "createdAt" | "updatedAt" | "mockId" | "mock"
+      "id" | "createdAt" | "updatedAt" | "mockId" | "mock" | "sequenceIndex"
     >,
   ) {
-    const createdResponse = this.repository.create({
-      ...mockResponse,
-      userId,
-      mockId,
+    return this.repository.manager.transaction(async (entityManager) => {
+      const responseCount = await entityManager.count(MockResponse, {
+        where: {
+          userId,
+          mockId,
+        },
+      });
+
+      const createdResponse = entityManager.create<MockResponse>(MockResponse, {
+        ...mockResponse,
+        userId,
+        mockId,
+        sequenceIndex: responseCount + 1,
+      });
+
+      return entityManager.save(createdResponse);
     });
-    return this.repository.save(createdResponse);
   }
 }

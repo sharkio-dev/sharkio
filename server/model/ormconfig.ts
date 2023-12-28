@@ -16,7 +16,6 @@ import { MockResponse } from "./entities/MockResponse";
 import "dotenv/config";
 
 export const createConnection = () => {
-  console.log(process.env);
   return new DataSource({
     name: "default",
     type: "postgres",

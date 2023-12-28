@@ -49,6 +49,7 @@ import { TextExecutionRepository } from "./model/repositories/testSuite/testExec
 import { MockRepository } from "./model/repositories/mock.repository";
 import { MockResponseRepository } from "./model/repositories/mock-response.repository";
 import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
+import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -118,12 +119,13 @@ async function main(isProxy = true, isServer = true) {
   );
   const importService = new ImportService(endpointService);
   const workspaceService = new WorkspaceService(workspaceRepository);
+  const mockResponseSelectorService = new MockResponseSelector();
 
   /* Controllers */
   const mockResponseController = new MockResponseController(
     mockResponseService,
   );
-  const mockController = new MockController(mockService, mockResponseService);
+  const mockController = new MockController(mockService);
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const cliController = new CLIController(
@@ -174,6 +176,7 @@ async function main(isProxy = true, isServer = true) {
     mockService,
     snifferService,
     responseService,
+    mockResponseSelectorService,
   );
 
   /* Servers */
