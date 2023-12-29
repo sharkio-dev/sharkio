@@ -132,7 +132,7 @@ describe("MockMiddleware", () => {
     expect(mock).toBeUndefined();
   });
 
-  it("sniffer found - mock found - mock should be defined", async () => {
+  it("sniffer found - mock found inactive - mock should be defined", async () => {
     const findBySubdomain = jest.fn();
     findBySubdomain.mockResolvedValue(defaultSelectedSniffer);
 
@@ -142,6 +142,38 @@ describe("MockMiddleware", () => {
 
     const mockMiddleware = new MockMiddleware(
       defaultMockService as any,
+      snifferService as any,
+      defaultResponseService as any,
+      new MockResponseSelector({}),
+    );
+
+    const mock = await mockMiddleware.findMock(
+      "test-hostname-xa7pc.localhost.com",
+      "/test",
+      "GET",
+    );
+
+    expect(mock).toBeUndefined();
+  });
+
+  it("sniffer found - mock found active - mock should be defined", async () => {
+    const findBySubdomain = jest.fn();
+    findBySubdomain.mockResolvedValue(defaultSelectedSniffer);
+
+    const snifferService = {
+      findBySubdomain,
+    };
+
+    const inactiveMock = { ...baseMock, isActive: false };
+
+    const mockService = {
+      getByUrl: async () => {
+        return inactiveMock;
+      },
+    };
+
+    const mockMiddleware = new MockMiddleware(
+      mockService as any,
       snifferService as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
