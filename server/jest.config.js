@@ -5,6 +5,6 @@ module.exports = {
   transform: {
     "^.+\\.ts$": "@swc/jest",
   },
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  roots: ['./server/', './__tests__/'],
+  testPathIgnorePatterns: ["/node_modules/", "/dist/"],
+  roots: ["./server/", "./__tests__/"],
 };
