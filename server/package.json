@@ -17,6 +17,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:watchAll": "jest --watchAll",
+    "test:coverage": "jest --coverage",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
     "migration:up": "typeorm-ts-node-commonjs migration:run -d ./ormconfig-migrations.ts"
   },
