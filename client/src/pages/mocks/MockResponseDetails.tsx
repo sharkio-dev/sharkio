@@ -6,7 +6,7 @@ import { BodyHeaderToggle } from "./BodyHeaderStatusToggle";
 import StatusCodeSelector from "../test-suites/StatusCodeSelector";
 
 interface MockResponseDetailsProps {
-  response: MockResponse;
+  response?: MockResponse;
   handleResponseChange: (value: MockResponse) => void;
 }
 export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({

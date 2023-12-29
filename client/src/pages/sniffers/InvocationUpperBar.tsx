@@ -75,8 +75,6 @@ export const InvocationUpperBar = ({
     return createMock(sniffer.id, {
       method: editedInvocation?.method,
       url: editedInvocation?.url,
-      headers: editedInvocation?.response?.headers as Record<string, string>,
-      body: editedInvocation?.response?.body,
       status: editedInvocation?.response?.status?.toString(),
       isActive: true,
     })
