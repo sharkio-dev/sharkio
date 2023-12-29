@@ -20,44 +20,46 @@ export default class MockMiddleware {
     private readonly mockResponseSelector: MockResponseSelector,
   ) {}
 
-  async mock(req: Request, res: Response, next: NextFunction) {
-    const subdomain = req.hostname.split(".")[0];
+  async findMock(hostname: string, url: string, method: string) {
+    const subdomain = hostname.split(".")[0];
     const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
     if (sniffer != null && sniffer.userId != null) {
       const mock: Mock | null = await this.mockService.getByUrl(
         sniffer?.userId,
         sniffer?.id,
-        req.url,
-        req.method,
+        url,
+        method,
       );
 
       if (mock != null && mock.isActive === true) {
-        const selectedResponse = await this.mockResponseSelector.select(mock);
-        if (selectedResponse != null) {
-          Object.entries(selectedResponse.headers || {}).forEach(
-            ([key, value]) => {
-              res.setHeader(key, value);
-            },
-          );
+        return mock;
+      }
+    }
+  }
 
-          res.status(selectedResponse.status).send(selectedResponse.body);
+  async mock(req: Request, res: Response, next: NextFunction) {
+    const mock = await this.findMock(req.hostname, req.url, req.method);
+    const selectedResponse = mock
+      ? await this.mockResponseSelector.select(mock)
+      : null;
 
-          try {
-            await this.interceptMockResponse(req, selectedResponse);
-            await this.updateSelectedResponse(
-              sniffer.userId,
-              mock,
-              selectedResponse.id,
-            );
-          } catch (e) {
-            logger.error("Failed to intercept mock response", e);
-          }
-        } else {
-          next();
-        }
-      } else {
-        next();
+    if (mock != null && selectedResponse != null) {
+      Object.entries(selectedResponse.headers || {}).forEach(([key, value]) => {
+        res.setHeader(key, value);
+      });
+
+      res.status(selectedResponse.status).send(selectedResponse.body);
+
+      try {
+        await this.interceptMockResponse(req, selectedResponse);
+        await this.updateSelectedResponse(
+          selectedResponse.userId,
+          mock,
+          selectedResponse.id,
+        );
+      } catch (e) {
+        logger.error("Failed to intercept mock response", e);
       }
     } else {
       next();

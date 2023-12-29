@@ -4,12 +4,9 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   Relation,
 } from "typeorm";
 import { Mock } from "./Mock";
-import { Sniffer } from "./Sniffer";
-import { Users } from "./Users";
 
 @Index("mock_response_pk", ["id"], { unique: true })
 @Entity("mock_response", { schema: "public" })
