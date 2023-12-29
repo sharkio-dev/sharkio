@@ -14,8 +14,9 @@
     "docker:build": "docker build . -t sharkio-server",
     "docker:run": "docker run -p 5012:5012 --name sharkio-sniffer -d sharkio-server",
     "build": "tsc",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch --passWithNoTests",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:watchAll": "jest --watchAll",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
     "migration:up": "typeorm-ts-node-commonjs migration:run -d ./ormconfig-migrations.ts"
   },
