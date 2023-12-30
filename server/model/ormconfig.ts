@@ -19,9 +19,9 @@ config({
 
 export const createConnection = () => {
   return new DataSource({
-    name: process.env.DB_NAME,
+    name: "default",
     type: "postgres",
-    database: "postgres",
+    database: process.env.DB_NAME,
     synchronize: false,
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT ?? "5432"),
