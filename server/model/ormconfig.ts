@@ -17,12 +17,9 @@ config({
   path: "../.env",
 });
 
-console.log("process.env", process.env);
-console.log("process.env.DB_HOST", process.env.DB_HOST);
-
 export const createConnection = () => {
   return new DataSource({
-    name: "default",
+    name: process.env.DB_NAME,
     type: "postgres",
     database: "postgres",
     synchronize: false,
