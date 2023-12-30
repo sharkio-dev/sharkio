@@ -15,7 +15,7 @@ const serverVarsValidator = z.object({
   PROXY_SERVER_DOMAIN: z.string(),
   OPEN_AI_KEY: z.string().optional(),
   DB_HOST: z.string(),
-  DB_PORT: z.number(),
+  DB_PORT: z.string(),
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
 });
@@ -34,7 +34,7 @@ const proxyVarsValidator = z.object({
   PROXY_PRIVATE_KEY_FILE: z.string().optional(),
   PROXY_CERT_FILE: z.string().optional(),
   DB_HOST: z.string(),
-  DB_PORT: z.number(),
+  DB_PORT: z.string(),
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
 });

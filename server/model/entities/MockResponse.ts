@@ -25,7 +25,7 @@ export class MockResponse {
   body: string | null;
 
   @Column("json", { name: "headers", nullable: true })
-  headers: object | null;
+  headers: Record<string, string> | null;
 
   @Column("character varying", { name: "name", nullable: true })
   name: string | null;

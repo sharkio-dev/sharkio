@@ -6,6 +6,7 @@ import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { Mock } from "../../model/entities/Mock";
 import { useLog } from "../../lib/log";
+import { MockResponseTransformer } from "../../services/mock-response-transformer/mock-response-transformer";
 
 const logger = useLog({
   dirname: __dirname,
@@ -18,6 +19,7 @@ export default class MockMiddleware {
     private readonly snifferService: SnifferService,
     private readonly responseService: ResponseService,
     private readonly mockResponseSelector: MockResponseSelector,
+    private readonly mockResponseTransformer: MockResponseTransformer,
   ) {}
 
   async findMock(hostname: string, url: string, method: string) {
@@ -25,10 +27,12 @@ export default class MockMiddleware {
     const sniffer = await this.snifferService.findBySubdomain(subdomain);
 
     if (sniffer != null && sniffer.userId != null) {
+      const urlNoParams = url.split("?")[0];
+
       const mock: Mock | null = await this.mockService.getByUrl(
         sniffer?.userId,
         sniffer?.id,
-        url,
+        urlNoParams,
         method,
       );
 
@@ -45,14 +49,28 @@ export default class MockMiddleware {
       : null;
 
     if (mock != null && selectedResponse != null) {
-      Object.entries(selectedResponse.headers || {}).forEach(([key, value]) => {
-        res.setHeader(key, value);
-      });
+      const transformedResponse = this.mockResponseTransformer.transform(
+        selectedResponse,
+        {
+          body: req.body,
+          headers: req.headers,
+          method: req.method,
+          url: req.url,
+          params: req.params,
+          query: req.query,
+        },
+      );
 
-      res.status(selectedResponse.status).send(selectedResponse.body);
+      Object.entries(transformedResponse.headers || {}).forEach(
+        ([key, value]) => {
+          res.setHeader(key, value);
+        },
+      );
+
+      res.status(transformedResponse.status).send(transformedResponse.body);
 
       try {
-        await this.interceptMockResponse(req, selectedResponse);
+        await this.interceptMockResponse(req, transformedResponse);
         await this.updateSelectedResponse(
           selectedResponse.userId,
           mock,

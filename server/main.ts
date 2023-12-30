@@ -55,6 +55,7 @@ import {
   RandomResponseSelector,
   SequentialResponseSelector,
 } from "./services/mock-response-selector";
+import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -129,6 +130,7 @@ async function main(isProxy = true, isServer = true) {
   const mockResponseSelectorService = new MockResponseSelector(
     mockSelectionStrategies,
   );
+  const mockResponseTransformer = new MockResponseTransformer();
 
   /* Controllers */
   const mockResponseController = new MockResponseController(
@@ -186,6 +188,7 @@ async function main(isProxy = true, isServer = true) {
     snifferService,
     responseService,
     mockResponseSelectorService,
+    mockResponseTransformer,
   );
 
   /* Servers */
