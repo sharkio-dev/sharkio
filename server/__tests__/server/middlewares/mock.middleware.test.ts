@@ -3,6 +3,7 @@ import { MockResponse } from "../../../model/entities/MockResponse";
 import { Sniffer } from "../../../model/entities/Sniffer";
 import MockMiddleware from "../../../server/middlewares/mock.middleware";
 import { MockResponseSelector } from "../../../services/mock-response-selector";
+import { MockResponseTransformer } from "../../../services/mock-response-transformer/mock-response-transformer";
 import { MockService } from "../../../services/mock/mock.service";
 import ResponseService from "../../../services/response/response.service";
 import { SnifferService } from "../../../services/sniffer/sniffer.service";
@@ -97,6 +98,7 @@ describe("MockMiddleware", () => {
       defaultSnifferService as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -121,6 +123,7 @@ describe("MockMiddleware", () => {
       snifferService as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -145,6 +148,7 @@ describe("MockMiddleware", () => {
       snifferService as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -177,6 +181,7 @@ describe("MockMiddleware", () => {
       snifferService as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -212,6 +217,7 @@ describe("MockMiddleware", () => {
       {} as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
+      new MockResponseTransformer(),
     );
 
     mockMiddleware.findMock = jest.fn().mockResolvedValue(baseMock);
@@ -268,6 +274,7 @@ describe("MockMiddleware", () => {
       {} as any,
       defaultResponseService as any,
       new MockResponseSelector({}),
+      new MockResponseTransformer(),
     );
 
     mockMiddleware.findMock = jest.fn().mockResolvedValue(undefined);
