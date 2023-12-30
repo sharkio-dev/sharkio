@@ -35,12 +35,11 @@ export class MockResponseController {
 
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
-          const userMockResponses = await this.mockResponseService.getByUserId(
-            userId
-          );
+          const userMockResponses =
+            await this.mockResponseService.getByUserId(userId);
 
           res.send(userMockResponses).status(200);
-        }
+        },
       )
       .post(
         /**
@@ -108,10 +107,10 @@ export class MockResponseController {
               headers,
               status,
               name,
-            }
+            },
           );
           res.json(createdResponse).status(201);
-        }
+        },
       );
 
     router
@@ -146,7 +145,7 @@ export class MockResponseController {
 
           const mock = await this.mockResponseService.getById(userId, mockId);
           res.status(200).send(mock);
-        }
+        },
       )
       .delete(
         /**
@@ -174,7 +173,7 @@ export class MockResponseController {
           const { mockResponseId } = req.params;
           await this.mockResponseService.deleteById(userId, mockResponseId);
           res.status(200).send(mockResponseId);
-        }
+        },
       )
       .patch(
         /**
@@ -239,11 +238,11 @@ export class MockResponseController {
               headers,
               status,
               name,
-            }
+            },
           );
 
           res.json(updatedMock).status(200);
-        }
+        },
       );
 
     return { router, path: "/sharkio/mock-responses" };
