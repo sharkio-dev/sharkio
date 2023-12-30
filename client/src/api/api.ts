@@ -237,6 +237,17 @@ export const deleteMockResponseAPI = (mockResponseId: string) => {
   );
 };
 
+export const patchMockSelectedResponseIdAPI = (
+  mockId: string,
+  responseId: string,
+) => {
+  return BackendAxios.patch(`/mocks/${mockId}/selected-response`, {
+    responseId,
+  }).then((res) => {
+    return res.data;
+  });
+};
+
 export const editMockResponseAPI = (
   mockResponseId: string,
   mockResponse: Partial<MockResponse>,

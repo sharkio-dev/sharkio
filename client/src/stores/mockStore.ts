@@ -9,6 +9,7 @@ import {
   editMockResponseAPI,
   getMockAPI,
   getMocksAPI,
+  patchMockSelectedResponseIdAPI,
   postMockResponseAPI,
 } from "../api/api";
 
@@ -53,6 +54,10 @@ interface MockState {
     mock: Partial<Mock>,
   ) => Promise<void>;
   responsedOrder: () => void;
+  patchSelectedResponseId: (
+    mockId: string,
+    mockResponseId: string,
+  ) => Promise<any>;
 }
 
 export const useMockStore = create<MockState>((set, get) => ({
@@ -114,13 +119,16 @@ export const useMockStore = create<MockState>((set, get) => ({
   responsedOrder: () => {
     return;
   },
+
+  patchSelectedResponseId: (mockId, mockResponseId) => {
+    return patchMockSelectedResponseIdAPI(mockId, mockResponseId);
+  },
 }));
 
 interface MockResponseState {
   mock?: Mock;
   loadingMock: boolean;
   mockResponses?: MockResponse[];
-  loadingMockResponses: boolean;
   loadMock: (mockId: string) => Promise<Mock>;
   resetMock: () => void;
   postMockResponse: (
@@ -139,15 +147,18 @@ export const useMockResponseStore = create<MockResponseState>((set) => ({
   mock: undefined,
   loadingMock: false,
   mockResponses: [],
-  loadingMockResponses: false,
   loadMock: (mockId) => {
-    return getMockAPI(mockId).then((data) => {
-      data.mockResponses = data.mockResponses?.sort(
-        (a: MockResponse, b: MockResponse) => a.sequenceIndex - b.sequenceIndex,
-      );
-      set({ mock: data || [] });
-      return data || [];
-    });
+    set({ loadingMock: true });
+    return getMockAPI(mockId)
+      .then((data) => {
+        data.mockResponses = data.mockResponses?.sort(
+          (a: MockResponse, b: MockResponse) =>
+            a.sequenceIndex - b.sequenceIndex,
+        );
+        set({ mock: data || [] });
+        return data || [];
+      })
+      .finally(() => set({ loadingMock: false }));
   },
   resetMock: () => set({ mock: {} as Mock, mockResponses: [] }),
   postMockResponse: (snifferId, mockId, mockResponse) => {

@@ -306,7 +306,7 @@ export class MockController {
         }
       );
 
-    router.route("/:mockId/selected-response").post(
+    router.route("/:mockId/selected-response").patch(
       /**
        * @openapi
        * /sharkio/mocks/{mockId}/selected-response:

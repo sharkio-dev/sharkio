@@ -17,6 +17,7 @@ import { MockButton } from "./MockButton";
 import { MockResponseDetails } from "./MockResponseDetails";
 import { MockUrlInput } from "./MockUrlInput";
 import { v4 as uuidv4 } from "uuid";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 const MOCK_DEFAULT_STATE: Omit<Mock, "id"> = {
   method: "GET",
@@ -25,7 +26,16 @@ const MOCK_DEFAULT_STATE: Omit<Mock, "id"> = {
   isActive: true,
   snifferId: "",
   selectedResponseId: "",
-  mockResponses: [],
+  mockResponses: [
+    {
+      id: uuidv4(),
+      name: "Response 1",
+      body: "",
+      status: 200,
+      headers: {},
+      sequenceIndex: 0,
+    },
+  ],
 };
 
 export const MockMainSection: React.FC = () => {
@@ -33,33 +43,53 @@ export const MockMainSection: React.FC = () => {
   const { sniffers } = useSniffersStore();
   const { isNew, snifferId } = queryString.parse(location.search);
   const sniffer = sniffers.find((s) => s.id === snifferId);
+  const [editedMock, setEditedMock] = React.useState<Mock>();
+  const { mockId } = useParams();
+  const { loadMock, loadingMock } = useMockResponseStore();
+
+  useEffect(() => {
+    if (isNew || !mockId) return;
+    loadMock(mockId as string).then((res: Mock) => {
+      setEditedMock(res);
+    });
+  }, [isNew, mockId]);
 
   return (
     <>
+      {loadingMock && (
+        <div className="flex h-[calc(100vh-96px)] w-full justify-center items-center">
+          <LoadingIcon />
+        </div>
+      )}
       {sniffer && isNew && <CreateMock sniffer={sniffer} />}
-      {sniffer && !isNew && <EditMock />}
+      {sniffer && !isNew && editedMock && !loadingMock && (
+        <EditMock mock={editedMock as Mock} setMock={setEditedMock} />
+      )}
     </>
   );
 };
 
-const EditMock: React.FC = () => {
-  const [editedMock, setEditedMock] = React.useState<Mock>();
+interface EditMockProps {
+  mock: Mock;
+  setMock: React.Dispatch<React.SetStateAction<Mock | undefined>>;
+}
+
+const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
   const { mockId } = useParams();
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
   const { loadMock, postMockResponse, deleteMockResponse, editMockResponse } =
     useMockResponseStore();
-  const { loadingEditMock, editMock, loadingDeleteMock, deleteMock } =
-    useMockStore();
+  const {
+    loadingEditMock,
+    editMock,
+    loadingDeleteMock,
+    deleteMock,
+    patchSelectedResponseId,
+  } = useMockStore();
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find((s) => s.id === snifferId);
   const navigator = useNavigate();
-
-  useEffect(() => {
-    loadMock(mockId as string).then((res: Mock) => {
-      setEditedMock(res);
-    });
-  }, []);
 
   const handleUrlChange = (value: string) => {
     // @ts-ignore
@@ -74,13 +104,13 @@ const EditMock: React.FC = () => {
   const onClickEdit = async () => {
     if (!mockId) return;
     let newMock = {
-      ...editedMock,
+      ...mock,
       isActive: true,
     };
     await editMock(snifferId as string, mockId as string, newMock);
-    if (!editedMock?.mockResponses) return;
+    if (!mock?.mockResponses) return;
     await Promise.all(
-      editedMock?.mockResponses?.map((r) => editMockResponse(r.id, { ...r })),
+      mock?.mockResponses?.map((r) => editMockResponse(r.id, { ...r })),
     );
     await loadMock(mockId as string);
   };
@@ -91,14 +121,12 @@ const EditMock: React.FC = () => {
     });
   };
 
-  if (!editedMock) return null;
-
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="flex flex-row items-center space-x-4 border-b border-border-color pb-4">
         <MockUrlInput
-          method={editedMock.method}
-          url={editedMock.url}
+          method={mock.method}
+          url={mock.url}
           handleUrlChange={handleUrlChange}
           handleMethodChange={handleMethodChange}
           snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
@@ -116,18 +144,24 @@ const EditMock: React.FC = () => {
         />
       </div>
       <MockResponsesSection
-        mockResponses={editedMock.mockResponses}
+        mockResponses={mock.mockResponses}
         handleMockResponsesChange={(value: MockResponse[]) => {
-          // @ts-ignore
-          setEditedMock((prev) => ({ ...prev, mockResponses: value }));
+          setMock((prev) => {
+            if (!prev) return prev;
+            return { ...prev, mockResponses: value };
+          });
         }}
-        selectedResponseId={editedMock.selectedResponseId}
+        selectedResponseId={mock.selectedResponseId}
         handleSelectedResponseIdChange={(value: string) => {
-          // @ts-ignore
-          setEditedMock((prev) => ({ ...prev, selectedResponseId: value }));
+          patchSelectedResponseId(mockId as string, value).then(() => {
+            setMock((prev) => {
+              if (!prev) return prev;
+              return { ...prev, selectedResponseId: value };
+            });
+          });
         }}
         handleAddMockResponse={() => {
-          const index = editedMock.mockResponses.length;
+          const index = mock.mockResponses.length;
 
           postMockResponse(snifferId as string, mockId as string, {
             name: "Response " + (index + 1),
@@ -136,7 +170,7 @@ const EditMock: React.FC = () => {
             headers: {},
             sequenceIndex: index,
           }).then((res: MockResponse) => {
-            setEditedMock((prev) => {
+            setMock((prev) => {
               if (!prev) return prev;
               return {
                 ...prev,
@@ -149,7 +183,7 @@ const EditMock: React.FC = () => {
         }}
         handleDeleteMockResponse={(mockResponseId: string) => {
           deleteMockResponse(mockResponseId).then((deletedId) => {
-            setEditedMock((prev) => {
+            setMock((prev) => {
               if (!prev) return prev;
               return {
                 ...prev,
