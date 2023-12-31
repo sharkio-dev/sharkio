@@ -35,8 +35,9 @@ export class MockResponseController {
 
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
-          const userMockResponses =
-            await this.mockResponseService.getByUserId(userId);
+          const userMockResponses = await this.mockResponseService.getByUserId(
+            userId,
+          );
 
           res.send(userMockResponses).status(200);
         },
@@ -228,7 +229,7 @@ export class MockResponseController {
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
           const { mockResponseId } = req.params;
-          const { body, headers, status, name } = req.body;
+          const { body, headers, status, name, sequenceIndex } = req.body;
 
           const updatedMock = await this.mockResponseService.editResponse(
             userId,
@@ -238,6 +239,7 @@ export class MockResponseController {
               headers,
               status,
               name,
+              sequenceIndex,
             },
           );
 
