@@ -54,7 +54,9 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
     await patchSelectedResponseId(mockId as string, mock.selectedResponseId);
     if (!mock?.mockResponses) return;
     await Promise.all(
-      mock?.mockResponses?.map((r) => editMockResponse(r.id, { ...r })),
+      mock?.mockResponses?.map((r, i) =>
+        editMockResponse(r.id, { ...r, sequenceIndex: i + 1 }),
+      ),
     );
   };
 

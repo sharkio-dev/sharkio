@@ -28,7 +28,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
       ...editedMock,
       mockResponses: editedMock.mockResponses?.map((r, i) => ({
         ...r,
-        sequenceIndex: i,
+        sequenceIndex: i + 1,
       })),
       snifferId: sniffer.id as string,
       id: uuidv4(),
