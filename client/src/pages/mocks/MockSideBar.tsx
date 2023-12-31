@@ -7,12 +7,15 @@ import { GiSharkFin } from "react-icons/gi";
 import { useMockStore } from "../../stores/mockStore";
 import queryString from "query-string";
 import { MockList } from "./MockList";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 export const MockSideBar: React.FC = () => {
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
   const { sniffers, loadSniffers } = useSniffersStore();
   const { loadMocks, resetMocks } = useMockStore();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+
   const navigator = useNavigate();
 
   useEffect(() => {
@@ -21,7 +24,9 @@ export const MockSideBar: React.FC = () => {
 
   useEffect(() => {
     if (snifferId) {
-      loadMocks(snifferId as string);
+      loadMocks(snifferId as string).catch(() => {
+        showSnackbar("Error loading mocks", "error");
+      });
     } else {
       resetMocks();
     }
@@ -36,6 +41,7 @@ export const MockSideBar: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
+      {snackBar}
       <FormControl fullWidth size="small" variant="outlined">
         <InputLabel>Sniffers</InputLabel>
         <Select value={snifferId || ""} label="Sniffers">

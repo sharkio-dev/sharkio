@@ -12,6 +12,7 @@ import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { MockButton } from "./MockButton";
 import { MockUrlInput } from "./MockUrlInput";
 import { MockResponsesSection } from "./MockResponsesSection";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 interface EditMockProps {
   mock: Mock;
@@ -31,6 +32,8 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
     patchSelectedResponseId,
   } = useMockStore();
   const { sniffers } = useSniffersStore();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+
   const sniffer = sniffers.find((s) => s.id === snifferId);
   const navigator = useNavigate();
 
@@ -50,20 +53,37 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
 
   const onClickEdit = async () => {
     if (!mockId) return;
-    await editMock(snifferId as string, mockId as string, mock);
-    await patchSelectedResponseId(mockId as string, mock.selectedResponseId);
+    await editMock(snifferId as string, mockId as string, mock)
+      .then(() => {
+        showSnackbar("Mock saved successfully", "success");
+      })
+      .catch(() => {
+        showSnackbar("Failed to save mock", "error");
+      });
+    await patchSelectedResponseId(
+      mockId as string,
+      mock.selectedResponseId,
+    ).catch(() => {
+      showSnackbar("Failed to update default response", "error");
+    });
     if (!mock?.mockResponses) return;
     await Promise.all(
       mock?.mockResponses?.map((r, i) =>
         editMockResponse(r.id, { ...r, sequenceIndex: i + 1 }),
       ),
-    );
+    ).catch(() => {
+      showSnackbar("Failed to save mock responses", "error");
+    });
   };
 
   const onDeleteMock = (snifferId: string, mockId: string) => {
-    deleteMock(snifferId as string, mockId as string).then(() => {
-      navigator(`/mocks?snifferId=${snifferId}`);
-    });
+    deleteMock(snifferId as string, mockId as string)
+      .then(() => {
+        navigator(`/mocks?snifferId=${snifferId}`);
+      })
+      .catch(() => {
+        showSnackbar("Failed to delete mock", "error");
+      });
   };
 
   const onMockResponseChange = (value: MockResponse[]) => {
@@ -107,35 +127,38 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
-      <div className="flex flex-row items-center space-x-4 border-b border-border-color pb-4">
-        <MockUrlInput
-          method={mock.method}
-          url={mock.url}
-          handleUrlChange={handleUrlChange}
-          handleMethodChange={handleMethodChange}
-          snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
-          disabled={true}
-        />
-        <MockButton
-          text="Save"
-          onClick={onClickEdit}
-          isLoading={loadingEditMock}
-        />
-        <MockButton
-          text="Delete"
-          onClick={() => onDeleteMock(snifferId as string, mockId as string)}
-          isLoading={loadingDeleteMock}
-          color="error"
+    <>
+      <div className="flex flex-col h-full overflow-y-auto">
+        {snackBar}
+        <div className="flex flex-row items-center space-x-4 border-b border-border-color pb-4">
+          <MockUrlInput
+            method={mock.method}
+            url={mock.url}
+            handleUrlChange={handleUrlChange}
+            handleMethodChange={handleMethodChange}
+            snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
+            disabled={true}
+          />
+          <MockButton
+            text="Save"
+            onClick={onClickEdit}
+            isLoading={loadingEditMock}
+          />
+          <MockButton
+            text="Delete"
+            onClick={() => onDeleteMock(snifferId as string, mockId as string)}
+            isLoading={loadingDeleteMock}
+            color="error"
+          />
+        </div>
+        <MockResponsesSection
+          mock={mock}
+          handleMockChange={setMock}
+          handleMockResponsesChange={onMockResponseChange}
+          handleAddMockResponse={onAddMockResponse}
+          handleDeleteMockResponse={onDeleteMockResponse}
         />
       </div>
-      <MockResponsesSection
-        mock={mock}
-        handleMockChange={setMock}
-        handleMockResponsesChange={onMockResponseChange}
-        handleAddMockResponse={onAddMockResponse}
-        handleDeleteMockResponse={onDeleteMockResponse}
-      />
-    </div>
+    </>
   );
 };

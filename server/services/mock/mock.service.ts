@@ -3,6 +3,7 @@ import { Mock } from "../../model/entities/Mock";
 import { MockResponse } from "../../model/entities/MockResponse";
 import { MockResponseRepository } from "../../model/repositories/mock-response.repository";
 import { MockRepository } from "../../model/repositories/mock.repository";
+import { RequestRepository } from "../../model/repositories/request.repository";
 
 const log = useLog({
   dirname: __dirname,
@@ -11,8 +12,63 @@ const log = useLog({
 export class MockService {
   constructor(
     private readonly mockRepository: MockRepository,
-    private readonly mockResponseRepository: MockResponseRepository,
+    private readonly mockResponseRepository: MockResponseRepository
   ) {}
+
+  async import(
+    snifferId: string,
+    url: string,
+    method: string,
+    body: string,
+    headers: Record<string, string>,
+    status: number,
+    userId: string
+  ) {
+    let mock = await this.mockRepository.repository.findOne({
+      where: {
+        snifferId,
+        url,
+        method,
+      },
+    });
+    if (!mock) {
+      log.info("Creating mock for imported response");
+      const newMock = await this.create(
+        userId,
+        url,
+        method,
+        body,
+        headers,
+        status,
+        "imported-response",
+        snifferId
+      );
+      const mockResponse = await this.mockResponseRepository.create(
+        userId,
+        newMock.id,
+        {
+          body,
+          headers,
+          status,
+          name: "imported-response",
+          snifferId,
+          userId,
+        }
+      );
+      await this.setSelectedResponse(userId, newMock.id, mockResponse.id);
+      return newMock;
+    } else {
+      await this.mockResponseRepository.create(userId, mock.id, {
+        body,
+        headers,
+        status,
+        name: "imported-response",
+        snifferId,
+        userId,
+      });
+      return mock;
+    }
+  }
 
   getById(userId: string, mockId: string) {
     return this.mockRepository.getById(userId, mockId);
@@ -22,7 +78,7 @@ export class MockService {
     userId: string,
     mockId: string,
     url: string,
-    method: string,
+    method: string
   ): Promise<Mock | null> {
     return this.mockRepository.getByUrl(userId, mockId, url, method);
   }
@@ -46,8 +102,8 @@ export class MockService {
     snifferId: string,
     mockResponses?: MockResponse[],
     selectedResponseId?: string,
-    responseSelectionMethod?: string,
-  ) {
+    responseSelectionMethod?: string
+  ): Promise<Mock> {
     const createdMock = await this.mockRepository.repository.create({
       url,
       method,
@@ -77,16 +133,16 @@ export class MockService {
             userId,
             mock.id,
             mappedResponses,
-            false,
+            false
           );
           savedResponses = await entityManager.save(createdResponses);
         }
-      },
+      }
     );
     if (selectedResponseId != null && mock != null) {
       await this.setSelectedResponse(userId, mock.id, selectedResponseId);
     }
-    return mock;
+    return mock as Mock;
   }
 
   async update(
@@ -99,7 +155,7 @@ export class MockService {
     status?: number,
     name?: string,
     snifferId?: string,
-    responseSelectionMethod?: string,
+    responseSelectionMethod?: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
@@ -140,7 +196,7 @@ export class MockService {
   async setSelectedResponse(
     userId: string,
     mockId: string,
-    responseId: string,
+    responseId: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()

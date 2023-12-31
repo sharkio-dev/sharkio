@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { CreateMock } from "./CreateMock";
 import { EditMock } from "./EditMock";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 export const getMockDefaultState = (snifferId: string): Mock => {
   const responseId = uuidv4();
@@ -40,20 +41,26 @@ export const MockMainSection: React.FC = () => {
   const [editedMock, setEditedMock] = React.useState<Mock>();
   const { mockId } = useParams();
   const { loadMock, loadingMock } = useMockResponseStore();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
     if (isNew) {
       setEditedMock(getMockDefaultState(snifferId as string));
       return;
     } else if (mockId) {
-      loadMock(mockId as string).then((res: Mock) => {
-        setEditedMock(res);
-      });
+      loadMock(mockId as string)
+        .then((res) => {
+          setEditedMock(res);
+        })
+        .catch(() => {
+          showSnackbar("Error loading mock", "error");
+        });
     }
   }, [isNew, mockId]);
 
   return (
     <>
+      {snackBar}
       {loadingMock && (
         <div className="flex h-[calc(100vh-96px)] w-full justify-center items-center">
           <LoadingIcon />

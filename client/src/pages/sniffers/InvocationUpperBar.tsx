@@ -5,13 +5,13 @@ import { useState } from "react";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { useMockStore } from "../../stores/mockStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "./InvocationDetails";
 import { LoadingIcon } from "./LoadingIcon";
 import { EndpointType, InvocationType } from "./types";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
+import { BackendAxios } from "../../api/backendAxios";
 
 type InvocationUpperBarProps = {
   setEditedInvocation: React.Dispatch<
@@ -33,7 +33,6 @@ export const InvocationUpperBar = ({
   const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const { sniffers } = useSniffersStore();
-  const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
     (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
@@ -72,17 +71,14 @@ export const InvocationUpperBar = ({
       return;
     }
     setLoading(true);
-    return createMock(sniffer.id, {
-      method: editedInvocation?.method,
-      url: editedInvocation?.url,
-      status: editedInvocation?.response?.status?.toString(),
-      isActive: true,
+    return BackendAxios.post("/mocks/import-from-invocation", {
+      requestId: editedInvocation.id,
     })
       .then((res) => {
-        navigator(`/mocks/${res?.id}?snifferId=${sniffer.id}`);
+        navigator(`/mocks/${res?.data?.id}?snifferId=${sniffer.id}`);
       })
       .catch(() => {
-        show("This endpoint already has a mock", "warning");
+        show("Failed to import mock", "error");
       })
       .finally(() => {
         setLoading(false);

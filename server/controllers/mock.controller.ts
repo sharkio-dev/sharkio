@@ -6,6 +6,8 @@ import { requestValidator } from "../lib/request-validator/request-validator";
 import { MockService } from "../services/mock/mock.service";
 import { IRouterConfig } from "./router.interface";
 import { MockResponseService } from "../services/mock-response/mock-response.service";
+import { RequestService } from "../services/request/request.service";
+import EndpointService from "../services/endpoint/endpoint.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -15,7 +17,7 @@ const log = useLog({
 export class MockController {
   constructor(
     private readonly mockService: MockService,
-    private readonly mockResponseService: MockResponseService,
+    private readonly endpointService: EndpointService
   ) {}
 
   getRouter(): IRouterConfig {
@@ -41,7 +43,7 @@ export class MockController {
           const limit = +(req.params.limit ?? 1000);
           const requests = await this.mockService.getByUser(userId, limit);
           res.status(200).send(requests);
-        },
+        }
       )
       .post(
         /**
@@ -154,7 +156,7 @@ export class MockController {
               snifferId,
               mockResponses,
               selectedResponseId,
-              responseSelectionMethod,
+              responseSelectionMethod
             );
 
             res.status(200).send(mock);
@@ -162,8 +164,42 @@ export class MockController {
             log.error(error);
             res.status(500).send("Internal server error");
           }
-        },
+        }
       );
+
+    router.route("/import-from-invocation").post(
+      requestValidator({
+        body: z.object({ requestId: z.string() }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const userId = res.locals.auth.user.id;
+          const { requestId } = req.body;
+          const request = await this.endpointService.getInvocationById(
+            requestId,
+            userId
+          );
+          if (!request || !request?.response) {
+            res.status(404).send("Not found");
+            return;
+          }
+
+          const mock = await this.mockService.import(
+            request?.snifferId,
+            request?.url,
+            request?.method,
+            request?.response.body,
+            request?.response.headers as Record<string, string>,
+            request?.response?.status as number,
+            userId
+          );
+          res.status(200).send(mock);
+        } catch (error) {
+          log.error(error);
+          res.status(500).send("Internal server error");
+        }
+      }
+    );
 
     router
       .route("/:mockId")
@@ -198,7 +234,7 @@ export class MockController {
 
           const mock = await this.mockService.getById(userId, mockId);
           res.status(200).send(mock);
-        },
+        }
       )
       .delete(
         /**
@@ -226,7 +262,7 @@ export class MockController {
           const { mockId } = req.params;
           const response = await this.mockService.delete(userId, mockId);
           res.status(200).send(response);
-        },
+        }
       )
       .patch(
         /**
@@ -317,11 +353,11 @@ export class MockController {
             status,
             name,
             snifferId,
-            responseSelectionMethod,
+            responseSelectionMethod
           );
 
           res.json(updatedMock).status(200);
-        },
+        }
       );
 
     router.route("/:mockId/selected-response").patch(
@@ -366,11 +402,11 @@ export class MockController {
         const mock = await this.mockService.setSelectedResponse(
           userId,
           mockId,
-          responseId,
+          responseId
         );
 
         res.status(200).send(mock);
-      },
+      }
     );
 
     router.route("/:mockId/activate").post(
@@ -401,10 +437,10 @@ export class MockController {
         const requests = await this.mockService.setIsActive(
           userId,
           mockId,
-          true,
+          true
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:mockId/deactivate").post(
@@ -436,10 +472,10 @@ export class MockController {
         const requests = await this.mockService.setIsActive(
           userId,
           mockId,
-          false,
+          false
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     return { router, path: "/sharkio/mocks" };

@@ -7,6 +7,7 @@ import { MockButton } from "./MockButton";
 import { MockUrlInput } from "./MockUrlInput";
 import { v4 as uuidv4 } from "uuid";
 import { MockResponsesSection } from "./MockResponsesSection";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 interface CreateMockProps {
   sniffer: SnifferType;
@@ -19,6 +20,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
   setEditedMock,
 }) => {
   const navigator = useNavigate();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const { createMock, loadingNewMock, patchSelectedResponseId } =
     useMockStore();
@@ -34,10 +36,14 @@ export const CreateMock: React.FC<CreateMockProps> = ({
       id: uuidv4(),
       isActive: true,
     };
-    createMock(sniffer.id as string, newMock).then(async (res: any) => {
-      await patchSelectedResponseId(res?.id, newMock.selectedResponseId);
-      navigator(`/mocks/${res?.id}?snifferId=${sniffer.id}`);
-    });
+    createMock(sniffer.id as string, newMock)
+      .then(async (res: any) => {
+        await patchSelectedResponseId(res?.id, newMock.selectedResponseId);
+        navigator(`/mocks/${res?.id}?snifferId=${sniffer.id}`);
+      })
+      .catch(() => {
+        showSnackbar("Error creating mock", "error");
+      });
   };
 
   const handleUrlChange = (value: string) => {
@@ -79,6 +85,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
+      {snackBar}
       <div className="flex flex-row items-center space-x-4 border-b border-border-color pb-4">
         <MockUrlInput
           method={editedMock.method}
