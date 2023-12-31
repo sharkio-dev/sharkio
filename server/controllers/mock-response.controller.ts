@@ -35,9 +35,8 @@ export class MockResponseController {
 
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
-          const userMockResponses = await this.mockResponseService.getByUserId(
-            userId,
-          );
+          const userMockResponses =
+            await this.mockResponseService.getByUserId(userId);
 
           res.send(userMockResponses).status(200);
         },
