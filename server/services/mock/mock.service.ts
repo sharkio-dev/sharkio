@@ -11,7 +11,7 @@ const log = useLog({
 export class MockService {
   constructor(
     private readonly mockRepository: MockRepository,
-    private readonly mockResponseRepository: MockResponseRepository,
+    private readonly mockResponseRepository: MockResponseRepository
   ) {}
 
   getById(userId: string, mockId: string) {
@@ -22,7 +22,7 @@ export class MockService {
     userId: string,
     mockId: string,
     url: string,
-    method: string,
+    method: string
   ): Promise<Mock | null> {
     return this.mockRepository.getByUrl(userId, mockId, url, method);
   }
@@ -45,6 +45,7 @@ export class MockService {
     name: string,
     snifferId: string,
     mockResponses?: MockResponse[],
+    selectedResponseId?: string
   ) {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -56,6 +57,7 @@ export class MockService {
       name,
       snifferId,
       isActive: true,
+      selectedResponseId: selectedResponseId || undefined,
     });
 
     return this.mockRepository.repository.manager.transaction(
@@ -73,14 +75,14 @@ export class MockService {
             userId,
             mock.id,
             mappedResponses,
-            false,
+            false
           );
 
           savedResponses = await entityManager.save(createdResponses);
         }
 
         return { ...mock, mockResponses: savedResponses };
-      },
+      }
     );
   }
 
@@ -93,7 +95,7 @@ export class MockService {
     headers?: Record<string, string>,
     status?: number,
     name?: string,
-    snifferId?: string,
+    snifferId?: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
@@ -133,7 +135,7 @@ export class MockService {
   async setSelectedResponse(
     userId: string,
     mockId: string,
-    responseId: string,
+    responseId: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()

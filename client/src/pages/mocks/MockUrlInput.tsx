@@ -8,6 +8,7 @@ interface MockUrlInputProps {
   method?: string;
   handleMethodChange: (value: string) => void;
   snifferDomain?: string;
+  disabled?: boolean;
 }
 export const MockUrlInput: React.FC<MockUrlInputProps> = ({
   url,
@@ -15,6 +16,7 @@ export const MockUrlInput: React.FC<MockUrlInputProps> = ({
   method,
   handleMethodChange,
   snifferDomain,
+  disabled,
 }) => {
   return (
     <>
@@ -24,6 +26,7 @@ export const MockUrlInput: React.FC<MockUrlInputProps> = ({
           onChange={(value: any) => {
             handleMethodChange(value);
           }}
+          disabled={disabled}
         />
       </div>
       <div className="flex flex-row items-center w-[550px]">
@@ -43,6 +46,7 @@ export const MockUrlInput: React.FC<MockUrlInputProps> = ({
         variant="outlined"
         size="small"
         style={{ width: "100%" }}
+        disabled={disabled}
       />
     </>
   );

@@ -30,6 +30,7 @@ export interface Mock {
   selectedResponseId: string;
   snifferId: string;
   createdAt: string;
+  responseSelectionMethod: string;
   mockResponses: MockResponse[];
 }
 

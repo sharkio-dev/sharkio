@@ -1,0 +1,133 @@
+import queryString from "query-string";
+import React from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  Mock,
+  MockResponse,
+  useMockResponseStore,
+  useMockStore,
+} from "../../stores/mockStore";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { getSnifferDomain } from "../../utils/getSnifferUrl";
+import { MockButton } from "./MockButton";
+import { MockUrlInput } from "./MockUrlInput";
+import { MockResponsesSection } from "./MockResponsesSection";
+
+interface EditMockProps {
+  mock: Mock;
+  setMock: React.Dispatch<React.SetStateAction<Mock | undefined>>;
+}
+export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
+  const { mockId } = useParams();
+  const location = useLocation();
+  const { snifferId } = queryString.parse(location.search);
+  const { loadMock, postMockResponse, deleteMockResponse, editMockResponse } =
+    useMockResponseStore();
+  const { loadingEditMock, editMock, loadingDeleteMock, deleteMock } =
+    useMockStore();
+  const { sniffers } = useSniffersStore();
+  const sniffer = sniffers.find((s) => s.id === snifferId);
+  const navigator = useNavigate();
+
+  const handleUrlChange = (value: string) => {
+    setMock((prev) => {
+      if (!prev) return prev;
+      return { ...prev, url: value };
+    });
+  };
+
+  const handleMethodChange = (value: string) => {
+    setMock((prev) => {
+      if (!prev) return prev;
+      return { ...prev, method: value };
+    });
+  };
+
+  const onClickEdit = async () => {
+    if (!mockId) return;
+    await editMock(snifferId as string, mockId as string, mock);
+    if (!mock?.mockResponses) return;
+    await Promise.all(
+      mock?.mockResponses?.map((r) => editMockResponse(r.id, { ...r })),
+    );
+  };
+
+  const onDeleteMock = (snifferId: string, mockId: string) => {
+    deleteMock(snifferId as string, mockId as string).then(() => {
+      navigator(`/mocks?snifferId=${snifferId}`);
+    });
+  };
+
+  const onMockResponseChange = (value: MockResponse[]) => {
+    setMock((prev) => {
+      if (!prev) return prev;
+      return { ...prev, mockResponses: value };
+    });
+  };
+
+  const onAddMockResponse = () => {
+    const index = mock.mockResponses.length;
+
+    postMockResponse(snifferId as string, mockId as string, {
+      name: "Response " + (index + 1),
+      body: "",
+      status: 200,
+      headers: {},
+      sequenceIndex: index,
+    }).then((res: MockResponse) => {
+      setMock((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          selectedResponseId: index === 0 ? res.id : prev.selectedResponseId,
+          mockResponses: [...prev.mockResponses, res],
+        };
+      });
+    });
+  };
+
+  const onDeleteMockResponse = (mockResponseId: string) => {
+    deleteMockResponse(mockResponseId).then((deletedId) => {
+      setMock((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          mockResponses: prev.mockResponses.filter((r) => r.id !== deletedId),
+        };
+      });
+    });
+  };
+
+  return (
+    <div className="flex flex-col h-full overflow-y-auto">
+      <div className="flex flex-row items-center space-x-4 border-b border-border-color pb-4">
+        <MockUrlInput
+          method={mock.method}
+          url={mock.url}
+          handleUrlChange={handleUrlChange}
+          handleMethodChange={handleMethodChange}
+          snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
+          disabled={true}
+        />
+        <MockButton
+          text="Save"
+          onClick={onClickEdit}
+          isLoading={loadingEditMock}
+        />
+        <MockButton
+          text="Delete"
+          onClick={() => onDeleteMock(snifferId as string, mockId as string)}
+          isLoading={loadingDeleteMock}
+          color="error"
+        />
+      </div>
+      <MockResponsesSection
+        mock={mock}
+        handleMockChange={setMock}
+        handleMockResponsesChange={onMockResponseChange}
+        handleAddMockResponse={onAddMockResponse}
+        handleDeleteMockResponse={onDeleteMockResponse}
+      />
+    </div>
+  );
+};
