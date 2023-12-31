@@ -12,7 +12,7 @@ const log = useLog({
 export class MockService {
   constructor(
     private readonly mockRepository: MockRepository,
-    private readonly mockResponseRepository: MockResponseRepository
+    private readonly mockResponseRepository: MockResponseRepository,
   ) {}
 
   async import(
@@ -22,7 +22,7 @@ export class MockService {
     body: string,
     headers: Record<string, string>,
     status: number,
-    userId: string
+    userId: string,
   ) {
     let mock = await this.mockRepository.repository.findOne({
       where: {
@@ -41,7 +41,7 @@ export class MockService {
         headers,
         status,
         "imported-response",
-        snifferId
+        snifferId,
       );
       const mockResponse = await this.mockResponseRepository.create(
         userId,
@@ -53,7 +53,7 @@ export class MockService {
           name: "imported-response",
           snifferId,
           userId,
-        }
+        },
       );
       await this.setSelectedResponse(userId, newMock.id, mockResponse.id);
       return newMock;
@@ -78,7 +78,7 @@ export class MockService {
     userId: string,
     mockId: string,
     url: string,
-    method: string
+    method: string,
   ): Promise<Mock | null> {
     return this.mockRepository.getByUrl(userId, mockId, url, method);
   }
@@ -102,7 +102,7 @@ export class MockService {
     snifferId: string,
     mockResponses?: MockResponse[],
     selectedResponseId?: string,
-    responseSelectionMethod?: string
+    responseSelectionMethod?: string,
   ): Promise<Mock> {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -133,11 +133,11 @@ export class MockService {
             userId,
             mock.id,
             mappedResponses,
-            false
+            false,
           );
           savedResponses = await entityManager.save(createdResponses);
         }
-      }
+      },
     );
     if (selectedResponseId != null && mock != null) {
       await this.setSelectedResponse(userId, mock.id, selectedResponseId);
@@ -155,7 +155,7 @@ export class MockService {
     status?: number,
     name?: string,
     snifferId?: string,
-    responseSelectionMethod?: string
+    responseSelectionMethod?: string,
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
@@ -196,7 +196,7 @@ export class MockService {
   async setSelectedResponse(
     userId: string,
     mockId: string,
-    responseId: string
+    responseId: string,
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
