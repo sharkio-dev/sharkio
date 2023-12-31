@@ -96,7 +96,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
   const onAddMockResponse = () => {
     const index = mock.mockResponses.length;
 
-    postMockResponse(snifferId as string, mockId as string, {
+    return postMockResponse(snifferId as string, mockId as string, {
       name: "Response " + (index + 1),
       body: "",
       status: 200,
@@ -115,7 +115,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
   };
 
   const onDeleteMockResponse = (mockResponseId: string) => {
-    deleteMockResponse(mockResponseId).then((deletedId) => {
+    return deleteMockResponse(mockResponseId).then((deletedId) => {
       setMock((prev) => {
         if (!prev) return prev;
         return {
