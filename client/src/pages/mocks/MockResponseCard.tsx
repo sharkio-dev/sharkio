@@ -86,7 +86,10 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
               <Radio
                 checked={mockResponse.id === mock.selectedResponseId}
                 onClick={() => {
-                  onMockChange({ ...mock, selectedResponseId: mock.id });
+                  onMockChange({
+                    ...mock,
+                    selectedResponseId: mockResponse.id,
+                  });
                 }}
               />
             </Tooltip>
