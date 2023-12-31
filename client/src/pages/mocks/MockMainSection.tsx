@@ -42,10 +42,14 @@ export const MockMainSection: React.FC = () => {
   const { loadMock, loadingMock } = useMockResponseStore();
 
   useEffect(() => {
-    if (isNew || !mockId) return;
-    loadMock(mockId as string).then((res: Mock) => {
-      setEditedMock(res);
-    });
+    if (isNew) {
+      setEditedMock(getMockDefaultState(snifferId as string));
+      return;
+    } else if (mockId) {
+      loadMock(mockId as string).then((res: Mock) => {
+        setEditedMock(res);
+      });
+    }
   }, [isNew, mockId]);
 
   return (
@@ -55,8 +59,15 @@ export const MockMainSection: React.FC = () => {
           <LoadingIcon />
         </div>
       )}
-      {sniffer && isNew && <CreateMock sniffer={sniffer} />}
-      {sniffer && !isNew && editedMock && !loadingMock && (
+      {sniffer && isNew && editedMock && (
+        <CreateMock
+          sniffer={sniffer}
+          editedMock={editedMock}
+          // @ts-ignore
+          setEditedMock={setEditedMock}
+        />
+      )}
+      {sniffer && mockId && !isNew && editedMock && !loadingMock && (
         <EditMock mock={editedMock as Mock} setMock={setEditedMock} />
       )}
     </>

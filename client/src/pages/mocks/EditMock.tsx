@@ -21,10 +21,15 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
   const { mockId } = useParams();
   const location = useLocation();
   const { snifferId } = queryString.parse(location.search);
-  const { loadMock, postMockResponse, deleteMockResponse, editMockResponse } =
+  const { postMockResponse, deleteMockResponse, editMockResponse } =
     useMockResponseStore();
-  const { loadingEditMock, editMock, loadingDeleteMock, deleteMock } =
-    useMockStore();
+  const {
+    loadingEditMock,
+    editMock,
+    loadingDeleteMock,
+    deleteMock,
+    patchSelectedResponseId,
+  } = useMockStore();
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find((s) => s.id === snifferId);
   const navigator = useNavigate();
@@ -46,6 +51,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
   const onClickEdit = async () => {
     if (!mockId) return;
     await editMock(snifferId as string, mockId as string, mock);
+    await patchSelectedResponseId(mockId as string, mock.selectedResponseId);
     if (!mock?.mockResponses) return;
     await Promise.all(
       mock?.mockResponses?.map((r) => editMockResponse(r.id, { ...r })),

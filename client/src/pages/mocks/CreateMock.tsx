@@ -7,18 +7,21 @@ import { MockButton } from "./MockButton";
 import { MockUrlInput } from "./MockUrlInput";
 import { v4 as uuidv4 } from "uuid";
 import { MockResponsesSection } from "./MockResponsesSection";
-import { getMockDefaultState } from "./MockMainSection";
 
 interface CreateMockProps {
   sniffer: SnifferType;
+  editedMock: Mock;
+  setEditedMock: React.Dispatch<React.SetStateAction<Mock>>;
 }
-export const CreateMock: React.FC<CreateMockProps> = ({ sniffer }) => {
-  const [editedMock, setEditedMock] = React.useState<Mock>(
-    getMockDefaultState(sniffer.id as string),
-  );
+export const CreateMock: React.FC<CreateMockProps> = ({
+  sniffer,
+  editedMock,
+  setEditedMock,
+}) => {
   const navigator = useNavigate();
 
-  const { createMock, loadingNewMock } = useMockStore();
+  const { createMock, loadingNewMock, patchSelectedResponseId } =
+    useMockStore();
 
   const onClickSave = () => {
     let newMock = {
@@ -31,7 +34,8 @@ export const CreateMock: React.FC<CreateMockProps> = ({ sniffer }) => {
       id: uuidv4(),
       isActive: true,
     };
-    createMock(sniffer.id as string, newMock).then((res: any) => {
+    createMock(sniffer.id as string, newMock).then(async (res: any) => {
+      await patchSelectedResponseId(res?.id, newMock.selectedResponseId);
       navigator(`/mocks/${res?.id}?snifferId=${sniffer.id}`);
     });
   };

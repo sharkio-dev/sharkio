@@ -129,32 +129,39 @@ export class MockController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
-          const {
-            headers,
-            body,
-            status,
-            url,
-            snifferId,
-            name,
-            method,
-            mockResponses,
-            selectedResponseId,
-          } = req.body;
-          const mock = await this.mockService.create(
-            userId,
-            url,
-            method,
-            body,
-            headers,
-            status,
-            name,
-            snifferId,
-            mockResponses,
-            selectedResponseId
-          );
+          try {
+            const userId = res.locals.auth.user.id;
+            const {
+              headers,
+              body,
+              status,
+              url,
+              snifferId,
+              name,
+              method,
+              mockResponses,
+              selectedResponseId,
+              responseSelectionMethod,
+            } = req.body;
+            const mock = await this.mockService.create(
+              userId,
+              url,
+              method,
+              body,
+              headers,
+              status,
+              name,
+              snifferId,
+              mockResponses,
+              selectedResponseId,
+              responseSelectionMethod
+            );
 
-          res.status(200).send(mock);
+            res.status(200).send(mock);
+          } catch (error) {
+            log.error(error);
+            res.status(500).send("Internal server error");
+          }
         }
       );
 
@@ -289,8 +296,16 @@ export class MockController {
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
           const { mockId } = req.params;
-          const { method, url, body, headers, status, name, snifferId } =
-            req.body;
+          const {
+            method,
+            url,
+            body,
+            headers,
+            status,
+            name,
+            snifferId,
+            responseSelectionMethod,
+          } = req.body;
 
           const updatedMock = await this.mockService.update(
             userId,
@@ -301,7 +316,8 @@ export class MockController {
             headers,
             status,
             name,
-            snifferId
+            snifferId,
+            responseSelectionMethod
           );
 
           res.json(updatedMock).status(200);

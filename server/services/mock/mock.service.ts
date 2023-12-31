@@ -45,7 +45,8 @@ export class MockService {
     name: string,
     snifferId: string,
     mockResponses?: MockResponse[],
-    selectedResponseId?: string
+    selectedResponseId?: string,
+    responseSelectionMethod?: string
   ) {
     const createdMock = await this.mockRepository.repository.create({
       url,
@@ -57,12 +58,13 @@ export class MockService {
       name,
       snifferId,
       isActive: true,
-      selectedResponseId: selectedResponseId || undefined,
+      responseSelectionMethod,
     });
+    let mock: Mock | undefined;
 
-    return this.mockRepository.repository.manager.transaction(
+    await this.mockRepository.repository.manager.transaction(
       async (entityManager) => {
-        const mock = await entityManager.save(createdMock);
+        mock = await entityManager.save(createdMock);
         let savedResponses;
 
         if (mockResponses != null) {
@@ -77,13 +79,14 @@ export class MockService {
             mappedResponses,
             false
           );
-
           savedResponses = await entityManager.save(createdResponses);
         }
-
-        return { ...mock, mockResponses: savedResponses };
       }
     );
+    if (selectedResponseId != null && mock != null) {
+      await this.setSelectedResponse(userId, mock.id, selectedResponseId);
+    }
+    return mock;
   }
 
   async update(
@@ -95,7 +98,8 @@ export class MockService {
     headers?: Record<string, string>,
     status?: number,
     name?: string,
-    snifferId?: string
+    snifferId?: string,
+    responseSelectionMethod?: string
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
@@ -111,6 +115,7 @@ export class MockService {
         status,
         name,
         snifferId,
+        responseSelectionMethod,
       })
       .returning("*")
       .execute();
