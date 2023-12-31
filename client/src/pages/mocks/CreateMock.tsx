@@ -48,7 +48,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
     setEditedMock((prev) => ({ ...prev, method: value }));
   };
 
-  const onDeleteResponse = (responseId: string) => {
+  const onDeleteResponse = async (responseId: string) => {
     setEditedMock((prev) => ({
       ...prev,
       mockResponses: prev.mockResponses
@@ -57,7 +57,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
     }));
   };
 
-  const onAddResponse = () => {
+  const onAddResponse = async () => {
     let index = editedMock.mockResponses ? editedMock.mockResponses.length : 0;
     const newResponse = {
       id: uuidv4(),
