@@ -1,16 +1,11 @@
 import { TextField } from "@mui/material";
 import { useState } from "react";
 import { CgSearch } from "react-icons/cg";
-import { InvocationType } from "./types";
 import { Invocation } from "./Invocation";
-import { useState } from "react";
-import { TextField } from "@mui/material";
-
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { Invocation } from "./Invocation";
 import { LoadingIcon } from "./LoadingIcon";
-import RefreshButton from "../../components/refresh-button/RefreshButton";
 import { useParams } from "react-router-dom";
+import RefreshButton from "../../components/refresh-button/RefreshButton";
 
 type InvocationsBottomBarProps = {
   title: string;
@@ -49,7 +44,7 @@ export const InvocationsBottomBar = ({
       <div className="flex flex-row justify-between items-center text-center mb-4">
         <div className="text-xl font-bold font-mono ">{title}</div>
         <div className="flex flex-row-reverse items-center space-x-4 w-1/2">
-          {refresh && <RefreshButton refresh={refresh}/>}
+          {refresh && <RefreshButton refresh={refresh} />}
           {!showSearch ? (
             <CgSearch
               className="flex text-gray-500 text-xl cursor-pointer"
