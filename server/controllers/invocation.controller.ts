@@ -34,10 +34,10 @@ export class InvocationController {
         const limit = 100;
         const statusCodes = req.query.statusCodes as string[];
         const methods = req.query.methods as string[];
-        const url = req.query.urls as string;
+        const url = req.query.url as string;
         const fromDate = req.query.fromDate as Date | undefined;
         const toDate = req.query.toDate as Date | undefined;
-        
+
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
           limit,

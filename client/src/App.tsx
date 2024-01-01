@@ -24,7 +24,6 @@ import { LivePage } from "./pages/live-Invocations/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
-
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
   const { user } = useAuthStore();

@@ -17,7 +17,8 @@ export const StatusCodeFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const savedStatusCodes = searchParams.get(searchParamFilters.statusCodes)?.split(",") || [];
+    const savedStatusCodes =
+      searchParams.get(searchParamFilters.statusCodes)?.split(",") || [];
     const selectedCodes = allStatusCodes.filter((code) =>
       savedStatusCodes.includes(code.value),
     );
@@ -29,7 +30,10 @@ export const StatusCodeFilter = () => {
 
     setSearchParams((prevParams) => {
       const newSearchParams = new URLSearchParams(prevParams);
-      newSearchParams.set(searchParamFilters.statusCodes, statusCodeValues.join(","));
+      newSearchParams.set(
+        searchParamFilters.statusCodes,
+        statusCodeValues.join(","),
+      );
       return newSearchParams;
     });
   }, [selectedStatusCodes]);
@@ -64,7 +68,7 @@ export const StatusCodeFilter = () => {
         <TextField
           {...params}
           variant="outlined"
-          label="Status Codes"
+          label="Filter status codes"
           placeholder="Select status code"
         />
       )}

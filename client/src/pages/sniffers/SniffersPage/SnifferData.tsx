@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { InvocationUpperBar } from "../../live-Invocations/LiveInvocationUpperBar";
-import { InvocationsBottomBar } from "../../live-Invocations/LiveInvocationsBottomBar";
+import { InvocationsSearchBar } from "../../live-Invocations/LiveInvocationsBottomBar";
 import { LoadingIcon } from "../LoadingIcon";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import queryString from "query-string";
@@ -59,7 +59,7 @@ export const SnifferData: React.FC = () => {
                 <LoadingIcon />
               </div>
             ) : (
-              <InvocationsBottomBar
+              <InvocationsSearchBar
                 title={"Invocations"}
                 activeInvocation={invocation}
                 setActiveInvocation={onInvocationClick}

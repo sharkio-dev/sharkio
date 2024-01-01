@@ -1,44 +1,22 @@
-import { CgSearch } from "react-icons/cg";
 import { InvocationType } from "../sniffers/types";
 import { Invocation } from "../sniffers/Invocation";
-import { useState } from "react";
-import { TextField } from "@mui/material";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
-type InvocationsBottomBarProps = {
+type InvocationsSearchBarProps = {
   activeInvocation?: InvocationType;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
   refresh?: () => void;
 };
-export const InvocationsBottomBar = ({
+export const InvocationsSearchBar = ({
   activeInvocation,
   setActiveInvocation,
   title,
   refresh,
-}: InvocationsBottomBarProps) => {
-  const [search, setSearch] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
+}: InvocationsSearchBarProps) => {
   const { invocations, loadingInvocations } = useSniffersStore();
-  const filteredInvocations =
-    invocations?.filter((invocation) => {
-      if (!search) return true;
-      const filterByMethod = invocation?.response?.status
-        .toString()
-        .includes(search.toLowerCase());
-      const filterByUrl = invocation?.url
-        .toLowerCase()
-        .includes(search.toLowerCase());
-
-      const filterByDate = new Date(invocation.createdAt)
-        .toLocaleString()
-        .includes(search.toLowerCase());
-
-      return filterByMethod || filterByUrl || filterByDate;
-    }) || [];
-
   return (
     <>
       <div className="flex flex-row justify-between items-center text-center mb-4">
@@ -46,25 +24,10 @@ export const InvocationsBottomBar = ({
         <div className="flex flex-row-reverse items-center space-x-4 w-1/2">
           {refresh && (
             <LuRefreshCcw
-              className="flex text-gray-500 text-xl cursor-pointer ml-4"
-              onClick={refresh}
+            className="flex text-gray-500 text-xl cursor-pointer ml-4"
+            onClick={refresh}
             />
-          )}
-          {!showSearch ? (
-            <CgSearch
-              className="flex text-gray-500 text-xl cursor-pointer"
-              onClick={() => setShowSearch(true)}
-            />
-          ) : (
-            <TextField
-              label="Search Invocations"
-              variant="outlined"
-              size="small"
-              onChange={(e) => setSearch(e.target.value)}
-              value={search}
-              className="flex w-2/3"
-            />
-          )}
+            )}
         </div>
       </div>
 
@@ -74,7 +37,7 @@ export const InvocationsBottomBar = ({
             <LoadingIcon />
           </div>
         ) : (
-          filteredInvocations.map((invocation, i) => {
+          invocations.map((invocation, i) => {
             return (
               <Invocation
                 method={invocation.method}

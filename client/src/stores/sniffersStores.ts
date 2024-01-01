@@ -37,12 +37,12 @@ interface SniffersState {
   editSniffer: (sniffer: Partial<SnifferType>) => Promise<void>;
   loadEndpoints: (
     snifferId: string,
-    force?: boolean
+    force?: boolean,
   ) => Promise<EndpointType[]>;
   resetEndpoints: () => void;
   loadInvocations: (
     endpointId: string,
-    force?: boolean
+    force?: boolean,
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
   executeInvocation: (data: {
@@ -59,7 +59,7 @@ interface SniffersState {
     methods?: string[],
     dateStart?: Date | undefined,
     dateEnd?: Date | undefined,
-    url?: string
+    url?: string,
   ) => Promise<InvocationType[]>;
 }
 
@@ -74,6 +74,8 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
   loadingSniffers: false,
   loadingEndpoints: false,
   loadingExecution: false,
+
+  
   loadSniffers: (force = false) => {
     if (get().sniffers.length && !force) {
       return Promise.resolve(get().sniffers);
@@ -156,7 +158,7 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     methods?: string[],
     fromDate?: Date | undefined,
     toDate?: Date | undefined,
-    url?: string
+    url?: string,
   ) => {
     set({ loadingInvocations: true });
     return getLiveInvocations(statusCodes, methods, fromDate, toDate, url)

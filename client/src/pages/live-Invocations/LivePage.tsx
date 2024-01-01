@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { InvocationsBottomBar } from "./LiveInvocationsBottomBar";
+import { InvocationsSearchBar } from "./LiveInvocationsBottomBar";
 import { InvocationUpperBar } from "./LiveInvocationUpperBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
@@ -31,18 +31,15 @@ export const LivePage = () => {
     loadSniffers();
   }, [invocationId]);
 
-  useEffect(() => {
-    loadInvocations();
-  }, []);
 
   const onInvocationClick = useCallback(
     (id: string) => {
       const currentSearchParams = new URLSearchParams(window.location.search);
       navigator(
-        `${routes.LIVE_INVOCATIONS}/${id}?${currentSearchParams.toString()}`
+        `${routes.LIVE_INVOCATIONS}/${id}?${currentSearchParams.toString()}`,
       );
     },
-    [invocationId]
+    [invocationId],
   );
   const bottomBarHeight = !invocationId
     ? "h-1/1 max-h-[calc(100vh-56px)]"
@@ -62,7 +59,7 @@ export const LivePage = () => {
             </div>
           )}
           <div className={`flex flex-col p-2 px-4 ${bottomBarHeight}`}>
-            <InvocationsBottomBar
+            <InvocationsSearchBar
               title={"Live Invocations"}
               activeInvocation={invocation}
               setActiveInvocation={onInvocationClick}
