@@ -11,7 +11,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import queryString from "query-string";
 import { routes } from "../../constants/routes";
 
-export const SniffersSideBar = () => {
+export const SniffersSideBar: React.FC = () => {
   const { sniffers } = useSniffersStore();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
@@ -38,7 +38,7 @@ export const SniffersSideBar = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
+      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 overflow-y-auto">
         {snackBar}
         <FormControl fullWidth size="small" variant="outlined">
           <InputLabel>Sniffers</InputLabel>
@@ -63,7 +63,7 @@ export const SniffersSideBar = () => {
         {snifferId && (
           <div className="flex flex-col w-full overflow-y-auto">
             {loadingEndpoints ? (
-              <div className="flex h-[calc(100vh)] justify-center items-center">
+              <div className="flex justify-center items-center">
                 <LoadingIcon />
               </div>
             ) : (

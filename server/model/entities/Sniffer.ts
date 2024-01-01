@@ -13,6 +13,7 @@ import { Request } from "./Request";
 import { Response } from "./Response";
 import { Users } from "./Users";
 import { Test } from "./Test";
+import { MockResponse } from "./MockResponse";
 
 @Index("sniffer_pkey", ["id"], { unique: true })
 @Index("sniffer_subdomain_key", ["subdomain"], { unique: true })
@@ -71,8 +72,11 @@ export class Sniffer {
 
   @ManyToOne(() => Users, (users) => users.id)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<Users>;
+  user?: Relation<Users>;
 
   @OneToMany(() => Test, (test) => test.id)
   tests: Test[];
+
+  @OneToMany(() => MockResponse, (mockResponse) => mockResponse.snifferId)
+  mockResponses: MockResponse[];
 }

@@ -8,7 +8,7 @@ export class Migrations1703332511084 implements MigrationInterface {
       `CREATE TABLE "chat" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "title" character varying, "user_id" uuid, "created_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), CONSTRAINT "PK_9d0b2ba74336710fd31154738a5" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "mock" ("method" character varying, "url" character varying, "status" integer, "body" character varying, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "id" uuid NOT NULL DEFAULT gen_random_uuid(), "sniffer_id" uuid, "user_id" uuid, "is_active" boolean DEFAULT false, "headers" json, "name" character varying, CONSTRAINT "UQ_0b50d69c939cad1ed5e41b3dd7c" UNIQUE ("method"), CONSTRAINT "UQ_abce14304d40b19d5df277aae25" UNIQUE ("url"), CONSTRAINT "UQ_cf5508816813ee9af33cbdc45d3" UNIQUE ("sniffer_id"), CONSTRAINT "PK_374c21457ae3e56ec7d18d9e44e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "mock" ("method" character varying, "url" character varying, "status" integer, "body" character varying, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT now(), "id" uuid NOT NULL DEFAULT gen_random_uuid(), "sniffer_id" uuid, "user_id" uuid, "is_active" boolean DEFAULT false, "headers" json, "name" character varying, CONSTRAINT "UQ_0b50d69c939cad1ed5e41b3dd7c" UNIQUE ("method","url","sniffer_id"), CONSTRAINT "PK_374c21457ae3e56ec7d18d9e44e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "mock_un" ON "mock" ("method", "sniffer_id", "url") `,

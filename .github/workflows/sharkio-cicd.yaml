@@ -9,6 +9,7 @@ on:
         options:
           - frontend
           - backend
+          - migrations
       env:
         type: choice
         description: "Choose Which Env to Deploy To"
@@ -48,7 +49,7 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
             echo "working_dir=./client" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.service }}" == "backend" ]; then
+          else
             echo "working_dir=./server" >> $GITHUB_ENV
           fi
 
@@ -62,8 +63,12 @@ jobs:
           REPOSITORY: ${{ github.event.inputs.service }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
+            docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          else
+            docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f Dockerfile.${{ github.event.inputs.service }} .
+          fi
+            docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2

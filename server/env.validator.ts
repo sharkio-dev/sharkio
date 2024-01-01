@@ -3,7 +3,6 @@ import "dotenv/config";
 
 const serverVarsValidator = z.object({
   NODE_ENV: z.string().optional().default("development"),
-  DATABASE_URL: z.string(),
   VITE_SUPABASE_PROJECT_URL: z.string(),
   VITE_SUPABASE_ANON: z.string(),
   LOG_LEVEL: z.string(),
@@ -15,11 +14,14 @@ const serverVarsValidator = z.object({
     .optional(),
   PROXY_SERVER_DOMAIN: z.string(),
   OPEN_AI_KEY: z.string().optional(),
+  DB_HOST: z.string(),
+  DB_PORT: z.string(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
 });
 
 const proxyVarsValidator = z.object({
   NODE_ENV: z.string().optional().default("development"),
-  DATABASE_URL: z.string(),
   VITE_SUPABASE_PROJECT_URL: z.string(),
   VITE_SUPABASE_ANON: z.string(),
   LOG_LEVEL: z.string(),
@@ -31,6 +33,10 @@ const proxyVarsValidator = z.object({
     .optional(),
   PROXY_PRIVATE_KEY_FILE: z.string().optional(),
   PROXY_CERT_FILE: z.string().optional(),
+  DB_HOST: z.string(),
+  DB_PORT: z.string(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
 });
 
 export class ServerEnvValidator {

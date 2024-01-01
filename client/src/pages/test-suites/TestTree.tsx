@@ -13,7 +13,6 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 export const TestList = () => {
   const { testSuiteId } = useParams();
   const [testModalOpen, setTestModalOpen] = React.useState<boolean>(false);
-  const [loading, setLoading] = React.useState<boolean>(false);
   const { loadTests, tests, resetTests } = useTestStore();
 
   const fetchTestTree = () => {
@@ -21,10 +20,7 @@ export const TestList = () => {
       resetTests();
       return;
     }
-    setLoading(true);
-    loadTests(testSuiteId).finally(() => {
-      setLoading(false);
-    });
+    loadTests(testSuiteId).finally(() => {});
   };
 
   React.useEffect(() => {
@@ -33,9 +29,6 @@ export const TestList = () => {
 
   return (
     <>
-      {tests.length === 0 && !loading && (
-        <NoTests onClick={() => setTestModalOpen(true)} />
-      )}
       <div className="flex flex-col">
         <div className="border-b border-border-color pb-2 mb-2">
           <div
@@ -59,25 +52,6 @@ export const TestList = () => {
         }}
       />
     </>
-  );
-};
-
-interface NoTestsProps {
-  onClick: () => void;
-}
-
-const NoTests = ({ onClick }: NoTestsProps) => {
-  return (
-    <div className="flex flex-col h-full justify-center items-center ">
-      <div
-        className="flex flex-row items-center space-x-2 px-2 hover:text-blue-400 cursor-pointer"
-        onClick={onClick}
-      >
-        <p className=" text-lg">Add Test</p>
-
-        <AiOutlinePlus className=" text-sm hover:bg-border-color rounded-md hover:cursor-pointer hover:scale-110 active:scale-100" />
-      </div>
-    </div>
   );
 };
 

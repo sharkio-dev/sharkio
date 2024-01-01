@@ -1,6 +1,15 @@
 import { Tooltip } from "@mui/material";
 import { selectIconByMethod } from "./selectIconByMethod";
 
+export const selectIconByStatus = (status: number) => {
+  if (status < 300) {
+    return <span className="text-green-500 h-8 w-8 p-1">{status}</span>;
+  } else if (status < 400) {
+    return <span className="text-yellow-500 h-8 w-8 p-1">{status}</span>;
+  }
+  return <span className="text-red-500 h-8 w-8 p-1">{status}</span>;
+};
+
 type InvocationProps = {
   status: number;
   url: string;
@@ -17,15 +26,6 @@ export const Invocation = ({
   onClick,
   date,
 }: InvocationProps) => {
-  const selectIconByStatus = (status: number) => {
-    if (status < 300) {
-      return <span className="text-green-500 h-8 w-8 p-1">{status}</span>;
-    } else if (status < 400) {
-      return <span className="text-yellow-500 h-8 w-8 p-1">{status}</span>;
-    }
-    return <span className="text-red-500 h-8 w-8 p-1">{status}</span>;
-  };
-
   return (
     <Tooltip title={url} placement="top" arrow enterDelay={500}>
       <div

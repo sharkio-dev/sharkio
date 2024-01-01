@@ -39,6 +39,19 @@ export class TestSuiteController {
 
     router.get(
       "",
+      /**
+       * @openapi
+       * /sharkio/test-suites/:
+       *   get:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const userId = res.locals.auth.user.id;
         const testSuites = await this.testSuiteService.getByUserId(userId);
@@ -48,6 +61,19 @@ export class TestSuiteController {
 
     router.post(
       "",
+      /**
+       * @openapi
+       * /sharkio/test-suites/:
+       *   post:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const userId = res.locals.auth.user.id;
         const { name } = req.body;
@@ -58,6 +84,19 @@ export class TestSuiteController {
 
     router.post(
       "/:testSuiteId/import/:invocationId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/import/{invocationId}:
+       *   post:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         try {
           const userId = res.locals.auth.user.id;
@@ -115,6 +154,19 @@ export class TestSuiteController {
 
     router.delete(
       "/:testSuiteId/tests/:testId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/tests/{testId}:
+       *   delete:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
@@ -141,6 +193,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/tests/:testId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/tests/{testId}:
+       *   get:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
         const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
@@ -157,6 +222,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/tests",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/tests:
+       *   get:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const testSuite = await this.testService.getByTestSuiteId(testSuiteId);
@@ -169,6 +247,19 @@ export class TestSuiteController {
 
     router.put(
       "/:testSuiteId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}:
+       *   put:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const testSuite = await this.testSuiteService.getById(testSuiteId);
@@ -183,6 +274,19 @@ export class TestSuiteController {
 
     router.delete(
       "/:testSuiteId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}:
+       *   delete:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const testSuite = await this.testSuiteService.getById(testSuiteId);
@@ -196,6 +300,19 @@ export class TestSuiteController {
 
     router.put(
       "/:testSuiteId/tests/:testId",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/tests/{testId}:
+       *   put:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
         const { headers, body, url, method } = req.body;
@@ -222,6 +339,19 @@ export class TestSuiteController {
 
     router.post(
       "/:testSuiteId/tests/:testId/run",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/tests/{testId}/run:
+       *   post:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
@@ -266,6 +396,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/test-executions",
+      /**
+       * @openapi
+       * /sharkio/test-suites/{testSuiteId}/test-executions:
+       *   get:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId } = req.params;
         const { url } = req.query;
@@ -304,6 +447,19 @@ export class TestSuiteController {
 
     router.get(
       "/:testSuiteId/tests/:testId/test-executions",
+      /**
+       * @openapi
+       * /sharkio/test-suites/tests/{testId}/test-executions:
+       *   get:
+       *     tags:
+       *      - TestSuite
+       *     description:
+       *     responses:
+       *       200:
+       *         description:  OK
+       *       500:
+       *         description: Error
+       */
       catchAsync(async (req: Request, res: Response) => {
         const { testSuiteId, testId } = req.params;
         const testSuite = await this.testService.getByTestSuiteId(testSuiteId);

@@ -4,18 +4,34 @@ import {
   createMockAPI,
   deactivateMockAPI,
   deleteMockAPI,
+  deleteMockResponseAPI,
   editMockAPI,
+  editMockResponseAPI,
+  getMockAPI,
   getMocksAPI,
+  patchMockSelectedResponseIdAPI,
+  postMockResponseAPI,
 } from "../api/api";
+
+export interface MockResponse {
+  id: string;
+  name: string;
+  body: string;
+  headers: object;
+  status: number;
+  sequenceIndex: number;
+}
 
 export interface Mock {
   id: string;
   url: string;
-  body: string;
-  headers: Record<string, string>;
   method: string;
-  status: string;
   isActive: boolean;
+  selectedResponseId: string;
+  snifferId: string;
+  createdAt: string;
+  responseSelectionMethod: string;
+  mockResponses: MockResponse[];
 }
 
 interface MockState {
@@ -38,6 +54,11 @@ interface MockState {
     mockId: string,
     mock: Partial<Mock>,
   ) => Promise<void>;
+  responsedOrder: () => void;
+  patchSelectedResponseId: (
+    mockId: string,
+    mockResponseId: string,
+  ) => Promise<any>;
 }
 
 export const useMockStore = create<MockState>((set, get) => ({
@@ -53,8 +74,8 @@ export const useMockStore = create<MockState>((set, get) => ({
     set({ loadingMocks: true });
     return getMocksAPI(snifferId)
       .then((res) => {
-        set({ mocks: res.data });
-        return res.data;
+        set({ mocks: res.data || [] });
+        return res.data || [];
       })
       .finally(() => set({ loadingMocks: false }));
   },
@@ -79,7 +100,7 @@ export const useMockStore = create<MockState>((set, get) => ({
   },
   createMock: (snifferId: string, mock: Omit<Mock, "id">) => {
     set({ loadingNewMock: true });
-    return createMockAPI({ snifferId, ...mock })
+    return createMockAPI({ ...mock })
       .then((res: any) => {
         get().loadMocks(snifferId, true);
         return res;
@@ -95,5 +116,67 @@ export const useMockStore = create<MockState>((set, get) => ({
       .finally(() => {
         set({ loadingEditMock: false });
       });
+  },
+  responsedOrder: () => {
+    return;
+  },
+
+  patchSelectedResponseId: (mockId, mockResponseId) => {
+    return patchMockSelectedResponseIdAPI(mockId, mockResponseId);
+  },
+}));
+
+interface MockResponseState {
+  mock?: Mock;
+  loadingMock: boolean;
+  mockResponses?: MockResponse[];
+  loadMock: (mockId: string) => Promise<Mock>;
+  resetMock: () => void;
+  postMockResponse: (
+    snifferId: string,
+    mockId: string,
+    mockResponse: Omit<MockResponse, "id">,
+  ) => Promise<MockResponse>;
+  editMockResponse: (
+    mockResponseId: string,
+    mockResponse: Partial<MockResponse>,
+  ) => Promise<void>;
+  deleteMockResponse: (mockResponseId: string) => Promise<string>;
+}
+
+export const useMockResponseStore = create<MockResponseState>((set) => ({
+  mock: undefined,
+  loadingMock: false,
+  mockResponses: [],
+  loadMock: (mockId) => {
+    set({ loadingMock: true });
+    return getMockAPI(mockId)
+      .then((data) => {
+        data.mockResponses = data.mockResponses?.sort(
+          (a: MockResponse, b: MockResponse) =>
+            a.sequenceIndex - b.sequenceIndex,
+        );
+        set({ mock: data || [] });
+        return data || [];
+      })
+      .finally(() => set({ loadingMock: false }));
+  },
+  resetMock: () => set({ mock: {} as Mock, mockResponses: [] }),
+  postMockResponse: (snifferId, mockId, mockResponse) => {
+    return postMockResponseAPI({ snifferId, mockId, ...mockResponse }).then(
+      (res) => {
+        return res;
+      },
+    );
+  },
+  editMockResponse: (mockResponseId, mockResponse) => {
+    return editMockResponseAPI(mockResponseId, mockResponse).then((data) => {
+      return data;
+    });
+  },
+  deleteMockResponse: (mockResponseId) => {
+    return deleteMockResponseAPI(mockResponseId).then((data) => {
+      return data;
+    });
   },
 }));

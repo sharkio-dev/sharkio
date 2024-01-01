@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { SelectComponent } from "./SelectComponent";
+import { SelectComponent } from "../../components/select-component/SelectComponent";
 import {
   Button,
   CircularProgress,

@@ -1,4 +1,4 @@
-import { InvocationType } from "../pages/sniffers/types";
+import { EndpointType, InvocationType } from "../pages/sniffers/types";
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
@@ -102,7 +102,9 @@ export function jsonSchemaToTypescriptInterface(
   return output;
 }
 
-export function generateCurlCommand(req: InvocationType): string {
+export function generateCurlCommand(
+  req: InvocationType | EndpointType,
+): string {
   const host = req?.headers?.host;
   let curlCommand = `curl -X ${req?.method} http://${host}${req.url} \\\n`;
 
@@ -126,7 +128,7 @@ export function generateCurlCommand(req: InvocationType): string {
 
 export function generateApiRequestSnippet(
   language: string,
-  req: InvocationType,
+  req: InvocationType | EndpointType,
 ) {
   let snippet = "";
 

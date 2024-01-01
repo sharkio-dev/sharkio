@@ -1,10 +1,13 @@
-import z from "zod";
 import { NextFunction, Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
+import z from "zod";
 import { useLog } from "../lib/log";
+import { requestValidator } from "../lib/request-validator/request-validator";
 import { MockService } from "../services/mock/mock.service";
 import { IRouterConfig } from "./router.interface";
-import { requestValidator } from "../lib/request-validator/request-validator";
+import { MockResponseService } from "../services/mock-response/mock-response.service";
+import { RequestService } from "../services/request/request.service";
+import EndpointService from "../services/endpoint/endpoint.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -12,7 +15,10 @@ const log = useLog({
 });
 
 export class MockController {
-  constructor(private readonly mockService: MockService) {}
+  constructor(
+    private readonly mockService: MockService,
+    private readonly endpointService: EndpointService,
+  ) {}
 
   getRouter(): IRouterConfig {
     const router = PromiseRouter();
@@ -69,7 +75,7 @@ export class MockController {
          *                url:
          *                  type: string
          *                  description: The url of the mock
-         *                  example: /user
+         *                  example: /example
          *                body:
          *                  type: string
          *                  description: The body of the mock
@@ -91,6 +97,33 @@ export class MockController {
          *                  type: string
          *                  description: The id of the sniffer
          *                  example: 121ed1e5-0502-4fd3-a3f0-4603fcca1cbc
+         *                mockResponses:
+         *                  description: The id of the sniffer
+         *                  example: [{ "status":200,"body":"","headers":"example","name":"example-response-name","sequenceIndex":1}]
+         *                  type: array
+         *                  items:
+         *                    type: object
+         *                    properties:
+         *                      status:
+         *                        type: number
+         *                        description: The status of the response
+         *                        example: 200
+         *                      body:
+         *                        type: string
+         *                        description: The body of the response
+         *                        example: {"hello":"world"}
+         *                      headers:
+         *                        type: string
+         *                        description: The headers of the response
+         *                        example: example
+         *                      name:
+         *                        type: string
+         *                        description: The name of the response
+         *                        example: example-response-name
+         *                      sequenceIndex:
+         *                        type: number
+         *                        description: The sequence index of the response
+         *                        example: 1
          *     responses:
          *       200:
          *         description: Returns mocks
@@ -98,22 +131,75 @@ export class MockController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
-          const { headers, body, status, url, snifferId, name, method } =
-            req.body;
-          const mock = await this.mockService.create(
-            userId,
-            url,
-            method,
-            body,
-            headers,
-            status,
-            name,
-            snifferId,
-          );
-          res.status(200).send(mock);
+          try {
+            const userId = res.locals.auth.user.id;
+            const {
+              headers,
+              body,
+              status,
+              url,
+              snifferId,
+              name,
+              method,
+              mockResponses,
+              selectedResponseId,
+              responseSelectionMethod,
+            } = req.body;
+            const mock = await this.mockService.create(
+              userId,
+              url,
+              method,
+              body,
+              headers,
+              status,
+              name,
+              snifferId,
+              mockResponses,
+              selectedResponseId,
+              responseSelectionMethod,
+            );
+
+            res.status(200).send(mock);
+          } catch (error) {
+            log.error(error);
+            res.status(500).send("Internal server error");
+          }
         },
       );
+
+    router.route("/import-from-invocation").post(
+      requestValidator({
+        body: z.object({ requestId: z.string() }),
+      }),
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const userId = res.locals.auth.user.id;
+          const { requestId } = req.body;
+          const request = await this.endpointService.getInvocationById(
+            requestId,
+            userId,
+          );
+          if (!request || !request?.response) {
+            res.status(404).send("Not found");
+            return;
+          }
+
+          const mock = await this.mockService.import(
+            request?.snifferId,
+            request?.url,
+            request?.method,
+            request?.response.body,
+            request?.response.headers as Record<string, string>,
+            request?.response?.status as number,
+            userId,
+          );
+          res.status(200).send(mock);
+        } catch (error) {
+          log.error(error);
+          res.status(500).send("Internal server error");
+        }
+      },
+    );
 
     router
       .route("/:mockId")
@@ -129,7 +215,7 @@ export class MockController {
          *      - mock
          *     parameters:
          *       - name: mockId
-         *         in: query
+         *         in: path
          *         schema:
          *           type: string
          *         description: mockId
@@ -174,8 +260,8 @@ export class MockController {
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
           const { mockId } = req.params;
-          await this.mockService.delete(userId, mockId);
-          res.sendStatus(200);
+          const response = await this.mockService.delete(userId, mockId);
+          res.status(200).send(response);
         },
       )
       .patch(
@@ -246,8 +332,16 @@ export class MockController {
         async (req: Request, res: Response, next: NextFunction) => {
           const userId = res.locals.auth.user.id;
           const { mockId } = req.params;
-          const { method, url, body, headers, status, name, snifferId } =
-            req.body;
+          const {
+            method,
+            url,
+            body,
+            headers,
+            status,
+            name,
+            snifferId,
+            responseSelectionMethod,
+          } = req.body;
 
           const updatedMock = await this.mockService.update(
             userId,
@@ -259,11 +353,61 @@ export class MockController {
             status,
             name,
             snifferId,
+            responseSelectionMethod,
           );
 
           res.json(updatedMock).status(200);
         },
       );
+
+    router.route("/:mockId/selected-response").patch(
+      /**
+       * @openapi
+       * /sharkio/mocks/{mockId}/selected-response:
+       *   post:
+       *     tags:
+       *      - mock
+       *     description: Set mock selected response
+       *     parameters:
+       *       - name: mockId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: mockId
+       *         required: true
+       *     requestBody:
+       *        description: Set mock selected response
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              required:
+       *                - responseId
+       *              properties:
+       *                responseId:
+       *                  type: string
+       *                  description: The id of the sniffer
+       *                  example: 121ed1e5-0502-4fd3-a3f0-4603fcca1cbc
+       *     responses:
+       *       200:
+       *         description: Selected response was set
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const { responseId } = req.body;
+        const { mockId } = req.params;
+
+        const mock = await this.mockService.setSelectedResponse(
+          userId,
+          mockId,
+          responseId,
+        );
+
+        res.status(200).send(mock);
+      },
+    );
 
     router.route("/:mockId/activate").post(
       /**

@@ -4,10 +4,15 @@ import { useParams } from "react-router-dom";
 
 type BodySectionProps = {
   body: any;
-  onBodyChange: (body: any) => void;
+  language?: string;
+  onBodyChange?: (body: any) => void;
 };
 
-export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
+export const BodySection = ({
+  body,
+  language,
+  onBodyChange,
+}: BodySectionProps) => {
   const params = useParams();
   const [invocationId, setInvoationId] = useState(params.invocationId);
   const [editor, setEditor] = useState<any>(null);
@@ -20,22 +25,23 @@ export const BodySection = ({ body, onBodyChange }: BodySectionProps) => {
 
   const onChangeBodyValue = (value: any) => {
     try {
-      JSON.parse(value);
-      onBodyChange(value);
+      onBodyChange?.(value);
     } catch (error) {}
   };
+  const type =
+    language ?? (typeof body === "string" && body.includes("html"))
+      ? "html"
+      : "json";
 
   return (
     <div className="flex w-full flex-col space-y-4">
       <Editor
-        height="50vh"
         width="100%"
         theme="vs-dark"
+        className="min-h-[40vh]"
         defaultLanguage="json"
         value={body}
-        language={
-          typeof body === "string" && body.includes("html") ? "html" : "json"
-        }
+        language={type}
         onMount={(editor) => {
           setEditor(editor);
         }}

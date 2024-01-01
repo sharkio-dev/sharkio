@@ -74,6 +74,6 @@ export class Response {
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.responses, {
     onDelete: "CASCADE",
   })
-  @JoinColumn([{ name: "sniffer", referencedColumnName: "id" }])
+  @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])
   sniffer: Relation<Sniffer>;
 }
