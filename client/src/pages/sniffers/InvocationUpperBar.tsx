@@ -17,13 +17,13 @@ type InvocationUpperBarProps = {
   setEditedInvocation: React.Dispatch<
     React.SetStateAction<EndpointType | undefined>
   >;
-  activeInvocation?: InvocationType | EndpointType | undefined;
+  invocation?: InvocationType | EndpointType | undefined;
   isDisabled?: boolean;
   showResponseTab?: boolean;
 };
 
 export const InvocationUpperBar = ({
-  activeInvocation: editedInvocation,
+  invocation,
   setEditedInvocation,
   isDisabled = true,
   showResponseTab = true,
@@ -35,19 +35,19 @@ export const InvocationUpperBar = ({
   const { sniffers } = useSniffersStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
+    (s) => s.id === snifferId || s.id === invocation?.snifferId,
   );
   const navigator = useNavigate();
 
   const executeRequest = () => {
-    if (!editedInvocation) {
+    if (!invocation) {
       return;
     }
-    const sid = (snifferId as string) || editedInvocation.snifferId;
+    const sid = (snifferId as string) || invocation.snifferId;
     if (!sid) {
       return;
     }
-    executeInvocation({ ...editedInvocation, snifferId: sid }).then((res) => {
+    executeInvocation({ ...invocation, snifferId: sid }).then((res) => {
       if (res) {
         setEditedInvocation((prevState) => {
           if (prevState) {
@@ -67,12 +67,12 @@ export const InvocationUpperBar = ({
   };
 
   const importMock = () => {
-    if (!sniffer || !editedInvocation || !editedInvocation.response) {
+    if (!sniffer || !invocation || !invocation.response) {
       return;
     }
     setLoading(true);
     return BackendAxios.post("/mocks/import-from-invocation", {
-      requestId: editedInvocation.id,
+      requestId: invocation.id,
     })
       .then((res) => {
         navigator(`/mocks/${res?.data?.id}?snifferId=${sniffer.id}`);
@@ -94,11 +94,11 @@ export const InvocationUpperBar = ({
         <div className="flex flex-row items-center w-28">
           <SelectMethodDropDown
             disabled={isDisabled}
-            value={editedInvocation?.method || ""}
+            value={invocation?.method || ""}
             onChange={(value: string) => {
-              if (editedInvocation) {
+              if (invocation) {
                 setEditedInvocation({
-                  ...editedInvocation,
+                  ...invocation,
                   method: value,
                 });
               }
@@ -116,11 +116,11 @@ export const InvocationUpperBar = ({
         </div>
         <TextField
           disabled={isDisabled}
-          value={editedInvocation?.url}
+          value={invocation?.url}
           onChange={(e: any) => {
-            if (editedInvocation) {
+            if (invocation) {
               setEditedInvocation({
-                ...editedInvocation,
+                ...invocation,
                 url: e.target.value,
               });
             }
@@ -160,7 +160,7 @@ export const InvocationUpperBar = ({
       <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
         <InvocationDetails
           showResponseTab={showResponseTab}
-          invocation={editedInvocation}
+          invocation={invocation}
           setInvocation={setEditedInvocation}
         />
       </div>
