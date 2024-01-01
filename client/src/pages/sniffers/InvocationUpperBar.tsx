@@ -88,7 +88,7 @@ export const InvocationUpperBar = ({
   const snifferUrl = sniffer == null ? "" : getSnifferDomain(sniffer.subdomain);
 
   return (
-    <>
+    <div>
       <div className="flex flex-row items-center space-x-2">
         {component}
         <div className="flex flex-row items-center w-28">
@@ -164,6 +164,6 @@ export const InvocationUpperBar = ({
           setInvocation={setEditedInvocation}
         />
       </div>
-    </>
+    </div>
   );
 };

@@ -50,7 +50,7 @@ export const LivePage = () => {
   }, [invocationId]);
 
   return (
-    <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
+    <div className="flex flex-row w-full h-[calc(100vh-96px)]">
       {(invocations.length > 0 || loadingInvocations) && (
         <div className={`flex flex-col w-full h-full`}>
           {snackBar}

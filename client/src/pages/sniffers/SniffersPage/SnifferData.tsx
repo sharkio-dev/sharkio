@@ -6,6 +6,7 @@ import { InvocationUpperBar } from "../InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { useEffect, useState } from "react";
 import { EndpointType, InvocationType } from "../types";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();
@@ -46,22 +47,26 @@ export const SnifferData: React.FC = () => {
     );
   };
 
-  const bottomBarHeight = !invocationId
-    ? "h-1/1 max-h-[calc(100vh-56px)]"
-    : "h-1/3 max-h-[calc(33vh-16px)]";
-
   return (
-    <>
-      <div className={`flex flex-col w-full`}>
-        <div className="flex flex-col p-4 px-4 border-b border-border-color h-2/3 max-h-[calc(67vh-56px)] overflow-y-auto">
+    <PanelGroup
+      direction={"vertical"}
+      className="min-h-[calc(100vh-128px)] max-h-[calc(100vh-10px)] overflow-hidden"
+    >
+      <Panel maxSize={80} defaultSize={50} className="w-full h-full">
+        <div className="h-full flex flex-col p-4 px-4 border-b border-border-color overflow-y-auto">
           <InvocationUpperBar
             setEditedInvocation={setEditedInvocation}
             invocation={editedInvocation}
           />
         </div>
-        <div
-          className={`flex flex-col p-2 px-4 ${bottomBarHeight} w-full overflow-y-auto`}
-        >
+      </Panel>
+      <div className="relative h-[1px] w-full hover:bg-blue-300">
+        <PanelResizeHandle
+          className={`h-[30px] w-full absolute top-[-15px] left-0 `}
+        />
+      </div>
+      <Panel maxSize={80} defaultSize={50} className="w-full">
+        <div className={`h-full flex flex-col w-full overflow-y-auto`}>
           {invocations && (
             <InvocationsBottomBar
               handleInvocationClicked={onInvocationClick}
@@ -70,8 +75,8 @@ export const SnifferData: React.FC = () => {
             />
           )}
         </div>
-      </div>
-    </>
+      </Panel>
+    </PanelGroup>
   );
 };
 
