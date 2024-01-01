@@ -3,9 +3,9 @@ import { InvocationType } from "./types";
 import { Invocation } from "./Invocation";
 import { useState } from "react";
 import { TextField } from "@mui/material";
-import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
+import RefreshButton from "../../components/refresh-button/RefreshButton";
 
 type InvocationsBottomBarProps = {
   activeInvocation?: InvocationType;
@@ -44,12 +44,7 @@ export const InvocationsBottomBar = ({
       <div className="flex flex-row justify-between items-center text-center mb-4">
         <div className="text-xl font-bold font-mono ">{title}</div>
         <div className="flex flex-row-reverse items-center space-x-4 w-1/2">
-          {refresh && (
-            <LuRefreshCcw
-              className="flex text-gray-500 text-xl cursor-pointer ml-4"
-              onClick={refresh}
-            />
-          )}
+          {refresh && <RefreshButton refresh={refresh}/>}
           {!showSearch ? (
             <CgSearch
               className="flex text-gray-500 text-xl cursor-pointer"
