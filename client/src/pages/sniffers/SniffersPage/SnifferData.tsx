@@ -11,7 +11,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();
   const { show: showSnackbar } = useSnackbar();
-  const { endpointId, invocationId } = useParams();
+  const { endpointId } = useParams();
   const { endpoints, invocations, loadInvocations, resetInvocations } =
     useSniffersStore();
   const [editedInvocation, setEditedInvocation] = useState<
