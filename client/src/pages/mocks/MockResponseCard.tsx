@@ -1,16 +1,16 @@
 import { Save } from "@mui/icons-material";
-import { Input, Radio, Tooltip } from "@mui/material";
+import { Button, IconButton, Input, Radio, Tooltip } from "@mui/material";
+import { useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
-import { selectIconByStatus } from "../sniffers/Invocation";
-import { MockResponseDetails } from "./MockResponseDetails";
-import { useState } from "react";
 import {
   Mock,
   MockResponse,
   useMockResponseStore,
 } from "../../stores/mockStore";
+import { selectIconByStatus } from "../sniffers/Invocation";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { MockResponseDetails } from "./MockResponseDetails";
 
 interface IMockResponseCard {
   mock: Mock;
@@ -43,6 +43,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   const [editName, setEditName] = useState<boolean>(false);
   const [name, setName] = useState<string>(mockResponse.name);
   const { editMockResponse } = useMockResponseStore();
+  const isSelected = mockResponse.id === mock.selectedResponseId;
 
   const handleSaveNameClicked = () => {
     setIsSaving(true);
@@ -128,16 +129,33 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             {isDeleting ? (
               <LoadingIcon />
             ) : (
-              <AiOutlineDelete
-                className=" text-red-400 active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md"
-                onClick={() => {
-                  setIsDeleting(true);
-                  onDeleteMockResponse(mockResponse.id).finally(() => {
-                    setIsDeleting(false);
-                  });
-                }}
-              />
+              <Tooltip
+                title={
+                  isSelected
+                    ? "Cannot delete default response"
+                    : "Delete the response"
+                }
+              >
+                <IconButton>
+                  <AiOutlineDelete
+                    className={` text-lg cursor-pointer rounded-md active:scale-110 h-4 w-4 ${
+                      isSelected
+                        ? "text-gray-500 "
+                        : "hover:bg-border-color text-red-400"
+                    }`}
+                    onClick={() => {
+                      if (isSelected) return;
+                      setIsDeleting(true);
+                      onDeleteMockResponse(mockResponse.id).finally(() => {
+                        setIsDeleting(false);
+                      });
+                    }}
+                  />
+                </IconButton>
+                {/* asdasd */}
+              </Tooltip>
             )}
+
             <IoIosArrowForward
               className={`active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md ${
                 openResponseId === mockResponse.id ? "rotate-90" : ""
