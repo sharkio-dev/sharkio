@@ -48,6 +48,7 @@
     "react": "^18.2.0",
     "react-code-blocks": "^0.1.5",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
     "react-icons": "^4.11.0",
     "react-json-editor-ajrm": "^2.5.14",
     "react-json-pretty": "^2.2.0",
@@ -56,6 +57,7 @@
     "react-router-dom": "^6.10.0",
     "reactflow": "^11.10.1",
     "swagger-ui-react": "^5.2.0",
+    "uuid": "^9.0.1",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
@@ -67,6 +69,7 @@
     "@types/react-dom": "^18.0.11",
     "@types/react-json-editor-ajrm": "^2.5.5",
     "@types/swagger-ui-react": "^4.18.0",
+    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-basic-ssl": "^1.0.1",

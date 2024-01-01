@@ -36,6 +36,7 @@ export function InvocationDetails({
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
     "Status",
   );
+  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
 
   const handleChange = (_: any, newValue: string) => {
     setValue(newValue);
@@ -60,22 +61,15 @@ export function InvocationDetails({
     }
   };
 
-  const onHeadersChange = (headers: { name: string; value: any }[]) => {
+  const onHeadersChange = (headers: { [key: string]: string }) => {
     if (invocation) {
       setInvocation({
         ...invocation,
-        headers: headers.reduce(
-          (acc, header) => {
-            acc[header.name] = header.value;
-            return acc;
-          },
-          {} as { [key: string]: any },
-        ),
+        headers,
       });
     }
   };
 
-  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
   const languageCodeText = React.useMemo(() => {
     return invocation
       ? generateApiRequestSnippet(codeLanguage, invocation)
@@ -108,44 +102,8 @@ export function InvocationDetails({
         >
           <div className="flex flex-col w-full p-2 rounded-md overflow-y-auto">
             <HeaderSection
-              headers={
-                invocation?.headers
-                  ? Object.keys(invocation?.headers).map((key) => ({
-                      name: key,
-                      value: invocation?.headers[key],
-                    }))
-                  : []
-              }
-              addHeader={() => {
-                onHeadersChange([
-                  ...(invocation?.headers
-                    ? Object.keys(invocation?.headers).map((key) => ({
-                        name: key,
-                        value: invocation?.headers[key],
-                      }))
-                    : []),
-                  { name: "", value: "" },
-                ]);
-              }}
-              deleteHeader={(index) => {
-                const headerName =
-                  invocation?.headers &&
-                  Object.keys(invocation?.headers)[index];
-                if (headerName) {
-                  const newHeaders = { ...invocation?.headers };
-                  delete newHeaders[headerName];
-                  onHeadersChange(
-                    Object.keys(newHeaders).map((key) => ({
-                      name: key,
-                      value: invocation?.headers[key],
-                    })),
-                  );
-                }
-              }}
-              setHeaders={() => {
-                // TODO: implement
-                // onHeadersChange();
-              }}
+              headers={invocation?.headers || {}}
+              handleHeadersChange={onHeadersChange}
             />
           </div>
         </TabPanel>
@@ -166,30 +124,20 @@ export function InvocationDetails({
                   Body
                 </ToggleButton>
                 <ToggleButton value="Headers" className="w-24 h-6">
-                  {" "}
                   Headers
                 </ToggleButton>
               </ToggleButtonGroup>
               {section === "Status" && (
-                <>
-                  <StatusCodeSelector
-                    isDisabled={true}
-                    value={responseData(invocation?.response).status}
-                  />
-                </>
+                <StatusCodeSelector
+                  isDisabled={true}
+                  value={responseData(invocation?.response).status}
+                />
               )}
               {section === "Body" && (
                 <BodySection body={responseData(invocation?.response).body} />
               )}
               {section === "Headers" && (
-                <HeaderSection
-                  headers={Object.entries(
-                    responseData(invocation?.response).headers || {},
-                  ).map(([key, value]) => ({
-                    name: key,
-                    value,
-                  }))}
-                />
+                <HeaderSection headers={invocation?.response?.headers || {}} />
               )}
             </div>
           </TabPanel>

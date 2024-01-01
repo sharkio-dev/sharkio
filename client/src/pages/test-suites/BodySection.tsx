@@ -38,7 +38,7 @@ export const BodySection = ({
       <Editor
         width="100%"
         theme="vs-dark"
-        className="min-h-[50vh]"
+        className="min-h-[40vh]"
         defaultLanguage="json"
         value={body}
         language={type}

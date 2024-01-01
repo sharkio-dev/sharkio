@@ -5,24 +5,25 @@ import { useState } from "react";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { useMockStore } from "../../stores/mockStore";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "./InvocationDetails";
 import { LoadingIcon } from "./LoadingIcon";
 import { EndpointType, InvocationType } from "./types";
+import { getSnifferDomain } from "../../utils/getSnifferUrl";
+import { BackendAxios } from "../../api/backendAxios";
 
 type InvocationUpperBarProps = {
   setEditedInvocation: React.Dispatch<
     React.SetStateAction<EndpointType | undefined>
   >;
-  activeInvocation?: InvocationType | EndpointType | undefined;
+  invocation?: InvocationType | EndpointType | undefined;
   isDisabled?: boolean;
   showResponseTab?: boolean;
 };
 
 export const InvocationUpperBar = ({
-  activeInvocation: editedInvocation,
+  invocation,
   setEditedInvocation,
   isDisabled = true,
   showResponseTab = true,
@@ -32,22 +33,21 @@ export const InvocationUpperBar = ({
   const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const { sniffers } = useSniffersStore();
-  const { createMock } = useMockStore();
   const { show, component } = useSnackbar();
   const sniffer = sniffers.find(
-    (s) => s.id === snifferId || s.id === editedInvocation?.snifferId,
+    (s) => s.id === snifferId || s.id === invocation?.snifferId,
   );
   const navigator = useNavigate();
 
   const executeRequest = () => {
-    if (!editedInvocation) {
+    if (!invocation) {
       return;
     }
-    const sid = (snifferId as string) || editedInvocation.snifferId;
+    const sid = (snifferId as string) || invocation.snifferId;
     if (!sid) {
       return;
     }
-    executeInvocation({ ...editedInvocation, snifferId: sid }).then((res) => {
+    executeInvocation({ ...invocation, snifferId: sid }).then((res) => {
       if (res) {
         setEditedInvocation((prevState) => {
           if (prevState) {
@@ -67,46 +67,38 @@ export const InvocationUpperBar = ({
   };
 
   const importMock = () => {
-    if (!sniffer || !editedInvocation || !editedInvocation.response) {
+    if (!sniffer || !invocation || !invocation.response) {
       return;
     }
     setLoading(true);
-    return createMock(sniffer.id, {
-      method: editedInvocation?.method,
-      url: editedInvocation?.url,
-      headers: editedInvocation?.response?.headers as Record<string, string>,
-      body: editedInvocation?.response?.body,
-      status: editedInvocation?.response?.status?.toString(),
-      isActive: true,
+    return BackendAxios.post("/mocks/import-from-invocation", {
+      requestId: invocation.id,
     })
       .then((res) => {
-        navigator(`/mocks/${res?.id}?snifferId=${sniffer.id}`);
+        navigator(`/mocks/${res?.data?.id}?snifferId=${sniffer.id}`);
       })
       .catch(() => {
-        show("This endpoint already has a mock", "warning");
+        show("Failed to import mock", "error");
       })
       .finally(() => {
         setLoading(false);
       });
   };
 
-  const snifferUrl =
-    sniffer == null
-      ? ""
-      : `https://${sniffer?.subdomain}.${import.meta.env.VITE_PROXY_DOMAIN}`;
+  const snifferUrl = sniffer == null ? "" : getSnifferDomain(sniffer.subdomain);
 
   return (
-    <>
+    <div>
       <div className="flex flex-row items-center space-x-2">
         {component}
         <div className="flex flex-row items-center w-28">
           <SelectMethodDropDown
             disabled={isDisabled}
-            value={editedInvocation?.method || ""}
+            value={invocation?.method || ""}
             onChange={(value: string) => {
-              if (editedInvocation) {
+              if (invocation) {
                 setEditedInvocation({
-                  ...editedInvocation,
+                  ...invocation,
                   method: value,
                 });
               }
@@ -124,11 +116,11 @@ export const InvocationUpperBar = ({
         </div>
         <TextField
           disabled={isDisabled}
-          value={editedInvocation?.url}
+          value={invocation?.url}
           onChange={(e: any) => {
-            if (editedInvocation) {
+            if (invocation) {
               setEditedInvocation({
-                ...editedInvocation,
+                ...invocation,
                 url: e.target.value,
               });
             }
@@ -168,10 +160,10 @@ export const InvocationUpperBar = ({
       <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
         <InvocationDetails
           showResponseTab={showResponseTab}
-          invocation={editedInvocation}
+          invocation={invocation}
           setInvocation={setEditedInvocation}
         />
       </div>
-    </>
+    </div>
   );
 };

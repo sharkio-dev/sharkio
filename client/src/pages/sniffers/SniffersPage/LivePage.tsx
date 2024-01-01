@@ -1,29 +1,21 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackendAxios } from "../../../api/backendAxios";
-import { routes } from "../../../constants/routes";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import { InvocationUpperBar } from ".././InvocationUpperBar";
 import { InvocationsBottomBar } from "../InvocationsBottomBar";
+import { InvocationType } from "../types";
 
 export const LivePage = () => {
-  const { invocationId } = useParams();
   const navigator = useNavigate();
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const {
-    loadLiveInvocations,
-    setInvocation,
-    invocations,
-    loadingInvocations,
-  } = useSniffersStore();
+  const [invocation, setInvocation] = useState<InvocationType>();
+  const { invocationId } = useParams();
 
-  const invocation =
-    (invocations &&
-      Array.isArray(invocations) &&
-      invocations.find((i) => i.id === invocationId)) ||
-    undefined;
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const { loadLiveInvocations, invocations, loadingInvocations } =
+    useSniffersStore();
 
   const loadInvocations = async () => {
     return loadLiveInvocations().catch(() => {
@@ -42,21 +34,20 @@ export const LivePage = () => {
     };
   }, []);
 
-  const onInvocationClick = useCallback(
-    (id: string) => {
-      BackendAxios.get(`/invocation/${id}`).then((res) => {
-        if (res) {
-          setInvocation(res.data);
-        }
-      });
-
-      navigator(`${routes.LIVE_INVOCATIONS}/${id}`);
-    },
-    [invocationId],
-  );
+  useEffect(() => {
+    if (!invocationId) {
+      setInvocation(undefined);
+      return;
+    }
+    BackendAxios.get(`/invocation/${invocationId}`).then((res) => {
+      if (res) {
+        setInvocation(res.data);
+      }
+    });
+  }, [invocationId]);
 
   return (
-    <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
+    <div className="flex flex-row w-full h-[calc(100vh-96px)]">
       {(invocations.length > 0 || loadingInvocations) && (
         <div className={`flex flex-col w-full h-full`}>
           {snackBar}
@@ -68,7 +59,7 @@ export const LivePage = () => {
               {invocationId && (
                 <div className="flex flex-col p-4 px-4 border-b border-border-color h-full">
                   <InvocationUpperBar
-                    activeInvocation={invocation}
+                    invocation={invocation}
                     setEditedInvocation={function (): void {
                       throw new Error("Function not implemented.");
                     }}
@@ -87,9 +78,10 @@ export const LivePage = () => {
                 className={`flex flex-col p-2 px-4 max-h-full overflow-y-auto`}
               >
                 <InvocationsBottomBar
+                  handleInvocationClicked={(invocationId: string) => {
+                    navigator(`/live-invocations/${invocationId}`);
+                  }}
                   title={"Live Invocations"}
-                  activeInvocation={invocation}
-                  setActiveInvocation={onInvocationClick}
                   refresh={() => loadInvocations()}
                 />
               </div>

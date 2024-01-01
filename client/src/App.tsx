@@ -99,9 +99,15 @@ function App(): React.JSX.Element {
               path={"*"}
               element={
                 <>
-                  <PageTemplate withSideBar={true} withBottomBar={true}>
-                    {user ? <HomePage /> : <LandingPage />}
-                  </PageTemplate>
+                  {user ? (
+                    <PageTemplate withSideBar={true} withBottomBar={true}>
+                      <HomePage />
+                    </PageTemplate>
+                  ) : (
+                    <PageTemplate withSideBar={false} withBottomBar={true}>
+                      <LandingPage />
+                    </PageTemplate>
+                  )}
                 </>
               }
             />

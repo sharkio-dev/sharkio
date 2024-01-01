@@ -208,6 +208,7 @@ export class EndpointService {
         userId,
       },
     });
+    console.log(invocation);
     if (!invocation) {
       return undefined;
     }

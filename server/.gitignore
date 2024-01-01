@@ -17,3 +17,6 @@ sniffers-setup.json
 yarn.lock
 yarn-error.log
 certificates
+
+# jest
+coverage

@@ -22,7 +22,7 @@
 
 .pageTemplate[data-no-bottombar="true"][data-no-sidebar="false"] {
   display: grid;
-  grid-template-areas: "a b" "a c" "c c";
+  grid-template-areas: "b b" "c c" "d d";
 }
 
 .pageTemplate[data-no-bottombar="true"][data-no-sidebar="true"] {

@@ -95,7 +95,6 @@ export class SnifferController {
          */
         async (req: Request, res: Response) => {
           try {
-            console.log({ body: req.body });
             const { ...config } = req.body;
             const userId = res.locals.auth.user.id;
 

@@ -13,6 +13,7 @@ import { Test } from "./entities/Test";
 import { Mock } from "./entities/Mock";
 import { Workspace } from "./entities/Workspace";
 import { config } from "dotenv";
+import { MockResponse } from "./entities/MockResponse";
 config({
   path: "../.env",
 });
@@ -41,6 +42,7 @@ export const createConnection = () => {
       TestExecution,
       Response,
       Mock,
+      MockResponse,
       Workspace,
       Response,
     ],
