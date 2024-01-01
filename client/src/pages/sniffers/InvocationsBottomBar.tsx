@@ -1,16 +1,11 @@
 import { TextField } from "@mui/material";
 import { useState } from "react";
 import { CgSearch } from "react-icons/cg";
-import { InvocationType } from "./types";
 import { Invocation } from "./Invocation";
-import { useState } from "react";
-import { TextField } from "@mui/material";
-
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { Invocation } from "./Invocation";
 import { LoadingIcon } from "./LoadingIcon";
-import RefreshButton from "../../components/refresh-button/RefreshButton";
 import { useParams } from "react-router-dom";
+import RefreshButton from "../../components/refresh-button/RefreshButton";
 
 type InvocationsBottomBarProps = {
   title: string;
