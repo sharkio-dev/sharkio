@@ -215,7 +215,7 @@ describe("test-result-analyzer", () => {
       it(description, async () => {
         const result = await testResultAnalyzer.analyze(
           response,
-          rules as Rule[]
+          rules as Rule[],
         );
         expect(result).toEqual(expected);
       });
@@ -492,7 +492,7 @@ describe("test-result-analyzer", () => {
       it(description, async () => {
         const result = await testResultAnalyzer.analyze(
           response,
-          rules as Rule[]
+          rules as Rule[],
         );
         expect(result).toEqual(expected);
       });
@@ -784,7 +784,7 @@ describe("test-result-analyzer", () => {
       it(description, async () => {
         const result = await testResultAnalyzer.analyze(
           response,
-          rules as Rule[]
+          rules as Rule[],
         );
         expect(result).toEqual(expected);
       });
