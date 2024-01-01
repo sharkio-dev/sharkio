@@ -36,6 +36,7 @@ export function InvocationDetails({
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
     "Status",
   );
+  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
 
   const handleChange = (_: any, newValue: string) => {
     setValue(newValue);
@@ -69,7 +70,6 @@ export function InvocationDetails({
     }
   };
 
-  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
   const languageCodeText = React.useMemo(() => {
     return invocation
       ? generateApiRequestSnippet(codeLanguage, invocation)
@@ -102,14 +102,7 @@ export function InvocationDetails({
         >
           <div className="flex flex-col w-full p-2 rounded-md overflow-y-auto">
             <HeaderSection
-              headers={
-                invocation?.headers
-                  ? Object.keys(invocation?.headers).map((key) => ({
-                      name: key,
-                      value: invocation?.headers[key],
-                    }))
-                  : []
-              }
+              headers={invocation?.headers || {}}
               handleHeadersChange={onHeadersChange}
             />
           </div>
@@ -131,17 +124,14 @@ export function InvocationDetails({
                   Body
                 </ToggleButton>
                 <ToggleButton value="Headers" className="w-24 h-6">
-                  {" "}
                   Headers
                 </ToggleButton>
               </ToggleButtonGroup>
               {section === "Status" && (
-                <>
-                  <StatusCodeSelector
-                    isDisabled={true}
-                    value={responseData(invocation?.response).status}
-                  />
-                </>
+                <StatusCodeSelector
+                  isDisabled={true}
+                  value={responseData(invocation?.response).status}
+                />
               )}
               {section === "Body" && (
                 <BodySection body={responseData(invocation?.response).body} />

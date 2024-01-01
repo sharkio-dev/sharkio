@@ -6,22 +6,21 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { Invocation } from "./Invocation";
 import { LoadingIcon } from "./LoadingIcon";
 import { EndpointType, InvocationType } from "./types";
+import { useNavigate, useParams } from "react-router-dom";
 
 type InvocationsBottomBarProps = {
-  activeInvocation?: InvocationType | EndpointType;
-  setActiveInvocation: (invocationId: string) => void;
   title: string;
   refresh?: () => void;
 };
 export const InvocationsBottomBar = ({
-  activeInvocation,
-  setActiveInvocation,
   title,
   refresh,
 }: InvocationsBottomBarProps) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const { invocations, loadingInvocations } = useSniffersStore();
+  const { invocationId } = useParams();
+  const navigator = useNavigate();
 
   const filteredInvocations =
     invocations?.filter((invocation) => {
@@ -41,7 +40,7 @@ export const InvocationsBottomBar = ({
     }) || [];
 
   const handleInvocationClicked = (invocationId: string) => {
-    setActiveInvocation(invocationId);
+    navigator(`/live-invocations/${invocationId}`);
   };
 
   return (
@@ -83,7 +82,7 @@ export const InvocationsBottomBar = ({
             return (
               <Invocation
                 method={invocation.method}
-                isSelected={invocation.id === activeInvocation?.id}
+                isSelected={invocation.id === invocationId}
                 onClick={() => handleInvocationClicked(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
