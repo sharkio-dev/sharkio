@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackendAxios } from "../../../api/backendAxios";
-import { routes } from "../../../constants/routes";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import { InvocationUpperBar } from ".././InvocationUpperBar";
@@ -10,9 +9,9 @@ import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { InvocationType } from "../types";
 
 export const LivePage = () => {
-  const { invocationId } = useParams();
   const navigator = useNavigate();
   const [invocation, setInvocation] = useState<InvocationType>();
+  const { invocationId } = useParams();
 
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadLiveInvocations, invocations, loadingInvocations } =
@@ -45,8 +44,6 @@ export const LivePage = () => {
         setInvocation(res.data);
       }
     });
-
-    navigator(`${routes.LIVE_INVOCATIONS}/${invocationId}`);
   }, [invocationId]);
 
   return (
@@ -81,7 +78,7 @@ export const LivePage = () => {
                 className={`flex flex-col p-2 px-4 max-h-full overflow-y-auto`}
               >
                 <InvocationsBottomBar
-                  handleInvocationClicked={() => {
+                  handleInvocationClicked={(invocationId: string) => {
                     navigator(`/live-invocations/${invocationId}`);
                   }}
                   title={"Live Invocations"}
