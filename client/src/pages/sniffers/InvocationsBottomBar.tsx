@@ -5,14 +5,15 @@ import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { Invocation } from "./Invocation";
 import { LoadingIcon } from "./LoadingIcon";
-import { EndpointType, InvocationType } from "./types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 type InvocationsBottomBarProps = {
   title: string;
   refresh?: () => void;
+  handleInvocationClicked: (invocationId: string) => void;
 };
 export const InvocationsBottomBar = ({
+  handleInvocationClicked,
   title,
   refresh,
 }: InvocationsBottomBarProps) => {
@@ -20,7 +21,6 @@ export const InvocationsBottomBar = ({
   const [showSearch, setShowSearch] = useState(false);
   const { invocations, loadingInvocations } = useSniffersStore();
   const { invocationId } = useParams();
-  const navigator = useNavigate();
 
   const filteredInvocations =
     invocations?.filter((invocation) => {
@@ -38,10 +38,6 @@ export const InvocationsBottomBar = ({
 
       return filterByMethod || filterByUrl || filterByDate;
     }) || [];
-
-  const handleInvocationClicked = (invocationId: string) => {
-    navigator(`/live-invocations/${invocationId}`);
-  };
 
   return (
     <>

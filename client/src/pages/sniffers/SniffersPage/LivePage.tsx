@@ -81,6 +81,9 @@ export const LivePage = () => {
                 className={`flex flex-col p-2 px-4 max-h-full overflow-y-auto`}
               >
                 <InvocationsBottomBar
+                  handleInvocationClicked={() => {
+                    navigator(`/live-invocations/${invocationId}`);
+                  }}
                   title={"Live Invocations"}
                   refresh={() => loadInvocations()}
                 />
