@@ -99,7 +99,7 @@ export const CreateInvocation: React.FC = () => {
       <div className="flex flex-col p-4 px-4 h-[100vh-96px] overflow-y-auto">
         <InvocationUpperBar
           isDisabled={false}
-          activeInvocation={invocation}
+          invocation={invocation}
           setEditedInvocation={(v) => {
             setInvocation(v);
           }}
