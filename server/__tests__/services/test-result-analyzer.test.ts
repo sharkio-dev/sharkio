@@ -1,3 +1,4 @@
+import { Rule } from "../../model/repositories/testSuite/types";
 import { TestResultAnalyzer } from "../../services/testSuite/test-result-analyzer.service";
 
 describe("test-result-analyzer", () => {
@@ -212,7 +213,10 @@ describe("test-result-analyzer", () => {
 
     testCases.forEach(({ description, response, rules, expected }) => {
       it(description, async () => {
-        const result = await testResultAnalyzer.analyze(response, rules);
+        const result = await testResultAnalyzer.analyze(
+          response,
+          rules as Rule[]
+        );
         expect(result).toEqual(expected);
       });
     });
@@ -486,7 +490,10 @@ describe("test-result-analyzer", () => {
 
     testCases.forEach(({ description, response, rules, expected }) => {
       it(description, async () => {
-        const result = await testResultAnalyzer.analyze(response, rules);
+        const result = await testResultAnalyzer.analyze(
+          response,
+          rules as Rule[]
+        );
         expect(result).toEqual(expected);
       });
     });
@@ -775,7 +782,10 @@ describe("test-result-analyzer", () => {
 
     testCases.forEach(({ description, response, rules, expected }) => {
       it(description, async () => {
-        const result = await testResultAnalyzer.analyze(response, rules);
+        const result = await testResultAnalyzer.analyze(
+          response,
+          rules as Rule[]
+        );
         expect(result).toEqual(expected);
       });
     });
