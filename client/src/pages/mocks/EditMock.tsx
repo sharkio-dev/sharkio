@@ -13,6 +13,7 @@ import { MockButton } from "./MockButton";
 import { MockUrlInput } from "./MockUrlInput";
 import { MockResponsesSection } from "./MockResponsesSection";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { SelectComponent } from "../../components/select-component/SelectComponent";
 
 interface EditMockProps {
   mock: Mock;
@@ -41,6 +42,13 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
     setMock((prev) => {
       if (!prev) return prev;
       return { ...prev, url: value };
+    });
+  };
+
+  const handleSelectionMethodChanged = (selectionMethod: string) => {
+    setMock((prev) => {
+      if (!prev) return prev;
+      return { ...prev, responseSelectionMethod: selectionMethod };
     });
   };
 
@@ -139,6 +147,20 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
             snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
             disabled={true}
           />
+          <div className="w-40 py-2">
+            <SelectComponent
+              title="Algorithm"
+              options={[
+                { label: "Default", value: "default" },
+                { label: "Sequence", value: "sequence" },
+                { label: "Random", value: "random" },
+              ]}
+              value={mock.responseSelectionMethod}
+              setValue={(value) => {
+                handleSelectionMethodChanged(value);
+              }}
+            />
+          </div>
           <MockButton
             text="Save"
             onClick={onClickEdit}

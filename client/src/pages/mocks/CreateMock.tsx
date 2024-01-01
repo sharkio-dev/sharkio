@@ -8,6 +8,7 @@ import { MockUrlInput } from "./MockUrlInput";
 import { v4 as uuidv4 } from "uuid";
 import { MockResponsesSection } from "./MockResponsesSection";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { SelectComponent } from "../../components/select-component/SelectComponent";
 
 interface CreateMockProps {
   sniffer: SnifferType;
@@ -63,6 +64,13 @@ export const CreateMock: React.FC<CreateMockProps> = ({
     }));
   };
 
+  const handleSelectionMethodChanged = (selectionMethod: string) => {
+    setEditedMock((prev) => {
+      if (!prev) return prev;
+      return { ...prev, responseSelectionMethod: selectionMethod };
+    });
+  };
+
   const onAddResponse = async () => {
     let index = editedMock.mockResponses ? editedMock.mockResponses.length : 0;
     const newResponse = {
@@ -94,6 +102,20 @@ export const CreateMock: React.FC<CreateMockProps> = ({
           handleMethodChange={handleMethodChange}
           snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
         />
+        <div className="w-40 py-2">
+          <SelectComponent
+            title="Algorithm"
+            options={[
+              { label: "Default", value: "default" },
+              { label: "Sequence", value: "sequence" },
+              { label: "Random", value: "random" },
+            ]}
+            value={editedMock.responseSelectionMethod}
+            setValue={(value) => {
+              handleSelectionMethodChanged(value);
+            }}
+          />
+        </div>
         <MockButton
           text="Create"
           onClick={onClickSave}

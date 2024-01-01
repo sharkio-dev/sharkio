@@ -1,9 +1,8 @@
 import React from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { Mock, MockResponse } from "../../stores/mockStore";
-import { MockResponseCard } from "./MockResponseCard";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { MockResponseCard } from "./MockResponseCard";
 
 interface MockResponsesSectionProps {
   handleMockResponsesChange: (responses: MockResponse[]) => void;
@@ -53,20 +52,6 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
             <AiOutlinePlus className="flex text-blue-500 hover:text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
           )}
           <span className="hover:text-green-400">Add Response</span>
-        </div>
-        <div className="w-40 py-2">
-          <SelectComponent
-            title="Algorithm"
-            options={[
-              { label: "Default", value: "default" },
-              { label: "Sequence", value: "sequence" },
-              { label: "Random", value: "random" },
-            ]}
-            value={mock.responseSelectionMethod}
-            setValue={(value) => {
-              handleMockChange({ ...mock, responseSelectionMethod: value });
-            }}
-          />
         </div>
       </div>
       {mock.mockResponses.map((mockResponse, index) => (
