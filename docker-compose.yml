@@ -1,7 +1,6 @@
 version: "3"
 services:
   frontend:
-    # image: ido-test-frontend-image
     build:
       context: ./client
       dockerfile: Dockerfile.local
@@ -16,7 +15,6 @@ services:
     depends_on:
       migrations:
         condition: service_completed_successfully
-    # image: ido-test-backend-image
     ports:
       - 5012:5012
       - 8080:8080
