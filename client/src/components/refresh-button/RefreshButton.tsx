@@ -37,7 +37,7 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({ refresh }) => {
   };
 
   const handleIntervalChange = (value: number) => {
-    setIsRefreshing(false); 
+    setIsRefreshing(false);
     setIntervalValue(value);
     startAutoRefresh(value);
     setShowDropdown(false);
@@ -54,7 +54,7 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({ refresh }) => {
     if (intervalValue !== null) {
       startAutoRefresh(intervalValue);
     }
-  }, []); 
+  }, []);
 
   const handleEscapeKey = (event: KeyboardEvent) => {
     if (event.key === "Escape" && showDropdown) {
@@ -63,7 +63,6 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({ refresh }) => {
   };
 
   useEffect(() => {
-    // Start auto-refresh when the component mounts
     if (intervalValue !== null) {
       startAutoRefresh(intervalValue);
     }
@@ -75,10 +74,37 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({ refresh }) => {
     };
   }, [intervalValue, showDropdown]);
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      clearInterval(intervalId as NodeJS.Timeout);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clearInterval(intervalId as NodeJS.Timeout);
+      } else if (intervalValue !== null && !isRefreshing) {
+        startAutoRefresh(intervalValue);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    if (intervalValue !== null && !isRefreshing) {
+      startAutoRefresh(intervalValue);
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      clearInterval(intervalId as NodeJS.Timeout);
+    };
+  }, [intervalId,intervalValue, isRefreshing]);
+
+
   useOnClickOutside(dropdownRef, () => setShowDropdown(false));
 
   return (
-    <div className="flex items-center  ">
+    <div className="flex items-center  absolute ">
       <button
         className={`px-2 py-1 text-white text-sm 
         "bg-blue-500
