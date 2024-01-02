@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:latest as builder
 
 WORKDIR /app
 
@@ -8,7 +8,14 @@ RUN npm install
 
 RUN npm run build
 
+FROM node:slim  as final
+
+WORKDIR /app
+
+COPY --from=builder /app .
+
 EXPOSE 5012
-EXPOSE 80
+EXPOSE 8000
+EXPOSE 8001
 
 CMD npm run prod

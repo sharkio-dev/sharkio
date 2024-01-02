@@ -1,4 +1,4 @@
-FROM node:latest as builder
+FROM node:slim as builder
 
 WORKDIR /app
 COPY package.json ./
