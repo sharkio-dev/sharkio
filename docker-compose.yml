@@ -46,10 +46,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.migrations
-    ports:
-      - 5012:5012
-      - 8080:8080
-      - 8081:8081
     environment:
       - VITE_SUPABASE_PROJECT_URL=https://rlhmecfbrihwgltuacbn.supabase.co
       - VITE_SUPABASE_ANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8
