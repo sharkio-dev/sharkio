@@ -57,6 +57,7 @@ import {
   SequentialResponseSelector,
 } from "./services/mock-response-selector";
 import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
+import { Interceptor } from "./server/interceptors/Interceptor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -181,7 +182,7 @@ async function main(isProxy = true, isServer = true) {
     responseService,
     mockService
   );
-  const interceptors = {
+  const interceptors: Record<string, Interceptor> = {
     cloud: cloudInterceptor,
   };
   const selectedInterceptor =
