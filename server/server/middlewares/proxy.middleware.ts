@@ -75,28 +75,6 @@ export class ProxyMiddleware {
     return undefined;
   }
 
-  async adaptIncomingResponse(incomingResponse: http.IncomingMessage) {
-    const body = await new Promise((resolve, reject) => {
-      let bodyChunks: Uint8Array[] = [];
-      incomingResponse
-        .on("data", (chunk) => {
-          bodyChunks.push(chunk);
-        })
-        .on("end", () => {
-          const bodyData = Buffer.concat(bodyChunks).toString();
-          resolve(bodyData);
-        });
-    });
-
-    const resObject = {
-      headers: incomingResponse.headers,
-      statusCode: incomingResponse.statusCode,
-      body,
-    };
-
-    return resObject;
-  }
-
   getMiddleware() {
     return this.proxyMiddleware;
   }
