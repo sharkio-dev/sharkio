@@ -7,7 +7,6 @@
     "dist"
   ],
   "scripts": {
-    "faker": "nodemon ./test-faker-handlebars.ts",
     "start": "nodemon main.ts",
     "dev": "nodemon main.ts",
     "proxytest": "nodemon proxy-test.ts",
