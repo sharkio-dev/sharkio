@@ -39,7 +39,7 @@ export const BodySection = ({
         width="100%"
         theme="vs-dark"
         className="min-h-[40vh]"
-        defaultLanguage="json"
+        defaultLanguage="handlebars"
         value={body}
         language={type}
         onMount={(editor) => {

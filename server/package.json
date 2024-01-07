@@ -7,6 +7,7 @@
     "dist"
   ],
   "scripts": {
+    "faker": "nodemon ./test-faker-handlebars.ts",
     "start": "nodemon main.ts",
     "dev": "nodemon main.ts",
     "proxytest": "nodemon proxy-test.ts",
@@ -31,6 +32,7 @@
   "license": "ISC",
   "dependencies": {
     "@bany/curl-to-json": "^1.2.8",
+    "@faker-js/faker": "^8.3.1",
     "@supabase/supabase-js": "^2.38.1",
     "axios": "^1.3.4",
     "body-parser": "^1.20.2",
@@ -43,6 +45,7 @@
     "express-promise-router": "^4.1.1",
     "handlebars": "^4.7.8",
     "http-proxy-middleware": "^2.0.6",
+    "json5": "^2.2.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "node-json-db": "^2.1.4",
