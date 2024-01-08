@@ -24,10 +24,10 @@ export const InvocationsSearchBar = ({
         <div className="flex flex-row-reverse items-center space-x-4 w-1/2">
           {refresh && (
             <LuRefreshCcw
-            className="flex text-gray-500 text-xl cursor-pointer ml-4"
-            onClick={refresh}
+              className="flex text-gray-500 text-xl cursor-pointer ml-4"
+              onClick={refresh}
             />
-            )}
+          )}
         </div>
       </div>
 

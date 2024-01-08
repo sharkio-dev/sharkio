@@ -37,7 +37,7 @@ export class RequestInterceptor {
 
     const invocation = await this.interceptor.saveRequest(
       endpoint,
-      testExecutionId
+      testExecutionId,
     );
 
     return invocation;
@@ -52,14 +52,14 @@ export class RequestInterceptor {
       statusCode: number | undefined;
       body: any;
     },
-    testExecutionId?: string
+    testExecutionId?: string,
   ) {
     return await this.interceptor.saveResponse(
       res,
       userId,
       snifferId,
       invocationId,
-      testExecutionId
+      testExecutionId,
     );
   }
 }

@@ -51,8 +51,8 @@ const LiveInvocationsSideBar = () => {
 
   return (
     <div className="flex flex-col px-2 pt-3 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] ">
-        <UrlFilter />
-      
+      <UrlFilter />
+
       <div className="border-t border-gray-400 my-4"></div>
       <StatusCodeFilter />
       <div className="border-t border-gray-400 my-4"></div>

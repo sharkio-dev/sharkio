@@ -19,8 +19,7 @@ const UrlFilter = () => {
       size="small"
       onChange={(e) => handleSearch(e.target.value)}
       value={searchParams.get(searchParamFilters.url)}
-      inputProps={{
-      }}
+      inputProps={{}}
     />
   );
 };

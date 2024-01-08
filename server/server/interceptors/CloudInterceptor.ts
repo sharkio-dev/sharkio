@@ -15,7 +15,7 @@ export class CloudInterceptor implements Interceptor {
     private readonly snifferService: SnifferService,
     private readonly endpointService: EndpointService,
     private readonly responseService: ResponseService,
-    private readonly mockService: MockService
+    private readonly mockService: MockService,
   ) {}
 
   async findSnifferBySubdomain(subdomain: string): Promise<Sniffer | null> {
@@ -25,12 +25,12 @@ export class CloudInterceptor implements Interceptor {
   async setMockSelectedResponse(
     userId: string,
     mockId: string,
-    selectedResponseId: string
+    selectedResponseId: string,
   ) {
     await this.mockService.setSelectedResponse(
       userId,
       mockId,
-      selectedResponseId
+      selectedResponseId,
     );
   }
 
@@ -38,7 +38,7 @@ export class CloudInterceptor implements Interceptor {
     return await this.endpointService.findOrCreate(
       req,
       sniffer.id,
-      sniffer.userId
+      sniffer.userId,
     );
   }
 
@@ -54,7 +54,7 @@ export class CloudInterceptor implements Interceptor {
     userId: Users["id"],
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
-    testExecutionId?: string
+    testExecutionId?: string,
   ) {
     await this.responseService.addResponse({
       userId,
@@ -70,13 +70,13 @@ export class CloudInterceptor implements Interceptor {
   async findMockByUrl(
     url: string,
     method: string,
-    sniffer: Sniffer
+    sniffer: Sniffer,
   ): Promise<Mock | null> {
     return await this.mockService.getByUrl(
       sniffer?.userId,
       sniffer?.id,
       url,
-      method
+      method,
     );
   }
 }

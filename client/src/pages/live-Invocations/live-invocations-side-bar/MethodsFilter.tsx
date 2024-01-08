@@ -1,7 +1,4 @@
-import {
-  FormGroup,
-  ToggleButton,
-} from "@mui/material";
+import { FormGroup, ToggleButton } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
 import { useState } from "react";
@@ -82,7 +79,7 @@ const MethodsFilter = () => {
               value={methods.PUT}
               color="warning"
               size="small"
-              sx={{ color: 'warning.main', flex: "1" }}
+              sx={{ color: "warning.main", flex: "1" }}
               onChange={() => handleCheckboxChange(methods.PUT)}
               selected={searchParams
                 .get(searchParamFilters.methods)
