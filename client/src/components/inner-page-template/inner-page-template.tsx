@@ -8,7 +8,10 @@ export const InnerPageTemplate: React.FC<innerPageTemplateProps> = ({
   contentComponent: ContentComponent,
 }) => {
   return (
-    <PanelGroup direction={"horizontal"} className="max-w-[calc(100vw-56px)]">
+    <PanelGroup
+      direction={"horizontal"}
+      className="max-w-[calc(100vw-56px)] h-full"
+    >
       <Panel defaultSize={20} maxSize={90}>
         <div className="flex flex-col h-full border-r border-border-color bg-secondary py-4">
           <SideBarComponent />
@@ -20,7 +23,7 @@ export const InnerPageTemplate: React.FC<innerPageTemplateProps> = ({
         />
       </div>
       <Panel maxSize={90}>
-        <div className="flex flex-col p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-96px)] ">
+        <div className="flex flex-col p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-96px)] h-full">
           <ContentComponent />
         </div>
       </Panel>
