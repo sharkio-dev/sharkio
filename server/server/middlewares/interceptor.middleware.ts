@@ -1,32 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import { useLog } from "../../lib/log/index";
-import EndpointService from "../../services/endpoint/endpoint.service";
-import ResponseService from "../../services/response/response.service";
-import { SnifferService } from "../../services/sniffer/sniffer.service";
-import { User } from "../../model/user/user.model";
-import { Sniffer } from "../../model/sniffer/sniffers.model";
-import { Request as RequestModel } from "../../model/request/request.model";
-
-const logger = useLog({
-  dirname: __dirname,
-  filename: __filename,
-});
+import { Users } from "../../model/entities/Users";
+import { Sniffer } from "../../model/entities/Sniffer";
+import { Request as RequestModel } from "../../model/entities/Request";
+import { Interceptor } from "../interceptors/Interceptor";
 
 export class RequestInterceptor {
-  constructor(
-    private readonly snifferService: SnifferService,
-    private readonly endpointService: EndpointService,
-    private readonly responseService: ResponseService,
-  ) {}
+  constructor(private readonly interceptor: Interceptor) {}
 
   async validateBeforeProxy(req: Request, res: Response, next: NextFunction) {
     const subdomain = req.hostname.split(".")[0];
-    const sniffer = await this.snifferService.findBySubdomain(subdomain);
+    const sniffer = await this.interceptor.findSnifferBySubdomain(subdomain);
 
     if (sniffer === null) {
       res.sendStatus(404);
     } else {
-      const interceptedInvocation = await this.interceptRequest(req);
+      const interceptedInvocation = await this.interceptRequest(req, sniffer);
 
       if (interceptedInvocation?.id) {
         req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
@@ -38,37 +27,24 @@ export class RequestInterceptor {
     }
   }
 
-  async interceptRequest(req: Request) {
-    const subdomain = req.hostname.split(".")[0];
-    const sniffer = await this.snifferService.findBySubdomain(subdomain);
-
-    if (sniffer === null) {
-      return undefined;
-    }
-
+  async interceptRequest(req: Request, sniffer: Sniffer) {
     const testExecutionId = req.headers["x-sharkio-test-execution-id"] as
       | string
       | undefined;
-    // delete req.headers["host"];
-    // req.headers["host"] = `${subdomain}.${process.env.PROXY_SERVER_DOMAIN}`;
     req.headers["ngrok-skip-browser-warning"] = "true";
 
-    const request = await this.endpointService.findOrCreate(
-      req,
-      sniffer.id,
-      sniffer.userId,
-    );
+    const endpoint = await this.interceptor.saveEndpoint(req, sniffer);
 
-    const invocation = await this.endpointService.addInvocation({
-      ...request,
-      testExecutionId,
-    });
+    const invocation = await this.interceptor.saveRequest(
+      endpoint,
+      testExecutionId
+    );
 
     return invocation;
   }
 
   async interceptResponse(
-    userId: User["id"],
+    userId: Users["id"],
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
     res: {
@@ -76,16 +52,14 @@ export class RequestInterceptor {
       statusCode: number | undefined;
       body: any;
     },
-    testExecutionId?: string,
+    testExecutionId?: string
   ) {
-    return await this.responseService.addResponse({
+    return await this.interceptor.saveResponse(
+      res,
       userId,
       snifferId,
-      requestId: invocationId,
-      headers: res.headers,
-      body: res.body,
-      status: res.statusCode,
-      testExecutionId,
-    });
+      invocationId,
+      testExecutionId
+    );
   }
 }

@@ -21,3 +21,4 @@ yarn.lock
 .yarnrc
 yarn.lock
 yarn-error.log
+pnpm-lock.yaml

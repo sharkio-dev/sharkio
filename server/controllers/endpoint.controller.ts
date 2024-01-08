@@ -44,6 +44,37 @@ export class EndpointController {
       },
     );
 
+    router.route("/:requestId").get(
+      /**
+       * @openapi
+       * /sharkio/request/{requestId}:
+       *   get:
+       *     tags:
+       *      - request
+       *     parameters:
+       *       - name: requestId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Request id
+       *         required: true
+       *     description: Get all requests
+       *     responses:
+       *       200:
+       *         description: Returns requests
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response, next: NextFunction) => {
+        const userId = res.locals.auth.user.id;
+        const requestId = req.params.requestId;
+
+        const limit = +(req.params.limit ?? 1000);
+        const requests = await this.endpointService.getById(userId, requestId);
+        res.status(200).send(requests);
+      },
+    );
+
     router.route("/:requestId/invocation").get(
       /**
        * @openapi
@@ -66,7 +97,10 @@ export class EndpointController {
        *         description: Server error
        */
       async (req, res) => {
+        const userId = res.locals.auth.user.id;
+
         const request = await this.endpointService.getById(
+          userId,
           req.params.requestId,
         );
         if (request === null) {
@@ -219,7 +253,7 @@ export class EndpointController {
        * /sharkio/request/import/curl:
        *   post:
        *     requestBody:
-       *        description: Execute a request
+       *        description: Import request from curl command
        *        content:
        *          application/json:
        *            schema:
@@ -263,6 +297,66 @@ export class EndpointController {
           );
 
           res.status(200).json(newEndpoint);
+        } catch (e) {
+          log.error(e);
+          res.status(500).send("Internal server error");
+        }
+      },
+    );
+
+    router.route("/import/:snifferId/swagger").post(
+      /**
+       * @openapi
+       * /sharkio/request/import/{snifferId}/swagger:
+       *   post:
+       *     requestBody:
+       *        description: import endpoint from swagger
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *     parameters:
+       *       - name: snifferId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Sniffer Id
+       *         required: true
+       *     tags:
+       *      - request
+       *     description: imports requests from swagger file
+       *     responses:
+       *       200:
+       *         description: request was successfully imported
+       *       500:
+       *         description: Server error
+       */
+      async (req, res) => {
+        try {
+          const userId = res.locals.auth.user.id;
+          const snifferId = req.params.snifferId;
+          const swagger = req.body;
+
+          if (swagger == null || swagger == "") {
+            res.status(400).send("swagger is required");
+          }
+
+          const sniffer = await this.snifferService.getSniffer(
+            res.locals.auth.userId,
+            snifferId,
+          );
+
+          if (!sniffer) {
+            return res.status(404).send("Sniffer not found");
+          }
+
+          const newEndpoints = await this.importService.importFromSwagger(
+            userId,
+            snifferId,
+            swagger,
+          );
+
+          res.status(200).json(newEndpoints);
         } catch (e) {
           log.error(e);
           res.status(500).send("Internal server error");

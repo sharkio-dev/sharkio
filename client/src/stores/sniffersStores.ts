@@ -3,13 +3,13 @@ import {
   createSniffer,
   deleteSniffer,
   editSniffer,
+  executeInvocationAPI,
   getEnpoints,
   getLiveInvocations,
   getInvocations,
   getSniffers,
 } from "../api/api";
 import { EndpointType, InvocationType } from "../pages/sniffers/types";
-import { executeInvocationAPI } from "../api/api";
 
 export type SnifferType = {
   name: string;
@@ -45,6 +45,7 @@ interface SniffersState {
     force?: boolean,
   ) => Promise<InvocationType[]>;
   resetInvocations: () => void;
+  setInvocation: (invocation: InvocationType) => void;
   executeInvocation: (data: {
     testId?: string;
     snifferId: string;
@@ -75,7 +76,6 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
   loadingEndpoints: false,
   loadingExecution: false,
 
-  
   loadSniffers: (force = false) => {
     if (get().sniffers.length && !force) {
       return Promise.resolve(get().sniffers);
@@ -149,6 +149,25 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
         return res;
       })
       .finally(() => set({ loadingInvocations: false }));
+  },
+  setInvocation: (invocation: InvocationType) => {
+    let newInvocations: InvocationType[] = [];
+    set((state) => {
+      newInvocations = [...state.invocations];
+      const invocationIndex = state.invocations.findIndex(
+        (i) => i.id === invocation.id,
+      );
+      if (invocationIndex > 0) {
+        newInvocations[invocationIndex] = invocation;
+      }
+      return { ...state, invocations: newInvocations };
+    });
+    set({
+      invocationCache: {
+        ...get().invocationCache,
+        [invocation.endpointId]: newInvocations,
+      },
+    });
   },
   resetInvocations: () => {
     set({ invocations: [] });

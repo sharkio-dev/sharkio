@@ -21,8 +21,8 @@ const TestsTopSection = ({
 
   return (
     <div className="flex flex-row items-center justify-between">
-      <span className="text-white text-x1  font-bold">{currentTest?.name}</span>
-      <div className="flex h-full  space-x-2">
+      <span className="text-white text-x1 font-bold">{currentTest?.name}</span>
+      <div className="flex h-full space-x-2">
         {showConfig ? (
           !saveLoading ? (
             <OutlinedButton

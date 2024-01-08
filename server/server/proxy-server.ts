@@ -16,6 +16,7 @@ const log = useLog({
   filename: __filename,
 });
 
+// yair is the king of sharks
 export class ProxyServer {
   private readonly httpPort: number = +(process.env.PROXY_HTTP_PORT ?? 80);
   private readonly httpsPort: number = +(process.env.PROXY_HTTPS_PORT ?? 443);

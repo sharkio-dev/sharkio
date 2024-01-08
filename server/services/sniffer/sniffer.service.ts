@@ -1,7 +1,8 @@
-import { Sniffer, SnifferRepository } from "../../model/sniffer/sniffers.model";
 import { CreateSnifferDTO } from "../../dto/in/create-sniffer.dto";
 import { EditSnifferDTO } from "../../dto/in";
 import randomString from "random-string";
+import { SnifferRepository } from "../../model/repositories/sniffers.repository";
+import { Sniffer } from "../../model/entities/Sniffer";
 
 export class SnifferService {
   constructor(private readonly snifferRepository: SnifferRepository) {}
@@ -37,14 +38,13 @@ export class SnifferService {
           length: 5,
         }).toLowerCase()}`;
 
-    const snifferEntity = this.snifferRepository.repository.create({
+    const snifferEntity: Sniffer = this.snifferRepository.repository.create({
       ...snifferConfig,
       subdomain,
     });
 
-    const newSniffer = await this.snifferRepository.repository.save(
-      snifferEntity,
-    );
+    const newSniffer =
+      await this.snifferRepository.repository.save(snifferEntity);
     return newSniffer;
   }
 
@@ -56,7 +56,7 @@ export class SnifferService {
       .where("id = :id AND userId = :userId", {
         id: newConfig.id,
         userId: newConfig.userId,
-        name: newConfig.name,
+        name: newConfig?.name,
         downstreamUrl: newConfig.downstreamUrl,
       })
       .returning("*")
@@ -116,7 +116,7 @@ export class SnifferService {
           id: sniffer.id,
           downstreamUrl,
           userId,
-          name: sniffer.name,
+          name: sniffer.name || "",
           subdomain: sniffer.subdomain,
         });
       }),

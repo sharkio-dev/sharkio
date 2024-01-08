@@ -1,5 +1,5 @@
-import ChatRepository from "../../model/chat/chat.model";
-import MessageRepository from "../../model/chat/message.model";
+import ChatRepository from "../../model/repositories/chat/chat.repository";
+import MessageRepository from "../../model/repositories/chat/message.repository";
 
 import { v4 } from "uuid";
 

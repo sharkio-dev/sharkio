@@ -4,22 +4,33 @@ import { Navbar } from "../navbar/navbar";
 import { SideBar } from "../sidebar/sidebar";
 import { SiOpenai } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
+import styles from "./page-template.module.scss";
 
 export const PageTemplate: React.FC<
-  PropsWithChildren & { isSideBar?: boolean }
-> = ({ children, isSideBar = true }) => {
+  PropsWithChildren & { withSideBar?: boolean; withBottomBar?: boolean }
+> = ({ children, withSideBar = true, withBottomBar = true }) => {
   const { user } = useAuthStore();
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-row h-full w-full flex-1">
-        {user && isSideBar && <SideBar />}
-        <div className="flex flex-col w-full bg-tertiary h-[calc(100vh-40px)]">
-          <Navbar />
-          {children}
+    <div
+      className={styles.pageTemplate}
+      data-no-sidebar={!withSideBar}
+      data-no-bottombar={!withBottomBar}
+    >
+      {user && withSideBar && (
+        <div className={styles.sidebarContainer}>
+          <SideBar />
         </div>
+      )}
+      <div className={styles.navbarContainer}>
+        <Navbar />
       </div>
-      {user && <BottomBar />}
+      <div className={`${styles.contentContainer} bg-tertiary`}>{children}</div>
+      {withBottomBar && (
+        <div className={styles.bottomBarContainer}>
+          <BottomBar />
+        </div>
+      )}
     </div>
   );
 };

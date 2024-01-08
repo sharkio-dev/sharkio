@@ -1,4 +1,4 @@
-import { Rule } from "../../model/testSuite/types";
+import { Rule } from "../../model/repositories/testSuite/types";
 import _ from "lodash";
 
 export class TestResultAnalyzer {

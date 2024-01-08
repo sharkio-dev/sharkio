@@ -1,12 +1,11 @@
-import { WorkspaceRepository } from "../../model/workSpace/workSpace.model";
+import { WorkspaceRepository } from "../../model/repositories/workSpace.repository";
 
 export class WorkspaceService {
   constructor(private readonly workspaceRepository: WorkspaceRepository) {}
 
   async getUserWorkspaces(userId: string) {
-    const allWorkspaces = await this.workspaceRepository.getUserWorkspaces(
-      userId,
-    );
+    const allWorkspaces =
+      await this.workspaceRepository.getUserWorkspaces(userId);
     return allWorkspaces;
   }
 

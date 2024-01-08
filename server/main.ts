@@ -8,23 +8,13 @@ import { InvocationController } from "./controllers/invocation.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
 import { MockController } from "./controllers/mock.controller";
+import { MockResponseController } from "./controllers/mock-response.controller";
 import { TestSuiteController } from "./controllers/test-suite.controller";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
-import ApiKeyRepository from "./model/apikeys/apiKeys.model";
-import ChatRepository from "./model/chat/chat.model";
-import MessageRepository from "./model/chat/message.model";
-import { MockRepository } from "./model/mock/mock.model";
-import { EndpointRepository } from "./model/endpoint/endpoint.model";
-import { RequestRepository } from "./model/request/request.model";
-import { ResponseRepository } from "./model/response/response.model";
-import { SnifferRepository } from "./model/sniffer/sniffers.model";
-import { TestRepository } from "./model/testSuite/test.model";
-import { TextExecutionRepository } from "./model/testSuite/testExecution.model";
-import { TestSuiteRepository } from "./model/testSuite/testSuite.model";
-import UserRepository from "./model/user/user.model";
-import { getAppDataSource } from "./server/app-data-source";
+import { createConnection } from "./model/ormconfig";
 import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
 import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
+import { CloudInterceptor } from "./server/interceptors/CloudInterceptor";
 import { ProxyServer } from "./server/proxy-server";
 import { Server } from "./server/server";
 import { ChatService } from "./services/chat/chat.service";
@@ -32,6 +22,7 @@ import EndpointService from "./services/endpoint/endpoint.service";
 import { RequestService } from "./services/request/request.service";
 import ResponseService from "./services/response/response.service";
 import { MockService } from "./services/mock/mock.service";
+import { MockResponseService } from "./services/mock-response/mock-response.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
@@ -39,31 +30,65 @@ import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
-import { EnvValidator } from "./env.validator";
+import { ServerEnvValidator, ProxyEnvValidator } from "./env.validator";
 import { useLog } from "./lib/log";
 import MockMiddleware from "./server/middlewares/mock.middleware";
 import { ImportService } from "./services/imports/imports.service";
-import { WorkspaceRepository } from "./model/workSpace/workSpace.model";
 import { WorkspaceService } from "./services/workspace/workspace.service";
 import { WorkspaceController } from "./controllers/workSpace.controller";
+import UserRepository from "./model/repositories/user.repository";
+import { EndpointRepository } from "./model/repositories/endpoint.repository";
+import { ResponseRepository } from "./model/repositories/response.repository";
+import { RequestRepository } from "./model/repositories/request.repository";
+import { SnifferRepository } from "./model/repositories/sniffers.repository";
+import ApiKeyRepository from "./model/repositories/apiKeys.repository";
+import ChatRepository from "./model/repositories/chat/chat.repository";
+import MessageRepository from "./model/repositories/chat/message.repository";
+import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.repository";
+import { TestRepository } from "./model/repositories/testSuite/test.repository";
+import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
+import { MockRepository } from "./model/repositories/mock.repository";
+import { MockResponseRepository } from "./model/repositories/mock-response.repository";
+import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
+import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
+import {
+  DefaultResponseSelector,
+  RandomResponseSelector,
+  SequentialResponseSelector,
+} from "./services/mock-response-selector";
+import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
+import { Interceptor } from "./server/interceptors/Interceptor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
-export const setupFilePath =
-  process.env.SETUP_FILE_PATH ?? "./sniffers-setup.json";
-
-async function main() {
-  const envsValidator = new EnvValidator();
+const validateServerEnv = () => {
+  const envsValidator = new ServerEnvValidator();
   try {
     envsValidator.validate();
   } catch (e) {
-    logger.error("Missing environment variables");
+    logger.error("Missing server environment variables");
     logger.error(e);
   }
+};
 
-  const appDataSource = await getAppDataSource();
+const validateProxyEnv = () => {
+  const envsValidator = new ProxyEnvValidator();
+  try {
+    envsValidator.validate();
+  } catch (e) {
+    logger.error("Missing proxy environment variables");
+    logger.error(e);
+  }
+};
+
+async function main(isProxy = true, isServer = true) {
+  if (isProxy) validateProxyEnv();
+  if (isServer) validateServerEnv();
+
+  const appDataSource = await createConnection().initialize();
 
   /* Repositories */
+  const mockResponseRepository = new MockResponseRepository(appDataSource);
   const mockRepository = new MockRepository(appDataSource);
   const endpointRepository = new EndpointRepository(appDataSource);
   const responseRepository = new ResponseRepository(appDataSource);
@@ -79,7 +104,7 @@ async function main() {
   const workspaceRepository = new WorkspaceRepository(appDataSource);
 
   /* Services */
-  const mockService = new MockService(mockRepository);
+  const mockService = new MockService(mockRepository, mockResponseRepository);
   const snifferService = new SnifferService(snifferRepository);
   const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
@@ -87,6 +112,7 @@ async function main() {
     invocationRepository,
     responseRepository,
   );
+  const mockResponseService = new MockResponseService(mockResponseRepository);
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
   const docGenerator = new SnifferDocGenerator(snifferService, endpointService);
@@ -99,9 +125,21 @@ async function main() {
   );
   const importService = new ImportService(endpointService);
   const workspaceService = new WorkspaceService(workspaceRepository);
+  const mockSelectionStrategies = {
+    default: new DefaultResponseSelector(),
+    random: new RandomResponseSelector(),
+    sequence: new SequentialResponseSelector(),
+  };
+  const mockResponseSelectorService = new MockResponseSelector(
+    mockSelectionStrategies,
+  );
+  const mockResponseTransformer = new MockResponseTransformer();
 
   /* Controllers */
-  const mockController = new MockController(mockService);
+  const mockResponseController = new MockResponseController(
+    mockResponseService,
+  );
+  const mockController = new MockController(mockService, endpointService);
   const settingsController = new SettingsController(apiKeyService);
   const authController = new AuthController(userService);
   const cliController = new CLIController(
@@ -138,20 +176,31 @@ async function main() {
   );
   const workspaceController = new WorkspaceController(workspaceService);
 
-  /* Middlewares */
-  const requestInterceptorMiddleware = new RequestInterceptor(
+  /* Interceptors */
+  const cloudInterceptor = new CloudInterceptor(
     snifferService,
     endpointService,
     responseService,
+    mockService,
+  );
+  const interceptors: Record<string, Interceptor> = {
+    cloud: cloudInterceptor,
+  };
+  const selectedInterceptor =
+    interceptors[process.env.INTERCEPTOR_STRATEGY ?? "cloud"];
+
+  /* Middlewares */
+  const requestInterceptorMiddleware = new RequestInterceptor(
+    selectedInterceptor,
   );
   const proxyMiddleware = new ProxyMiddleware(
     snifferService,
     requestInterceptorMiddleware,
   );
   const mockMiddleware = new MockMiddleware(
-    mockService,
-    snifferService,
-    responseService,
+    selectedInterceptor,
+    mockResponseSelectorService,
+    mockResponseTransformer,
   );
 
   /* Servers */
@@ -160,9 +209,11 @@ async function main() {
     requestInterceptorMiddleware,
     mockMiddleware,
   );
+
   const snifferManagerServer = new Server(
     [
       authController.getRouter(),
+      mockResponseController.getRouter(),
       snifferController.getRouter(),
       settingsController.getRouter(),
       invocationController.getRouter(),
@@ -177,9 +228,14 @@ async function main() {
   );
 
   // /* Start Servers */
-  snifferManagerServer.start();
-  proxyServer.start();
+  if (isProxy) proxyServer.start();
+  if (isServer) snifferManagerServer.start();
 }
-console.log("setupFilePath", setupFilePath);
+const IS_PROXY = process.env.IS_PROXY === "true";
+const IS_SERVER = process.env.IS_SERVER === "true";
 
-main();
+if (process.env.NODE_ENV === "production") {
+  main(IS_PROXY, IS_SERVER);
+} else {
+  main();
+}

@@ -1,45 +1,85 @@
 import { NextFunction, Request, Response } from "express";
-import { SnifferService } from "../../services/sniffer/sniffer.service";
-import { MockService } from "../../services/mock/mock.service";
-import ResponseService from "../../services/response/response.service";
-import { Mock } from "../../model/mock/mock.model";
+import { MockResponse } from "../../model/entities/MockResponse";
+import { MockResponseSelector } from "../../services/mock-response-selector/mock-response-selector";
+import { Mock } from "../../model/entities/Mock";
+import { useLog } from "../../lib/log";
+import { MockResponseTransformer } from "../../services/mock-response-transformer/mock-response-transformer";
+import { Interceptor } from "../interceptors/Interceptor";
+
+const logger = useLog({
+  dirname: __dirname,
+  filename: __filename,
+});
 
 export default class MockMiddleware {
   constructor(
-    private readonly mockService: MockService,
-    private readonly snifferService: SnifferService,
-    private readonly responseService: ResponseService,
+    private readonly interceptor: Interceptor,
+    private readonly mockResponseSelector: MockResponseSelector,
+    private readonly mockResponseTransformer: MockResponseTransformer
   ) {}
 
-  async mock(req: Request, res: Response, next: NextFunction) {
-    const subdomain = req.hostname.split(".")[0];
-    const sniffer = await this.snifferService.findBySubdomain(subdomain);
+  async findMock(hostname: string, url: string, method: string) {
+    const subdomain = hostname.split(".")[0];
+    const sniffer = await this.interceptor.findSnifferBySubdomain(subdomain);
 
     if (sniffer != null && sniffer.userId != null) {
-      const mock = await this.mockService.getByUrl(
-        sniffer?.userId,
-        sniffer?.id,
-        req.url,
-        req.method,
+      const urlNoParams = url.split("?")[0];
+
+      const mock: Mock | null = await this.interceptor.findMockByUrl(
+        urlNoParams,
+        method,
+        sniffer
       );
 
       if (mock != null && mock.isActive === true) {
-        Object.entries(mock.headers).forEach(([key, value]) => {
+        return mock;
+      }
+    }
+  }
+
+  async mock(req: Request, res: Response, next: NextFunction) {
+    const mock = await this.findMock(req.hostname, req.url, req.method);
+    const selectedResponse = mock
+      ? await this.mockResponseSelector.select(mock)
+      : null;
+
+    if (mock != null && selectedResponse != null) {
+      const transformedResponse = this.mockResponseTransformer.transform(
+        selectedResponse,
+        {
+          body: req.body,
+          headers: req.headers,
+          method: req.method,
+          url: req.url,
+          params: req.params,
+          query: req.query,
+        }
+      );
+
+      Object.entries(transformedResponse.headers || {}).forEach(
+        ([key, value]) => {
           res.setHeader(key, value);
-        });
+        }
+      );
 
-        await this.interceptResponse(req, mock);
+      res.status(transformedResponse.status).send(transformedResponse.body);
 
-        res.status(mock.status).send(mock.body);
-      } else {
-        next();
+      try {
+        await this.interceptMockResponse(req, transformedResponse);
+        await this.updateSelectedResponse(
+          selectedResponse.userId,
+          mock,
+          selectedResponse.id
+        );
+      } catch (e) {
+        logger.error("Failed to intercept mock response", e);
       }
     } else {
       next();
     }
   }
 
-  async interceptResponse(req: Request, mock: Mock) {
+  async interceptMockResponse(req: Request, mock: MockResponse | Mock) {
     const invocationId = req.headers["x-sharkio-invocation-id"];
     const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
     const userId = req.headers["x-sharkio-user-id"] as string;
@@ -48,15 +88,25 @@ export default class MockMiddleware {
     ] as string;
 
     if (invocationId != null && typeof invocationId === "string") {
-      return await this.responseService.addResponse({
+      return await this.interceptor.saveResponse(
+        { body: mock.body, headers: mock.headers, statusCode: mock.status },
         userId,
         snifferId,
-        requestId: invocationId,
-        headers: mock.headers,
-        body: mock.body,
-        status: mock.status,
-        testExecutionId,
-      });
+        invocationId,
+        testExecutionId
+      );
     }
+  }
+
+  updateSelectedResponse(
+    userId: string,
+    mock: Mock,
+    selectedResponseId: string
+  ) {
+    return this.interceptor.setMockSelectedResponse(
+      userId,
+      mock.id,
+      selectedResponseId
+    );
   }
 }

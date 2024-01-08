@@ -20,7 +20,7 @@ export class ProxyMiddleware {
 
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestInterceptor: RequestInterceptor,
+    private readonly requestInterceptor: RequestInterceptor
   ) {
     this.proxyMiddleware = createProxyMiddleware({
       router: this.chooseRoute.bind(this),
@@ -50,11 +50,11 @@ export class ProxyMiddleware {
               headers: proxyRes.headers,
               statusCode: proxyRes.statusCode,
             },
-            testExecutionId,
+            testExecutionId
           );
 
           return body;
-        },
+        }
       ),
     });
   }
@@ -64,7 +64,7 @@ export class ProxyMiddleware {
     const subdomain = host.split(".")[0];
 
     const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain,
+      subdomain
     );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
@@ -73,28 +73,6 @@ export class ProxyMiddleware {
       return selectedSniffer.downstreamUrl;
     }
     return undefined;
-  }
-
-  async adaptIncomingResponse(incomingResponse: http.IncomingMessage) {
-    const body = await new Promise((resolve, reject) => {
-      let bodyChunks: Uint8Array[] = [];
-      incomingResponse
-        .on("data", (chunk) => {
-          bodyChunks.push(chunk);
-        })
-        .on("end", () => {
-          const bodyData = Buffer.concat(bodyChunks).toString();
-          resolve(bodyData);
-        });
-    });
-
-    const resObject = {
-      headers: incomingResponse.headers,
-      statusCode: incomingResponse.statusCode,
-      body,
-    };
-
-    return resObject;
   }
 
   getMiddleware() {

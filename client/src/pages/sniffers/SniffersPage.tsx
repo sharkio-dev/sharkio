@@ -5,6 +5,7 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { CreateInvocation, SnifferData } from "./SniffersPage/SnifferData";
 import { SniffersSideBar } from "./SniffersSideBar";
 
+import InnerPageTemplate from "../../components/inner-page-template/inner-page-template";
 import Sniffer from "./SniffersPage/Sniffer";
 
 interface SnifferPageTemplateProps {
@@ -25,17 +26,12 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
   }, [userId]);
 
   return (
-    <div className="flex flex-row w-full h-[calc(100vh-96px)] max-h-[calc(vh-96px)]">
+    <div className="h-full">
       {snackBar}
-      <div className="flex flex-col h-full min-w-[240px] w-[240px] border-r border-border-color bg-secondary">
-        <SniffersSideBar />
-      </div>
-
-      <div
-        className={`flex bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px-240px)]`}
-      >
-        {children}
-      </div>
+      <InnerPageTemplate
+        sideBarComponent={SniffersSideBar}
+        contentComponent={() => <>{children}</>}
+      />
     </div>
   );
 };

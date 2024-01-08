@@ -24,15 +24,19 @@ import { LivePage } from "./pages/live-Invocations/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
+import { useSniffersStore } from "./stores/sniffersStores";
+
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
   const { user } = useAuthStore();
+  const { loadSniffers } = useSniffersStore();
 
   const theme = createTheme({
     palette: {
       mode,
     },
   });
+
   useEffect(() => {
     if (import.meta.env.VITE_FULLSTORY_ORG_ID) {
       FullStory("setProperties", {
@@ -42,6 +46,9 @@ function App(): React.JSX.Element {
           id: user?.id,
         },
       });
+    }
+    if (user && user.id) {
+      loadSniffers();
     }
   }, [user]);
 
@@ -91,15 +98,23 @@ function App(): React.JSX.Element {
             <Route
               path={"*"}
               element={
-                <PageTemplate>
-                  {user ? <HomePage /> : <LandingPage />}
-                </PageTemplate>
+                <>
+                  {user ? (
+                    <PageTemplate withSideBar={true} withBottomBar={true}>
+                      <HomePage />
+                    </PageTemplate>
+                  ) : (
+                    <PageTemplate withSideBar={false} withBottomBar={true}>
+                      <LandingPage />
+                    </PageTemplate>
+                  )}
+                </>
               }
             />
             <Route
               path={routes.DOCS_GETTING_STARTED}
               element={
-                <PageTemplate isSideBar={false}>
+                <PageTemplate withSideBar={false}>
                   <SharkioDocsGettingStartedPage />
                 </PageTemplate>
               }
@@ -107,7 +122,7 @@ function App(): React.JSX.Element {
             <Route
               path={routes.DOCS_SETUP}
               element={
-                <PageTemplate isSideBar={false}>
+                <PageTemplate withSideBar={false}>
                   <SharkioDocsSetupPage />
                 </PageTemplate>
               }
@@ -115,7 +130,7 @@ function App(): React.JSX.Element {
             <Route
               path={routes.LOGIN}
               element={
-                <PageTemplate>
+                <PageTemplate withBottomBar={true} withSideBar={false}>
                   <AuthUI />
                 </PageTemplate>
               }

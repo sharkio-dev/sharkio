@@ -1,4 +1,3 @@
-import Editor from "@monaco-editor/react";
 import { ContentCopy } from "@mui/icons-material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -14,44 +13,30 @@ import Tab from "@mui/material/Tab";
 import * as React from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { generateApiRequestSnippet } from "../../lib/jsonSchema";
-import { InvocationType } from "./types";
-import { HeaderSection } from "../test-suites/HeaderSection";
 import { BodySection } from "../test-suites/BodySection";
+import { HeaderSection } from "../test-suites/HeaderSection";
 import StatusCodeSelector from "../test-suites/StatusCodeSelector";
+import { EndpointType, InvocationType } from "./types";
 
 type InvocationDetailsProps = {
-  invocation: InvocationType;
-  setInvocation: (invocation: InvocationType) => void;
+  showResponseTab: boolean;
+  invocation: InvocationType | EndpointType | undefined;
+  setInvocation: (invocation: InvocationType | EndpointType) => void;
 };
 
 const defaultCodeLanguage = "bash";
 
 export function InvocationDetails({
-  defaultTab = "1",
+  showResponseTab,
   invocation,
   setInvocation,
 }: InvocationDetailsProps & { defaultTab?: string }) {
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
-  const [headers, setHeaders] = React.useState<{ name: string; value: any }[]>(
-    [],
-  );
   const [section, setSection] = React.useState<"Status" | "Body" | "Headers">(
-    "Body",
+    "Status",
   );
-
-  React.useEffect(() => {
-    setValue(defaultTab);
-  }, [defaultTab]);
-
-  React.useEffect(() => {
-    setHeaders(
-      Object.entries(invocation?.headers || {}).map(([key, value]) => ({
-        name: key,
-        value,
-      })),
-    );
-  }, [invocation]);
+  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
 
   const handleChange = (_: any, newValue: string) => {
     setValue(newValue);
@@ -68,27 +53,23 @@ export function InvocationDetails({
   };
 
   const handleBodyChange = (body: string) => {
-    setInvocation({
-      ...invocation,
-      body,
-    });
+    if (invocation) {
+      setInvocation({
+        ...invocation,
+        body,
+      });
+    }
   };
 
-  const onHeadersChange = (headers: { name: string; value: any }[]) => {
-    setHeaders(headers);
-    setInvocation({
-      ...invocation,
-      headers: headers.reduce(
-        (acc, header) => {
-          acc[header.name] = header.value;
-          return acc;
-        },
-        {} as { [key: string]: any },
-      ),
-    });
+  const onHeadersChange = (headers: { [key: string]: string }) => {
+    if (invocation) {
+      setInvocation({
+        ...invocation,
+        headers,
+      });
+    }
   };
 
-  const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
   const languageCodeText = React.useMemo(() => {
     return invocation
       ? generateApiRequestSnippet(codeLanguage, invocation)
@@ -102,7 +83,7 @@ export function InvocationDetails({
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Body" value="1" />
             <Tab label="Headers" value="2" />
-            <Tab label="Response" value="3" />
+            {showResponseTab && <Tab label="Response" value="3" />}
             <Tab label="Code" value="4" />
           </TabList>
         </div>
@@ -121,71 +102,46 @@ export function InvocationDetails({
         >
           <div className="flex flex-col w-full p-2 rounded-md overflow-y-auto">
             <HeaderSection
-              headers={headers}
-              addHeader={() => {
-                onHeadersChange([...headers, { name: "", value: "" }]);
-              }}
-              deleteHeader={(index) => {
-                onHeadersChange(headers.filter((_, i) => i !== index));
-              }}
-              setHeaders={(index, value, targetPath) => {
-                onHeadersChange(
-                  headers.map((header, i) =>
-                    i === index
-                      ? {
-                          name: targetPath,
-                          value,
-                        }
-                      : header,
-                  ),
-                );
-              }}
+              headers={invocation?.headers || {}}
+              handleHeadersChange={onHeadersChange}
             />
           </div>
         </TabPanel>
-        <TabPanel value="3" style={{ padding: 0, paddingTop: 16 }}>
-          <div className="flex flex-col h-full p-2 rounded-md overflow-y-auto">
-            <ToggleButtonGroup
-              color="primary"
-              exclusive
-              onChange={(_, value) => setSection(value)}
-              className="flex flex-row w-full items-center justify-center mb-8"
-              value={section}
-            >
-              <ToggleButton value="Status" className="w-24 h-6">
-                Status
-              </ToggleButton>
-              <ToggleButton value="Body" className="w-24 h-6">
-                Body
-              </ToggleButton>
-              <ToggleButton value="Headers" className="w-24 h-6">
-                {" "}
-                Headers
-              </ToggleButton>
-            </ToggleButtonGroup>
-            {section === "Status" && (
-              <StatusCodeSelector
-                value={responseData(invocation?.response).status}
-              />
-            )}
-            {section === "Body" && (
-              <BodySection
-                body={responseData(invocation?.response).body}
-                onBodyChange={handleBodyChange}
-              />
-            )}
-            {section === "Headers" && (
-              <HeaderSection
-                headers={Object.entries(
-                  responseData(invocation?.response).headers || {},
-                ).map(([key, value]) => ({
-                  name: key,
-                  value,
-                }))}
-              />
-            )}
-          </div>
-        </TabPanel>
+        {showResponseTab && (
+          <TabPanel value="3" style={{ padding: 0, paddingTop: 16 }}>
+            <div className="flex flex-col h-full p-2 rounded-md overflow-y-auto">
+              <ToggleButtonGroup
+                color="primary"
+                exclusive
+                onChange={(_, value) => setSection(value)}
+                className="flex flex-row w-full items-center justify-center mb-8"
+                value={section}
+              >
+                <ToggleButton value="Status" className="w-24 h-6">
+                  Status
+                </ToggleButton>
+                <ToggleButton value="Body" className="w-24 h-6">
+                  Body
+                </ToggleButton>
+                <ToggleButton value="Headers" className="w-24 h-6">
+                  Headers
+                </ToggleButton>
+              </ToggleButtonGroup>
+              {section === "Status" && (
+                <StatusCodeSelector
+                  isDisabled={true}
+                  value={responseData(invocation?.response).status}
+                />
+              )}
+              {section === "Body" && (
+                <BodySection body={responseData(invocation?.response).body} />
+              )}
+              {section === "Headers" && (
+                <HeaderSection headers={invocation?.response?.headers || {}} />
+              )}
+            </div>
+          </TabPanel>
+        )}
         <TabPanel
           value="4"
           style={{ padding: 0, paddingTop: 16 }}
@@ -218,20 +174,7 @@ export function InvocationDetails({
               </IconButton>
             </div>
           </div>
-          <div className="flex bg-secondary p-2 rounded-md ">
-            <Editor
-              width={"100%"}
-              height={"250px"}
-              theme="vs-dark"
-              language={codeLanguage}
-              value={languageCodeText}
-              options={{
-                minimap: {
-                  enabled: false,
-                },
-              }}
-            />
-          </div>
+          <BodySection language={codeLanguage} body={languageCodeText} />
         </TabPanel>
       </TabContext>
       {snackbar.component}

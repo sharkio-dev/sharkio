@@ -10,45 +10,13 @@ import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 interface RequestTabProps {
   onDebounceSave: (test: TestType) => void;
   onTestMethodChange: (test: TestType) => void;
-  requestHeaders: { name: string; value: string }[];
-  setRequestHeaders: React.Dispatch<
-    React.SetStateAction<{ name: string; value: string }[]>
-  >;
 }
 const RequestTab = ({
   onDebounceSave,
   onTestMethodChange,
-  requestHeaders,
-  setRequestHeaders,
 }: RequestTabProps) => {
   const currentTest = useTestStore((s) => s.currentTest);
   const [requestPart, setRequestPart] = useState<string>("Body");
-
-  const handleHeaderChange = (
-    index: number,
-    value: any,
-    targetPath: string,
-  ) => {
-    const headersReq = [...requestHeaders];
-    headersReq[index] = {
-      ...headersReq[index],
-      name: targetPath,
-      value: value,
-    };
-    handleReduceHeaders(headersReq);
-  };
-
-  const handleReduceHeaders = (headersReq: any[]) => {
-    setRequestHeaders(headersReq);
-    const reduceHeaders = headersReq.reduce((acc, h) => {
-      acc[h.name] = h.value;
-      return acc;
-    }, {} as any);
-    onDebounceSave({
-      ...currentTest,
-      headers: reduceHeaders,
-    });
-  };
 
   return (
     <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
@@ -76,24 +44,10 @@ const RequestTab = ({
         <TestButtonSection changePart={setRequestPart} partName={requestPart} />
         {requestPart === "Headers" && (
           <HeaderSection
-            headers={requestHeaders.map((header: any) => ({
-              name: header.name,
-              value: header.value,
-            }))}
-            setHeaders={handleHeaderChange}
-            addHeader={() => {
-              const newHeader = {
-                name: "",
-                value: "",
-              };
-              handleReduceHeaders([...requestHeaders, newHeader]);
-            }}
-            deleteHeader={(index) => {
-              const removedHeaders = requestHeaders.filter(
-                (_, i) => i !== index,
-              );
-              handleReduceHeaders(removedHeaders);
-            }}
+            headers={currentTest.headers}
+            handleHeadersChange={(headersReq: { [key: string]: any }) =>
+              onDebounceSave({ ...currentTest, headers: headersReq })
+            }
           />
         )}
         {requestPart === "Body" && (
