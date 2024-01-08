@@ -1,118 +1,13 @@
-import React from "react";
-import { useSniffersStore } from "../../../stores/sniffersStores";
-import { useLocation } from "react-router-dom";
 import queryString from "query-string";
-import ReactFlow, { Handle, NodeProps, Position } from "reactflow";
-import { SiAmazonapigateway } from "react-icons/si";
+import React from "react";
 import { MdComputer } from "react-icons/md";
+import { SiAmazonapigateway } from "react-icons/si";
+import { useLocation } from "react-router-dom";
+import { useSniffersStore } from "../../../stores/sniffersStores";
 import styles from "./sniffer.module.scss";
 
-import "reactflow/dist/style.css";
 import { VscTypeHierarchy } from "react-icons/vsc";
-
-const SnifferNode = (props: NodeProps) => {
-  return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="text-[6px]">{props.data.label}</div>
-      <div className="flex flex-row items-center gap-2 w-24 bg-primary p-2 rounded-lg shadow-md justify-center">
-        <VscTypeHierarchy className="text-2xl" />
-      </div>
-      <div className="text-[6px] max-w-[105px] truncate">
-        {props.data.address}
-      </div>
-      <Handle type="source" position={Position.Right} id="a" />
-      <Handle type="target" position={Position.Left} id="b" />
-    </div>
-  );
-};
-
-const APINode = (props: NodeProps) => {
-  return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="text-[6px]">{props.data.label}</div>
-      <div className="flex flex-row items-center gap-2 w-24 bg-primary p-2 rounded-lg shadow-md justify-center">
-        <SiAmazonapigateway className="text-2xl" />
-      </div>
-      <div className="text-[6px]">{props.data.address}</div>
-      <Handle type="target" position={Position.Left} id="d" />
-    </div>
-  );
-};
-
-const ServiceNode = (props: NodeProps) => {
-  return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="text-[6px]">{props.data.label}</div>
-      <div className="flex flex-row items-center gap-2 w-24 bg-primary p-2 rounded-lg shadow-md justify-center">
-        <MdComputer className="text-2xl" />
-      </div>
-      <div className="text-[6px]">{props.data.address}</div>
-      <Handle type="source" position={Position.Right} id="c" />
-    </div>
-  );
-};
-
-const nodeTypes = {
-  sniffer: SnifferNode,
-  api: APINode,
-  consumer: ServiceNode,
-};
-
-const Flow = ({
-  snifferDomain,
-  targetURL,
-}: {
-  snifferDomain: string;
-  targetURL: string;
-}) => {
-  const nodes = [
-    {
-      id: "1",
-      position: { x: 0, y: 0 },
-      data: {
-        label: "Service / App",
-        address: "Should request the sniffer's domain",
-      },
-      type: "consumer",
-    },
-    {
-      id: "2",
-      position: { x: 200, y: 0 },
-      data: {
-        label: "Sniffer",
-        address: snifferDomain,
-      },
-      type: "sniffer",
-    },
-    {
-      id: "3",
-      position: { x: 400, y: 0 },
-      data: { label: "API", address: targetURL },
-      type: "api",
-    },
-  ];
-
-  const edges = [
-    { id: "e1-2", source: "1", target: "2", animated: true },
-    { id: "e1-3", source: "2", target: "3", animated: true },
-  ];
-
-  return (
-    <div className="flex w-[90%] h-full">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        panOnDrag={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
-        edgesFocusable={false}
-        fitView={true}
-      ></ReactFlow>
-    </div>
-  );
-};
+import "reactflow/dist/style.css";
 
 const Sniffer: React.FC = () => {
   const location = useLocation();
