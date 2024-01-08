@@ -87,4 +87,104 @@ describe("MockResponseTransformer", () => {
     expect(res.body).toEqual('{ "hello": "world " }');
     expect(res.headers?.hello).toEqual("");
   });
+
+  it("test transform body and headers - repeat with trailing comma", () => {
+    const transformer = new MockResponseTransformer();
+    const body = { test: "this is a test string" };
+
+    const mockResponse: MockResponse = {
+      headers: {},
+      body: '[{{#repeat 2}}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]',
+      id: "",
+      status: 0,
+      name: null,
+      snifferId: "",
+      userId: "",
+      mockId: "",
+      sequenceIndex: 0,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
+
+    const res = transformer.transform(mockResponse, undefined);
+
+    expect(res.body).toEqual('[{ "hello": "world " },{ "hello": "world " }]');
+  });
+
+  it("test transform body and headers - repeat from query param", () => {
+    const transformer = new MockResponseTransformer();
+    const body = { test: "this is a test string" };
+
+    const mockResponse: MockResponse = {
+      headers: {},
+      body: '[{{#repeat query.items}}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]',
+      id: "",
+      status: 0,
+      name: null,
+      snifferId: "",
+      userId: "",
+      mockId: "",
+      sequenceIndex: 0,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
+
+    const res = transformer.transform(mockResponse, {
+      query: { items: 2 },
+    } as unknown as any);
+
+    expect(res.body).toEqual('[{ "hello": "world " },{ "hello": "world " }]');
+  });
+
+  it("test transform body and headers - nested repeat from query param", () => {
+    const transformer = new MockResponseTransformer();
+    const body = { test: "this is a test string" };
+
+    const mockResponse: MockResponse = {
+      headers: {},
+      body: `[{{#repeat query.items}}{{#repeat ../query.items}}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]`,
+      id: "",
+      status: 0,
+      name: null,
+      snifferId: "",
+      userId: "",
+      mockId: "",
+      sequenceIndex: 0,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
+
+    const res = transformer.transform(mockResponse, {
+      query: { items: 2 },
+    } as unknown as any);
+
+    expect(res.body).toEqual(
+      '[{ "hello": "world " },{ "hello": "world " },{ "hello": "world " },{ "hello": "world " }]',
+    );
+  });
+
+  it("test transform - error should return transformation error", () => {
+    const transformer = new MockResponseTransformer();
+    const body = { test: "this is a test string" };
+
+    const mockResponse: MockResponse = {
+      headers: {},
+      body: '[{{#repeat query.items}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]',
+      id: "",
+      status: 0,
+      name: null,
+      snifferId: "",
+      userId: "",
+      mockId: "",
+      sequenceIndex: 0,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
+
+    const res = transformer.transform(mockResponse, {
+      query: { items: 2 },
+    } as unknown as any);
+
+    expect(res.body).toEqual("transformation error");
+  });
 });

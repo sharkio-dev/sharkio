@@ -54,7 +54,7 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
           <span className="hover:text-green-400">Add Response</span>
         </div>
       </div>
-      {mock.mockResponses.map((mockResponse, index) => (
+      {mock?.mockResponses?.map((mockResponse, index) => (
         <MockResponseCard
           mock={mock}
           mockResponse={mockResponse}
