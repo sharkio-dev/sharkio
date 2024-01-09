@@ -31,18 +31,18 @@ export class ProxyServer {
   ) {
     this.app = express();
     this.app.use(logMiddleware);
-    this.app.use(cors({ origin: "*" }));
-    this.app.use(express.json());
-    this.app.use(express.text());
-    this.app.use(express.raw());
-    this.app.use(express.urlencoded());
-    this.app.use(cookieParser());
-    // **IMPORTANT** request interceptor must be before mock middleware
-    this.app.use(
-      this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
-    );
-    this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
-    this.app.use(this.proxyMiddleware.getMiddleware());
+    // this.app.use(cors({ origin: "*" }));
+    // this.app.use(express.json());
+    // this.app.use(express.text());
+    // this.app.use(express.raw());
+    // this.app.use(express.urlencoded());
+    // this.app.use(cookieParser());
+    // // **IMPORTANT** request interceptor must be before mock middleware
+    // this.app.use(
+    //   this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
+    // );
+    // this.app.use(this.mockMiddleware.mock.bind(mockMiddleware));
+    // this.app.use(this.proxyMiddleware.getMiddleware());
   }
 
   private startHttpServer() {
@@ -70,7 +70,7 @@ export class ProxyServer {
 
   start() {
     this.httpServer = this.startHttpServer();
-    this.httpsServer = this.startHttpsServer();
+    // this.httpsServer = this.startHttpsServer();
   }
 
   stop() {
