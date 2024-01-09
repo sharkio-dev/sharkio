@@ -26,7 +26,6 @@ export class MockResponseTransformer {
         }
       }).bind(this),
     );
-
     this.handleBars.registerHelper("compare", this.compareFunction);
     this.handleBars.registerHelper("repeat", this.repeatHelper.bind(this));
   }
@@ -91,6 +90,7 @@ export class MockResponseTransformer {
 
     return options.inverse(this);
   }
+
   repeat(
     { count, start, step }: { count: number; start: number; step: number },
     thisArg: any,

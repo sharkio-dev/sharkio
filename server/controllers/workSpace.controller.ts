@@ -31,8 +31,9 @@ export class WorkspaceController {
          */
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
-          const workspaces =
-            await this.workspaceService.getUserWorkspaces(userId);
+          const workspaces = await this.workspaceService.getUserWorkspaces(
+            userId,
+          );
           res.json(workspaces);
         },
       )
@@ -121,6 +122,98 @@ export class WorkspaceController {
             newWorkspaceName,
           );
           res.json(newWorkspace);
+        },
+      );
+
+    router
+      .route("/:workspaceId/users")
+      .post(
+        /**
+         * @openapi
+         * /sharkio/workspace/{workspaceId}/users:
+         *   post:
+         *     tags:
+         *      - workspace
+         *     description: change workspace name
+         *     parameters:
+         *       - name: workspaceId
+         *         in: path
+         *         required: true
+         *         schema:
+         *           type: string
+         *           format: uuid
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             type: object
+         *             properties:
+         *               newUserId:
+         *                 type: string
+         *                 minLength: 1
+         *     responses:
+         *       200:
+         *         description: Returns requested workspace
+         *       500:
+         *         description: Server error
+         */
+        requestValidator({
+          params: z.object({
+            workspaceId: z.string().uuid(),
+          }),
+          body: z.object({
+            newUserId: z.string().min(1),
+          }),
+        }),
+        async (req: Request, res: Response) => {
+          const userId = res.locals.auth.user.id;
+          const { workspaceId } = req.params;
+          const { newUserId } = req.body;
+
+          const newWorkspace = await this.workspaceService.addUser(
+            userId,
+            workspaceId,
+            newUserId,
+          );
+
+          res.json(newWorkspace);
+        },
+      )
+      .get(
+        /**
+         * @openapi
+         * /sharkio/workspace/{workspaceId}/users:
+         *   get:
+         *     tags:
+         *      - workspace
+         *     description: Get workspace users
+         *     parameters:
+         *       - name: workspaceId
+         *         in: path
+         *         required: true
+         *         schema:
+         *           type: string
+         *           format: uuid
+         *     responses:
+         *       200:
+         *         description: Returns requested workspace
+         *       500:
+         *         description: Server error
+         */
+        requestValidator({
+          params: z.object({
+            workspaceId: z.string().uuid(),
+          }),
+        }),
+        async (req: Request, res: Response) => {
+          const { workspaceId } = req.params;
+
+          const workspaceUsers = await this.workspaceService.getWorkspaceUsers(
+            workspaceId,
+          );
+
+          res.json(workspaceUsers);
         },
       );
 

@@ -16,7 +16,6 @@ const log = useLog({
   filename: __filename,
 });
 
-// yair is the king of sharks
 export class ProxyServer {
   private readonly httpPort: number = +(process.env.PROXY_HTTP_PORT ?? 80);
   private readonly httpsPort: number = +(process.env.PROXY_HTTPS_PORT ?? 443);
@@ -31,6 +30,9 @@ export class ProxyServer {
   ) {
     this.app = express();
     this.app.use(logMiddleware);
+    this.app.use(() => {
+      throw new Error("sadjkasd");
+    });
     this.app.use(cors({ origin: "*" }));
     this.app.use(express.json());
     this.app.use(express.text());

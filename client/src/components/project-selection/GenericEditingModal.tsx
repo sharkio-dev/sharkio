@@ -19,6 +19,7 @@ interface EditingModalProps {
   cancelButtonProps?: Partial<ExtendButtonBase<ButtonTypeMap>>;
   cancelButtonValue?: string;
   isLoading: boolean;
+  children?: React.ReactNode;
 }
 
 const GenericEditingModal: React.FC<EditingModalProps> = ({
@@ -30,6 +31,7 @@ const GenericEditingModal: React.FC<EditingModalProps> = ({
   acceptButtonValue,
   cancelButtonValue = "Cancel",
   modalProps,
+  children,
 }) => {
   return (
     <Modal
@@ -42,6 +44,7 @@ const GenericEditingModal: React.FC<EditingModalProps> = ({
         <div className="w-full border-b-[0.05px] my-4" />
         <div className="flex flex-col space-y-2">
           <TextField inputProps={{ maxLength: 25 }} {...textFieldProps} />
+          {children}
         </div>
         <div className="flex flex-row justify-start mt-4 space-x-2">
           <Button color="success" {...acceptButtonProps}>

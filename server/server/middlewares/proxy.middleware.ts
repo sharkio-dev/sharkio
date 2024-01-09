@@ -20,7 +20,7 @@ export class ProxyMiddleware {
 
   constructor(
     private readonly snifferService: SnifferService,
-    private readonly requestInterceptor: RequestInterceptor
+    private readonly requestInterceptor: RequestInterceptor,
   ) {
     this.proxyMiddleware = createProxyMiddleware({
       router: this.chooseRoute.bind(this),
@@ -50,11 +50,11 @@ export class ProxyMiddleware {
               headers: proxyRes.headers,
               statusCode: proxyRes.statusCode,
             },
-            testExecutionId
+            testExecutionId,
           );
 
           return body;
-        }
+        },
       ),
     });
   }
@@ -64,7 +64,7 @@ export class ProxyMiddleware {
     const subdomain = host.split(".")[0];
 
     const selectedSniffer = await this.snifferService.findBySubdomain(
-      subdomain
+      subdomain,
     );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();

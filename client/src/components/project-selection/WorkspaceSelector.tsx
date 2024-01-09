@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import WorkspaceItem from "./WorkspaceItem";
 import NewWorkspaceModal from "./NewWorkspaceModal";
 import EditWorkspaceModal from "./EditWorkspaceModal";
@@ -13,7 +19,7 @@ export const emptyWorkSpace: workSpaceType = {
   id: "",
   name: "",
 };
-const ISHIDDEN: boolean = true;
+const ISHIDDEN: boolean = false;
 const WorkspaceSelector = () => {
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
     useWorkspaceStore();
@@ -57,16 +63,43 @@ const WorkspaceSelector = () => {
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
             <Select
-              style={{ width: "200px" }}
-              value={openWorkspace?.id || ""}
+              className="w-fit min-w-[200px]"
+              value={"1"}
               label="Workspace"
+              renderValue={() => openWorkspace?.name || "Default"}
               onChange={(e) => handleChangeWorkspace(e.target.value as string)}
             >
               <NewWorkspaceItem />
+              <Divider orientation="horizontal" className="w-full" />
+              <MenuItem
+                key={"default-workspace"}
+                value={"1"}
+                className="w-full min-w-fit"
+                dense={true}
+              >
+                <WorkspaceItem
+                  workspace={{
+                    id: "1",
+                    name: "default",
+                    createdAt: "",
+                    updatedAt: "",
+                  }}
+                  isSelected={openWorkspace == null}
+                  isDefault={true}
+                />
+              </MenuItem>
               {workspaces.map((workspace: workSpaceType) => {
                 return (
-                  <MenuItem key={workspace.id} value={workspace.id}>
-                    <WorkspaceItem workspace={workspace} />
+                  <MenuItem
+                    key={workspace.id}
+                    value={workspace.id}
+                    className="w-full min-w-fit"
+                    dense={true}
+                  >
+                    <WorkspaceItem
+                      workspace={workspace}
+                      isSelected={workspace.id === openWorkspace?.id}
+                    />
                   </MenuItem>
                 );
               })}
