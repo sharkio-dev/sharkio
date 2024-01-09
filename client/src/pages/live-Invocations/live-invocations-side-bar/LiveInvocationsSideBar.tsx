@@ -15,7 +15,7 @@ export enum searchParamFilters {
   url = "filteredUrl",
 }
 const DEBOUNCE_TIME_WAIT: number = 1500;
-const LiveInvocationsSideBar = () => {
+const LiveInvocations = () => {
   const [searchParams] = useSearchParams();
   const { loadLiveInvocations } = useSniffersStore();
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -50,17 +50,13 @@ const LiveInvocationsSideBar = () => {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col px-2 pt-3 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] ">
+    <div className="flex flex-row space-x-4 items-center">
       <UrlFilter />
-
-      <div className="border-t border-gray-400 my-4"></div>
       <StatusCodeFilter />
-      <div className="border-t border-gray-400 my-4"></div>
       <MethodsFilter />
-      <div className="border-t border-gray-400 my-1"></div>
       <DateFilter />
     </div>
   );
 };
 
-export default LiveInvocationsSideBar;
+export default LiveInvocations;

@@ -15,11 +15,10 @@ const UrlFilter = () => {
   return (
     <TextField
       label="Search URL"
-      variant="filled"
+      variant="outlined"
       size="small"
       onChange={(e) => handleSearch(e.target.value)}
       value={searchParams.get(searchParamFilters.url)}
-      inputProps={{}}
     />
   );
 };

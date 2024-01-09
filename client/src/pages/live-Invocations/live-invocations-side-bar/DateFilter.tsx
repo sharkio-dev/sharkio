@@ -4,7 +4,6 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@mui/material";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
 const DateFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -37,14 +36,6 @@ const DateFilter = () => {
       return newSearchParams;
     });
   };
-  const handleRemoveDates = () => {
-    setSearchParams((prevSearchParams) => {
-      const newSearchParams = new URLSearchParams(prevSearchParams);
-      newSearchParams.set(searchParamFilters.fromDate, "");
-      newSearchParams.set(searchParamFilters.toDate, "");
-      return newSearchParams;
-    });
-  };
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
@@ -58,6 +49,15 @@ const DateFilter = () => {
           value={fromDate}
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleFromDateChange(date)}
+          sx={{
+            width: 200,
+            input: {
+              padding: "8.5px 6px",
+            },
+            label: {
+              top: "-8px",
+            },
+          }}
         />
       </div>
       <div className="flex flex-col">
@@ -71,8 +71,16 @@ const DateFilter = () => {
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleToDateChange(date)}
           value={toDate}
+          sx={{
+            width: 200,
+            input: {
+              padding: "8.5px 6px",
+            },
+            label: {
+              top: "-8px",
+            },
+          }}
         />
-        <Button onClick={handleRemoveDates}>Clear Date Range</Button>
       </div>
     </LocalizationProvider>
   );

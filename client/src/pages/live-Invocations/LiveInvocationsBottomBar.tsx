@@ -1,34 +1,25 @@
-import { InvocationType } from "../sniffers/types";
 import { Invocation } from "../sniffers/Invocation";
 import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 
 type InvocationsSearchBarProps = {
-  activeInvocation?: InvocationType;
+  invocationId?: string;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
-  refresh?: () => void;
 };
 export const InvocationsSearchBar = ({
-  activeInvocation,
+  invocationId,
   setActiveInvocation,
   title,
-  refresh,
 }: InvocationsSearchBarProps) => {
   const { invocations, loadingInvocations } = useSniffersStore();
   return (
     <>
+      <div className="text-xl font-bold font-mono mb-4">{title}</div>
       <div className="flex flex-row justify-between items-center text-center mb-4">
-        <div className="text-xl font-bold font-mono ">{title}</div>
-        <div className="flex flex-row-reverse items-center space-x-4 w-1/2">
-          {refresh && (
-            <LuRefreshCcw
-              className="flex text-gray-500 text-xl cursor-pointer ml-4"
-              onClick={refresh}
-            />
-          )}
-        </div>
+        <LiveInvocations />
       </div>
 
       <div className="flex flex-col w-full overflow-y-auto">
@@ -41,7 +32,7 @@ export const InvocationsSearchBar = ({
             return (
               <Invocation
                 method={invocation.method}
-                isSelected={invocation.id === activeInvocation?.id}
+                isSelected={invocation.id === invocationId}
                 onClick={() => setActiveInvocation(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}

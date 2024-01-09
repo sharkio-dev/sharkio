@@ -69,9 +69,8 @@ export const SnifferData: React.FC = () => {
         <div className={`h-full flex flex-col w-full overflow-y-auto`}>
           {invocations && (
             <InvocationsSearchBar
-              // handleInvocationClicked={onInvocationClick}
+              invocationId={editedInvocation?.id}
               title={"Invocations"}
-              refresh={() => endpointId && refreshInvocations(endpointId)}
               setActiveInvocation={onInvocationClick}
             />
           )}

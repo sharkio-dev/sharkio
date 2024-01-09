@@ -70,6 +70,7 @@ export const StatusCodeFilter = () => {
           variant="outlined"
           label="Filter status codes"
           placeholder="Select status code"
+          sx={{ width: 200 }}
         />
       )}
     />

@@ -40,6 +40,7 @@ const MethodsFilter = () => {
         selected={methodFilters === true}
         size="small"
         value={methodFilters}
+        sx={{ width: 200 }}
       >
         <div className="flex items-center gap-1 ">
           Filter Methods
