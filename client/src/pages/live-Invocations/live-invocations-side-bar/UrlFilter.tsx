@@ -14,7 +14,7 @@ const UrlFilter = () => {
 
   return (
     <TextField
-      label="Search URL"
+      label="URL"
       variant="outlined"
       size="small"
       onChange={(e) => handleSearch(e.target.value)}

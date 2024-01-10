@@ -1,8 +1,8 @@
-import { FormGroup, ToggleButton } from "@mui/material";
+import { MenuItem, Autocomplete, TextField } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
 import { useState } from "react";
-import { AiOutlineSearch } from "react-icons/ai";
+import CheckIcon from "@mui/icons-material/Check";
 
 enum methods {
   GET = "GET",
@@ -13,109 +13,51 @@ enum methods {
 }
 const MethodsFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [methodFilters, setMethodFilters] = useState<Boolean>(false);
-  const handleCheckboxChange = (method: string) => {
-    setSearchParams((prevSearchParams) => {
-      const newSearchParams = new URLSearchParams(prevSearchParams);
-      const filteredMethods =
-        newSearchParams.get(searchParamFilters.methods) || "";
-      const methodIncluded = filteredMethods.includes(method);
-
-      if (methodIncluded) {
-        const updatedMethods = filteredMethods.replace("," + method, "");
-        newSearchParams.set(searchParamFilters.methods, updatedMethods);
-      } else {
-        const updatedMethods = filteredMethods + "," + method;
-        newSearchParams.set(searchParamFilters.methods, updatedMethods);
-      }
-
+  const handleCheckboxChange = (selectedMethods: string[]) => {
+    setSearchParams((prevParams) => {
+      const newSearchParams = new URLSearchParams(prevParams);
+      newSearchParams.set(
+        searchParamFilters.methods,
+        selectedMethods.join(","),
+      );
       return newSearchParams;
     });
   };
 
+  const selectedMethods: methods[] =
+    (searchParams.get(searchParamFilters.methods)?.split(",") as methods[]) ||
+    [];
+
   return (
-    <div className="flex flex-col ">
-      <ToggleButton
-        onClick={() => setMethodFilters(!methodFilters)}
-        selected={methodFilters === true}
-        size="small"
-        value={methodFilters}
-        sx={{ width: 200 }}
-      >
-        <div className="flex items-center gap-1 ">
-          Filter Methods
-          <AiOutlineSearch />
-        </div>
-      </ToggleButton>
-      {methodFilters && (
-        <FormGroup className="ml-1 ">
-          <div className="flex flex-row mt-2 space-x-3">
-            <ToggleButton
-              selected={searchParams
-                .get(searchParamFilters.methods)
-                ?.includes(methods.GET)}
-              value={methods.GET}
-              color="success"
-              size="small"
-              sx={{ color: "success.main", flex: "1" }}
-              onChange={() => handleCheckboxChange(methods.GET)}
-            >
-              GET
-            </ToggleButton>
-            <ToggleButton
-              value={methods.POST}
-              color="primary"
-              size="small"
-              sx={{ color: "primary.main", flex: "1" }}
-              onChange={() => handleCheckboxChange(methods.POST)}
-              selected={searchParams
-                .get(searchParamFilters.methods)
-                ?.includes(methods.POST)}
-            >
-              {methods.POST}
-            </ToggleButton>
-          </div>
-          <div className="flex flex-row mt-2  space-x-2">
-            <ToggleButton
-              value={methods.PUT}
-              color="warning"
-              size="small"
-              sx={{ color: "warning.main", flex: "1" }}
-              onChange={() => handleCheckboxChange(methods.PUT)}
-              selected={searchParams
-                .get(searchParamFilters.methods)
-                ?.includes(methods.PUT)}
-            >
-              {methods.PUT}
-            </ToggleButton>
-            <ToggleButton
-              value={methods.DELETE}
-              color="error"
-              size="small"
-              selected={searchParams
-                .get(searchParamFilters.methods)
-                ?.includes(methods.DELETE)}
-              sx={{ color: "error.main", flex: "1" }}
-              onChange={() => handleCheckboxChange(methods.DELETE)}
-            >
-              {methods.DELETE}
-            </ToggleButton>
-            <ToggleButton
-              value={methods.PATCH}
-              color="secondary"
-              size="small"
-              sx={{ color: "secondary.main", flex: "1" }}
-              onChange={() => handleCheckboxChange(methods.PATCH)}
-              selected={searchParams
-                .get(searchParamFilters.methods)
-                ?.includes(methods.PATCH)}
-            >
-              {methods.PATCH}
-            </ToggleButton>
-          </div>
-        </FormGroup>
+    <Autocomplete
+      multiple
+      size="small"
+      id="tags-standard"
+      sx={{
+        width: selectedMethods.length > 3 ? 300 : 200,
+        justifyContent: "space-between",
+      }}
+      onChange={(_, selectedMethods: methods[]) => {
+        handleCheckboxChange(selectedMethods);
+      }}
+      value={selectedMethods}
+      options={[
+        methods.GET,
+        methods.POST,
+        methods.PUT,
+        methods.DELETE,
+        methods.PATCH,
+      ]}
+      renderOption={(props, method, { selected }) => (
+        <MenuItem key={method} value={method} {...props}>
+          {method}
+          {selected ? <CheckIcon color="info" /> : null}
+        </MenuItem>
       )}
-    </div>
+      renderInput={(params) => (
+        <TextField {...params} label="Method" variant="outlined" />
+      )}
+    />
   );
 };
 

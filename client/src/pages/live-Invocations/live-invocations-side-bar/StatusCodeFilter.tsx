@@ -38,10 +38,6 @@ export const StatusCodeFilter = () => {
     });
   }, [selectedStatusCodes]);
 
-  const handleStatusCodesChange = (selectedOptions: StatusCode[]) => {
-    setSelectedStatusCodes(selectedOptions);
-  };
-
   return (
     <Autocomplete
       multiple
@@ -50,7 +46,7 @@ export const StatusCodeFilter = () => {
       options={allStatusCodes}
       getOptionLabel={(status) => status.value}
       onChange={(_, selectedCodes: StatusCode[]) =>
-        handleStatusCodesChange(selectedCodes)
+        setSelectedStatusCodes(selectedCodes)
       }
       value={selectedStatusCodes}
       renderOption={(props, method, { selected }) => (
@@ -68,7 +64,7 @@ export const StatusCodeFilter = () => {
         <TextField
           {...params}
           variant="outlined"
-          label="Filter status codes"
+          label="Status"
           placeholder="Select status code"
           sx={{ width: 200 }}
         />

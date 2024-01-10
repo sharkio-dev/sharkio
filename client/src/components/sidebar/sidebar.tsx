@@ -30,7 +30,6 @@ const menus: IMenuItem[] = [
     title: "Requests",
     Icon: VscTypeHierarchy,
   },
-
   {
     to: routes.TEST_SUITES,
     title: "Test Suites",

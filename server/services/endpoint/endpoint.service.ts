@@ -1,5 +1,5 @@
 import { Request as ExpressRequest } from "express";
-import { Between, In, Like } from "typeorm";
+import { Between, In, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
 import { Request } from "../../model/entities/Request";
 import { Endpoint } from "../../model/entities/Endpoint";
 import { Sniffer } from "../../model/entities/Sniffer";
@@ -11,7 +11,7 @@ export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
     private readonly requestRepository: RequestRepository,
-    private readonly responseRepository: ResponseRepository,
+    private readonly responseRepository: ResponseRepository
   ) {}
 
   async getByUser(userId: string, limit: number) {
@@ -49,7 +49,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -68,7 +68,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    userId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -133,7 +133,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -151,17 +151,24 @@ export class EndpointService {
     methods: string[],
     url: string,
     fromDate: Date | undefined,
-    toDate: Date | undefined,
+    toDate: Date | undefined
   ) {
+    let createdAt;
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      createdAt = Between(fromDate, toDate);
+    } else if (fromDate !== undefined) {
+      createdAt = MoreThanOrEqual(fromDate);
+    } else if (toDate !== undefined) {
+      createdAt = LessThanOrEqual(toDate);
+    }
+
     const invocations = await this.requestRepository.repository.find({
       where: {
         userId,
         method: methods === undefined ? undefined : In(methods),
         url: url === undefined ? undefined : Like(`%${url}%`),
-        createdAt:
-          fromDate === undefined || toDate === undefined
-            ? undefined
-            : Between(fromDate, toDate),
+        createdAt,
         responses: {
           status: statusCodes === undefined ? undefined : In(statusCodes),
         },
@@ -182,7 +189,7 @@ export class EndpointService {
 
     //make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -207,7 +214,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -234,7 +241,7 @@ export class EndpointService {
     }
 
     // make sure only one response is returned
-    let response = undefined;
+    let response;
     const responses = invocation.responses;
     if (responses && responses.length > 0) {
       response = responses[0];
