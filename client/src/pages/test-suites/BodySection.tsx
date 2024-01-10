@@ -34,25 +34,23 @@ export const BodySection = ({
       : "json";
 
   return (
-    <div className="flex w-full flex-col space-y-4">
-      <Editor
-        width="100%"
-        theme="vs-dark"
-        className="min-h-[40vh]"
-        defaultLanguage="handlebars"
-        value={body}
-        language={type}
-        onMount={(editor) => {
-          setEditor(editor);
-        }}
-        onChange={(value) => onChangeBodyValue(value)}
-        options={{
-          readOnly: !onBodyChange,
-          minimap: {
-            enabled: false,
-          },
-        }}
-      />
-    </div>
+    <Editor
+      width="100%"
+      theme="vs-dark"
+      className="h-[30vh]"
+      defaultLanguage="handlebars"
+      value={body}
+      language={type}
+      onMount={(editor) => {
+        setEditor(editor);
+      }}
+      onChange={(value) => onChangeBodyValue(value)}
+      options={{
+        readOnly: !onBodyChange,
+        minimap: {
+          enabled: false,
+        },
+      }}
+    />
   );
 };

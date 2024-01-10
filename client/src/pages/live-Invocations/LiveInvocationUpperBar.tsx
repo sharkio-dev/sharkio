@@ -19,14 +19,12 @@ type InvocationUpperBarProps = {
   >;
   invocation?: InvocationType | EndpointType | undefined;
   isDisabled?: boolean;
-  showResponseTab?: boolean;
 };
 
 export const InvocationUpperBar = ({
   invocation,
   setEditedInvocation,
   isDisabled = true,
-  showResponseTab = true,
 }: InvocationUpperBarProps) => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -159,7 +157,6 @@ export const InvocationUpperBar = ({
       </div>
       <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
         <InvocationDetails
-          showResponseTab={showResponseTab}
           invocation={invocation}
           setInvocation={setEditedInvocation}
         />
