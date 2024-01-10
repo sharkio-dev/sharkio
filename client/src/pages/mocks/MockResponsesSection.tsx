@@ -9,7 +9,6 @@ interface MockResponsesSectionProps {
   mock: Mock;
   handleMockChange: (mock: Mock) => void;
   handleAddMockResponse: () => Promise<void>;
-  handleDuplicateMockResponse: (mockToDuplicate: MockResponse) => Promise<void>;
   handleDeleteMockResponse: (responseId: string) => Promise<void>;
 }
 export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
@@ -18,7 +17,6 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
   handleMockChange,
   handleAddMockResponse,
   handleDeleteMockResponse,
-  handleDuplicateMockResponse
 }) => {
   const [addingResponse, setAddingResponse] = React.useState<boolean>(false);
   const [openResponseId, setOpenResponseId] = React.useState<string>();
@@ -67,7 +65,6 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
           openResponseId={openResponseId}
           onSort={handleSort}
           onDeleteMockResponse={handleDeleteMockResponse}
-          onDuplicateMockResponse={handleDuplicateMockResponse}
           onOpenResponse={(responseId: string) => {
             if (responseId === openResponseId) {
               setOpenResponseId(undefined);
