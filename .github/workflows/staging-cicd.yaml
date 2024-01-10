@@ -1,0 +1,90 @@
+name: staging-cicd
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  region: eu-central-1
+  cache_path: /tmp/.buildx-cache
+  environment: staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.cache_path }}
+          key: ${{ runner.os }}-buildx-${{ hashFiles('client/Dockerfile', 'client/package-lock.json', 'server/Dockerfile', 'server/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ hashFiles('client/Dockerfile', 'client/package-lock.json') }}-
+            ${{ runner.os }}-buildx-${{ hashFiles('server/Dockerfile', 'server/package-lock.json') }}-
+            ${{ runner.os }}-buildx-
+
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          short_sha=$(git rev-parse --short ${{ github.sha }})
+          echo "short_sha=$short_sha" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Images Based on Changes
+        run: |
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs -L1 dirname | uniq)
+          echo "Changed directories: $changed_files"
+      
+          build_and_push() {
+            local registry=${{ steps.login-ecr.outputs.registry }}
+            local repository=$1
+            local dockerfile=$2
+            local env=${{ env.environment }}
+      
+            echo "Building Docker image for $repository"
+            docker buildx build /
+            -t $registry/$repository:$env/${{ github.sha}} /
+            -t $registry/$repository:$env/${{ github.short_sha }} /
+            -f $dockerfile /
+            --cache-to type=local,dest=${{ env.cache_path }} /
+            --push
+          }
+      
+          if echo "$changed_files" | grep "^client/"; then
+            build_and_push "frontend" "Dockerfile"
+          fi
+      
+          if echo "$changed_files" | grep "^server/"; then
+            build_and_push "backend" "Dockerfile.backend"
+          fi
+
+      - name: Workflow Dispatch
+        uses: benc-uk/workflow-dispatch@v1.2.2
+        with:
+          workflow: staging-cicd.yaml
+          repo: "sharkio-dev/DevOps"
+          token: ${{ secrets.DEPLOY_KEY }}
+          ref: "main"
+          inputs: '{"image": "${{ github.event.inputs.service }}", "image_tag": "${{ github.sha }}" ,"env": "${{ github.event.inputs.env }}"}'
