@@ -4,14 +4,14 @@ import queryString from "query-string";
 import { useState } from "react";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BackendAxios } from "../../api/backendAxios";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
-import { InvocationDetails } from "./InvocationDetails";
-import { LoadingIcon } from "./LoadingIcon";
-import { EndpointType, InvocationType } from "./types";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
-import { BackendAxios } from "../../api/backendAxios";
+import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
+import { InvocationDetails } from "../sniffers/InvocationDetails";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { EndpointType, InvocationType } from "../sniffers/types";
 
 type InvocationUpperBarProps = {
   setEditedInvocation: React.Dispatch<

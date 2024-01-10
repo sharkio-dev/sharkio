@@ -15,7 +15,7 @@ export default class MockMiddleware {
   constructor(
     private readonly interceptor: Interceptor,
     private readonly mockResponseSelector: MockResponseSelector,
-    private readonly mockResponseTransformer: MockResponseTransformer
+    private readonly mockResponseTransformer: MockResponseTransformer,
   ) {}
 
   async findMock(hostname: string, url: string, method: string) {
@@ -28,7 +28,7 @@ export default class MockMiddleware {
       const mock: Mock | null = await this.interceptor.findMockByUrl(
         urlNoParams,
         method,
-        sniffer
+        sniffer,
       );
 
       if (mock != null && mock.isActive === true) {
@@ -53,13 +53,13 @@ export default class MockMiddleware {
           url: req.url,
           params: req.params,
           query: req.query,
-        }
+        },
       );
 
       Object.entries(transformedResponse.headers || {}).forEach(
         ([key, value]) => {
           res.setHeader(key, value);
-        }
+        },
       );
 
       res.status(transformedResponse.status).send(transformedResponse.body);
@@ -69,7 +69,7 @@ export default class MockMiddleware {
         await this.updateSelectedResponse(
           selectedResponse.userId,
           mock,
-          selectedResponse.id
+          selectedResponse.id,
         );
       } catch (e) {
         logger.error("Failed to intercept mock response", e);
@@ -93,7 +93,7 @@ export default class MockMiddleware {
         userId,
         snifferId,
         invocationId,
-        testExecutionId
+        testExecutionId,
       );
     }
   }
@@ -101,12 +101,12 @@ export default class MockMiddleware {
   updateSelectedResponse(
     userId: string,
     mock: Mock,
-    selectedResponseId: string
+    selectedResponseId: string,
   ) {
     return this.interceptor.setMockSelectedResponse(
       userId,
       mock.id,
-      selectedResponseId
+      selectedResponseId,
     );
   }
 }

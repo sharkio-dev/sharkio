@@ -95,13 +95,13 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer()
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
       "test-hostname-xa7pc.localhost.com",
       "/test",
-      "GET"
+      "GET",
     );
 
     expect(mock).toBeUndefined();
@@ -116,13 +116,13 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer()
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
       "test-hostname-xa7pc.localhost.com",
       "/test",
-      "GET"
+      "GET",
     );
 
     expect(mock).toBeUndefined();
@@ -135,13 +135,13 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer()
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
       "test-hostname-xa7pc.localhost.com",
       "/test",
-      "GET"
+      "GET",
     );
 
     expect(mock).toBeUndefined();
@@ -166,13 +166,13 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer()
+      new MockResponseTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
       "test-hostname-xa7pc.localhost.com",
       "/test",
-      "GET"
+      "GET",
     );
 
     expect(mock).toBeUndefined();
@@ -200,7 +200,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer()
+      new MockResponseTransformer(),
     );
 
     mockMiddleware.findMock = jest.fn().mockResolvedValue(baseMock);
@@ -221,11 +221,11 @@ describe("MockMiddleware", () => {
     // assert headers
     expect(setHeader).toHaveBeenCalledWith(
       Object.keys(baseResponseHeaders)[0],
-      Object.values(baseResponseHeaders)[0]
+      Object.values(baseResponseHeaders)[0],
     );
     expect(setHeader).toHaveBeenCalledWith(
       Object.keys(baseResponseHeaders)[1],
-      Object.values(baseResponseHeaders)[1]
+      Object.values(baseResponseHeaders)[1],
     );
 
     // assert update functions
@@ -255,7 +255,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer()
+      new MockResponseTransformer(),
     );
 
     mockMiddleware.findMock = jest.fn().mockResolvedValue(undefined);

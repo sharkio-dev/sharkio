@@ -1,19 +1,16 @@
 import queryString from "query-string";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useSnackbar } from "../../../hooks/useSnackbar";
-import { useSniffersStore } from "../../../stores/sniffersStores";
-import { InvocationUpperBar } from "../InvocationUpperBar";
-import { InvocationsBottomBar } from "../InvocationsBottomBar";
 import { useEffect, useState } from "react";
-import { EndpointType, InvocationType } from "../types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useSniffersStore } from "../../../stores/sniffersStores";
+import { InvocationUpperBar } from "../../live-Invocations/LiveInvocationUpperBar";
+import { InvocationsSearchBar } from "../../live-Invocations/LiveInvocationsBottomBar";
+import { EndpointType, InvocationType } from "../types";
 
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();
-  const { show: showSnackbar } = useSnackbar();
   const { endpointId } = useParams();
-  const { endpoints, invocations, loadInvocations, resetInvocations } =
-    useSniffersStore();
+  const { endpoints, invocations } = useSniffersStore();
   const [editedInvocation, setEditedInvocation] = useState<
     EndpointType | undefined
   >(undefined);
@@ -25,14 +22,6 @@ export const SnifferData: React.FC = () => {
     const invocation = endpoints?.find((e) => e.id === endpointId);
     setEditedInvocation(invocation);
   }, [endpointId]);
-
-  // Invocations source function
-  const refreshInvocations = (endpointId: string) => {
-    loadInvocations(endpointId, true).catch(() => {
-      resetInvocations();
-      showSnackbar("Failed to get invocations", "error");
-    });
-  };
 
   const onInvocationClick = (invocationId: string) => {
     const invocation = {
@@ -68,10 +57,10 @@ export const SnifferData: React.FC = () => {
       <Panel maxSize={80} defaultSize={50} className="w-full">
         <div className={`h-full flex flex-col w-full overflow-y-auto`}>
           {invocations && (
-            <InvocationsBottomBar
-              handleInvocationClicked={onInvocationClick}
+            <InvocationsSearchBar
+              invocationId={editedInvocation?.id}
               title={"Invocations"}
-              refresh={() => endpointId && refreshInvocations(endpointId)}
+              setActiveInvocation={onInvocationClick}
             />
           )}
         </div>
