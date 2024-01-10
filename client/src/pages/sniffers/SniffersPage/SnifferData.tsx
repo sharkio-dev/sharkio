@@ -97,7 +97,6 @@ export const CreateInvocation: React.FC = () => {
           setEditedInvocation={(v) => {
             setInvocation(v);
           }}
-          showResponseTab={false}
         />
       </div>
     </div>

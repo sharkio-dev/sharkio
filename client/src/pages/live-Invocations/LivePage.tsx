@@ -54,9 +54,7 @@ export const InvocationScreen = () => {
     <div className="flex flex-col p-4 px-4 border-b border-border-color h-full">
       <InvocationUpperBar
         invocation={invocation}
-        setEditedInvocation={function (): void {
-          throw new Error("Function not implemented.");
-        }}
+        setEditedInvocation={setInvocation as any}
       />
     </div>
   );
