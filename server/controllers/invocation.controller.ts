@@ -3,6 +3,7 @@ import PromiseRouter from "express-promise-router";
 import { useLog } from "../lib/log";
 import { EndpointService } from "../services/endpoint/endpoint.service";
 import { IRouterConfig } from "./router.interface";
+import dayJs from "dayjs";
 
 const log = useLog({
   dirname: __dirname,
@@ -31,9 +32,20 @@ export class InvocationController {
       async (req: Request, res: Response, next: NextFunction) => {
         const userId = res.locals.auth.user.id;
         const limit = 100;
+        const statusCodes = req.query.statusCodes as string[];
+        const methods = req.query.methods as string[];
+        const url = req.query.url as string;
+        const fromDate = req.query.fromDate as Date | undefined;
+        const toDate = req.query.toDate as Date | undefined;
+
         const requests = await this.endpointService.getInvocationsByUser(
           userId,
           limit,
+          statusCodes,
+          methods,
+          url,
+          fromDate,
+          toDate,
         );
         res.status(200).send(requests);
       },

@@ -10,23 +10,23 @@ export interface Interceptor {
   findMockByUrl: (
     url: string,
     method: string,
-    sniffer: Sniffer
+    sniffer: Sniffer,
   ) => Promise<Mock | null>;
   setMockSelectedResponse: (
     userId: string,
     mockId: string,
-    selectedResponseId: string
+    selectedResponseId: string,
   ) => Promise<void>;
   saveEndpoint: (req: Request, sniffer: Sniffer) => Promise<Endpoint>;
   saveRequest: (
     request: Endpoint,
-    testExecutionId?: string
+    testExecutionId?: string,
   ) => Promise<RequestModel>;
   saveResponse: (
     res: { headers: any; statusCode: any; body: any },
     userId: Users["id"],
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
-    testExecutionId?: string
+    testExecutionId?: string,
   ) => Promise<void>;
 }

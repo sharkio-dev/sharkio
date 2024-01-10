@@ -141,8 +141,22 @@ export const getEnpoints = (snifferId: string) => {
   });
 };
 
-export const getLiveInvocations = () => {
-  return BackendAxios.get(`/invocation`).then((res) => {
+export const getLiveInvocations = (
+  statusCodes?: string[],
+  methods?: string[],
+  fromDate?: Date | undefined,
+  toDate?: Date | undefined,
+  url?: string,
+) => {
+  return BackendAxios.get(`/invocation`, {
+    params: {
+      statusCodes,
+      methods,
+      fromDate,
+      toDate,
+      url,
+    },
+  }).then((res) => {
     return res.data;
   });
 };
