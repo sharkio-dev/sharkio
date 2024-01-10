@@ -2,7 +2,6 @@ import queryString from "query-string";
 import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useSnackbar } from "../../../hooks/useSnackbar";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 import { InvocationUpperBar } from "../../live-Invocations/LiveInvocationUpperBar";
 import { InvocationsSearchBar } from "../../live-Invocations/LiveInvocationsBottomBar";
@@ -10,10 +9,8 @@ import { EndpointType, InvocationType } from "../types";
 
 export const SnifferData: React.FC = () => {
   const navigator = useNavigate();
-  const { show: showSnackbar } = useSnackbar();
   const { endpointId } = useParams();
-  const { endpoints, invocations, loadInvocations, resetInvocations } =
-    useSniffersStore();
+  const { endpoints, invocations } = useSniffersStore();
   const [editedInvocation, setEditedInvocation] = useState<
     EndpointType | undefined
   >(undefined);
@@ -25,14 +22,6 @@ export const SnifferData: React.FC = () => {
     const invocation = endpoints?.find((e) => e.id === endpointId);
     setEditedInvocation(invocation);
   }, [endpointId]);
-
-  // Invocations source function
-  const refreshInvocations = (endpointId: string) => {
-    loadInvocations(endpointId, true).catch(() => {
-      resetInvocations();
-      showSnackbar("Failed to get invocations", "error");
-    });
-  };
 
   const onInvocationClick = (invocationId: string) => {
     const invocation = {

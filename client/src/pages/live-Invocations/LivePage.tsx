@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { InvocationUpperBar } from "./LiveInvocationUpperBar";
 import { InvocationsSearchBar } from "./LiveInvocationsBottomBar";
 import { InvocationType } from "../sniffers/types";
-import { useSnackbar } from "../../hooks/useSnackbar";
-import { useSniffersStore } from "../../stores/sniffersStores";
 import { BackendAxios } from "../../api/backendAxios";
 
 export const LivePage = () => {

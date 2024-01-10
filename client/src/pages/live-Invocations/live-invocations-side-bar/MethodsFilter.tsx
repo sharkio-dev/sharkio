@@ -1,7 +1,6 @@
 import { MenuItem, Autocomplete, TextField } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
-import { useState } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 
 enum methods {

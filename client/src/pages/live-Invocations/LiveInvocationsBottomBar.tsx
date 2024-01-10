@@ -1,5 +1,4 @@
 import { Invocation } from "../sniffers/Invocation";
-import { LuRefreshCcw } from "react-icons/lu";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
