@@ -129,7 +129,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
           </div>
           <div className="flex flex-row items-center space-x-2">
 
-              <Tooltip
+         {   onDuplicateMockResponse&&  <Tooltip
                 title="Duplicate mock response"
               >
                 <FileCopy sx={{fontSize: '15px' }}
@@ -138,7 +138,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                           }}>
 
                 </FileCopy>
-              </Tooltip>
+              </Tooltip>}
              {isDeleting ? (
               <LoadingIcon />
             ) : (
