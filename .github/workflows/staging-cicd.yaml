@@ -61,12 +61,12 @@ jobs:
             local registry=${{ steps.login-ecr.outputs.registry }}
             local repository=$1
             local dockerfile=$2
-            local env=${{ env.environment }}
+
       
             echo "Building Docker image for $repository"
             docker buildx build /
-            -t $registry/$repository:$env/${{ github.sha}} /
-            -t $registry/$repository:$env/${{ github.short_sha }} /
+            -t $registry/$repository:${{ env.environment }}/${{ github.sha}} /
+            -t $registry/$repository:${{ env.environment }}/${{ github.short_sha }} /
             -f $dockerfile /
             --cache-to type=local,dest=${{ env.cache_path }} /
             --push
@@ -74,10 +74,12 @@ jobs:
       
           if echo "$changed_files" | grep "^client/"; then
             build_and_push "frontend" "Dockerfile"
+            echo "image1=frontend" >> $GITHUB_ENV
           fi
       
           if echo "$changed_files" | grep "^server/"; then
             build_and_push "backend" "Dockerfile.backend"
+            echo "image2=backend" >> $GITHUB_ENV
           fi
 
       - name: Workflow Dispatch
@@ -87,4 +89,4 @@ jobs:
           repo: "sharkio-dev/DevOps"
           token: ${{ secrets.DEPLOY_KEY }}
           ref: "main"
-          inputs: '{"image": "${{ github.event.inputs.service }}", "image_tag": "${{ github.sha }}" ,"env": "${{ github.event.inputs.env }}"}'
+          inputs: '{"image": "${{ env.image1 }}", image2": "${{ env.image2 }}" "image_tag": "${{ env.environment }}/${{ github.short_sha }}" ,"env": "${{ env.environment }}"}'
