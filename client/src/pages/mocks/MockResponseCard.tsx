@@ -1,4 +1,4 @@
-import { Save , FileCopy} from "@mui/icons-material";
+import { Save } from "@mui/icons-material";
 import { IconButton, Input, Radio, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -21,7 +21,6 @@ interface IMockResponseCard {
   index: number;
   onSort: any;
   onDeleteMockResponse: (responseId: string) => Promise<void>;
-  onDuplicateMockResponse: (mockToDuplicate: MockResponse) => Promise<void>;
   onOpenResponse: any;
   onMockResponsesChange: any;
   openResponseId?: string | null;
@@ -38,7 +37,6 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   onDeleteMockResponse,
   onOpenResponse,
   onMockResponsesChange,
-  onDuplicateMockResponse
 }) => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -128,18 +126,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             </div>
           </div>
           <div className="flex flex-row items-center space-x-2">
-
-         {   onDuplicateMockResponse&&  <Tooltip
-                title="Duplicate mock response"
-              >
-                <FileCopy sx={{fontSize: '15px' }}
-                          onClick={() => {
-                            onDuplicateMockResponse(mockResponse)
-                          }}>
-
-                </FileCopy>
-              </Tooltip>}
-             {isDeleting ? (
+            {isDeleting ? (
               <LoadingIcon />
             ) : (
               <Tooltip
@@ -165,6 +152,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                     }}
                   />
                 </IconButton>
+                {/* asdasd */}
               </Tooltip>
             )}
 
