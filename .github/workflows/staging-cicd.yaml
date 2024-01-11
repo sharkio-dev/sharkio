@@ -70,23 +70,23 @@ jobs:
             docker buildx build \
             -t $registry/$repository:${{ env.environment }}/${{ github.sha}} \
             -t $registry/$repository:${{ env.environment }}/${{ github.short_sha }} \
-            -f $dockerfile \
             --cache-to type=local,dest=${{ env.cache_path }} \
-            --push
+            --push \
+            -f $dockerfile . 
           }
 
           if echo "$changed_files" | grep "^client/"; then
-            build_and_push "frontend" "Dockerfile"
+            build_and_push "frontend" "/client/Dockerfile"
             echo image1="\"frontend\","
           fi
 
           if echo "$changed_files" | grep "^server/"; then
-            build_and_push "backend" "Dockerfile.backend"
+            build_and_push "backend" "/server/Dockerfile.backend"
             echo image2="\"backend\","
           fi
 
           if echo "$changed_files" | grep "^server/model/"; then
-          build_and_push "migrations" "Dockerfile.migrations"
+          build_and_push "migrations" "/server/Dockerfile.migrations"
           echo image3="\"migrations\","
           fi
 
