@@ -76,18 +76,24 @@ jobs:
           }
 
           if echo "$changed_files" | grep "^client/"; then
-            build_and_push "frontend" "client/Dockerfile"
+            pushd client/
+            build_and_push "frontend" "Dockerfile" 
+            popd
             echo image1="\"frontend\","
           fi
 
           if echo "$changed_files" | grep "^server/"; then
-            build_and_push "backend" "server/Dockerfile.backend"
+            pushd server/
+            build_and_push "backend" "Dockerfile.backend"
+            popd
             echo image2="\"backend\","
           fi
 
           if echo "$changed_files" | grep "^server/model/"; then
-          build_and_push "migrations" "server/Dockerfile.migrations"
-          echo image3="\"migrations\","
+            pushd server/
+            build_and_push "migrations" "Dockerfile.migrations"
+            popd
+            echo image3="\"migrations\","
           fi
 
           echo "{\"images\":[$image1 $image2 $image3]}" > images.txt
