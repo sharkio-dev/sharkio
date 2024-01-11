@@ -9,6 +9,8 @@ enum methods {
   PUT = "PUT",
   DELETE = "DELETE",
   PATCH = "PATCH",
+  HEAD = "HEAD",
+  OPTIONS = "OPTIONS",
 }
 const MethodsFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,6 +48,8 @@ const MethodsFilter = () => {
         methods.PUT,
         methods.DELETE,
         methods.PATCH,
+        methods.HEAD,
+        methods.OPTIONS,
       ]}
       renderOption={(props, method, { selected }) => (
         <MenuItem key={method} value={method} {...props}>
