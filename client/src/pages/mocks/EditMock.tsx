@@ -126,7 +126,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
     const index = mock.mockResponses.length;
 
     return postMockResponse(snifferId as string, mockId as string, {
-      name: `${mockToDuplicate.name} copy ${index}`,
+      name: `${mockToDuplicate.name} copy`,
       body: mockToDuplicate.body,
       status: mockToDuplicate.status,
       headers: mockToDuplicate.headers,
@@ -136,7 +136,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
         if (!prev) return prev;
         return {
           ...prev,
-          selectedResponseId: index === 0 ? res.id : prev.selectedResponseId,
+          selectedResponseId:  prev.selectedResponseId,
           mockResponses: [...prev.mockResponses, res],
         };
       });
