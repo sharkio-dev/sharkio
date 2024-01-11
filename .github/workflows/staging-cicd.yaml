@@ -87,7 +87,7 @@ jobs:
           echo image3="\"migrations\","
           fi
            
-          echo echo "{\"images\":[$image1 $image2 $image3]}" > images.txt
+          echo "{\"images\":[$image1 $image2 $image3]}" > images.txt
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
 
   deploy:
