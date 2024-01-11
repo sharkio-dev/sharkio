@@ -132,6 +132,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
         }}
         handleAddMockResponse={onAddResponse}
         handleDeleteMockResponse={onDeleteResponse}
+    
       />
     </div>
   );
