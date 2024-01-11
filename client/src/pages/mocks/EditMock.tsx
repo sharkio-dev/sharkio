@@ -136,7 +136,6 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
         if (!prev) return prev;
         return {
           ...prev,
-          selectedResponseId:  prev.selectedResponseId,
           mockResponses: [...prev.mockResponses, res],
         };
       });

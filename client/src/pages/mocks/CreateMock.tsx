@@ -132,9 +132,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
         }}
         handleAddMockResponse={onAddResponse}
         handleDeleteMockResponse={onDeleteResponse}
-        // @ts-ignore
-        handleDuplicateMockResponse={undefined}/* TO PASS TS ERROR
-         this only work after you create mock */
+    
       />
     </div>
   );
