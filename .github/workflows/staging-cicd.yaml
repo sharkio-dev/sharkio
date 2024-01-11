@@ -68,8 +68,8 @@ jobs:
 
             echo "Building Docker image for $repository"
             docker buildx build \
-            -t $registry/$repository:${{ env.environment }}/${{ github.sha}} \
-            -t $registry/$repository:${{ env.environment }}/${{ github.short_sha }} \
+            -t $registry/$repository:${{ env.environment }}-${{ github.sha}} \
+            -t $registry/$repository:${{ env.environment }}-${{ github.short_sha }} \
             --cache-to type=local,dest=${{ env.cache_path }} \
             --push \
             -f $dockerfile . 
