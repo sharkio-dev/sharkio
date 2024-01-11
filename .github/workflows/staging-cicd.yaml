@@ -57,7 +57,7 @@ jobs:
       - name: Build and Push Docker Images Based on Changes
         id: image_builder
         run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs -L1 dirname | uniq)
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | uniq)
           echo $changed_files
           echo "Changed directories: $changed_files"
       
