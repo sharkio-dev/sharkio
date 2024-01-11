@@ -3,7 +3,7 @@ name: staging-cicd
 on:
   push:
     branches:
-      - main
+      - staging-cicd
 
 env:
   region: eu-central-1
