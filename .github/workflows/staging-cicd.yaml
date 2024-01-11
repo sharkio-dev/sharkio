@@ -7,7 +7,7 @@ on:
 
 env:
   region: eu-central-1
-  cache_path: /tmp/.buildx-cache
+  cache_path: /tmp/
   environment: staging
 
 jobs:
