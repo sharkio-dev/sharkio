@@ -47,12 +47,12 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Set short git commit SHA
-        id: vars
         run: |
           short_sha=$(git rev-parse --short ${{ github.sha }})
           echo "short_sha=$short_sha" >> $GITHUB_ENV
 
       - name: Build and Push Docker Images Based on Changes
+        id: image_builder
         run: |
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs -L1 dirname | uniq)
           echo "Changed directories: $changed_files"
@@ -74,26 +74,26 @@ jobs:
       
           if echo "$changed_files" | grep "^client/"; then
             build_and_push "frontend" "Dockerfile"
-            echo "image1="frontend"," 
+            echo image1="\"frontend\","
           fi
       
           if echo "$changed_files" | grep "^server/"; then
             build_and_push "backend" "Dockerfile.backend"
-            echo "image2="backend"," 
+            echo image2="\"backend\","
           fi
 
           if echo "$changed_files" | grep "^server/model/"; then
           build_and_push "migrations" "Dockerfile.migrations"
-          echo "image3="migrations"," 
+          echo image3="\"migrations\","
           fi
            
-          echo '{"images":[$image1 $image2 $image3]}' > images.txt
-          echo "images_output=$(cat images.txt)" >> $GITHUB_OUTPUT
+          echo echo "{\"images\":[$image1 $image2 $image3]}" > images.txt
+          echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
 
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.images_output)}}
+      matrix: ${{ fromJson(needs.build.outputs.images_json)}}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
