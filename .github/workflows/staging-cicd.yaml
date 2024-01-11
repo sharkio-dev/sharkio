@@ -11,7 +11,7 @@ env:
   environment: staging
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -74,19 +74,37 @@ jobs:
       
           if echo "$changed_files" | grep "^client/"; then
             build_and_push "frontend" "Dockerfile"
-            echo "image1=frontend" >> $GITHUB_ENV
+            echo "image1="frontend"," 
           fi
       
           if echo "$changed_files" | grep "^server/"; then
             build_and_push "backend" "Dockerfile.backend"
-            echo "image2=backend" >> $GITHUB_ENV
+            echo "image2="backend"," 
           fi
 
+          if echo "$changed_files" | grep "^server/model/"; then
+          build_and_push "migrations" "Dockerfile.migrations"
+          echo "image3="migrations"," 
+          fi
+           
+          echo '{"images":[$image1 $image2 $image3]}' > images.txt
+          echo "images_output=$(cat images.txt)" >> $GITHUB_OUTPUT
+
+  deploy:
+    needs: build
+    strategy:
+      matrix: ${{ fromJson(needs.build.outputs.images_output)}}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+    steps:
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
-          workflow: staging-cicd.yaml
+          workflow: sharkio-devops-cicd
           repo: "sharkio-dev/DevOps"
           token: ${{ secrets.DEPLOY_KEY }}
-          ref: "main"
-          inputs: '{"image": "${{ env.image1 }}", image2": "${{ env.image2 }}" "image_tag": "${{ env.environment }}/${{ github.short_sha }}" ,"env": "${{ env.environment }}"}'
+          ref: "staging"
+          inputs: '{"image": "${{ matrix.images }}", "image_tag": "${{ github.sha }}" ,"env": "${{ github.event.inputs.env }}"}'
