@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 4
+          ref: staging-cicd
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -55,6 +58,7 @@ jobs:
         id: image_builder
         run: |
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs -L1 dirname | uniq)
+          echo $changed_files
           echo "Changed directories: $changed_files"
       
           build_and_push() {
@@ -62,7 +66,6 @@ jobs:
             local repository=$1
             local dockerfile=$2
 
-      
             echo "Building Docker image for $repository"
             docker buildx build /
             -t $registry/$repository:${{ env.environment }}/${{ github.sha}} /
@@ -71,12 +74,12 @@ jobs:
             --cache-to type=local,dest=${{ env.cache_path }} /
             --push
           }
-      
+
           if echo "$changed_files" | grep "^client/"; then
             build_and_push "frontend" "Dockerfile"
             echo image1="\"frontend\","
           fi
-      
+
           if echo "$changed_files" | grep "^server/"; then
             build_and_push "backend" "Dockerfile.backend"
             echo image2="\"backend\","
@@ -86,7 +89,7 @@ jobs:
           build_and_push "migrations" "Dockerfile.migrations"
           echo image3="\"migrations\","
           fi
-           
+
           echo "{\"images\":[$image1 $image2 $image3]}" > images.txt
           cat images.txt
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
