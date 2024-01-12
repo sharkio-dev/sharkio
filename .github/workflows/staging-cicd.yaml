@@ -54,70 +54,24 @@ jobs:
           short_sha=$(git rev-parse --short ${{ github.sha }})
           echo "short_sha=$short_sha" >> $GITHUB_ENV
 
-      - name: Build and Push Docker Images Based on Changes
+      - name: Setup Python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Python Script
         id: image_builder
-        run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | uniq)
-          echo $changed_files
-          echo "Changed directories: $changed_files"
-      
-          build_and_push() {
-            local registry=${{ steps.login-ecr.outputs.registry }}
-            local repository=$1
-            local dockerfile=$2
-
-            echo "Building Docker image for $repository"
-            docker buildx build \
-            -t $registry/$repository:${{ env.environment }}-${{ github.sha}} \
-            -t $registry/$repository:${{ env.environment }}-${{ env.short_sha }} \
-            --cache-to type=local,dest=${{ env.cache_path }} \
-            --push \
-            -f $dockerfile . 
-          }
-
-          if echo "$changed_files" | grep "^client/"; then
-            pushd client/
-            build_and_push "frontend" "Dockerfile" 
-            popd
-            images+="\"frontend"\"
-            images+=" "
-          fi
-
-          if echo "$changed_files" | grep "^server/"; then
-            pushd server/
-            build_and_push "backend" "Dockerfile.backend"
-            popd
-            images+="\"backend"\"
-            images+=" "
-          fi
-
-          if echo "$changed_files" | grep "^server/model/"; then
-            pushd server/
-            build_and_push "migrations" "Dockerfile.migrations"
-            popd
-            images+="\"migrations"\" 
-            images+=" " 
-          fi
-
-
-          length=${#images[@]}
-          result=""
-        
-          for (( i=0; i<$length; i++ )); do
-              result+="${images[$i]}"
-              # Add a comma if it's not the last element
-              if [ $i -ne $((length-1)) ]; then
-                  result+=","
-              fi
-          done
-
-          echo "result: $result"
-          echo "images_json=$result" >> $GITHUB_OUTPUT
-
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          full_sha: ${{ github.sha }}
+          short_sha: ${{ env.short_sha }}
+          ENVIRONMENT: staging
+        run: python3 .github/workflows/scripts/deployment_loop.py 
+ 
       - name: github_env/output test
         run: |
           echo "Received images_json(output): ${{ steps.image_builder.outputs.images_json }}"
-         
+          echo "Received images_json(output): ${{ steps.output.image_builder }}"
 
   deploy:
     needs: build
