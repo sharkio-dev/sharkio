@@ -97,19 +97,24 @@ jobs:
           fi
 
           echo "{\"images\":[$images]}" | sed 's/,\]/\]/' > images.txt
-          cat images.txt
+          echo "images.txt contains: $(cat images.txt)"
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
+          echo "images_json2=$(cat images.txt)" >> $GITHUB_ENV
 
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.images_json)}}
+      matrix: ${{ fromJson(needs.github.images_json2)  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
       id-token: "write"
       pull-requests: "write"
     steps:
+      - name: Debug Received JSON
+        run: |
+          echo "Received images_json(output): ${{ needs.build.outputs.images_json }}"
+          echo "Recevied images_json2(env)": ${{ needs.github.images_json2 }}
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
