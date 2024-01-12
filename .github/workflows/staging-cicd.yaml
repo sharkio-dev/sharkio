@@ -79,27 +79,40 @@ jobs:
             pushd client/
             build_and_push "frontend" "Dockerfile" 
             popd
-            images1="\"frontend\","
+            images+="\"frontend"\"
+            images+=" "
           fi
 
           if echo "$changed_files" | grep "^server/"; then
             pushd server/
             build_and_push "backend" "Dockerfile.backend"
             popd
-            images2="\"backend\","
+            images+="\"backend"\"
+            images+=" "
           fi
 
           if echo "$changed_files" | grep "^server/model/"; then
             pushd server/
             build_and_push "migrations" "Dockerfile.migrations"
             popd
-            images3="\"migrations\","
+            images+="\"migrations"\" 
+            images+=" " 
           fi
 
-          echo "images:" $images
-          echo "'{\"images\":[$images1 $images2 $images3]}'" > images.txt
-          echo "images.txt contains: $(cat images.txt)"
-          echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
+
+          length=${#images[@]}
+          result=""
+        
+          for (( i=0; i<$length; i++ )); do
+              result+="${images[$i]}"
+              # Add a comma if it's not the last element
+              if [ $i -ne $((length-1)) ]; then
+                  result+=","
+              fi
+          done
+
+          echo "result: $result"
+          echo "images_json=$result" >> $GITHUB_OUTPUT
 
       - name: github_env/output test
         run: |
