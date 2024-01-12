@@ -7,7 +7,7 @@ def build_and_push(repository, dockerfile):
     -t {registry}/{repository}:{environment}-{short_sha}\
     --push \
     -f {dockerfile} . '
-    subprocess.run(docker_build, shell=True, text=True, check=True, stdout=subprocess.PIPE)
+    subprocess.run(docker_build, shell=True, text=True, check=True, stdout=subprocess.PIPE, executable='/bin/bash')
 
 registry = os.getenv('REGISTRY')
 full_sha = os.getenv('full_sha')
@@ -18,7 +18,7 @@ github_sha_before = os.getenv('github_event_before')
 git_command = f"git diff --name-only ${{ github_event_before }} ${{github_sha}} | uniq"
 images = []
 
-changed_files = subprocess.run(git_command, shell=True, text=True, check=True, stdout=subprocess.PIPE)
+changed_files = subprocess.run(git_command, shell=True, text=True, check=True, stdout=subprocess.PIPE, executable='/bin/bash')
 output = changed_files.stdout.strip()
 
 
