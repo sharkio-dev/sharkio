@@ -15,13 +15,13 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import { BodySection } from "../test-suites/BodySection";
 import { HeaderSection } from "../test-suites/HeaderSection";
-import { EndpointType, InvocationType } from "./types";
+import { InvocationType } from "./types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
 
 type InvocationDetailsProps = {
-  invocation: InvocationType | EndpointType | undefined;
-  setInvocation: (invocation: InvocationType | EndpointType) => void;
+  invocation: InvocationType | undefined;
+  setInvocation: (invocation: InvocationType) => void;
 };
 
 const defaultCodeLanguage = "bash";
@@ -59,7 +59,6 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
   const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
 
   const handleChange = (_: any, newValue: string) => {
-    console.log(newValue);
     setValue(newValue);
   };
 
@@ -86,8 +85,6 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
       ? generateApiRequestSnippet(codeLanguage, invocation)
       : "";
   }, [invocation, codeLanguage]);
-
-  console.log(languageCodeText, codeLanguage);
 
   return (
     <TabContext value={value}>

@@ -9,7 +9,9 @@ interface MockResponsesSectionProps {
   mock: Mock;
   handleMockChange: (mock: Mock) => void;
   handleAddMockResponse: () => Promise<void>;
-  handleDuplicateMockResponse?: (mockToDuplicate: MockResponse) => Promise<void>;
+  handleDuplicateMockResponse?: (
+    mockToDuplicate: MockResponse,
+  ) => Promise<void>;
   handleDeleteMockResponse: (responseId: string) => Promise<void>;
 }
 export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
@@ -18,7 +20,7 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
   handleMockChange,
   handleAddMockResponse,
   handleDeleteMockResponse,
-  handleDuplicateMockResponse
+  handleDuplicateMockResponse,
 }) => {
   const [addingResponse, setAddingResponse] = React.useState<boolean>(false);
   const [openResponseId, setOpenResponseId] = React.useState<string>();

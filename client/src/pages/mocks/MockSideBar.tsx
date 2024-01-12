@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { SideBarItem } from "../sniffers/SniffersSideBar";
 import { GiSharkFin } from "react-icons/gi";
@@ -15,6 +15,7 @@ export const MockSideBar: React.FC = () => {
   const { sniffers, loadSniffers } = useSniffersStore();
   const { loadMocks, resetMocks } = useMockStore();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const [_, setSearchParams] = useSearchParams();
 
   const navigator = useNavigate();
 
@@ -34,8 +35,11 @@ export const MockSideBar: React.FC = () => {
 
   useEffect(() => {
     if (!snifferId && sniffers.length > 0) {
-      navigator(`/mocks?snifferId=${sniffers[0].id}`);
-      return;
+      setSearchParams((params) => {
+        const newParams = new URLSearchParams(params);
+        newParams.set("snifferId", sniffers[0].id);
+        return newParams;
+      });
     }
   }, [sniffers]);
 
