@@ -3,7 +3,7 @@ import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -15,26 +15,27 @@ export const SniffersSideBar: React.FC = () => {
   const { sniffers } = useSniffersStore();
   const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-  const { loadEndpoints, resetEndpoints, loadingEndpoints } =
-    useSniffersStore();
+  const { loadEndpoints, loadingEndpoints } = useSniffersStore();
+  const [_, setSearchParams] = useSearchParams();
+
   const location = useLocation();
 
   const { snifferId } = queryString.parse(location.search);
   useEffect(() => {
     if (!snifferId) {
       if (sniffers.length > 0) {
-        const params = new URLSearchParams(location.search);
-        params.append("snifferId", sniffers[0].id);
-        let queryString = params.toString();
-        navigator({ search: queryString }, { replace: true });
+        setSearchParams((params) => {
+          const newParams = new URLSearchParams(params);
+          newParams.set("snifferId", sniffers[0].id);
+          return newParams;
+        });
       }
-      resetEndpoints();
       return;
     }
     loadEndpoints(snifferId as string).catch(() => {
       showSnackbar("Failed to get endpoints", "error");
     });
-  }, [snifferId, sniffers, location.search]);
+  }, [snifferId]);
 
   return (
     <>

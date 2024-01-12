@@ -4,7 +4,7 @@ import { useSniffersStore } from "../../../stores/sniffersStores";
 import DateFilter from "./DateFilter";
 import dayjs from "dayjs";
 import MethodsFilter from "./MethodsFilter";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import UrlFilter from "./UrlFilter";
 
 export enum searchParamFilters {
@@ -14,9 +14,10 @@ export enum searchParamFilters {
   statusCodes = "statusCodes",
   url = "filteredUrl",
 }
-const DEBOUNCE_TIME_WAIT: number = 1500;
+const DEBOUNCE_TIME_WAIT: number = 1000;
 const LiveInvocations = () => {
   const [searchParams] = useSearchParams();
+  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
   const { loadLiveInvocations } = useSniffersStore();
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const handleFilterClick = () => {
@@ -43,6 +44,10 @@ const LiveInvocations = () => {
   useEffect(() => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
+    }
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+      return;
     }
     debounceTimeout.current = setTimeout(() => {
       handleFilterClick();
