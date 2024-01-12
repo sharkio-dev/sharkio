@@ -69,7 +69,7 @@ jobs:
             echo "Building Docker image for $repository"
             docker buildx build \
             -t $registry/$repository:${{ env.environment }}-${{ github.sha}} \
-            -t $registry/$repository:${{ env.environment }}-${{ github.short_sha }} \
+            -t $registry/$repository:${{ env.environment }}-${{ env.short_sha }} \
             --cache-to type=local,dest=${{ env.cache_path }} \
             --push \
             -f $dockerfile . 
@@ -99,18 +99,16 @@ jobs:
           echo "'{\"images\":[$images]}'" | sed 's/,\]/\]/' > images.txt
           echo "images.txt contains: $(cat images.txt)"
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
-          echo "images_json2=$(cat images.txt)" >> $GITHUB_ENV
 
       - name: github_env/output test
         run: |
           echo "Received images_json(output): ${{ steps.image_builder.outputs.images_json }}"
-          echo "Recevied images_json2(env)": ${{ github.images_json2 }}
          
 
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.github.images_json2)  }}
+      matrix: ${{ fromJson(needs.build.output.image_builder)  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
