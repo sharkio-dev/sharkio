@@ -79,24 +79,25 @@ jobs:
             pushd client/
             build_and_push "frontend" "Dockerfile" 
             popd
-            images+="\"frontend\","
+            images1="\"frontend\","
           fi
 
           if echo "$changed_files" | grep "^server/"; then
             pushd server/
             build_and_push "backend" "Dockerfile.backend"
             popd
-            images+="\"backend\","
+            images2="\"backend\","
           fi
 
           if echo "$changed_files" | grep "^server/model/"; then
             pushd server/
             build_and_push "migrations" "Dockerfile.migrations"
             popd
-            images+="\"migrations\","
+            images3="\"migrations\","
           fi
 
-          echo "'{\"images\":[$images]}'" | sed 's/,\]/\]/' > images.txt
+          echo "images:" $images
+          echo "'{\"images\":[$images1 $images2 $images3]}'" > images.txt
           echo "images.txt contains: $(cat images.txt)"
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
 
