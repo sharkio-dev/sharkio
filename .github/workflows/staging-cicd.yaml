@@ -64,6 +64,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           full_sha: ${{ github.sha }}
+          github_sha_before: ${{ github.event.before }}
           short_sha: ${{ env.short_sha }}
           ENVIRONMENT: staging
         run: python3 .github/workflows/scripts/deployment_loop.py 
