@@ -7,7 +7,7 @@ on:
 
 env:
   region: eu-central-1
-  cache_path: /tmp/
+  cache_path: /tmp/sharkio-staging-cache
   environment: staging
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.cache_path }}
-          key: ${{ runner.os }}-buildx-${{ hashFiles('client/Dockerfile', 'client/package-lock.json', 'server/Dockerfile', 'server/package-lock.json') }}
+          key: ${{ runner.os }}-buildx-${{ hashFiles('client/Dockerfile', 'client/package-lock.json', 'server/Dockerfile.backend', 'server/Dockerfile.migrations', 'server/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ hashFiles('client/Dockerfile', 'client/package-lock.json') }}-
             ${{ runner.os }}-buildx-${{ hashFiles('server/Dockerfile', 'server/package-lock.json') }}-
@@ -79,30 +79,26 @@ jobs:
             pushd client/
             build_and_push "frontend" "Dockerfile" 
             popd
-            image1="\"frontend\","
+            images+="\"frontend\","
           fi
 
           if echo "$changed_files" | grep "^server/"; then
             pushd server/
             build_and_push "backend" "Dockerfile.backend"
             popd
-            image2="\"backend\","
+            images+="\"backend\","
           fi
 
           if echo "$changed_files" | grep "^server/model/"; then
             pushd server/
             build_and_push "migrations" "Dockerfile.migrations"
             popd
-            image3="\"migrations\","
+            images+="\"migrations\","
           fi
 
-          echo "{\"images\":[$image1 $image2 $image3]}" > images.txt
+          echo "{\"images\":[$images]}" | sed 's/,\]/\]/' > images.txt
           cat images.txt
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
-
-      - name: print images json
-        run: |
-          echo "Images JSON: ${{ needs.build.outputs.images_json }}"
 
   deploy:
     needs: build
