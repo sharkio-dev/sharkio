@@ -15,7 +15,7 @@ short_sha = os.getenv('short_sha')
 environment = os.getenv('ENVIRONMENT')
 github_sha_before = os.getenv('github_event_before')
 
-git_command = f"git diff --name-only {github_sha_before} {full_sha} | uniq"
+git_command = f"git diff --name-only ${{ github_event_before }} ${{github_sha}} | uniq"
 images = []
 
 changed_files = subprocess.run(git_command, shell=True, text=True, check=True, stdout=subprocess.PIPE)
