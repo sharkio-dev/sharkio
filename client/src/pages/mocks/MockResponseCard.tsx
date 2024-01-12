@@ -40,7 +40,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   onDeleteMockResponse,
   onOpenResponse,
   onMockResponsesChange,
-  onDuplicateMockResponse
+  onDuplicateMockResponse,
 }) => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -130,18 +130,17 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             </div>
           </div>
           <div className="flex flex-row items-center space-x-2">
-
-         {   onDuplicateMockResponse&&  <Tooltip
-                title="Duplicate mock response"
-              >
-                <HiOutlineDuplicate sx={{fontSize: '15px' }}
-                          onClick={() => {
-                            onDuplicateMockResponse(mockResponse)
-                          }}>
-
-                </HiOutlineDuplicate>
-              </Tooltip>}
-             {isDeleting ? (
+            {onDuplicateMockResponse && (
+              <Tooltip title="Duplicate mock response">
+                <HiOutlineDuplicate
+                  sx={{ fontSize: "15px" }}
+                  onClick={() => {
+                    onDuplicateMockResponse(mockResponse);
+                  }}
+                ></HiOutlineDuplicate>
+              </Tooltip>
+            )}
+            {isDeleting ? (
               <LoadingIcon />
             ) : (
               <Tooltip
