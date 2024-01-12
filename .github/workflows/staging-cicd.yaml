@@ -96,10 +96,16 @@ jobs:
             images+="\"migrations\","
           fi
 
-          echo "{\"images\":[$images]}" | sed 's/,\]/\]/' > images.txt
+          echo "'{\"images\":[$images]}'" | sed 's/,\]/\]/' > images.txt
           echo "images.txt contains: $(cat images.txt)"
           echo "images_json=$(cat images.txt)" >> $GITHUB_OUTPUT
           echo "images_json2=$(cat images.txt)" >> $GITHUB_ENV
+
+      - name: github_env/output test
+        run: |
+          echo "Received images_json(output): ${{ steps.image_builder.outputs.images_json }}"
+          echo "Recevied images_json2(env)": ${{ github.images_json2 }}
+         
 
   deploy:
     needs: build
