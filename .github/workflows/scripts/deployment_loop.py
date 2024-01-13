@@ -42,5 +42,5 @@ if "server/" in changed_files_output:
     os.chdir('..')
     images.append({"name": "migrations", "index": 2})
 
-warpped_images = '{"image_builder":' + str(images).replace("'", '"') + '}'
+warpped_images = '{' + str(images).replace("'", '"') + '}'
 print(warpped_images)
