@@ -79,7 +79,7 @@ jobs:
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
+      matrix: ${{ fromJson(needs.build.outputs.image_builder).image_builder  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
