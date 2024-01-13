@@ -1,6 +1,11 @@
 import os
 import subprocess
-import json
+
+registry = os.getenv('REGISTRY')
+full_sha = os.getenv('full_sha')
+short_sha = os.getenv('short_sha')
+environment = os.getenv('ENVIRONMENT')
+github_event_before = os.getenv('github_event_before')
 
 def build_and_push(repository, dockerfile):
     docker_build=f'docker buildx build \
@@ -9,12 +14,6 @@ def build_and_push(repository, dockerfile):
     --push \
     -f {dockerfile} . '
     subprocess.run(docker_build, shell=True, text=True, capture_output=True)
-
-registry = os.getenv('REGISTRY')
-full_sha = os.getenv('full_sha')
-short_sha = os.getenv('short_sha')
-environment = os.getenv('ENVIRONMENT')
-github_event_before = os.getenv('github_event_before')
 
 git_command = f"git diff --name-only {str(github_event_before)} {str(full_sha)} | uniq"
 changed_files = subprocess.run(git_command, shell=True, text=True, capture_output=True)

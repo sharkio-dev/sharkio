@@ -72,25 +72,11 @@ jobs:
         run: |
           echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py)" >> $GITHUB_OUTPUT
 
-      - name: outputter king of the changes
-        run: |
-          echo ${{ steps.image_builder.outputs.image_builder }}
-
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: "read"
-      id-token: "write"
-      pull-requests: "write"
-    needs: build
-    steps:
-      - name: tset2
-        run: |
-          echo ${{ needs.build.outputs.image_builder }}
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
+      matrix: 
+        images_json: ${{ fromJson(needs.build.outputs.image_builder)  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
