@@ -69,7 +69,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           full_sha: ${{ github.sha }}
           github_event_before: ${{ github.event.before }}
-          short_sha: ${{ env.short_sha }}
+          short_sha: ${{ steps.short_sha.outputs.short_sha }}
           ENVIRONMENT: staging
         run: |
           echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py)" >> $GITHUB_OUTPUT

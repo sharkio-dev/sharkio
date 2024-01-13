@@ -8,7 +8,7 @@ import { IRouterConfig } from "../controllers/router.interface";
 import { useLog } from "../lib/log";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { logMiddleware } from "./middlewares/log.middleware";
-
+ 
 const log = useLog({
   dirname: __dirname,
   filename: __filename,
