@@ -18,7 +18,7 @@ print("short_sha:" + short_sha)
 environment = os.getenv('ENVIRONMENT')
 print("environment:" + environment)
 github_sha_before = os.getenv('github_event_before')
-print("github_sha_before:" + github_sha_before)
+print("github_sha_before:" + str(github_sha_before))
 
 git_command = f"git diff --name-only {str(github_sha_before)} {str(full_sha)} | uniq"
 print("git_command:" + git_command)
