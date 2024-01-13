@@ -42,6 +42,7 @@ if "server/" in changed_files_output:
     os.chdir('..')
     images.append("migrations")
 
-warpped_images = "'" + "{" + "images_json" + ":"  + "'" + str(images) + "'" + "}" + "'"
+warpped_images = "'" + '{"images_json": ' + str(images).replace("'", '"') + '}' + "'"
 os.environ['GITHUB_OUTPUT']=warpped_images
 print(warpped_images)
+
