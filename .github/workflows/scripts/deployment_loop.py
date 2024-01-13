@@ -29,7 +29,7 @@ images = []
 
 if "client/" in changed_files_output:
     # Change to the server directory
-    if not args.dryrun:
+    if not args.dry_run:
         os.chdir('client/')
         build_and_push("frontend", "Dockerfile")
         os.chdir('..')
@@ -37,7 +37,7 @@ if "client/" in changed_files_output:
 
 if "server/" in changed_files_output:
     # Change to the server directory
-    if not args.dryrun:
+    if not args.dry_run:
         os.chdir('server/')
         build_and_push("backend", "Dockerfile.backend")
         os.chdir('..')
@@ -45,12 +45,12 @@ if "server/" in changed_files_output:
 
 if "server/" in changed_files_output:
     # Change to the server directory
-    if not args.dryrun:
+    if not args.dry_run:
         os.chdir('server/')
         build_and_push("migrations", "Dockerfile.migrations")
         os.chdir('..')
     images.append({"name": "migrations", "index": 2})
 
-if  args.dryrun:
+if  args.dry_run:
     warpped_images = '{"images_builder":' + str(images).replace("'", '"') + '}'
     print(warpped_images)
