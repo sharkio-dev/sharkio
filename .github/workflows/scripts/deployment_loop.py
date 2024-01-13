@@ -50,7 +50,7 @@ append_github_output = f'echo "\\"image_builder={str(warpped_images)}\\"" >> $GI
 append1 = subprocess.run(append_github_output, shell=True, text=True, capture_output=True)
 print(append1.stdout)
 
-append_github_output2 = f'echo "image_builder=\\"{str(warpped_images)}\\""'
+append_github_output2 = f'echo "\\"image_builder={str(warpped_images)}\\""'
 append_git = subprocess.run(append_github_output2, shell=True, text=True, capture_output=True)
 print(append_git.stdout)
 
