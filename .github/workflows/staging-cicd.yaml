@@ -57,6 +57,7 @@ jobs:
         run: |
           short_sha=$(git rev-parse --short ${{ github.sha }})
           echo "short_sha=$short_sha" >> $GITHUB_OUTPUT
+          echo $short_sha
 
       - name: Setup Python3
         uses: actions/setup-python@v4

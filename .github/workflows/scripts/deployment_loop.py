@@ -10,7 +10,7 @@ github_event_before = os.getenv('github_event_before')
 def build_and_push(repository, dockerfile):
     docker_build=f'docker buildx build \
     -t {registry}/{repository}:{environment}-{full_sha} \
-    -t {registry}/{repository}:{environment}-{short_sha}\
+    -t {registry}/{repository}:{environment}-{short_sha} \
     --push \
     -f {dockerfile} . '
     subprocess.run(docker_build, shell=True, text=True, capture_output=True)
