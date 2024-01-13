@@ -43,6 +43,9 @@ if "server/" in changed_files_output:
     images.append("migrations")
 
 warpped_images = "'" + '{"images_json": ' + str(images).replace("'", '"') + '}' + "'"
-os.environ['GITHUB_OUTPUT']=warpped_images
+
+append_github_output = f'echo "image_builder={str(warpped_images)}" >> GITHUB_OUTPUT'
+subprocess.run(append_github_output, shell=True, text=True, capture_output=True)
+
 print(warpped_images)
 

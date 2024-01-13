@@ -68,11 +68,6 @@ jobs:
           short_sha: ${{ env.short_sha }}
           ENVIRONMENT: staging
         run: python3 .github/workflows/scripts/deployment_loop.py 
- 
-      - name: github_env/output test
-        run: |
-          echo "Received images_json(output): ${{ steps.image_builder.outputs.images_json }}"
-          echo "Received images_json(output): ${{ steps.output.image_builder }}"
 
   deploy:
     needs: build
