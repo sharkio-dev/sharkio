@@ -12,6 +12,8 @@ env:
 
 jobs:
   build:
+    outputs:
+      image_builder: ${{ steps.image_builder.outputs.image_builder }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
