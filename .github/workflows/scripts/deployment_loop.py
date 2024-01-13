@@ -46,13 +46,13 @@ if "server/" in changed_files_output:
 warpped_images = '{"images_json":' + str(images).replace("'", '"') + '}'
 print(warpped_images)
 
-append_github_output = f'echo "\\"image_builder={str(warpped_images)}\\"" >> $GITHUB_OUTPUT'
-append1 = subprocess.run(append_github_output, shell=True, text=True, capture_output=True)
-print(append1.stdout)
+# append_github_output = f'echo "\\"image_builder={str(warpped_images)}\\"" >> $GITHUB_OUTPUT'
+# append1 = subprocess.run(append_github_output, shell=True, text=True, capture_output=True)
+# print(append1.stdout)
 
-append_github_output2 = f'echo "images_builder=\'{str(warpped_images)}\'"'
-append_git = subprocess.run(append_github_output2, shell=True, text=True, capture_output=True)
-print(append_git.stdout)
+# append_github_output2 = f'echo "images_builder=\'{str(warpped_images)}\'"'
+# append_git = subprocess.run(append_github_output2, shell=True, text=True, capture_output=True)
+# print(append_git.stdout)
 
 
 # {"images_json":["frontend"]}
