@@ -43,7 +43,7 @@ if "server/" in changed_files_output:
     os.chdir('..')
     images.append("migrations")
 
-warpped_images = "'" + '{"images_json":' + str(images.replace("'", '"')) + '}' + "'"
+warpped_images = "'" + '{"images_json":' + str(images).replace("'", '"') + '}' + "'"
 append_github_output = f'echo \"image_builder={str(warpped_images)}\" >> "$GITHUB_OUTPUT"' 
 
 subprocess.run(append_github_output, shell=True, text=True, capture_output=True)
