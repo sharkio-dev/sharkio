@@ -72,17 +72,13 @@ jobs:
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.output.image_builder)  }}
+      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
       id-token: "write"
       pull-requests: "write"
     steps:
-      - name: Debug Received JSON
-        run: |
-          echo "Received images_json(output): ${{ needs.build.outputs.images_json }}"
-          echo "Recevied images_json2(env)": ${{ needs.github.images_json2 }}
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
