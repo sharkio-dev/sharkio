@@ -19,7 +19,7 @@ def build_and_push(repository, dockerfile):
     -t {registry}/{repository}:{environment}-{short_sha} \
     --push \
     -f {dockerfile} . '
-    subprocess.run(docker_build, shell=True, text=True, capture_output=True)
+    subprocess.run(docker_build, shell=True, text=True)
 
 git_command = f"git diff --name-only {str(github_event_before)} {str(full_sha)} | uniq"
 changed_files = subprocess.run(git_command, shell=True, text=True, capture_output=True)
@@ -29,24 +29,28 @@ images = []
 
 if "client/" in changed_files_output:
     # Change to the server directory
-    os.chdir('client/')
-    build_and_push("frontend", "Dockerfile")
-    os.chdir('..')
+    if not args.dryrun:
+        os.chdir('client/')
+        build_and_push("frontend", "Dockerfile")
+        os.chdir('..')
     images.append({"name": "frontend", "index": 0})
 
 if "server/" in changed_files_output:
     # Change to the server directory
-    os.chdir('server/')
-    build_and_push("backend", "Dockerfile.backend")
-    os.chdir('..')
+    if not args.dryrun:
+        os.chdir('server/')
+        build_and_push("backend", "Dockerfile.backend")
+        os.chdir('..')
     images.append({"name": "backend", "index": 1})
 
 if "server/" in changed_files_output:
     # Change to the server directory
-    os.chdir('server/')
-    build_and_push("migrations", "Dockerfile.migrations")
-    os.chdir('..')
+    if not args.dryrun:
+        os.chdir('server/')
+        build_and_push("migrations", "Dockerfile.migrations")
+        os.chdir('..')
     images.append({"name": "migrations", "index": 2})
 
-warpped_images = '{"images_builder":' + str(images).replace("'", '"') + '}'
-print(warpped_images)
+if  args.dryrun:
+    warpped_images = '{"images_builder":' + str(images).replace("'", '"') + '}'
+    print(warpped_images)

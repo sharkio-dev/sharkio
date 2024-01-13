@@ -72,7 +72,8 @@ jobs:
           short_sha: ${{ steps.short_sha.outputs.short_sha }}
           ENVIRONMENT: staging
         run: |
-          echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py)" >> $GITHUB_OUTPUT
+          echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py --dry-run)" >> $GITHUB_OUTPUT
+          python3 .github/workflows/scripts/deployment_loop.py 
 
   deploy:
     needs: build
