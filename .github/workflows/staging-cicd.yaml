@@ -63,7 +63,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Python Script
+      - name: Build images
         id: image_builder
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -79,7 +79,7 @@ jobs:
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.image_builder).image_builder  }}
+      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -89,7 +89,7 @@ jobs:
       - name: Delay
         run: | 
           sleep $(( ${{ matrix.index  }} * 15)) 
-          echo  ${{needs.build.outputs.image_builder}}
+          echo  "${{ matrix.image_builder.name }}"
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
