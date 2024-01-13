@@ -3,7 +3,7 @@ import subprocess
 import argparse
 
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('--dryrun', action='store_true', help='Enable dry run mode')
+parser.add_argument('--dry-run', action='store_true', help='Enable dry run mode')
 args = parser.parse_args()
 
 
