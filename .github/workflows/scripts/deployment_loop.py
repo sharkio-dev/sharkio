@@ -42,5 +42,6 @@ if "server/" in changed_files_output:
     os.chdir('..')
     images.append("migrations")
 
-warpped_images = "'" + '{"images_json":' + str(images).replace("'", '"') + '}' + "'"
+warpped_images = '{"images_json":' + str(images).replace("'", '"') + '}'
+# warpped_images = "'"+ '{"images_json":' + str(images).replace("'", '"') + '}' + "'"
 print(warpped_images)
