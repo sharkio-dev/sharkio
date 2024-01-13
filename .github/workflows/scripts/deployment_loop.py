@@ -47,7 +47,7 @@ warpped_images = '{"images_json":' + str(images).replace("'", '"') + '}'
 append_github_output = f'echo \"image_builder={str(warpped_images)}\" >> "$GITHUB_OUTPUT"' 
 append_github_output2 = f'echo \"image_builder={str(warpped_images)}\"' 
 append_git = subprocess.run(append_github_output2, shell=True, text=True, capture_output=True)
-print(append_git.stdout.strip())
+print(append_git.stdout)
 
 subprocess.run(append_github_output, shell=True, text=True, capture_output=True)
 print(warpped_images)
