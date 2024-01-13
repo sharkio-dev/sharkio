@@ -89,7 +89,7 @@ jobs:
       - name: Delay
         run: | 
           sleep $(( ${{ matrix.index  }} * 15)) 
-          echo  "${{ matrix.name}}"
+          echo  "${{ matrix.image_builder}}"
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
