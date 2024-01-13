@@ -69,13 +69,12 @@ jobs:
           github_event_before: ${{ github.event.before }}
           short_sha: ${{ env.short_sha }}
           ENVIRONMENT: staging
-        run: python3 .github/workflows/scripts/deployment_loop.py 
-
+        run: |
+          "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py)" >> $GITHUB_OUTPUT
 
       - name: outputter king of the changes
         run: |
           echo ${{ steps.image_builder.outputs.image_builder }}
-          
 
   test:
     runs-on: ubuntu-latest
