@@ -1,13 +1,12 @@
-name: staging-cicd
+name: GitOps-CD
 
 on:
   push:
     branches:
-      - staging-cicd
+      - main
 
 env:
   region: eu-central-1
-  cache_path: /tmp/sharkio-staging-cache
   environment: staging
 
 jobs:
@@ -26,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 4
-          ref: staging-cicd
+          ref: ${{ github.ref_name }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -74,8 +73,8 @@ jobs:
           
 
         run: |
-          echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py --dry-run)" >> $GITHUB_OUTPUT
-          python3 .github/workflows/scripts/deployment_loop.py 
+          echo "image_builder=$(python3 .github/workflows/scripts/GitOps_build.py --dry-run)" >> $GITHUB_OUTPUT
+          python3 .github/workflows/scripts/GitOps_build.py 
 
   deploy:
     needs: build
@@ -97,5 +96,5 @@ jobs:
           workflow: sharkio-devops-cicd
           repo: "sharkio-dev/DevOps"
           token: ${{ secrets.DEPLOY_KEY }}
-          ref: "staging"
+          ref: "main"
           inputs: '{"image": "${{ matrix.name }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'
