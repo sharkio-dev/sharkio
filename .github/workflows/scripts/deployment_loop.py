@@ -26,21 +26,21 @@ if "client/" in changed_files_output:
     os.chdir('client/')
     build_and_push("frontend", "Dockerfile")
     os.chdir('..')
-    images.append("frontend")
+    images.append({"name": "frontend", "index": 0})
 
 if "server/" in changed_files_output:
     # Change to the server directory
     os.chdir('server/')
     build_and_push("backend", "Dockerfile.backend")
     os.chdir('..')
-    images.append("backend")
+    images.append({"name": "backend", "index": 1})
 
 if "server/" in changed_files_output:
     # Change to the server directory
     os.chdir('server/')
     build_and_push("migrations", "Dockerfile.migrations")
     os.chdir('..')
-    images.append("migrations")
+    images.append({"name": "migrations", "index": 2})
 
-warpped_images = '{"images_json":' + str(images).replace("'", '"') + '}'
+warpped_images = '{"image_builder":' + str(images).replace("'", '"') + '}'
 print(warpped_images)

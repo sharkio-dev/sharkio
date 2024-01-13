@@ -84,6 +84,10 @@ jobs:
       id-token: "write"
       pull-requests: "write"
     steps:
+      - name: Delay
+        run: | 
+          sleep $(( ${{ matrix.index  }} * 15)) 
+          echo  ${{needs.build.outputs.image_builder}}
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
@@ -91,8 +95,4 @@ jobs:
           repo: "sharkio-dev/DevOps"
           token: ${{ secrets.DEPLOY_KEY }}
           ref: "staging"
-          inputs: '{"image": "${{ matrix.images_json }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'
-          
-      - name: wait between triggers
-        run: |
-          sleep 15
+          inputs: '{"image": "${{ matrix.name }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'
