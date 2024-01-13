@@ -79,7 +79,8 @@ jobs:
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.image_builder).images_builder  }}
+      matrix: 
+        include: ${{ fromJson(needs.build.outputs.image_builder).images_builder  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
