@@ -73,6 +73,7 @@ jobs:
           ENVIRONMENT: staging
         run: |
           echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py --dry-run)" >> $GITHUB_OUTPUT
+          echo "testing dry-run output: image_builder=$(python3 .github/workflows/scripts/deployment_loop.py --dry-run)" 
           python3 .github/workflows/scripts/deployment_loop.py 
 
   deploy:
