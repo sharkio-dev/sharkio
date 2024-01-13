@@ -73,22 +73,19 @@ jobs:
 
   deploy:
     needs: build
-    # strategy:
-    #   matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
+    strategy:
+      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
       id-token: "write"
       pull-requests: "write"
     steps:
-      - name:
-        run: |
-          echo ${{ needs.build.outputs.image_builder }}
-      # - name: Workflow Dispatch
-      #   uses: benc-uk/workflow-dispatch@v1.2.2
-      #   with:
-      #     workflow: sharkio-devops-cicd
-      #     repo: "sharkio-dev/DevOps"
-      #     token: ${{ secrets.DEPLOY_KEY }}
-      #     ref: "staging"
-      #     inputs: '{"image": "${{ matrix.images_json }}", "image_tag": "${{ github.sha }}" ,"env": "${{ env.environment }}"}'
+      - name: Workflow Dispatch
+        uses: benc-uk/workflow-dispatch@v1.2.2
+        with:
+          workflow: sharkio-devops-cicd
+          repo: "sharkio-dev/DevOps"
+          token: ${{ secrets.DEPLOY_KEY }}
+          ref: "staging"
+          inputs: '{"image": "${{ matrix.images_json }}", "image_tag": "${{ github.sha }}" ,"env": "${{ env.environment }}"}'
