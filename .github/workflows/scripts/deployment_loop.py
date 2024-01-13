@@ -15,27 +15,27 @@ short_sha = os.getenv('short_sha')
 environment = os.getenv('ENVIRONMENT')
 github_sha_before = os.getenv('github_event_before')
 
-git_command = f"git diff --name-only {github_sha_before} {full_sha} | uniq"
+git_command = f"git diff --name-only {str(github_sha_before)} {str(full_sha)} | uniq"
 changed_files = subprocess.run(git_command, shell=True, text=True, check=True, stdout=subprocess.PIPE, executable='/bin/bash')
-output = changed_files.stdout.strip()
+changed_files_output = changed_files.stdout.strip()
 
 images = []
 
-if "client/" in output:
+if "client/" in changed_files_output:
     # Change to the server directory
     os.chdir('client/')
     build_and_push("frontend", "Dockerfile")
     os.chdir('..')
     images.append("frontend")
 
-if "server/" in output:
+if "server/" in changed_files_output:
     # Change to the server directory
     os.chdir('server/')
     build_and_push("backend", "Dockerfile.backend")
     os.chdir('..')
     images.append("backend")
 
-if "server/" in output:
+if "server/" in changed_files_output:
     # Change to the server directory
     os.chdir('server/')
     build_and_push("migrations", "Dockerfile.migrations")
