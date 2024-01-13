@@ -80,6 +80,7 @@ jobs:
       contents: "read"
       id-token: "write"
       pull-requests: "write"
+    steps:
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
