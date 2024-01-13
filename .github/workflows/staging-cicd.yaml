@@ -92,3 +92,7 @@ jobs:
           token: ${{ secrets.DEPLOY_KEY }}
           ref: "staging"
           inputs: '{"image": "${{ matrix.images_json }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'
+          
+      - name: wait between triggers
+        run: |
+          sleep 15
