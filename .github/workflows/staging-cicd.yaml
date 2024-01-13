@@ -79,7 +79,7 @@ jobs:
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
+      matrix: ${{ fromJson(needs.build.outputs.image_builder).images_builder  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -89,7 +89,7 @@ jobs:
       - name: Delay
         run: | 
           sleep $(( ${{ matrix.index  }} * 15)) 
-          echo  "${{ needs.build.outputs.image_builder }}"
+          echo "Image name: ${{ matrix.name }}"
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
