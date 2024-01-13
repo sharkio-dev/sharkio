@@ -95,4 +95,4 @@ jobs:
           repo: "sharkio-dev/DevOps"
           token: ${{ secrets.DEPLOY_KEY }}
           ref: "staging"
-          inputs: '{"image": "${{ matrix.name }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'
+          inputs: '{"image": "${{ matrix.image_builder.name }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'

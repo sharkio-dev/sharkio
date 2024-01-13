@@ -1,5 +1,11 @@
 import os
 import subprocess
+import argparse
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--dryrun', action='store_true', help='Enable dry run mode')
+args = parser.parse_args()
+
 
 registry = os.getenv('REGISTRY')
 full_sha = os.getenv('full_sha')
@@ -42,5 +48,5 @@ if "server/" in changed_files_output:
     os.chdir('..')
     images.append({"name": "migrations", "index": 2})
 
-warpped_images = '{' + str(images).replace("'", '"') + '}'
+warpped_images = '{"images_builder":' + str(images).replace("'", '"') + '}'
 print(warpped_images)
