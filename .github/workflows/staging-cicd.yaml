@@ -70,7 +70,7 @@ jobs:
           short_sha: ${{ env.short_sha }}
           ENVIRONMENT: staging
         run: |
-          "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py)" >> $GITHUB_OUTPUT
+          echo "image_builder=$(python3 .github/workflows/scripts/deployment_loop.py)" >> $GITHUB_OUTPUT
 
       - name: outputter king of the changes
         run: |
