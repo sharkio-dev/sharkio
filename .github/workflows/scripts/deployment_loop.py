@@ -10,15 +10,21 @@ def build_and_push(repository, dockerfile):
     subprocess.run(docker_build, shell=True, text=True, capture_output=True)
 
 registry = os.getenv('REGISTRY')
+print("registry:" + registry)
 full_sha = os.getenv('full_sha')
+print("full_sha:" + full_sha)
 short_sha = os.getenv('short_sha')
+print("short_sha:" + short_sha)
 environment = os.getenv('ENVIRONMENT')
+print("environment:" + environment)
 github_sha_before = os.getenv('github_event_before')
+print("github_sha_before:" + github_sha_before)
 
 git_command = f"git diff --name-only {str(github_sha_before)} {str(full_sha)} | uniq"
+print("git_command:" + git_command)
 changed_files = subprocess.run(git_command, shell=True, text=True, capture_output=True)
 changed_files_output = changed_files.stdout.strip()
-
+print("changed_files_output:" + changed_files_output)
 images = []
 
 if "client/" in changed_files_output:
