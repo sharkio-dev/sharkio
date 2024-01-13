@@ -71,10 +71,24 @@ jobs:
           ENVIRONMENT: staging
         run: python3 .github/workflows/scripts/deployment_loop.py 
 
+
+
+
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+    needs: build
+    steps:
+      - name: tset2
+        run: |
+          echo ${{ needs.build.outputs.image_builder }}
   deploy:
     needs: build
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.image_builder)  }}
+      matrix: ${{ fromJson(toJson(needs.build.outputs.image_builder))  }}
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
