@@ -80,10 +80,6 @@ jobs:
       contents: "read"
       id-token: "write"
       pull-requests: "write"
-    steps:
-      - name: test
-        run: |
-          echo ${{ needs.build.outputs.image_builder }}
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
         with:
