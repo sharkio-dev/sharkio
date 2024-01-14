@@ -60,8 +60,6 @@ jobs:
           github_event_before: ${{ github.event.before }}
           short_sha: ${{ steps.short_sha.outputs.short_sha }}
           ENVIRONMENT: staging
-          
-
         run: |
           echo "image_builder=$(python3 .github/workflows/scripts/GitOps_build.py --dry-run)" >> $GITHUB_OUTPUT
           python3 .github/workflows/scripts/GitOps_build.py 
