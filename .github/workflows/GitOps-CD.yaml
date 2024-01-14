@@ -3,11 +3,12 @@ name: GitOps-CD
 on:
   push:
     branches:
-      - main
+      - staging
+      - production
 
 env:
   region: eu-central-1
-  environment: staging
+  environment: ${{ github.ref_name }}
 
 jobs:
   build:
