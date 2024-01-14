@@ -18,6 +18,8 @@ def build_and_push(repository, dockerfile):
     -t {registry}/{repository}:{environment}-{full_sha} \
     -t {registry}/{repository}:{environment}-{short_sha} \
     --push \
+    --cache-from=type=registry,ref={registry}/{repository}:latest \
+    --cache-to=type=registry,ref={registry}/{repository}:cache,mode=max \
     -f {dockerfile} . '
     subprocess.run(docker_build, shell=True, text=True)
 
