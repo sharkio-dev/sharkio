@@ -64,7 +64,7 @@ const WorkspaceSelector = () => {
             <InputLabel>workspaces</InputLabel>
             <Select
               className="w-fit min-w-[200px]"
-              value={"1"}
+              value={openWorkspace?.id ?? "1"}
               label="Workspace"
               renderValue={() => openWorkspace?.name || "Default"}
               onChange={(e) => handleChangeWorkspace(e.target.value as string)}
@@ -73,18 +73,18 @@ const WorkspaceSelector = () => {
               <Divider orientation="horizontal" className="w-full" />
               <MenuItem
                 key={"default-workspace"}
-                value={"1"}
+                value={"default"}
                 className="w-full min-w-fit"
                 dense={true}
               >
                 <WorkspaceItem
                   workspace={{
-                    id: "1",
+                    id: "default",
                     name: "default",
                     createdAt: "",
                     updatedAt: "",
                   }}
-                  isSelected={openWorkspace == null}
+                  isSelected={openWorkspace?.id == null}
                   isDefault={true}
                 />
               </MenuItem>
