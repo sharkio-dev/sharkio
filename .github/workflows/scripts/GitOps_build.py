@@ -45,7 +45,7 @@ if "server/" in changed_files_output:
         os.chdir('..')
     images.append({"name": "backend", "index": 1})
 
-if "server/" in changed_files_output:
+if "server/model/" in changed_files_output:
     # Change to the server directory
     if not args.dry_run:
         os.chdir('server/')
