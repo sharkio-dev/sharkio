@@ -11,23 +11,41 @@ import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "../sniffers/InvocationDetails";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { EndpointType, InvocationType } from "../sniffers/types";
+import { InvocationType } from "../sniffers/types";
 
-type InvocationUpperBarProps = {
+type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
-    React.SetStateAction<EndpointType | undefined>
+    React.SetStateAction<InvocationType | undefined>
   >;
-  invocation?: InvocationType | EndpointType | undefined;
+  invocation?: InvocationType | undefined;
   isDisabled?: boolean;
-  showResponseTab?: boolean;
 };
 
-export const InvocationUpperBar = ({
+export const InvocationSection = ({
   invocation,
   setEditedInvocation,
   isDisabled = true,
-  showResponseTab = true,
-}: InvocationUpperBarProps) => {
+}: InvocationSectionProps) => {
+  return (
+    <div>
+      <InvocationURL
+        invocation={invocation}
+        setEditedInvocation={setEditedInvocation}
+        isDisabled={isDisabled}
+      />
+      <InvocationDetails
+        invocation={invocation}
+        setInvocation={setEditedInvocation}
+      />
+    </div>
+  );
+};
+
+const InvocationURL: React.FC<InvocationSectionProps> = ({
+  invocation,
+  setEditedInvocation,
+  isDisabled,
+}) => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const { snifferId } = queryString.parse(location.search);
@@ -55,7 +73,7 @@ export const InvocationUpperBar = ({
               ...prevState,
               response: {
                 ...prevState.response,
-                status: res?.status || 0,
+                status: res?.status || "",
                 headers: res?.headers || {},
                 body: res?.body || "",
               },
@@ -84,85 +102,75 @@ export const InvocationUpperBar = ({
         setLoading(false);
       });
   };
-
   const snifferUrl = sniffer == null ? "" : getSnifferDomain(sniffer.subdomain);
 
   return (
-    <div>
-      <div className="flex flex-row items-center space-x-2">
-        {component}
-        <div className="flex flex-row items-center w-28">
-          <SelectMethodDropDown
-            disabled={isDisabled}
-            value={invocation?.method || ""}
-            onChange={(value: string) => {
-              if (invocation) {
-                setEditedInvocation({
-                  ...invocation,
-                  method: value,
-                });
-              }
-            }}
-          />
-        </div>
-        <div className="flex flex-row items-center w-[550px]">
-          <TextField
-            disabled={true}
-            value={snifferUrl}
-            variant="outlined"
-            size="small"
-            style={{ width: "100%" }}
-          />
-        </div>
-        <TextField
+    <div className="flex flex-row items-center space-x-2">
+      {component}
+      <div className="flex flex-row items-center w-28">
+        <SelectMethodDropDown
           disabled={isDisabled}
-          value={invocation?.url}
-          onChange={(e: any) => {
+          value={invocation?.method || ""}
+          onChange={(value: string) => {
             if (invocation) {
               setEditedInvocation({
                 ...invocation,
-                url: e.target.value,
+                method: value,
               });
             }
           }}
+        />
+      </div>
+      <div className="flex flex-row items-center w-[550px]">
+        <TextField
+          disabled={true}
+          value={snifferUrl}
           variant="outlined"
           size="small"
           style={{ width: "100%" }}
         />
-        <div className="flex flex-row items-center justify-between h-full">
-          <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-            <Tooltip title="Mock Request">
-              <div onClick={importMock}>
-                {loading ? (
-                  <LoadingIcon />
-                ) : (
-                  <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
-                )}
-              </div>
-            </Tooltip>
-          </div>
-          <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-            <Tooltip title="Execute Request">
-              <div>
-                {loadingExecution ? (
-                  <LoadingIcon />
-                ) : (
-                  <PlayArrow
-                    className="text-green-500 cursor-pointer"
-                    onClick={executeRequest}
-                  />
-                )}
-              </div>
-            </Tooltip>
-          </div>
-        </div>
       </div>
-      <div className="flex flex-row space-x-4 mt-4 overflow-y-auto">
-        <InvocationDetails
-          showResponseTab={showResponseTab}
-          invocation={invocation}
-          setInvocation={setEditedInvocation}
-        />
+      <TextField
+        disabled={isDisabled}
+        value={invocation?.url}
+        onChange={(e: any) => {
+          if (invocation) {
+            setEditedInvocation({
+              ...invocation,
+              url: e.target.value,
+            });
+          }
+        }}
+        variant="outlined"
+        size="small"
+        style={{ width: "100%" }}
+      />
+      <div className="flex flex-row items-center justify-between h-full">
+        <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+          <Tooltip title="Mock Request">
+            <div onClick={importMock}>
+              {loading ? (
+                <LoadingIcon />
+              ) : (
+                <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
+              )}
+            </div>
+          </Tooltip>
+        </div>
+        <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+          <Tooltip title="Execute Request">
+            <div>
+              {loadingExecution ? (
+                <LoadingIcon />
+              ) : (
+                <PlayArrow
+                  className="text-green-500 cursor-pointer"
+                  onClick={executeRequest}
+                />
+              )}
+            </div>
+          </Tooltip>
+        </div>
       </div>
     </div>
   );

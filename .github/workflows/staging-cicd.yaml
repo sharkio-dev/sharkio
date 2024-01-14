@@ -1,0 +1,23 @@
+name: staging-cicd
+
+on:
+  push:
+    branches:
+      - staging-cicd
+
+env:
+  region: eu-central-1
+  cache_path: /tmp/.buildx-cache
+  environment: staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4

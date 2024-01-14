@@ -50,10 +50,6 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
         <div className="text-sm text-gray-400">Target URL</div>
         <div className="text-sm text-gray-400">{sniffer.downstreamUrl}</div>
       </div>
-      <div className="flex flex-row justify-between items-center mt-2">
-        <div className="text-sm text-gray-400">Port</div>
-        <div className="text-sm text-gray-400">{sniffer.port || "N/A"}</div>
-      </div>
       <EditSnifferModal
         sniffer={sniffer}
         isOpen={isEditModalOpen}

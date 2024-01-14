@@ -17,26 +17,13 @@ export const StatusCodeFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    const savedStatusCodes =
-      searchParams.get(searchParamFilters.statusCodes)?.split(",") || [];
-    const selectedCodes = allStatusCodes.filter((code) =>
-      savedStatusCodes.includes(code.value),
+    const statusCodes = searchParams.get(searchParamFilters.statusCodes);
+    if (!statusCodes) return;
+    const selectedCodes = statusCodes.split(",");
+    setSelectedStatusCodes(
+      allStatusCodes.filter((code) => selectedCodes.includes(code.value)),
     );
-    setSelectedStatusCodes(selectedCodes);
-  }, []);
-
-  useEffect(() => {
-    const statusCodeValues = selectedStatusCodes.map((code) => code.value);
-
-    setSearchParams((prevParams) => {
-      const newSearchParams = new URLSearchParams(prevParams);
-      newSearchParams.set(
-        searchParamFilters.statusCodes,
-        statusCodeValues.join(","),
-      );
-      return newSearchParams;
-    });
-  }, [selectedStatusCodes]);
+  }, [searchParams]);
 
   return (
     <Autocomplete
@@ -45,9 +32,18 @@ export const StatusCodeFilter = () => {
       id="tags-standard"
       options={allStatusCodes}
       getOptionLabel={(status) => status.value}
-      onChange={(_, selectedCodes: StatusCode[]) =>
-        setSelectedStatusCodes(selectedCodes)
-      }
+      onChange={(_, selectedCodes: StatusCode[]) => {
+        setSearchParams((prevParams) => {
+          const statusCodeValues = selectedCodes.map((code) => code.value);
+          const newSearchParams = new URLSearchParams(prevParams);
+          newSearchParams.set(
+            searchParamFilters.statusCodes,
+            statusCodeValues.join(","),
+          );
+          return newSearchParams;
+        });
+        setSelectedStatusCodes(selectedCodes);
+      }}
       value={selectedStatusCodes}
       renderOption={(props, method, { selected }) => (
         <MenuItem

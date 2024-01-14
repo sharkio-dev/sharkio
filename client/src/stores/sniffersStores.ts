@@ -206,13 +206,8 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
       method: data.method,
       headers: data.headers,
       body: data.body,
-    })
-      .then((res) => {
-        get().loadEndpoints(data.snifferId, true);
-        return res;
-      })
-      .finally(() => {
-        set({ loadingExecution: false });
-      });
+    }).finally(() => {
+      set({ loadingExecution: false });
+    });
   },
 }));

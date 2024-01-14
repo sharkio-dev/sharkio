@@ -1,6 +1,7 @@
 import Editor from "@monaco-editor/react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type BodySectionProps = {
   body: any;
@@ -17,11 +18,10 @@ export const BodySection = ({
   const [invocationId, setInvoationId] = useState(params.invocationId);
   const [editor, setEditor] = useState<any>(null);
   useEffect(() => {
-    if (editor && invocationId !== params.invocationId) {
-      editor.trigger("anyString", "editor.action.formatDocument", {});
-      setInvoationId(invocationId);
-    }
-  }, [editor, invocationId, params.invocationId, body]);
+    if (!editor) return;
+    editor.trigger("anyString", "editor.action.formatDocument", {});
+    setInvoationId(invocationId);
+  }, [editor]);
 
   const onChangeBodyValue = (value: any) => {
     try {
@@ -34,25 +34,23 @@ export const BodySection = ({
       : "json";
 
   return (
-    <div className="flex w-full flex-col space-y-4">
-      <Editor
-        width="100%"
-        theme="vs-dark"
-        className="min-h-[40vh]"
-        defaultLanguage="handlebars"
-        value={body}
-        language={type}
-        onMount={(editor) => {
-          setEditor(editor);
-        }}
-        onChange={(value) => onChangeBodyValue(value)}
-        options={{
-          readOnly: !onBodyChange,
-          minimap: {
-            enabled: false,
-          },
-        }}
-      />
-    </div>
+    <Editor
+      width="100%"
+      theme="vs-dark"
+      className="h-[50vh]"
+      value={body}
+      loading={<LoadingIcon />}
+      language={type}
+      onMount={(editor) => {
+        setEditor(editor);
+      }}
+      onChange={(value) => onChangeBodyValue(value)}
+      options={{
+        readOnly: !onBodyChange,
+        minimap: {
+          enabled: false,
+        },
+      }}
+    />
   );
 };
