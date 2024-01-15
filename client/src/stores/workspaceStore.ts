@@ -10,6 +10,7 @@ import {
 export interface workSpaceType {
   name: string;
   id: string;
+  userId: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -30,6 +31,7 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   openWorkspace: {
     name: "",
     id: "",
+    userId: "",
   },
 
   getWorkspaces: () => {

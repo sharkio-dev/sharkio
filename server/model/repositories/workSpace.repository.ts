@@ -12,6 +12,17 @@ export class WorkspaceRepository {
       appDataSource.manager.getRepository(WorkspacesUsers);
   }
 
+  getWorkspace(workspaceId: string) {
+    return this.repository.findOne({ where: { id: workspaceId } });
+  }
+
+  async isMember(workspaceId: string, userId) {
+    const user = await this.workSpacesUsersRepository.findOne({
+      where: { workspaceId, userId },
+    });
+    return user != null;
+  }
+
   async createNewWorkspace(workspaceName: string, userId: string) {
     const newWorkspace = this.repository.create({
       name: workspaceName,
@@ -31,6 +42,7 @@ export class WorkspaceRepository {
       .getMany();
     return result;
   }
+
   async deleteWorkspaceToUser(userId: string, workspaceId: string) {
     await this.repository
       .createQueryBuilder()
@@ -68,14 +80,31 @@ export class WorkspaceRepository {
     return this.workSpacesUsersRepository.save(created);
   }
 
-  getWorkspaceUsers(workspaceId: string) {
-    return (
-      this.workSpacesUsersRepository
-        .createQueryBuilder()
-        .from("workspaces_users", "workspaceUser")
-        // .leftJoinAndSelect("users.workspaces", "workspace")
-        .where("workspaces_users.workspaceId = :workspaceId", { workspaceId })
-        .getMany()
-    );
+  async removeUser(userId: any, workspaceId: string) {
+    const res = await this.workSpacesUsersRepository.delete({
+      workspaceId,
+      userId,
+    });
+    return res;
+  }
+
+  async getWorkspaceUsers(workspaceId: string) {
+    const workspaceUsers = await this.workSpacesUsersRepository.find({
+      where: {
+        workspaceId,
+      },
+      select: {
+        user: {
+          id: true,
+          fullName: true,
+          email: true,
+        },
+      },
+      relations: {
+        user: true,
+      },
+    });
+
+    return workspaceUsers.map((workspaceUser) => workspaceUser.user);
   }
 }

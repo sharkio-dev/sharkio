@@ -22,13 +22,14 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
           return;
         }
         const userDetails = session?.user.user_metadata;
-        BackendAxios.defaults.headers.common["Authorization"] =
-          `Bearer ${session?.access_token}`;
+        BackendAxios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${session?.access_token}`;
 
         signIn({
           id: session?.user.id ?? "",
           fullName: userDetails?.full_name,
-          email: session?.user.id ?? userDetails?.email,
+          email: session?.user?.email ?? userDetails?.email,
           profileImg: userDetails?.avatar_url,
         });
       })
@@ -44,8 +45,9 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
     } = supabaseClient.auth.onAuthStateChange((authEvent, session) => {
       switch (authEvent) {
         case "SIGNED_IN": {
-          BackendAxios.defaults.headers.common["Authorization"] =
-            `Bearer ${session?.access_token}`;
+          BackendAxios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${session?.access_token}`;
           setLoading(false);
 
           const userDetails = session?.user.user_metadata;

@@ -10,6 +10,29 @@ export const getWorkspaceUsers = async (workspaceId: string) => {
   );
 };
 
+export const addWorkspaceUser = async (workspaceId: string, userId: string) => {
+  return await BackendAxios.post(`/workspace/${workspaceId}/users`, {
+    newUserId: userId,
+  });
+};
+
+export const checkIsMember = async (workspaceId: string, userId: string) => {
+  return await BackendAxios.post(`/workspace/${workspaceId}/users/isMember`, {
+    userId,
+  });
+};
+
+export const removeUserFromWorkspace = async (
+  workspaceId: string,
+  userId: string,
+) => {
+  return await BackendAxios.delete(`/workspace/${workspaceId}/users/${userId}`);
+};
+
+export const getWorkspace = async (workSpaceId: string) => {
+  return await BackendAxios.get<workSpaceType>(`/workspace/${workSpaceId}`);
+};
+
 export const deleteWorkSpace = async (workSpaceId: string) => {
   return await BackendAxios.delete(`/workspace/${workSpaceId}`);
 };
