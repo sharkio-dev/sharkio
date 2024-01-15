@@ -46,10 +46,12 @@ const BottomBar: React.FC = () => {
       <div className="flex flex-row w-full h-full items-center justify-between px-4">
         <div className="text-[#fff]">© 2023 Sharkio</div>
         <div className="flex flex-row items-center">
-          <SiOpenai
-            className="text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-            onClick={onChatClick}
-          />
+          {import.meta.env.VITE_NODE_ENV !== "production" && (
+            <SiOpenai
+              className="text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+              onClick={onChatClick}
+            />
+          )}
         </div>
       </div>
     </div>
