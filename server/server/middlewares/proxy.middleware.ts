@@ -33,27 +33,40 @@ export class ProxyMiddleware {
       onProxyReq: fixRequestBody,
       onProxyRes: responseInterceptor(
         async (responseBuffer, proxyRes, req, res) => {
-          const invocationId = req.headers["x-sharkio-invocation-id"];
-          const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
-          const userId = req.headers["x-sharkio-user-id"] as string;
-          const testExecutionId = req.headers[
-            "x-sharkio-test-execution-id"
-          ] as string;
-          const body = responseBuffer.toString("utf8");
+          try {
+            const invocationId = req.headers["x-sharkio-invocation-id"];
+            const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
+            const userId = req.headers["x-sharkio-user-id"] as string;
+            const testExecutionId = req.headers[
+              "x-sharkio-test-execution-id"
+            ] as string;
 
-          await this.requestInterceptor.interceptResponse(
-            userId,
-            snifferId,
-            invocationId as string,
-            {
-              body: body,
-              headers: proxyRes.headers,
-              statusCode: proxyRes.statusCode,
-            },
-            testExecutionId,
-          );
+            logger.debug({
+              func: "onProxyRes",
+              invocationId,
+              snifferId,
+              userId,
+              testExecutionId,
+            });
+            const body = responseBuffer.toString("utf8");
 
-          return body;
+            await this.requestInterceptor.interceptResponse(
+              userId,
+              snifferId,
+              invocationId as string,
+              {
+                body: body,
+                headers: proxyRes.headers,
+                statusCode: proxyRes.statusCode,
+              },
+              testExecutionId,
+            );
+
+            return body;
+          } catch (e: any) {
+            logger.error("error has occurred in proxy");
+            return "error has occurred" + e.message;
+          }
         },
       ),
     });
@@ -63,8 +76,9 @@ export class ProxyMiddleware {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
 
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain,
+    );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
     }

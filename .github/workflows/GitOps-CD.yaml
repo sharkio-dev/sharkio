@@ -41,6 +41,14 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Set short git commit SHA
         id: short_sha
@@ -60,7 +68,7 @@ jobs:
           full_sha: ${{ github.sha }}
           github_event_before: ${{ github.event.before }}
           short_sha: ${{ steps.short_sha.outputs.short_sha }}
-          ENVIRONMENT: staging
+          ENVIRONMENT: ${{ env.environment }}
         run: |
           echo "image_builder=$(python3 .github/workflows/scripts/GitOps_build.py --dry-run)" >> $GITHUB_OUTPUT
           python3 .github/workflows/scripts/GitOps_build.py 
