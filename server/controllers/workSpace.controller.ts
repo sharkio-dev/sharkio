@@ -32,9 +32,8 @@ export class WorkspaceController {
          */
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
-          const workspaces = await this.workspaceService.getUserWorkspaces(
-            userId,
-          );
+          const workspaces =
+            await this.workspaceService.getUserWorkspaces(userId);
           res.json(workspaces);
         },
       )
@@ -309,9 +308,8 @@ export class WorkspaceController {
         async (req: Request, res: Response) => {
           const { workspaceId } = req.params;
 
-          const workspaceUsers = await this.workspaceService.getWorkspaceUsers(
-            workspaceId,
-          );
+          const workspaceUsers =
+            await this.workspaceService.getWorkspaceUsers(workspaceId);
 
           res.json(workspaceUsers);
         },
