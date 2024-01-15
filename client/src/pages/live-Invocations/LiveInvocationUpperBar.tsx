@@ -1,4 +1,5 @@
 import { PlayArrow } from "@mui/icons-material";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import { TextField, Tooltip } from "@mui/material";
 import queryString from "query-string";
 import { useState } from "react";
@@ -92,6 +93,8 @@ export const InvocationUpperBar = ({
       <div className="flex flex-row items-center space-x-2">
         {component}
         <div className="flex flex-row items-center w-28">
+        <IoMdArrowRoundBack className="text-2xl mr-1" style={{cursor:'pointer'}} onClick={()=>{ navigator(-1)}}/> 
+
           <SelectMethodDropDown
             disabled={isDisabled}
             value={invocation?.method || ""}
