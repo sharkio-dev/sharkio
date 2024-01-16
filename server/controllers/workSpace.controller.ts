@@ -1,10 +1,9 @@
-import { WorkspaceService } from "../services/workspace/workspace.service";
-import PromiseRouter from "express-promise-router";
-import { IRouterConfig } from "./router.interface";
 import { Request, Response } from "express";
-import { requestValidator } from "../lib/request-validator/request-validator";
+import PromiseRouter from "express-promise-router";
 import { z } from "zod";
-import { logger } from "handlebars";
+import { requestValidator } from "../lib/request-validator/request-validator";
+import { WorkspaceService } from "../services/workspace/workspace.service";
+import { IRouterConfig } from "./router.interface";
 
 export class WorkspaceController {
   constructor(
@@ -32,8 +31,9 @@ export class WorkspaceController {
          */
         async (req: Request, res: Response) => {
           const userId = res.locals.auth.user.id;
-          const workspaces =
-            await this.workspaceService.getUserWorkspaces(userId);
+          const workspaces = await this.workspaceService.getUserWorkspaces(
+            userId,
+          );
           res.json(workspaces);
         },
       )
@@ -308,8 +308,9 @@ export class WorkspaceController {
         async (req: Request, res: Response) => {
           const { workspaceId } = req.params;
 
-          const workspaceUsers =
-            await this.workspaceService.getWorkspaceUsers(workspaceId);
+          const workspaceUsers = await this.workspaceService.getWorkspaceUsers(
+            workspaceId,
+          );
 
           res.json(workspaceUsers);
         },
