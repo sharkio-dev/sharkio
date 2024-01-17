@@ -58,10 +58,9 @@ export class Sniffer {
   @Column("uuid", { name: "user_id", nullable: true })
   userId: string;
 
-  @Column("is_mocking_enabled", {
+  @Column("boolean", {
     name: "is_mocking_enabled",
-    default: false,
-    type: "boolean",
+    default: false
   })
   isMockingEnabled: boolean;
 
