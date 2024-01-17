@@ -16,7 +16,7 @@ export default class MockMiddleware {
     private readonly interceptor: Interceptor,
     private readonly mockResponseSelector: MockResponseSelector,
     private readonly mockResponseTransformer: MockResponseTransformer,
-  ) {}
+  ) { }
 
   async findMock(hostname: string, url: string, method: string) {
     const subdomain = hostname.split(".")[0];
@@ -31,7 +31,7 @@ export default class MockMiddleware {
         sniffer,
       );
 
-      if (mock != null && mock.isActive === true) {
+      if (mock != null && mock.isActive === true && sniffer.isMockingEnabled) {
         return mock;
       }
     }
