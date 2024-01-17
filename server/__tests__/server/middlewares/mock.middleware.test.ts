@@ -24,6 +24,7 @@ const defaultSelectedSniffer: Sniffer = {
   responses: [],
   user: undefined,
   tests: [],
+  isMockingEnabled: true,
   mockResponses: [],
 };
 
