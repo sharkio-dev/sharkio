@@ -58,7 +58,11 @@ export class Sniffer {
   @Column("uuid", { name: "user_id", nullable: true })
   userId: string;
 
-  @Column("is_mocking_enabled", { name: "is_mocking_enabled", default: false, type: "boolean" })
+  @Column("is_mocking_enabled", {
+    name: "is_mocking_enabled",
+    default: false,
+    type: "boolean",
+  })
   isMockingEnabled: boolean;
 
   @OneToMany(() => Endpoint, (endpoint) => endpoint.id)
