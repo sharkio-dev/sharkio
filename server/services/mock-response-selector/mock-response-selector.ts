@@ -24,8 +24,9 @@ export class MockResponseSelector implements IMockResponseSelector {
       ? mock.responseSelectionMethod
       : "default";
 
-    const selectedResponse =
-      await this.selectionStrategies[selectionMethod].select(mock);
+    const selectedResponse = await this.selectionStrategies[
+      selectionMethod
+    ].select(mock);
 
     return selectedResponse;
   }
