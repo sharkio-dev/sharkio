@@ -104,11 +104,11 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
   },
   "types": ["jest"],
   "include": ["main.ts", "index.ts", "**/*.test.ts"],
   "ts-node": {
-    "swc": true
-  }
+    "swc": true,
+  },
 }

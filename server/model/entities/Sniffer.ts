@@ -60,7 +60,7 @@ export class Sniffer {
 
   @Column("boolean", {
     name: "is_mocking_enabled",
-    default: false
+    default: false,
   })
   isMockingEnabled: boolean;
 
