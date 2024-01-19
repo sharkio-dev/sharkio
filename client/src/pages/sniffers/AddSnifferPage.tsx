@@ -25,7 +25,7 @@ import { LoadingIcon } from "./LoadingIcon";
 interface EnvStepProps {
   onNextClicked: () => void;
   value: boolean | null;
-  handleChange: (newValue: boolean | null) => void;
+  handleChange: (newValue: boolean) => void;
 }
 const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
   return (
