@@ -48,7 +48,10 @@ export const SideBar: React.FC = () => {
   const location = useLocation();
 
   const onIconClicked = (to: string) => {
-    navigate(to);
+    navigate({
+      pathname: to,
+      search: location.search,
+    });
   };
 
   return (

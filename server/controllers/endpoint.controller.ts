@@ -37,9 +37,9 @@ export class EndpointController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const limit = +(req.params.limit ?? 1000);
-        const requests = await this.endpointService.getByUser(userId, limit);
+        const requests = await this.endpointService.getByOwner(ownerId, limit);
         res.status(200).send(requests);
       },
     );
@@ -66,11 +66,11 @@ export class EndpointController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const requestId = req.params.requestId;
 
         const limit = +(req.params.limit ?? 1000);
-        const requests = await this.endpointService.getById(userId, requestId);
+        const requests = await this.endpointService.getById(ownerId, requestId);
         res.status(200).send(requests);
       },
     );
@@ -97,10 +97,9 @@ export class EndpointController {
        *         description: Server error
        */
       async (req, res) => {
-        const userId = res.locals.auth.user.id;
-
+        const ownerId = res.locals.auth.ownerId;
         const request = await this.endpointService.getById(
-          userId,
+          ownerId,
           req.params.requestId,
         );
         if (request === null) {
@@ -145,6 +144,7 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
+          const ownerId = res.locals.auth.ownerId;
           const { method, headers, body, url, snifferId } = req.body;
           if (!snifferId) {
             return res.status(400).send("Sniffer id is required");
@@ -156,7 +156,7 @@ export class EndpointController {
             return res.status(400).send("Method is required");
           }
           const sniffer = await this.snifferService.getSniffer(
-            res.locals.auth.userId,
+            ownerId,
             snifferId,
           );
           if (!sniffer) {
@@ -221,7 +221,7 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { curl, snifferId } = req.body;
 
           const sniffer = await this.snifferService.getSniffer(
@@ -234,7 +234,7 @@ export class EndpointController {
           }
 
           const newEndpoint = await this.importService.importFromCurl(
-            userId,
+            ownerId,
             snifferId,
             curl,
           );
@@ -274,7 +274,7 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { curl, snifferId } = req.body;
 
           if (curl == null || curl == "") {
@@ -291,7 +291,7 @@ export class EndpointController {
           }
 
           const newEndpoint = await this.importService.importFromCurl(
-            userId,
+            ownerId,
             snifferId,
             curl,
           );
@@ -333,7 +333,7 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const snifferId = req.params.snifferId;
           const swagger = req.body;
 
@@ -351,7 +351,7 @@ export class EndpointController {
           }
 
           const newEndpoints = await this.importService.importFromSwagger(
-            userId,
+            ownerId,
             snifferId,
             swagger,
           );
@@ -391,7 +391,7 @@ export class EndpointController {
        */
       async (req, res) => {
         try {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { curl, snifferId } = req.body;
 
           const sniffer = await this.snifferService.getSniffer(
@@ -404,7 +404,7 @@ export class EndpointController {
           }
 
           const newEndpoint = await this.importService.importFromCurl(
-            userId,
+            ownerId,
             snifferId,
             curl,
           );

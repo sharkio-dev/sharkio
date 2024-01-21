@@ -30,9 +30,10 @@ export class WorkspaceController {
          *         description: Server error
          */
         async (req: Request, res: Response) => {
-          const userId = res.locals.auth.user.id;
-          const workspaces =
-            await this.workspaceService.getUserWorkspaces(userId);
+          const userId = res.locals.auth.userId;
+          const workspaces = await this.workspaceService.getUserWorkspaces(
+            userId,
+          );
           res.json(workspaces);
         },
       )
@@ -56,7 +57,7 @@ export class WorkspaceController {
         }),
         async (req: Request, res: Response) => {
           const { newWorkSpaceName } = req.body;
-          const userId = res.locals.auth.user.id;
+          const userId = res.locals.auth.userId;
           const newWorkspace = await this.workspaceService.createWorkspace(
             newWorkSpaceName,
             userId,
@@ -92,11 +93,11 @@ export class WorkspaceController {
           params: z.object({ workspaceId: z.string().uuid() }),
         }),
         async (req: Request, res: Response) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { workspaceId } = req.params;
 
           const workspace = await this.workspaceService.getWorkspace(
-            userId,
+            ownerId,
             workspaceId,
           );
 
@@ -128,9 +129,9 @@ export class WorkspaceController {
           params: z.object({ workspaceId: z.string().uuid() }),
         }),
         async (req: Request, res: Response) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { workspaceId } = req.params;
-          await this.workspaceService.deleteWorkspace(userId, workspaceId);
+          await this.workspaceService.deleteWorkspace(ownerId, workspaceId);
           res.json({ success: true });
         },
       )
@@ -265,12 +266,12 @@ export class WorkspaceController {
           }),
         }),
         async (req: Request, res: Response) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { workspaceId } = req.params;
           const { newUserId } = req.body;
 
           const newWorkspace = await this.workspaceService.addUser(
-            userId,
+            ownerId,
             workspaceId,
             newUserId,
           );
@@ -307,8 +308,9 @@ export class WorkspaceController {
         async (req: Request, res: Response) => {
           const { workspaceId } = req.params;
 
-          const workspaceUsers =
-            await this.workspaceService.getWorkspaceUsers(workspaceId);
+          const workspaceUsers = await this.workspaceService.getWorkspaceUsers(
+            workspaceId,
+          );
 
           res.json(workspaceUsers);
         },

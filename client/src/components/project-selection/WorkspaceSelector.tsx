@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   Divider,
   FormControl,
@@ -6,65 +5,60 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import WorkspaceItem from "./WorkspaceItem";
-import NewWorkspaceModal from "./NewWorkspaceModal";
+import queryString from "query-string";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
+import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
+import { DeleteWorkspaceModal } from "./DeleteWorkspaceModal";
 import EditWorkspaceModal from "./EditWorkspaceModal";
 import NewWorkspaceItem from "./NewWorkspaceItem";
-import { DeleteWorkspaceModal } from "./DeleteWorkspaceModal";
-import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
-import { useLocation, useNavigate } from "react-router-dom";
-import queryString from "query-string";
+import NewWorkspaceModal from "./NewWorkspaceModal";
+import WorkspaceItem from "./WorkspaceItem";
 
 export const emptyWorkSpace: workSpaceType = {
   id: "",
   name: "",
+  userId: "",
 };
 const ISHIDDEN: boolean = false;
 const WorkspaceSelector = () => {
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
     useWorkspaceStore();
   const location = useLocation();
-  const navigate = useNavigate();
-
+  const { user } = useAuthStore();
   const { workspaceId } = queryString.parse(location.search);
 
   const setWorkspaceIdQuery = (workspaceId: string) => {
     const params = new URLSearchParams(location.search);
     params.set("workspaceId", workspaceId);
-    navigate({ search: params.toString() }, { replace: true });
     changeBetweenWorkSpaces(workspaceId);
+    window.location.href = `${window.location.origin}/proxies?workspaceId=${workspaceId}`;
   };
-
-  useEffect(() => {
-    getWorkspaces().then((workspaces) => {
-      if (workspaces.length > 0 && !workspaceId) {
-        setWorkspaceIdQuery(workspaces[0].id);
-      }
-      if (workspaceId) {
-        changeBetweenWorkSpaces(workspaceId as string);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!workspaceId && openWorkspace) {
-      setWorkspaceIdQuery(openWorkspace.id);
-    }
-  }, [workspaceId, openWorkspace, location.search]);
 
   const handleChangeWorkspace = async (workSpaceId: string) => {
     setWorkspaceIdQuery(workSpaceId);
   };
 
+  useEffect(() => {
+    getWorkspaces().then(() => {
+      if (workspaceId) {
+        changeBetweenWorkSpaces(workspaceId as string);
+      } else if (user) {
+        changeBetweenWorkSpaces(user.id);
+      }
+    });
+  }, []);
+
   return (
     <div>
-      {!ISHIDDEN && (
+      {!ISHIDDEN && user && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
             <Select
               className="w-fit min-w-[200px]"
-              value={openWorkspace?.id ?? "1"}
+              value={openWorkspace?.id ?? user.id}
               label="Workspace"
               renderValue={() => openWorkspace?.name || "Default"}
               onChange={(e) => handleChangeWorkspace(e.target.value as string)}
@@ -73,14 +67,15 @@ const WorkspaceSelector = () => {
               <Divider orientation="horizontal" className="w-full" />
               <MenuItem
                 key={"default-workspace"}
-                value={"default"}
+                value={user.id}
                 className="w-full min-w-fit"
                 dense={true}
               >
                 <WorkspaceItem
                   workspace={{
-                    id: "default",
-                    name: "default",
+                    id: user.id,
+                    name: "Personal",
+                    userId: user.id,
                     createdAt: "",
                     updatedAt: "",
                   }}

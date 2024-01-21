@@ -7,27 +7,36 @@ export class SnifferRepository {
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(Sniffer);
   }
-
+  getById(ownerId: string, id: string) {
+    return this.repository.findOne({
+      where: {
+        ownerId,
+        id,
+      },
+    });
+  }
   findByDownstream(url: string) {
     return this.repository.findOne({ where: { downstreamUrl: url } });
   }
 
-  findByUserId(userId: string) {
-    return this.repository.find({
-      where: { userId },
+  async findByUserId(ownerId: string) {
+    const res = await this.repository.find({
+      where: { ownerId },
       order: { createdAt: "ASC" },
     });
+
+    return res;
   }
 
   findBySubdomain(subdomain: string) {
     return this.repository.findOneBy({ subdomain });
   }
 
-  findByName(userId: string, name: string) {
-    return this.repository.findOne({ where: { userId, name } });
+  findByName(ownerId: string, name: string) {
+    return this.repository.findOne({ where: { ownerId, name } });
   }
 
-  findByPorts(userId: string, ports: number[]) {
-    return this.repository.find({ where: { userId, port: In(ports) } });
+  findByPorts(ownerId: string, ports: number[]) {
+    return this.repository.find({ where: { ownerId, port: In(ports) } });
   }
 }

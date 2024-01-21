@@ -3,12 +3,12 @@ import { TestSuiteRepository } from "../../model/repositories/testSuite/testSuit
 export class TestSuiteService {
   constructor(private readonly testSuiteRepository: TestSuiteRepository) {}
 
-  async getByUserId(userId: string) {
-    return this.testSuiteRepository.getByuserId(userId);
+  async getByOwnerId(ownerId: string) {
+    return this.testSuiteRepository.getByOwnerId(ownerId);
   }
 
-  async create(name: string, userId: string) {
-    return this.testSuiteRepository.create(name, userId);
+  async create(name: string, ownerId: string) {
+    return this.testSuiteRepository.create(name, ownerId);
   }
 
   async update(id: string, name: string) {

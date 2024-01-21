@@ -7,17 +7,12 @@ import { Sniffer } from "../../model/entities/Sniffer";
 export class SnifferService {
   constructor(private readonly snifferRepository: SnifferRepository) {}
 
-  async getSniffer(userId: string, id: string) {
-    return this.snifferRepository.repository.findOne({
-      where: {
-        userId,
-        id,
-      },
-    });
+  async getSniffer(ownerId: string, id: string) {
+    return this.snifferRepository.getById(ownerId, id);
   }
 
-  async getUserSniffers(userId: string): Promise<Sniffer[]> {
-    return this.snifferRepository.findByUserId(userId);
+  async getOwnerSniffers(ownerId: string): Promise<Sniffer[]> {
+    return this.snifferRepository.findByUserId(ownerId);
   }
 
   async getUserSniffersByPorts(
@@ -43,8 +38,9 @@ export class SnifferService {
       subdomain,
     });
 
-    const newSniffer =
-      await this.snifferRepository.repository.save(snifferEntity);
+    const newSniffer = await this.snifferRepository.repository.save(
+      snifferEntity,
+    );
     return newSniffer;
   }
 
@@ -53,9 +49,9 @@ export class SnifferService {
       .createQueryBuilder()
       .update(Sniffer)
       .set(newConfig)
-      .where("id = :id AND userId = :userId", {
+      .where("id = :id AND ownerId = :ownerId", {
         id: newConfig.id,
-        userId: newConfig.userId,
+        ownerId: newConfig.ownerId,
         name: newConfig?.name,
         downstreamUrl: newConfig.downstreamUrl,
       })
@@ -86,11 +82,11 @@ export class SnifferService {
   }
 
   async upsertLocalSniffers(
-    userId: string,
+    ownerId: string,
     ports: number[],
     downstreamUrl: string,
   ) {
-    const existingSniffers = await this.getUserSniffersByPorts(userId, ports);
+    const existingSniffers = await this.getUserSniffersByPorts(ownerId, ports);
 
     const newPorts = ports.filter((port) => {
       return !existingSniffers.find((sniffer) => port === sniffer.port);
@@ -104,7 +100,7 @@ export class SnifferService {
           subdomain: `local-${port}-${randomString({
             length: 5,
           }).toLowerCase()}`,
-          userId,
+          ownerId,
           port,
         });
       }),
@@ -115,7 +111,7 @@ export class SnifferService {
         return this.editSniffer({
           id: sniffer.id,
           downstreamUrl,
-          userId,
+          ownerId,
           name: sniffer.name || "",
           subdomain: sniffer.subdomain,
         });
