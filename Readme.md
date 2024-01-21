@@ -62,7 +62,7 @@ Request mocking.
 
 For the backend
 
->  cd into server.
+> cd into server.
 
 > npm install
 
