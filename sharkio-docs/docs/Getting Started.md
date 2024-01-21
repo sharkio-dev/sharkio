@@ -23,8 +23,6 @@ Login to the dashboard using your favorite authentication method.
 
 ### 2. Create a new proxy
 
-
-
 Follow the [steps](/docs/API%20Proxing/101) to create a new proxy.
 
 <Image
