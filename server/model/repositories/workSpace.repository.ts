@@ -16,7 +16,7 @@ export class WorkspaceRepository {
     return this.repository.findOne({ where: { id: workspaceId } });
   }
 
-  async isMember(workspaceId: string, userId) {
+  async isMember(workspaceId: string, userId: string) {
     const user = await this.workSpacesUsersRepository.findOne({
       where: { workspaceId, userId },
     });

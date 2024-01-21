@@ -24,7 +24,7 @@ export class WorkspacesUsers {
   @Column("uuid", { name: "workspace_id" })
   workspaceId: string;
 
-  @ManyToOne(() => Users, (users) => users.mocks)
+  @ManyToOne(() => Users, (users) => users.workspacesUsers)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user?: Relation<Users>;
 }
