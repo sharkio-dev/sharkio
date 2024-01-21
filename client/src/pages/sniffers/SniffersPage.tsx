@@ -21,7 +21,7 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
   useEffect(() => {
     if (!userId) return;
     loadSniffers(true).catch(() => {
-      showSnackbar("Failed to get sniffers", "error");
+      showSnackbar("Failed to get proxies", "error");
     });
   }, [userId]);
 
