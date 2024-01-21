@@ -19,7 +19,7 @@ export class SnifferRepository {
     return this.repository.findOne({ where: { downstreamUrl: url } });
   }
 
-  async findByUserId(ownerId: string) {
+  async findByOwnerId(ownerId: string) {
     const res = await this.repository.find({
       where: { ownerId },
       order: { createdAt: "ASC" },

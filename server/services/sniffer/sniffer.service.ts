@@ -12,14 +12,14 @@ export class SnifferService {
   }
 
   async getOwnerSniffers(ownerId: string): Promise<Sniffer[]> {
-    return this.snifferRepository.findByUserId(ownerId);
+    return this.snifferRepository.findByOwnerId(ownerId);
   }
 
   async getUserSniffersByPorts(
-    userId: string,
+    ownerId: string,
     ports: number[],
   ): Promise<Sniffer[]> {
-    return this.snifferRepository.findByPorts(userId, ports);
+    return this.snifferRepository.findByPorts(ownerId, ports);
   }
 
   async getAllSniffers(): Promise<Sniffer[]> {
@@ -38,8 +38,9 @@ export class SnifferService {
       subdomain,
     });
 
-    const newSniffer =
-      await this.snifferRepository.repository.save(snifferEntity);
+    const newSniffer = await this.snifferRepository.repository.save(
+      snifferEntity,
+    );
     return newSniffer;
   }
 
@@ -59,12 +60,12 @@ export class SnifferService {
     return res.raw[0];
   }
 
-  async removeSniffer(userId: string, id: string) {
+  async removeSniffer(ownerId: string, id: string) {
     return this.snifferRepository.repository
       .createQueryBuilder()
       .delete()
       .from(Sniffer)
-      .where("id = :id AND userId = :userId", { id, userId })
+      .where("id = :id AND ownerId = :ownerId", { id, ownerId })
       .execute();
   }
 
@@ -76,8 +77,8 @@ export class SnifferService {
     return this.snifferRepository.findByDownstream(url);
   }
 
-  async findByName(userId: string, name: string) {
-    return this.snifferRepository.findByName(userId, name);
+  async findByName(ownerId: string, name: string) {
+    return this.snifferRepository.findByName(ownerId, name);
   }
 
   async upsertLocalSniffers(

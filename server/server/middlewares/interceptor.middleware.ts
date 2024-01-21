@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { useLog } from "../../lib/log/index";
-import { Users } from "../../model/entities/Users";
-import { Sniffer } from "../../model/entities/Sniffer";
 import { Request as RequestModel } from "../../model/entities/Request";
+import { Sniffer } from "../../model/entities/Sniffer";
+import { Users } from "../../model/entities/Users";
 import { Interceptor } from "../interceptors/Interceptor";
 
 export class RequestInterceptor {
@@ -20,7 +19,7 @@ export class RequestInterceptor {
       if (interceptedInvocation?.id) {
         req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
         req.headers["x-sharkio-sniffer-id"] = interceptedInvocation.snifferId;
-        req.headers["x-sharkio-user-id"] = interceptedInvocation.userId;
+        req.headers["x-sharkio-owner-id"] = interceptedInvocation.ownerId;
       }
 
       next();
@@ -44,7 +43,7 @@ export class RequestInterceptor {
   }
 
   async interceptResponse(
-    userId: Users["id"],
+    ownerId: Users["id"],
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
     res: {
@@ -56,7 +55,7 @@ export class RequestInterceptor {
   ) {
     return await this.interceptor.saveResponse(
       res,
-      userId,
+      ownerId,
       snifferId,
       invocationId,
       testExecutionId,
