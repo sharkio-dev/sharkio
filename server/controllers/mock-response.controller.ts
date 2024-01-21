@@ -35,9 +35,8 @@ export class MockResponseController {
 
         async (req: Request, res: Response, next: NextFunction) => {
           const ownerId = res.locals.auth.ownerId;
-          const userMockResponses = await this.mockResponseService.getByOwnerId(
-            ownerId,
-          );
+          const userMockResponses =
+            await this.mockResponseService.getByOwnerId(ownerId);
 
           res.send(userMockResponses).status(200);
         },
