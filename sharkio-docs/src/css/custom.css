@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 /**
  * Any CSS included here will be global. The classic template
  * bundles Infima by default. Infima is a CSS framework designed to
@@ -14,6 +17,9 @@
   --ifm-color-primary-lighter: #879ec4;
   --ifm-color-primary-lightest: #879ec4;
   --ifm-code-font-size: 95%;
+  --ifm-font-family-monospace: "Fira Code", monospace;
+  --docusaurus-code-font-family: "Fira Code", monospace;
+  --docusaurus-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
@@ -26,5 +32,6 @@
   --ifm-color-primary-light: #879ec4;
   --ifm-color-primary-lighter: #879ec4;
   --ifm-color-primary-lightest: #879ec4;
+  --ifm-font-family-monospace: "Fira Code", monospace;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
