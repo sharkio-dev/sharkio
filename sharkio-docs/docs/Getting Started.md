@@ -17,8 +17,6 @@ Login to the dashboard using your favorite authentication method.
 <Image
   src="/img/docs/login-page.png"
   alt="Login"
-  width={500}
-  height={300}
   />
 
 ### 2. Create a new proxy
@@ -28,8 +26,6 @@ Follow the [steps](/docs/API%20Proxing/101) to create a new proxy.
 <Image
   src="/img/docs/proxy-example.png"
   alt="Create a proxy"
-  width={500}
-  height={300}
   />
 
 ### 3. Redirect your traffic
