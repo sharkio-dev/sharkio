@@ -8,7 +8,7 @@ import {
 import { useLog } from "../../lib/log/index";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { RequestInterceptor } from "./interceptor.middleware";
-
+const middlewareLogger = useLog({});
 export class ProxyMiddleware {
   private proxyMiddleware: RequestHandler;
 
@@ -57,8 +57,9 @@ export class ProxyMiddleware {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
 
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain,
+    );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
     }

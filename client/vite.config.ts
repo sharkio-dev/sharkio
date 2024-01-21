@@ -11,7 +11,7 @@ export default () => {
         circleImportThrowErr: false,
       }),
       react(),
-      // basicSsl(),
+      basicSsl(),
       VitePWA({
         registerType: "autoUpdate",
         devOptions: {
@@ -29,6 +29,7 @@ export default () => {
       VITE_DISABLE_SUPABASE: process.env.VITE_DISABLE_SUPABASE,
       VITE_SERVER_URL: process.env.VITE_SERVER_URL,
       VITE_PROXY_DOMAIN: process.env.VITE_PROXY_DOMAIN,
+      VITE_PROXY_DOMAIN_PROTOCOL: process.env.VITE_PROXY_DOMAIN_PROTOCOL,
     },
   });
 };

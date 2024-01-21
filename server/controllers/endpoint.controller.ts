@@ -173,12 +173,6 @@ export class EndpointController {
             subdomain: sniffer.subdomain,
           });
 
-          log.info({
-            body: response?.data,
-            headers: response?.headers,
-            status: response?.status,
-            ...response,
-          });
           res.status(200).send({
             body:
               typeof response?.data === "string"

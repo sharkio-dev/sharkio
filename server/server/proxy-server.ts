@@ -10,6 +10,7 @@ import { RequestInterceptor } from "./middlewares/interceptor.middleware";
 import https from "https";
 import fs from "fs";
 import MockMiddleware from "./middlewares/mock.middleware";
+import path from "path";
 
 const log = useLog({
   dirname: __dirname,
@@ -30,10 +31,7 @@ export class ProxyServer {
   ) {
     this.app = express();
     this.app.use(logMiddleware);
-    this.app.use(() => {
-      throw new Error("sadjkasd");
-    });
-    this.app.use(cors({ origin: "*" }));
+    this.app.use(cors({ origin: "*", allowedHeaders: "*", methods: "*" }));
     this.app.use(express.json());
     this.app.use(express.text());
     this.app.use(express.raw());
@@ -55,9 +53,15 @@ export class ProxyServer {
 
   private startHttpsServer() {
     try {
+      const privateKeyPath =
+        process.env.PROXY_PRIVATE_KEY_FILE ??
+        path.join(__dirname, "..", "certificates", "privkey.pem");
+      const certificatePath =
+        process.env.PROXY_CERT_FILE ??
+        path.join(__dirname, "..", "certificates", "fullchain.pem");
       const options = {
-        key: fs.readFileSync(process.env.PROXY_PRIVATE_KEY_FILE ?? ""),
-        cert: fs.readFileSync(process.env.PROXY_CERT_FILE ?? ""),
+        key: fs.readFileSync(privateKeyPath),
+        cert: fs.readFileSync(certificatePath),
       };
       const server = https.createServer(options, this.app);
       return server.listen(this.httpsPort, () => {
