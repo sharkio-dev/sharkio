@@ -17,7 +17,7 @@ interface IMenuItem {
 let productionMenu: IMenuItem[] = [
   {
     to: routes.PROXIES,
-    title: "Sniffers",
+    title: "Proxies",
     Icon: MdOutlineDashboard,
   },
   {

@@ -209,12 +209,12 @@ const NameStep = ({
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
-        Give your sniffer a name
+        Give your proxy a name
       </div>
       <div className="flex h-[50vh] w-full flex-col items-center justify-center">
         <OutlinedInput
           className="w-1/2"
-          placeholder="Sniffer name"
+          placeholder="Proxy name"
           value={value}
           onChange={(e) => handleChange(e.target.value)}
         />
@@ -239,7 +239,7 @@ const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
-        You have successfully created a sniffer!
+        You have successfully created a proxy!
       </div>
       <div className="flex h-[50vh] w-full flex-col items-center justify-center"></div>
       <div className="mt-8 flex w-full flex-row-reverse justify-between">
