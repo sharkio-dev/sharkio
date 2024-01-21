@@ -8,7 +8,7 @@ import Image from '@site/src/components/Image';
 
 Learn how to setup your first proxy powered by Sharkio.
 
-___
+---
 
 ### 1. Login to the dashboard
 
@@ -21,18 +21,24 @@ Login to the dashboard using your favorite authentication method.
   height={300}
   />
 
-
 ### 2. Create a new proxy
 
-Follow the [steps](/docs/proxy/Create%20a%20proxy) to create a new proxy. 
 
+
+Follow the [steps](/docs/API%20Proxing/101) to create a new proxy.
+
+<Image
+  src="/img/docs/proxy-example.png"
+  alt="Create a proxy"
+  width={500}
+  height={300}
+  />
 
 ### 3. Redirect your traffic
 
-Redirect your traffic to your proxy subdomain. 
-
-All traffic will be proxied to the target URL you specified in the previous step.
+Redirect the network to your **proxy domain**. All traffic will be proxied to the **target URL** you specified in the previous step.
+Follow the docs to learn how to [debug](/docs/API%20Debugging/101), [mock](/docs/API%20Mocking/101) and [test](/docs/API%20Testing/101) your services.
 
 ### 4. Enjoy!
 
-it is that simple! 🎉
+It is that simple! 🎉
