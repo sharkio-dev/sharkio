@@ -62,19 +62,23 @@ Request mocking.
 
 For the backend
 
-- cd into server.
-- npm install
-- npm run dev
+> cd into server.
+
+> npm install
+
+> npm run dev
 
 For the frontend
 
-- cd into client.
-- npm install
-- npm run dev
+> cd into client.
+
+> npm install
+
+> npm run dev
 
 For both:
 
-- npm run dev ( in root directory )
+> npm run dev ( in root directory )
 
 Note:
 
@@ -121,7 +125,7 @@ Run backend/frontend only:
 
 ## 🤝 Acknowledgement
 
-- [Readme generator - readme.so](https://readme.so)
+- This was made using this 👉🏻 [Readme generator - readme.so](https://readme.so)
 
 ## 🏆 Contributors
 

@@ -80,7 +80,7 @@ export const HomePage = () => {
       className={`flex flex-col bg-tertiary h-full w-[calc(100vw-56px)] p-4 overflow-y-auto`}
     >
       <div className="flex flex-row justify-between items-center">
-        <div className="text-2xl font-bold">Sniffers</div>
+        <div className="text-2xl font-bold">Proxies</div>
         <Button
           variant="outlined"
           color="primary"
