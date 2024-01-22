@@ -46,10 +46,10 @@ export class SnifferController {
          *         description: Server error
          */
         async (req: Request, res: Response) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           let sniffers = [];
 
-          sniffers = await this.snifferManager.getUserSniffers(userId);
+          sniffers = await this.snifferManager.getOwnerSniffers(ownerId);
           res.json(sniffers);
         },
       )
@@ -96,14 +96,14 @@ export class SnifferController {
         async (req: Request, res: Response) => {
           try {
             const { ...config } = req.body;
-            const userId = res.locals.auth.user.id;
+            const ownerId = res.locals.auth.ownerId;
 
             if (config.subdomain) {
               config.subdomain = config.subdomain.toLowerCase();
             }
             const createdSniffer = await this.snifferManager.createSniffer({
               ...config,
-              userId,
+              ownerId,
             });
             return res.status(201).json(createdSniffer);
           } catch (e) {
@@ -169,8 +169,8 @@ export class SnifferController {
             if (data.subdomain) {
               data.subdomain = data.subdomain.toLowerCase();
             }
-            const userId = res.locals.auth.user.id;
-            await this.snifferManager.editSniffer({ id, userId, ...data });
+            const ownerId = res.locals.auth.ownerId;
+            await this.snifferManager.editSniffer({ id, ownerId, ...data });
             res.sendStatus(200);
           } catch (e: any) {
             log.error("An unexpected error occured", {
@@ -213,8 +213,8 @@ export class SnifferController {
         async (req: Request, res: Response) => {
           try {
             const { id } = req.params;
-            const userId = res.locals.auth.user.id;
-            await this.snifferManager.removeSniffer(userId, id);
+            const ownerId = res.locals.auth.ownerId;
+            await this.snifferManager.removeSniffer(ownerId, id);
             res.sendStatus(200);
           } catch (e: any) {
             log.error("An unexpected error occured", {
@@ -247,9 +247,9 @@ export class SnifferController {
         }),
         async (req: Request, res: Response) => {
           const snifferId = req.params.snifferId;
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const sniffer = await this.snifferManager.getSniffer(
-            userId,
+            ownerId,
             snifferId,
           );
 
@@ -285,9 +285,9 @@ export class SnifferController {
       }),
       async (req: Request, res: Response) => {
         const { snifferId } = req.params;
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const snifferMocks = await this.mockService.getBySnifferId(
-          userId,
+          ownerId,
           snifferId,
         );
 
@@ -322,9 +322,9 @@ export class SnifferController {
       }),
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const snifferRequests = await this.endpointService.getBySnifferId(
-          userId,
+          ownerId,
           id,
         );
 
@@ -360,9 +360,9 @@ export class SnifferController {
       }),
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const snifferInvocations =
-          await this.endpointService.getInvocationsBySnifferId(userId, id);
+          await this.endpointService.getInvocationsBySnifferId(ownerId, id);
 
         res.json(snifferInvocations);
       },
@@ -396,9 +396,9 @@ export class SnifferController {
        */
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const snifferRequests = await this.endpointService.getBySnifferId(
-          userId,
+          ownerId,
           id,
         );
 
@@ -413,14 +413,9 @@ export class SnifferController {
       swaggerUi.serve,
       async (req: Request, res: Response) => {
         const { id } = req.params;
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const generatedDoc =
-          await this.snifferDocGenerator.generateDocForSniffer(userId, id);
-        const sniffer = await this.snifferManager.getSniffer(userId, id);
-        const snifferRequests = await this.endpointService.getBySnifferId(
-          userId,
-          id,
-        );
+          await this.snifferDocGenerator.generateDocForSniffer(ownerId, id);
 
         const html = swaggerUi.generateHTML(generatedDoc);
         res.send(html).status(200);

@@ -13,7 +13,7 @@ export interface Interceptor {
     sniffer: Sniffer,
   ) => Promise<Mock | null>;
   setMockSelectedResponse: (
-    userId: string,
+    ownerId: string,
     mockId: string,
     selectedResponseId: string,
   ) => Promise<void>;
@@ -24,7 +24,7 @@ export interface Interceptor {
   ) => Promise<RequestModel>;
   saveResponse: (
     res: { headers: any; statusCode: any; body: any },
-    userId: Users["id"],
+    ownerId: string,
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
     testExecutionId?: string,

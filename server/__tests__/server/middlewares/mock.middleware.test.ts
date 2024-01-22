@@ -10,7 +10,7 @@ import ResponseService from "../../../services/response/response.service";
 import { SnifferService } from "../../../services/sniffer/sniffer.service";
 
 const defaultSelectedSniffer: Sniffer = {
-  userId: "1234",
+  ownerId: "1234",
   id: "1111",
   name: null,
   createdAt: new Date(),
@@ -22,7 +22,6 @@ const defaultSelectedSniffer: Sniffer = {
   mocks: [],
   requests: [],
   responses: [],
-  user: undefined,
   tests: [],
   mockResponses: [],
 };
@@ -41,7 +40,7 @@ const baseResponseHeaders = {
 const baseResponseMock: MockResponse = {
   id: "38c3b506-67df-4c5b-9596-1f46c12ea9d2",
   mockId: "e07e14fa-fe96-4807-a4a7-86d49f11fbbc",
-  userId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
+  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
   snifferId: "02c9d520-e557-4ab7-9fa3-52ae0e8e85b7",
   status: 200,
   body: "",
@@ -62,7 +61,7 @@ const baseMock: Mock = {
   id: "e07e14fa-fe96-4807-a4a7-86d49f11fbbc",
   snifferId: "02c9d520-e557-4ab7-9fa3-52ae0e8e85b7",
   isActive: true,
-  userId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
+  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
   headers: {},
   name: "",
   responseSelectionMethod: "asdfasdf",

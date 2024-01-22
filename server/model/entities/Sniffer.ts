@@ -55,8 +55,8 @@ export class Sniffer {
   @Column("numeric", { name: "port", nullable: true })
   port: number;
 
-  @Column("uuid", { name: "user_id", nullable: true })
-  userId: string;
+  @Column("uuid", { name: "owner_id", nullable: true })
+  ownerId: string;
 
   @OneToMany(() => Endpoint, (endpoint) => endpoint.id)
   endpoints: Endpoint[];
@@ -70,9 +70,9 @@ export class Sniffer {
   @OneToMany(() => Response, (response) => response.id)
   responses: Response[];
 
-  @ManyToOne(() => Users, (users) => users.id)
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user?: Relation<Users>;
+  // @ManyToOne(() => Users, (users) => users.id)
+  // @JoinColumn([{ name: "owner_id", referencedColumnName: "id" }])
+  // user?: Relation<Users>;
 
   @OneToMany(() => Test, (test) => test.id)
   tests: Test[];

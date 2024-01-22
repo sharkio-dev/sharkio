@@ -45,7 +45,11 @@ export interface Swagger {
 export class ImportService {
   constructor(private readonly endpointService: EndpointService) {}
 
-  async importFromCurl(userId: string, snifferId: string, curlCommand: string) {
+  async importFromCurl(
+    ownerId: string,
+    snifferId: string,
+    curlCommand: string,
+  ) {
     const curlObject: ResultJSON = parse(curlCommand);
     const url = new URL(curlObject.url);
 
@@ -55,13 +59,17 @@ export class ImportService {
       curlObject.header ?? {},
       curlObject.data,
       snifferId,
-      userId,
+      ownerId,
     );
 
     return newEndpoint;
   }
 
-  async importFromSwagger(userId: string, snifferId: string, swagger: Swagger) {
+  async importFromSwagger(
+    ownerId: string,
+    snifferId: string,
+    swagger: Swagger,
+  ) {
     const newEndpoints = Object.keys(swagger.paths).flatMap((path) => {
       return Object.keys(swagger.paths[path]).map((method) => {
         return this.endpointService.create(
@@ -70,7 +78,7 @@ export class ImportService {
           {},
           "",
           snifferId,
-          userId,
+          ownerId,
         );
       });
     });

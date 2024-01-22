@@ -1,13 +1,12 @@
 import { Request } from "express";
+import { Endpoint } from "../../model/entities/Endpoint";
+import { Mock } from "../../model/entities/Mock";
+import { Request as RequestModel } from "../../model/entities/Request";
+import { Sniffer } from "../../model/entities/Sniffer";
 import EndpointService from "../../services/endpoint/endpoint.service";
+import { MockService } from "../../services/mock/mock.service";
 import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
-import { Users } from "../../model/entities/Users";
-import { Sniffer } from "../../model/entities/Sniffer";
-import { Request as RequestModel } from "../../model/entities/Request";
-import { Endpoint } from "../../model/entities/Endpoint";
-import { MockService } from "../../services/mock/mock.service";
-import { Mock } from "../../model/entities/Mock";
 import { Interceptor } from "./Interceptor";
 
 export class CloudInterceptor implements Interceptor {
@@ -23,23 +22,19 @@ export class CloudInterceptor implements Interceptor {
   }
 
   async setMockSelectedResponse(
-    userId: string,
+    ownerId: string,
     mockId: string,
     selectedResponseId: string,
   ) {
     await this.mockService.setSelectedResponse(
-      userId,
+      ownerId,
       mockId,
       selectedResponseId,
     );
   }
 
   async saveEndpoint(req: Request, sniffer: Sniffer) {
-    return await this.endpointService.findOrCreate(
-      req,
-      sniffer.id,
-      sniffer.userId,
-    );
+    return this.endpointService.findOrCreate(req, sniffer.id, sniffer.ownerId);
   }
 
   async saveRequest(request: Endpoint, testExecutionId?: string) {
@@ -51,13 +46,13 @@ export class CloudInterceptor implements Interceptor {
 
   async saveResponse(
     res: { headers: any; statusCode: any; body: any },
-    userId: Users["id"],
+    ownerId: string,
     snifferId: Sniffer["id"],
     invocationId: RequestModel["id"],
     testExecutionId?: string,
   ) {
     await this.responseService.addResponse({
-      userId,
+      ownerId,
       snifferId,
       requestId: invocationId,
       headers: res.headers,
@@ -73,7 +68,7 @@ export class CloudInterceptor implements Interceptor {
     sniffer: Sniffer,
   ): Promise<Mock | null> {
     return await this.mockService.getByUrl(
-      sniffer?.userId,
+      sniffer?.ownerId,
       sniffer?.id,
       url,
       method,

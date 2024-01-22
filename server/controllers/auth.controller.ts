@@ -62,7 +62,6 @@ export class AuthController {
     router.post("/sharkio/sync-user", async (req: Request, res: Response) => {
       try {
         const { id, email, fullName, profileImg } = req.body;
-
         const user = await this.userService.upsertUser({
           id,
           email,

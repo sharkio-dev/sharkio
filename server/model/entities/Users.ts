@@ -5,17 +5,13 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
+  Relation,
 } from "typeorm";
 import { ApiKey } from "./ApiKey";
 import { Chat } from "./Chat";
-import { Endpoint } from "./Endpoint";
 import { Message } from "./Message";
-import { Mock } from "./Mock";
-import { Request } from "./Request";
-import { Response } from "./Response";
-import { TestSuite } from "./TestSuite";
 import { Workspace } from "./Workspace";
-import { Sniffer } from "./Sniffer";
+import { WorkspacesUsers } from "./WorkspacesUsers";
 
 @Index("users_pkey", ["id"], { unique: true })
 @Entity("users", { schema: "public" })
@@ -44,26 +40,8 @@ export class Users {
   @OneToMany(() => Chat, (chat) => chat.user)
   chats: Chat[];
 
-  @OneToMany(() => Endpoint, (endpoint) => endpoint.user)
-  endpoints: Endpoint[];
-
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
-
-  @OneToMany(() => Mock, (mock) => mock.user)
-  mocks: Mock[];
-
-  @OneToMany(() => Request, (request) => request.user)
-  requests: Request[];
-
-  @OneToMany(() => Response, (response) => response.user)
-  responses: Response[];
-
-  @OneToMany(() => Sniffer, (sniffer) => sniffer.user)
-  sniffers: Sniffer[];
-
-  @OneToMany(() => TestSuite, (testSuite) => testSuite.user)
-  testSuites: TestSuite[];
 
   @ManyToMany(() => Workspace, (workspace) => workspace.users)
   @JoinTable({
@@ -73,4 +51,7 @@ export class Users {
     schema: "public",
   })
   workspaces: Workspace[];
+
+  @OneToMany(() => WorkspacesUsers, (workspace) => workspace.user)
+  workspacesUsers: Relation<WorkspacesUsers>;
 }
