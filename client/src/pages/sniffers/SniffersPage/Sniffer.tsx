@@ -31,9 +31,9 @@ const Sniffer: React.FC = () => {
       </div>
     );
 
-  const snifferDomain = `${import.meta.env.VITE_PROXY_DOMAIN_PROTOCOL}://${
-    sniffer.subdomain
-  }.${import.meta.env.VITE_PROXY_DOMAIN}`;
+  const snifferDomain = `https://${sniffer.subdomain}.${
+    import.meta.env.VITE_PROXY_DOMAIN
+  }`;
 
   return (
     <div className="relative flex w-full h-full  overflow-auto">

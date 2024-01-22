@@ -21,7 +21,6 @@ export const emptyWorkSpace: workSpaceType = {
   name: "",
   userId: "",
 };
-const ISHIDDEN: boolean = false;
 const WorkspaceSelector = () => {
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
     useWorkspaceStore();
@@ -29,15 +28,8 @@ const WorkspaceSelector = () => {
   const { user } = useAuthStore();
   const { workspaceId } = queryString.parse(location.search);
 
-  const setWorkspaceIdQuery = (workspaceId: string) => {
-    const params = new URLSearchParams(location.search);
-    params.set("workspaceId", workspaceId);
-    changeBetweenWorkSpaces(workspaceId);
+  const handleChangeWorkspace = async (workspaceId: string) => {
     window.location.href = `${window.location.origin}/proxies?workspaceId=${workspaceId}`;
-  };
-
-  const handleChangeWorkspace = async (workSpaceId: string) => {
-    setWorkspaceIdQuery(workSpaceId);
   };
 
   useEffect(() => {
@@ -52,7 +44,7 @@ const WorkspaceSelector = () => {
 
   return (
     <div>
-      {!ISHIDDEN && user && (
+      {user && (
         <>
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
