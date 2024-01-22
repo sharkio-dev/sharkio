@@ -25,9 +25,11 @@ import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
 import { useSniffersStore } from "./stores/sniffersStores";
+import { JoinWorkspace } from "./components/project-selection/JoinWorkspace";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
+
   const { user } = useAuthStore();
   const { loadSniffers } = useSniffersStore();
 
@@ -73,6 +75,7 @@ function App(): React.JSX.Element {
       { path: routes.TEST_ENDPOINT, element: <TestSuitePage /> },
       { path: routes.MOCKS, element: <MockPage /> },
       { path: routes.MOCK, element: <MockPage /> },
+      { path: routes.JOIN_WORKSPACE, element: <JoinWorkspace /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

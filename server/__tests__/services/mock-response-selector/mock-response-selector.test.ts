@@ -6,7 +6,7 @@ import { IMockResponseSelector } from "../../../services/mock-response-selector/
 const baseResponseMock: MockResponse = {
   id: "38c3b506-67df-4c5b-9596-1f46c12ea9d2",
   mockId: "e07e14fa-fe96-4807-a4a7-86d49f11fbbc",
-  userId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
+  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
   snifferId: "02c9d520-e557-4ab7-9fa3-52ae0e8e85b7",
   status: 200,
   body: "",
@@ -17,7 +17,7 @@ const baseResponseMock: MockResponse = {
   sequenceIndex: 1,
 };
 
-const baseMock = {
+const baseMock: Mock = {
   method: "GET",
   url: "/test",
   status: 200,
@@ -27,7 +27,7 @@ const baseMock = {
   id: "e07e14fa-fe96-4807-a4a7-86d49f11fbbc",
   snifferId: "02c9d520-e557-4ab7-9fa3-52ae0e8e85b7",
   isActive: true,
-  userId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
+  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
   headers: {},
   name: "",
   responseSelectionMethod: "asdfasdf",

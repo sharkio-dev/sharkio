@@ -7,7 +7,6 @@ import {
   OneToMany,
   Relation,
 } from "typeorm";
-import { Users } from "./Users";
 import { Request } from "./Request";
 import { Sniffer } from "./Sniffer";
 
@@ -39,8 +38,8 @@ export class Endpoint {
   })
   createdAt: Date | null;
 
-  @Column("uuid", { name: "user_id", nullable: true })
-  userId: string;
+  @Column("uuid", { name: "owner_id", nullable: true })
+  ownerId: string;
 
   @Column("uuid", { name: "sniffer_id", nullable: true })
   snifferId: string;
@@ -51,10 +50,6 @@ export class Endpoint {
     default: () => "now()",
   })
   updatedAt: Date | null;
-
-  @ManyToOne(() => Users, (users) => users.endpoints)
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Users;
 
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.endpoints, {
     onDelete: "CASCADE",

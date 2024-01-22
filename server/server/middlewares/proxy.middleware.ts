@@ -1,19 +1,15 @@
 import { Request } from "express";
-import { useLog } from "../../lib/log/index";
-import { SnifferService } from "../../services/sniffer/sniffer.service";
 import {
   RequestHandler,
   createProxyMiddleware,
   fixRequestBody,
   responseInterceptor,
 } from "http-proxy-middleware";
+import { useLog } from "../../lib/log/index";
+import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { RequestInterceptor } from "./interceptor.middleware";
-import type * as http from "http";
 
-const logger = useLog({
-  dirname: __dirname,
-  filename: __filename,
-});
+const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export class ProxyMiddleware {
   private proxyMiddleware: RequestHandler;
@@ -36,22 +32,14 @@ export class ProxyMiddleware {
           try {
             const invocationId = req.headers["x-sharkio-invocation-id"];
             const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
-            const userId = req.headers["x-sharkio-user-id"] as string;
+            const ownerId = req.headers["x-sharkio-owner-id"] as string;
             const testExecutionId = req.headers[
               "x-sharkio-test-execution-id"
             ] as string;
-
-            logger.debug({
-              func: "onProxyRes",
-              invocationId,
-              snifferId,
-              userId,
-              testExecutionId,
-            });
             const body = responseBuffer.toString("utf8");
 
             await this.requestInterceptor.interceptResponse(
-              userId,
+              ownerId,
               snifferId,
               invocationId as string,
               {
