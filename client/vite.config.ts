@@ -13,6 +13,7 @@ export default () => {
       basicSsl(),
     ],
     server: {
+      host: "localhost.sharkio.dev",
       port: +(process.env.VITE_SERVER_PORT ?? 8123),
     },
     define: {

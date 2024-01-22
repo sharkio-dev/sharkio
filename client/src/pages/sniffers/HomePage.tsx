@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -66,6 +66,7 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
 export const HomePage = () => {
   const { sniffers, loadSniffers } = useSniffersStore();
   const navigate = useNavigate();
+  const { workspaceId } = useParams();
 
   useEffect(() => {
     loadSniffers(true).then((data) => {
@@ -73,7 +74,7 @@ export const HomePage = () => {
         navigate(routes.PROXY_CREATE);
       }
     });
-  }, []);
+  }, [workspaceId]);
 
   return (
     <div

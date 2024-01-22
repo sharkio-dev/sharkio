@@ -2,6 +2,7 @@ import { create } from "zustand";
 import {
   deleteWorkSpace,
   getUserWorkspaces,
+  getWorkspaceUsers,
   postAddNewWorkspace,
   putEditWorkSpaceName,
 } from "../api/workspacesApi";
@@ -9,6 +10,7 @@ import {
 export interface workSpaceType {
   name: string;
   id: string;
+  userId: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -21,6 +23,7 @@ interface workspaceStore {
   editWorkSpaceName: (name: string, id: string) => Promise<void>;
   createWorkspace: (name: string) => void;
   deleteWorkspace: (id: string) => Promise<void>;
+  getWorkspaceUsers: (workspaceId: string) => Promise<any>;
 }
 
 export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
@@ -28,11 +31,17 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   openWorkspace: {
     name: "",
     id: "",
+    userId: "",
   },
 
   getWorkspaces: () => {
     return getUserWorkspaces().then((res) => {
       set({ workspaces: res.data });
+      return res.data;
+    });
+  },
+  getWorkspaceUsers: (workspaceId: string) => {
+    return getWorkspaceUsers(workspaceId).then((res) => {
       return res.data;
     });
   },
@@ -47,8 +56,7 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   },
 
   createWorkspace: async (newWorkspaceName: string) => {
-    return postAddNewWorkspace(newWorkspaceName).then(({ data }) => {
-      set({ openWorkspace: data });
+    return postAddNewWorkspace(newWorkspaceName).then(() => {
       get().getWorkspaces();
     });
   },

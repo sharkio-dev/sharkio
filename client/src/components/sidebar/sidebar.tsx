@@ -11,7 +11,6 @@ interface IMenuItem {
   to: string;
   title: string;
   Icon: React.FC<any>;
-  query?: string;
 }
 
 let productionMenu: IMenuItem[] = [
@@ -29,7 +28,6 @@ let productionMenu: IMenuItem[] = [
     to: routes.MOCKS,
     title: "Mocks",
     Icon: HiOutlineClipboardDocumentList,
-    query: "?isNew=true",
   },
 ];
 
@@ -55,16 +53,19 @@ export const SideBar: React.FC = () => {
   const location = useLocation();
 
   const onIconClicked = (to: string) => {
-    navigate(to);
+    navigate({
+      pathname: to,
+      search: location.search,
+    });
   };
 
   return (
     <div className="h-full sticky flex-col bg-primary border-r border-border-color w-[56px] min-w-[56px]">
       <Logo />
       <div className="flex flex-col justify-center items-center py-4 space-y-4">
-        {productionMenu.map(({ Icon, to, title, query }, index) => (
+        {productionMenu.map(({ Icon, to, title }, index) => (
           <div
-            onClick={() => onIconClicked(to + (query || ""))}
+            onClick={() => onIconClicked(to)}
             key={index}
             className="cursor-pointer flex flex-col items-center space-y-1"
           >
