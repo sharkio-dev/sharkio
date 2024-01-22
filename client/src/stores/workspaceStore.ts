@@ -56,8 +56,7 @@ export const useWorkspaceStore = create<workspaceStore>((set, get) => ({
   },
 
   createWorkspace: async (newWorkspaceName: string) => {
-    return postAddNewWorkspace(newWorkspaceName).then(({ data }) => {
-      set({ openWorkspace: data });
+    return postAddNewWorkspace(newWorkspaceName).then(() => {
       get().getWorkspaces();
     });
   },

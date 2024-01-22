@@ -41,7 +41,7 @@ const GenericEditingModal: React.FC<EditingModalProps> = ({
       className={`${className} flex justify-center items-center border-0`}
       {...modalProps}
     >
-      <Paper className="flex flex-col p-4 w-fit h-fit rounded-sm">
+      <Paper className="flex flex-col p-4 w-fit h-fit rounded-sm min-w-[400px] min-h-[200px]">
         <div className="text-2xl font-bold">{headLine}</div>
         <div className="w-full border-b-[0.05px] my-4" />
         <div className="flex flex-col space-y-2">
