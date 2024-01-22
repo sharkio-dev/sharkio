@@ -31,7 +31,6 @@ click on "Next" to continue.
 
 Install a tunneling software like [ngrok](https://ngrok.com/) or [localtunnel](https://localtunnel.github.io/www/).
 
-
 ### 5. Start the tunneling software
 
 Start the tunneling software and copy the URL.

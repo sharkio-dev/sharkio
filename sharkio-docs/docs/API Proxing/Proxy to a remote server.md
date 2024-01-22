@@ -14,7 +14,6 @@ Learn how to proxy to a remote server.
 
 At the sidebar, click on the "Proxies" tab.
 
-
 ### 2. Click on the "+ Add" button
 
 Click on the "+ Add" button to create a new proxy.
