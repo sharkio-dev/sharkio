@@ -22,7 +22,7 @@ export default class MockMiddleware {
     const subdomain = hostname.split(".")[0];
     const sniffer = await this.interceptor.findSnifferBySubdomain(subdomain);
 
-    if (sniffer != null && sniffer.userId != null) {
+    if (sniffer != null && sniffer.ownerId != null) {
       const urlNoParams = url.split("?")[0];
 
       const mock: Mock | null = await this.interceptor.findMockByUrl(
@@ -67,7 +67,7 @@ export default class MockMiddleware {
       try {
         await this.interceptMockResponse(req, transformedResponse);
         await this.updateSelectedResponse(
-          selectedResponse.userId,
+          selectedResponse.ownerId,
           mock,
           selectedResponse.id,
         );
@@ -82,7 +82,7 @@ export default class MockMiddleware {
   async interceptMockResponse(req: Request, mock: MockResponse | Mock) {
     const invocationId = req.headers["x-sharkio-invocation-id"];
     const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
-    const userId = req.headers["x-sharkio-user-id"] as string;
+    const ownerId = req.headers["x-sharkio-owner-id"] as string;
     const testExecutionId = req.headers[
       "x-sharkio-test-execution-id"
     ] as string;
@@ -90,7 +90,7 @@ export default class MockMiddleware {
     if (invocationId != null && typeof invocationId === "string") {
       return await this.interceptor.saveResponse(
         { body: mock.body, headers: mock.headers, statusCode: mock.status },
-        userId,
+        ownerId,
         snifferId,
         invocationId,
         testExecutionId,
@@ -99,12 +99,12 @@ export default class MockMiddleware {
   }
 
   updateSelectedResponse(
-    userId: string,
+    ownerId: string,
     mock: Mock,
     selectedResponseId: string,
   ) {
     return this.interceptor.setMockSelectedResponse(
-      userId,
+      ownerId,
       mock.id,
       selectedResponseId,
     );

@@ -13,7 +13,6 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  ``;
   try {
     if (
       [/\/sharkio\/api\/login\/email/, /\/api-docs\/.*/, /\/sharkio\/api\/.*/]
@@ -25,6 +24,7 @@ export const authMiddleware = async (
     }
 
     const authorization = req.headers["authorization"];
+    const { workspaceId } = req.query;
     const access_token = authorization?.split(" ")[1];
 
     const { data: user, error } =
@@ -34,7 +34,10 @@ export const authMiddleware = async (
       log.error(error);
       return res.sendStatus(401);
     } else {
-      res.locals.auth = user;
+      res.locals.auth = {
+        ownerId: workspaceId ?? user.user.id,
+        userId: user.user.id,
+      };
       next();
     }
   } catch (err) {

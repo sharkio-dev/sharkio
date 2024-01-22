@@ -8,39 +8,39 @@ export class MockResponseRepository {
     this.repository = appDataSource.manager.getRepository(MockResponse);
   }
 
-  getByUserId(userId: string) {
+  getByUserId(ownerId: string) {
     return this.repository.find({
       where: {
-        userId,
+        ownerId,
       },
     });
   }
 
-  getByMockId(userId: string, mockId: string) {
+  getByMockId(ownerId: string, mockId: string) {
     return this.repository.find({
-      where: { userId, mockId },
+      where: { ownerId, mockId },
       order: { createdAt: "DESC" },
     });
   }
 
-  getById(userId: string, mockResponseId: string) {
+  getById(ownerId: string, mockResponseId: string) {
     return this.repository.findOne({
-      where: { userId: userId, id: mockResponseId },
+      where: { ownerId, id: mockResponseId },
     });
   }
 
-  deleteById(userId: string, mockResponseId: string) {
-    return this.repository.delete({ id: mockResponseId, userId });
+  deleteById(ownerId: string, mockResponseId: string) {
+    return this.repository.delete({ id: mockResponseId, ownerId });
   }
 
   editById(
-    userId: string,
+    ownerId: string,
     mockResponseId: string,
     mockResponse: Partial<MockResponse>,
   ) {
     return this.repository.update(
       {
-        userId,
+        ownerId,
         id: mockResponseId,
       },
       mockResponse,
@@ -48,7 +48,7 @@ export class MockResponseRepository {
   }
 
   create(
-    userId: string,
+    ownerId: string,
     mockId: string,
     mockResponse: Omit<
       MockResponse,
@@ -58,14 +58,14 @@ export class MockResponseRepository {
     return this.repository.manager.transaction(async (entityManager) => {
       const responseCount = await entityManager.count(MockResponse, {
         where: {
-          userId,
+          ownerId,
           mockId,
         },
       });
 
       const createdResponse = entityManager.create<MockResponse>(MockResponse, {
         ...mockResponse,
-        userId,
+        ownerId,
         mockId,
         sequenceIndex: responseCount + 1,
       });
@@ -75,7 +75,7 @@ export class MockResponseRepository {
   }
 
   createMany(
-    userId: string,
+    ownerId: string,
     mockId: string,
     mockResponses: Omit<
       MockResponse,
@@ -86,7 +86,7 @@ export class MockResponseRepository {
     return this.repository.manager.transaction(async (entityManager) => {
       const responseCount = await entityManager.count(MockResponse, {
         where: {
-          userId,
+          ownerId,
           mockId,
         },
       });
@@ -94,7 +94,7 @@ export class MockResponseRepository {
       const createdResponses = mockResponses.map((response, index) => {
         return entityManager.create<MockResponse>(MockResponse, {
           ...response,
-          userId,
+          ownerId,
           mockId,
           sequenceIndex: responseCount + index,
         });
