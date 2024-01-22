@@ -34,9 +34,9 @@ export class MockResponseController {
          */
 
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const userMockResponses =
-            await this.mockResponseService.getByUserId(userId);
+            await this.mockResponseService.getByOwnerId(ownerId);
 
           res.send(userMockResponses).status(200);
         },
@@ -95,14 +95,14 @@ export class MockResponseController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { mockId, body, headers, status, name, snifferId } = req.body;
           const createdResponse = await this.mockResponseService.createResponse(
-            userId,
+            ownerId,
             mockId,
             {
               snifferId,
-              userId,
+              ownerId,
               body,
               headers,
               status,
@@ -140,10 +140,10 @@ export class MockResponseController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { mockId } = req.params;
 
-          const mock = await this.mockResponseService.getById(userId, mockId);
+          const mock = await this.mockResponseService.getById(ownerId, mockId);
           res.status(200).send(mock);
         },
       )
@@ -169,9 +169,9 @@ export class MockResponseController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { mockResponseId } = req.params;
-          await this.mockResponseService.deleteById(userId, mockResponseId);
+          await this.mockResponseService.deleteById(ownerId, mockResponseId);
           res.status(200).send(mockResponseId);
         },
       )
@@ -226,12 +226,12 @@ export class MockResponseController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { mockResponseId } = req.params;
           const { body, headers, status, name, sequenceIndex } = req.body;
 
           const updatedMock = await this.mockResponseService.editResponse(
-            userId,
+            ownerId,
             mockResponseId,
             {
               body,

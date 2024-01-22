@@ -43,7 +43,7 @@ export const SniffersSideBar: React.FC = () => {
         {snackBar}
         <FormControl fullWidth size="small" variant="outlined">
           <InputLabel>Sniffers</InputLabel>
-          <Select value={snifferId || ""} label="Sniffers">
+          <Select value={snifferId || ""} label="Proxies">
             {sniffers.map((sniffer, i) => (
               <MenuItem
                 key={i}

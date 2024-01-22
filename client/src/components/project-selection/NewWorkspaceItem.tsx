@@ -1,5 +1,5 @@
-import { AiOutlinePlus } from "react-icons/ai";
 import { MenuItem } from "@mui/material";
+import { AiOutlinePlus } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const NewWorkspaceItem = () => {
@@ -15,9 +15,9 @@ const NewWorkspaceItem = () => {
 
   return (
     <MenuItem onClick={handleAddWorkspace} value="New workspace">
-      <div className="flex items-center text-green-300 hover:text-green-500 gap-1 font-bold ">
-        Add workspace
+      <div className="flex items-center text-sm hover:text-green-500 gap-2">
         <AiOutlinePlus className="text-xl" />
+        Create Workspace
       </div>
     </MenuItem>
   );

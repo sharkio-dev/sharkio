@@ -28,7 +28,7 @@ export const AuthWrapper = ({ children }: AuthContextProviderProps) => {
         signIn({
           id: session?.user.id ?? "",
           fullName: userDetails?.full_name,
-          email: session?.user.id ?? userDetails?.email,
+          email: session?.user?.email ?? userDetails?.email,
           profileImg: userDetails?.avatar_url,
         });
       })

@@ -1,14 +1,5 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  Relation,
-} from "typeorm";
+import { Column, Entity, Index, OneToMany } from "typeorm";
 import { Test } from "./Test";
-import { Users } from "./Users";
 
 @Index("test_suite_pkey", ["id"], { unique: true })
 @Entity("test_suite", { schema: "public" })
@@ -29,13 +20,9 @@ export class TestSuite {
   @Column("text", { name: "name", nullable: true })
   name: string | null;
 
-  @Column("uuid", { name: "user_id", nullable: true })
-  userId: string | null;
+  @Column("uuid", { name: "owner_id", nullable: true })
+  ownerId: string | null;
 
   @OneToMany(() => Test, (test) => test.testSuite)
   tests: Test[];
-
-  @ManyToOne(() => Users, (users) => users.testSuites)
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<Users>;
 }

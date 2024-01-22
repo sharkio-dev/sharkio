@@ -8,10 +8,9 @@ import {
   Relation,
 } from "typeorm";
 import { Endpoint } from "./Endpoint";
-import { TestExecution } from "./TestExecution";
-import { Users } from "./Users";
 import { Response } from "./Response";
 import { Sniffer } from "./Sniffer";
+import { TestExecution } from "./TestExecution";
 
 @Index("invocation_pkey", ["id"], { unique: true })
 @Entity("request", { schema: "public" })
@@ -42,8 +41,8 @@ export class Request {
   })
   createdAt: Date | null;
 
-  @Column("uuid", { name: "user_id" })
-  userId: string;
+  @Column("uuid", { name: "owner_id" })
+  ownerId: string;
 
   @Column("uuid", { name: "sniffer_id" })
   snifferId: string;
@@ -73,10 +72,6 @@ export class Request {
   })
   @JoinColumn([{ name: "test_execution_id", referencedColumnName: "id" }])
   testExecution: TestExecution;
-
-  @ManyToOne(() => Users, (users) => users.requests)
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<Users>;
 
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.requests, {
     onDelete: "CASCADE",

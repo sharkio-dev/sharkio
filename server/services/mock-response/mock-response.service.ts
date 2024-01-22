@@ -13,32 +13,32 @@ export class MockResponseService {
     private readonly mockResponseRepository: MockResponseRepository,
   ) {}
 
-  getByUserId(userId: string) {
-    return this.mockResponseRepository.getByUserId(userId);
+  getByOwnerId(ownerId: string) {
+    return this.mockResponseRepository.getByUserId(ownerId);
   }
 
-  getById(userId: string, mockResponseId: string) {
-    return this.mockResponseRepository.getById(userId, mockResponseId);
+  getById(ownerId: string, mockResponseId: string) {
+    return this.mockResponseRepository.getById(ownerId, mockResponseId);
   }
 
-  deleteById(userId: string, mockResponseId: string) {
-    return this.mockResponseRepository.deleteById(userId, mockResponseId);
+  deleteById(ownerId: string, mockResponseId: string) {
+    return this.mockResponseRepository.deleteById(ownerId, mockResponseId);
   }
 
   editResponse(
-    userId: string,
+    ownerId: string,
     mockResponseId: string,
     mockResponse: Partial<MockResponse>,
   ) {
     return this.mockResponseRepository.editById(
-      userId,
+      ownerId,
       mockResponseId,
       mockResponse,
     );
   }
 
   async createResponse(
-    userId: string,
+    ownerId: string,
     mockId: string,
     mockResponse: Omit<
       MockResponse,
@@ -46,7 +46,7 @@ export class MockResponseService {
     >,
   ) {
     const createdMock = await this.mockResponseRepository.create(
-      userId,
+      ownerId,
       mockId,
       mockResponse,
     );
@@ -55,7 +55,7 @@ export class MockResponseService {
   }
 
   async createResponses(
-    userId: string,
+    ownerId: string,
     mockId: string,
     mockResponse: Omit<
       MockResponse,
@@ -63,7 +63,7 @@ export class MockResponseService {
     >[],
   ) {
     const createdMock = await this.mockResponseRepository.createMany(
-      userId,
+      ownerId,
       mockId,
       mockResponse,
     );
