@@ -29,6 +29,7 @@ import { JoinWorkspace } from "./components/project-selection/JoinWorkspace";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
+
   const { user } = useAuthStore();
   const { loadSniffers } = useSniffersStore();
 
