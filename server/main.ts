@@ -5,24 +5,51 @@ import { ChatController } from "./controllers/chat.controller";
 import CLIController from "./controllers/cli-controller";
 import { EndpointController } from "./controllers/endpoint.controller";
 import { InvocationController } from "./controllers/invocation.controller";
+import { MockResponseController } from "./controllers/mock-response.controller";
+import { MockController } from "./controllers/mock.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
-import { MockController } from "./controllers/mock.controller";
-import { MockResponseController } from "./controllers/mock-response.controller";
 import { TestSuiteController } from "./controllers/test-suite.controller";
+import { WorkspaceController } from "./controllers/workSpace.controller";
+import { ProxyEnvValidator, ServerEnvValidator } from "./env.validator";
+import { useLog } from "./lib/log";
 import { SwaggerUiController } from "./lib/swagger/swagger-controller";
 import { createConnection } from "./model/ormconfig";
-import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
-import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
+import ApiKeyRepository from "./model/repositories/apiKeys.repository";
+import ChatRepository from "./model/repositories/chat/chat.repository";
+import MessageRepository from "./model/repositories/chat/message.repository";
+import { EndpointRepository } from "./model/repositories/endpoint.repository";
+import { MockResponseRepository } from "./model/repositories/mock-response.repository";
+import { MockRepository } from "./model/repositories/mock.repository";
+import { RequestRepository } from "./model/repositories/request.repository";
+import { ResponseRepository } from "./model/repositories/response.repository";
+import { SnifferRepository } from "./model/repositories/sniffers.repository";
+import { TestRepository } from "./model/repositories/testSuite/test.repository";
+import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
+import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.repository";
+import UserRepository from "./model/repositories/user.repository";
+import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
 import { CloudInterceptor } from "./server/interceptors/CloudInterceptor";
+import { Interceptor } from "./server/interceptors/Interceptor";
+import { RequestInterceptor } from "./server/middlewares/interceptor.middleware";
+import MockMiddleware from "./server/middlewares/mock.middleware";
+import { ProxyMiddleware } from "./server/middlewares/proxy.middleware";
 import { ProxyServer } from "./server/proxy-server";
 import { Server } from "./server/server";
 import { ChatService } from "./services/chat/chat.service";
 import EndpointService from "./services/endpoint/endpoint.service";
+import { ImportService } from "./services/imports/imports.service";
+import {
+  DefaultResponseSelector,
+  RandomResponseSelector,
+  SequentialResponseSelector,
+} from "./services/mock-response-selector";
+import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
+import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
+import { MockResponseService } from "./services/mock-response/mock-response.service";
+import { MockService } from "./services/mock/mock.service";
 import { RequestService } from "./services/request/request.service";
 import ResponseService from "./services/response/response.service";
-import { MockService } from "./services/mock/mock.service";
-import { MockResponseService } from "./services/mock-response/mock-response.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
@@ -30,34 +57,7 @@ import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
-import { ServerEnvValidator, ProxyEnvValidator } from "./env.validator";
-import { useLog } from "./lib/log";
-import MockMiddleware from "./server/middlewares/mock.middleware";
-import { ImportService } from "./services/imports/imports.service";
 import { WorkspaceService } from "./services/workspace/workspace.service";
-import { WorkspaceController } from "./controllers/workSpace.controller";
-import UserRepository from "./model/repositories/user.repository";
-import { EndpointRepository } from "./model/repositories/endpoint.repository";
-import { ResponseRepository } from "./model/repositories/response.repository";
-import { RequestRepository } from "./model/repositories/request.repository";
-import { SnifferRepository } from "./model/repositories/sniffers.repository";
-import ApiKeyRepository from "./model/repositories/apiKeys.repository";
-import ChatRepository from "./model/repositories/chat/chat.repository";
-import MessageRepository from "./model/repositories/chat/message.repository";
-import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.repository";
-import { TestRepository } from "./model/repositories/testSuite/test.repository";
-import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
-import { MockRepository } from "./model/repositories/mock.repository";
-import { MockResponseRepository } from "./model/repositories/mock-response.repository";
-import { WorkspaceRepository } from "./model/repositories/workSpace.repository";
-import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
-import {
-  DefaultResponseSelector,
-  RandomResponseSelector,
-  SequentialResponseSelector,
-} from "./services/mock-response-selector";
-import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
-import { Interceptor } from "./server/interceptors/Interceptor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -110,6 +110,7 @@ async function main(isProxy = true, isServer = true) {
   const endpointService = new EndpointService(
     endpointRepository,
     invocationRepository,
+    responseRepository,
   );
   const mockResponseService = new MockResponseService(mockResponseRepository);
   const userService = new UserService(userRepository);

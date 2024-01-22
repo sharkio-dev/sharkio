@@ -20,7 +20,7 @@ import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
 import TestSuitePage from "./pages/test-suites/testSuitePage";
 import { MockPage } from "./pages/mocks/MockPage";
-import { LivePage } from "./pages/sniffers/SniffersPage/LivePage";
+import { InvocationScreen, LivePage } from "./pages/live-Invocations/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
 import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
@@ -66,7 +66,7 @@ function App(): React.JSX.Element {
         path: routes.CREATE_ENDPOINT,
         element: <CreateInvocationPage />,
       },
-      { path: routes.LIVE_INVOCATION, element: <LivePage /> },
+      { path: routes.LIVE_INVOCATION, element: <InvocationScreen /> },
       { path: routes.CHAT, element: <ChatPage /> },
       { path: routes.TEST_SUITES, element: <TestSuitePage /> },
       { path: routes.TEST_SUITE, element: <TestSuitePage /> },

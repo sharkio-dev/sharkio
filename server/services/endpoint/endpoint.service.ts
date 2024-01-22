@@ -4,11 +4,14 @@ import { Request } from "../../model/entities/Request";
 import { Sniffer } from "../../model/entities/Sniffer";
 import { EndpointRepository } from "../../model/repositories/endpoint.repository";
 import { RequestRepository } from "../../model/repositories/request.repository";
+import { ResponseRepository } from "../../model/repositories/response.repository";
+import { Between, In, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
 
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
     private readonly requestRepository: RequestRepository,
+    private readonly responseRepository: ResponseRepository,
   ) {}
 
   async getByOwner(ownerId: string, limit: number) {
@@ -130,7 +133,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -141,12 +144,35 @@ export class EndpointService {
     return mapped;
   }
 
-  async getInvocationsByOwner(ownerId: string, limit: number) {
+  async getInvocationsByOwner(
+    ownerId: string,
+    limit: number,
+    statusCodes: string[],
+    methods: string[],
+    url: string,
+    fromDate: Date | undefined,
+    toDate: Date | undefined,
+  ) {
+    let createdAt;
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      createdAt = Between(fromDate, toDate);
+    } else if (fromDate !== undefined) {
+      createdAt = MoreThanOrEqual(fromDate);
+    } else if (toDate !== undefined) {
+      createdAt = LessThanOrEqual(toDate);
+    }
+
     const invocations = await this.requestRepository.repository.find({
       where: {
         ownerId,
+        method: methods === undefined ? undefined : In(methods),
+        url: url === undefined ? undefined : Like(`%${url}%`),
+        createdAt,
+        responses: {
+          status: statusCodes === undefined ? undefined : In(statusCodes),
+        },
       },
-      take: limit,
       relations: {
         responses: true,
       },
@@ -155,14 +181,15 @@ export class EndpointService {
           status: true,
         },
       },
+      take: limit,
       order: {
         createdAt: "DESC",
       },
     });
 
-    // make sure only one response is returned
+    //make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -187,7 +214,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -208,13 +235,12 @@ export class EndpointService {
         ownerId,
       },
     });
-    console.log(invocation);
     if (!invocation) {
       return undefined;
     }
 
     // make sure only one response is returned
-    let response = undefined;
+    let response;
     const responses = invocation.responses;
     if (responses && responses.length > 0) {
       response = responses[0];

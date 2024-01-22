@@ -1,0 +1,97 @@
+name: GitOps-CD
+
+on:
+  push:
+    branches:
+      - staging
+      - production
+
+env:
+  region: eu-central-1
+  environment: ${{ github.ref_name }}
+
+jobs:
+  build:
+    outputs:
+      image_builder: ${{ steps.image_builder.outputs.image_builder }}
+      short_sha: ${{ steps.short_sha.outputs.short_sha }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 4
+          ref: ${{ github.ref_name }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Set short git commit SHA
+        id: short_sha
+        run: |
+          short_sha=$(git rev-parse --short ${{ github.sha }})
+          echo "short_sha=$short_sha" >> $GITHUB_OUTPUT
+
+      - name: Setup Python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Build images
+        id: image_builder
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          full_sha: ${{ github.sha }}
+          github_event_before: ${{ github.event.before }}
+          short_sha: ${{ steps.short_sha.outputs.short_sha }}
+          ENVIRONMENT: ${{ env.environment }}
+        run: |
+          echo "image_builder=$(python3 .github/workflows/scripts/GitOps_build.py --dry-run)" >> $GITHUB_OUTPUT
+          python3 .github/workflows/scripts/GitOps_build.py
+
+  deploy:
+    needs: build
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.build.outputs.image_builder).images_builder  }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+    steps:
+      - name: Delay
+        run: |
+          sleep $(( ${{ matrix.index  }} * 15))
+      - name: Workflow Dispatch
+        uses: benc-uk/workflow-dispatch@v1.2.2
+        with:
+          workflow: sharkio-devops-cicd
+          repo: "sharkio-dev/DevOps"
+          token: ${{ secrets.DEPLOY_KEY }}
+          ref: "main"
+          inputs: '{"image": "${{ matrix.name }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'

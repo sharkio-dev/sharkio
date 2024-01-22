@@ -51,10 +51,6 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
         <div className="text-sm text-gray-400">Target URL</div>
         <div className="text-sm text-gray-400">{sniffer.downstreamUrl}</div>
       </div>
-      <div className="flex flex-row justify-between items-center mt-2">
-        <div className="text-sm text-gray-400">Port</div>
-        <div className="text-sm text-gray-400">{sniffer.port || "N/A"}</div>
-      </div>
       <EditSnifferModal
         sniffer={sniffer}
         isOpen={isEditModalOpen}
@@ -86,7 +82,7 @@ export const HomePage = () => {
       className={`flex flex-col bg-tertiary h-full w-[calc(100vw-56px)] p-4 overflow-y-auto`}
     >
       <div className="flex flex-row justify-between items-center">
-        <div className="text-2xl font-bold">Sniffers</div>
+        <div className="text-2xl font-bold">Proxies</div>
         <Button
           variant="outlined"
           color="primary"

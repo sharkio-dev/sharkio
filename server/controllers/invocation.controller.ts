@@ -31,9 +31,22 @@ export class InvocationController {
       async (req: Request, res: Response, next: NextFunction) => {
         const ownerId = res.locals.auth.ownerId;
         const limit = 100;
+        // const requests = await this.endpointService.getInvocationsByOwner(
+        //   ownerId,
+        const statusCodes = req.query.statusCodes as string[];
+        const methods = req.query.methods as string[];
+        const url = req.query.url as string;
+        const fromDate = req.query.fromDate as Date | undefined;
+        const toDate = req.query.toDate as Date | undefined;
+
         const requests = await this.endpointService.getInvocationsByOwner(
           ownerId,
           limit,
+          statusCodes,
+          methods,
+          url,
+          fromDate,
+          toDate,
         );
         res.status(200).send(requests);
       },
