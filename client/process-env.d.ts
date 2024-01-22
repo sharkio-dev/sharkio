@@ -4,7 +4,6 @@ declare namespace NodeJS {
     VITE_SUPABASE_ANON: string;
     VITE_SERVER_URL?: string;
     VITE_PROXY_DOMAIN: string;
-    VITE_PROXY_DOMAIN_PROTOCOL: string;
     [key: string]: string | undefined;
   }
 }
