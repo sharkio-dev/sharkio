@@ -56,7 +56,7 @@ export class Test {
     onDelete: "CASCADE",
   })
   @JoinColumn([{ name: "test_suite_id", referencedColumnName: "id" }])
-  testSuite: TestSuite;
+  testSuite: Relation<TestSuite>;
 
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.id, {
     onDelete: "SET NULL",

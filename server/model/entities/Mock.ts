@@ -50,8 +50,8 @@ export class Mock {
   @Column("uuid", { name: "sniffer_id", nullable: true, unique: true })
   snifferId: string;
 
-  @Column("uuid", { name: "user_id", nullable: true })
-  userId: string;
+  @Column("uuid", { name: "owner_id", nullable: true })
+  ownerId: string;
 
   @Column("boolean", {
     name: "is_active",
@@ -75,10 +75,6 @@ export class Mock {
     default: "default",
   })
   responseSelectionMethod: string;
-
-  @ManyToOne(() => Users, (users) => users.mocks)
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user?: Relation<Users>;
 
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.mocks, { onDelete: "CASCADE" })
   @JoinColumn([{ name: "sniffer_id", referencedColumnName: "id" }])

@@ -3,7 +3,7 @@ import ngrok from "ngrok";
 import { createLocalSniffers } from "./api.js";
 import { ProxyServer } from "../lib/proxy-server/proxy-server.mjs";
 const getLocalUrl = (port) => `http://localhost:${port}`;
-const getSnifferUrl = (subdomain) => `https://${subdomain}.sniffer.sharkio.dev`;
+const getSnifferUrl = (subdomain) => `https://${subdomain}.proxy.sharkio.dev`;
 
 const startSniffer = async (name, options, command) => {
   try {

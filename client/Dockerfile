@@ -6,7 +6,7 @@ RUN npm install
 COPY . .
 
 ENV VITE_FULLSTORY_ORG_ID=o-1TD77Z-na1
-ENV VITE_PROXY_DOMAIN=sniffer.sharkio.dev
+ENV VITE_PROXY_DOMAIN=proxy.sharkio.dev
 ENV VITE_SERVER_URL=https://admin.sharkio.dev
 ENV VITE_NODE_ENV=production
 ENV VITE_SUPABASE_PROJECT_URL='https://rlhmecfbrihwgltuacbn.supabase.co'

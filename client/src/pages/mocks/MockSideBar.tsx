@@ -47,8 +47,8 @@ export const MockSideBar: React.FC = () => {
     <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
       {snackBar}
       <FormControl fullWidth size="small" variant="outlined">
-        <InputLabel>Sniffers</InputLabel>
-        <Select value={snifferId || ""} label="Sniffers">
+        <InputLabel>Proxies</InputLabel>
+        <Select value={snifferId || ""} label="Proxies">
           {sniffers.map((sniffer, i) => (
             <MenuItem
               key={i}

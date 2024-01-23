@@ -115,10 +115,10 @@ class CLIController {
        */
       async (req, res) => {
         try {
-          const userId = res.locals.user.id;
-          const { downstreamUrl, port, name } = req.body;
+          const ownerId = res.locals.ownerId;
+          const { downstreamUrl, name } = req.body;
 
-          const sniffer = await this.snifferService.findByName(userId, name);
+          const sniffer = await this.snifferService.findByName(ownerId, name);
           if (!sniffer) {
             return res.status(404).send({ message: "sniffer not found" });
           }
@@ -126,7 +126,7 @@ class CLIController {
             id: sniffer.id,
             name,
             downstreamUrl,
-            userId,
+            ownerId,
           });
           return res.status(200).send({ message: "sniffer updated" });
         } catch (error) {
@@ -152,9 +152,8 @@ class CLIController {
        *         description: Server error
        */
       async (req, res) => {
-        const sniffers = await this.snifferService.getUserSniffers(
-          res.locals.user.id``,
-        );
+        const ownerId = res.locals.ownerId;
+        const sniffers = await this.snifferService.getOwnerSniffers(ownerId);
         return res.status(200).send({ sniffers });
       },
     );
