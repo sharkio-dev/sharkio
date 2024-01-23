@@ -157,7 +157,11 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
             </IconButton>
           </div>
         </div>
-        <BodySection language={codeLanguage} body={languageCodeText} />
+        <BodySection
+          language={codeLanguage}
+          body={languageCodeText}
+          showButtons={false}
+        />
       </TabPanel>
     </TabContext>
   );
