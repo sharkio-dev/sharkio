@@ -56,6 +56,14 @@ if "server/model/" in changed_files_output:
         os.chdir('..')
     images.append({"name": "migrations", "index": 2})
 
+if "sharkio-docs/" in changed_files_output:
+    # Change to the server directory
+    if not args.dry_run:
+        os.chdir('sharkio-docs/')
+        build_and_push("docs", "Dockerfile")
+        os.chdir('..')
+    images.append({"name": "docs", "index": 3})
+
 if  args.dry_run:
     warpped_images = '{"images_builder":' + str(images).replace("'", '"') + '}'
     print(warpped_images)
