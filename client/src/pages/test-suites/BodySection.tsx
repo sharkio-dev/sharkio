@@ -1,6 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { MdOutlineCopyAll } from "react-icons/md";
