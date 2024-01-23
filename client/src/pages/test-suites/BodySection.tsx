@@ -19,7 +19,7 @@ export const BodySection = ({
   onBodyChange,
   showButtons = true,
 }: BodySectionProps) => {
-  const [type, setType] = useState("json");
+  const [type, setType] = useState("handlebars");
   const [editor, setEditor] = useState<any>(null);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
@@ -45,13 +45,14 @@ export const BodySection = ({
       {snackBar}
       {showButtons && (
         <div className="flex justify-between items-center">
-          <div className="flex w-24">
+          <div className="flex w-28">
             <SelectComponent
               options={[
-                { label: "JSON", value: "json" },
-                { label: "XML", value: "xml" },
-                { label: "TEXT", value: "text" },
-                { label: "HTML", value: "html" },
+                { label: "Handlebars", value: "handlebars" },
+                { label: "Json", value: "json" },
+                { label: "Xml", value: "xml" },
+                { label: "Text", value: "text" },
+                { label: "Html", value: "html" },
               ]}
               value={type}
               setValue={setType}
@@ -82,6 +83,7 @@ export const BodySection = ({
         onChange={(value) => onChangeBodyValue(value)}
         options={{
           formatOnPaste: true,
+          readOnly: !onBodyChange,
           minimap: {
             enabled: false,
           },
