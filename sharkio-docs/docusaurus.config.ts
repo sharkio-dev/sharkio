@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Sharkio",
-  tagline: "Changin the way organizations develop APIs",
+  tagline: "A modern way to build APIs.",
   favicon: "img/shark.svg",
 
   // Set the production url of your site here
