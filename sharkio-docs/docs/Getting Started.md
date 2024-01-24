@@ -21,7 +21,7 @@ Login to the dashboard using your favorite authentication method.
 
 ### 2. Create a new proxy
 
-Follow the [steps](/docs/API%20Proxing/101) to create a new proxy.
+Follow the [steps](/docs/Proxing/101) to create a new proxy.
 
 <Image
   src="/img/docs/proxy-example.png"
@@ -31,7 +31,7 @@ Follow the [steps](/docs/API%20Proxing/101) to create a new proxy.
 ### 3. Redirect your traffic
 
 Redirect the network to your **proxy domain**. All traffic will be proxied to the **target URL** you specified in the previous step.
-Follow the docs to learn how to [debug](/docs/API%20Debugging/101), [mock](/docs/API%20Mocking/101) and [test](/docs/API%20Testing/101) your services.
+Follow the docs to learn how to [debug](/docs/Debugging/101), [mock](/docs/Mocking/101) and [test](/docs/Testing/101) your services.
 
 ### 4. Enjoy!
 
