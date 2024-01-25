@@ -10,8 +10,13 @@ export class TestFlow {
   })
   id: string;
 
-  @Column("uuid", { name: "test_suite_id", nullable: true })
-  testSuiteId: string | null;
+  @Column("text", {
+    name: "name",
+  })
+  name: string;
+
+  @Column("uuid", { name: "owner_id", nullable: true })
+  ownerId: string | null;
 
   @Column("timestamp with time zone", {
     name: "created_at",

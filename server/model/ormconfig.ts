@@ -15,6 +15,7 @@ import { Workspace } from "./entities/Workspace";
 import { config } from "dotenv";
 import { MockResponse } from "./entities/MockResponse";
 import { WorkspacesUsers } from "./entities/WorkspacesUsers";
+import { TestFlow } from "./entities/test-flow/TestFlow";
 
 config({
   path: "../.env",
@@ -48,6 +49,7 @@ export const createConnection = () => {
       Workspace,
       WorkspacesUsers,
       Response,
+      TestFlow,
     ],
     subscribers: [],
     migrations: ["migrations/*.ts"],

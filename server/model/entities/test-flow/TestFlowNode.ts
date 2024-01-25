@@ -10,22 +10,25 @@ export class TestFlowNode {
   })
   id: string;
 
-  @Column("uuid", { name: "flow_id", nullable: true })
+  @Column("uuid", { name: "flow_id" })
   flowId: string | null;
 
-  @Column("character varying", { name: "name", nullable: true })
+  @Column("uuid", { name: "proxy_id" })
+  proxyId: string | null;
+
+  @Column("text", { name: "name" })
   name: string | null;
 
-  @Column("character varying", { name: "url", nullable: true })
+  @Column("text", { name: "url" })
   url: string | null;
 
-  @Column("character varying", { name: "body", nullable: true })
+  @Column("text", { name: "body" })
   body: string | null;
 
-  @Column("character varying", { name: "headers", nullable: true })
+  @Column("text", { name: "headers" })
   headers: string | null;
 
-  @Column("character varying", { name: "method", nullable: true })
+  @Column("text", { name: "method" })
   method: string | null;
 
   @Column("timestamp with time zone", {

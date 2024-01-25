@@ -26,7 +26,6 @@ export class Server {
   constructor(routers: IRouterConfig[], swaggerController: IController) {
     this.app = express();
     this.app.use(logMiddleware);
-    // this.app.use(cors({ origin: "*" }));
     this.app.use(cors({ origin: "*", allowedHeaders: "*", methods: "*" }));
     this.app.use(express.json());
     this.app.use(express.text());
@@ -45,7 +44,7 @@ export class Server {
     err: Error,
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     if (req.xhr) {
       log.error(`${req.method} ${req.path} FAILED`);

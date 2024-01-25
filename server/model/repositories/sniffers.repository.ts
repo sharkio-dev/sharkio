@@ -7,6 +7,7 @@ export class SnifferRepository {
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(Sniffer);
   }
+
   getById(ownerId: string, id: string) {
     return this.repository.findOne({
       where: {
@@ -15,6 +16,7 @@ export class SnifferRepository {
       },
     });
   }
+
   findByDownstream(url: string) {
     return this.repository.findOne({ where: { downstreamUrl: url } });
   }

@@ -58,6 +58,9 @@ import { TestExecutionService } from "./services/testSuite/testExecution.service
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
+import { TestFlowRepository } from "./model/repositories/test-flow/testFlow.repository";
+import { TestFlowController } from "./controllers/test-flow.controller";
+import { TestFlowService } from "./services/test-flow/test-flow.service";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -102,6 +105,7 @@ async function main(isProxy = true, isServer = true) {
   const testRepository = new TestRepository(appDataSource);
   const testExecutionRepository = new TextExecutionRepository(appDataSource);
   const workspaceRepository = new WorkspaceRepository(appDataSource);
+  const testFlowRepository = new TestFlowRepository(appDataSource);
 
   /* Services */
   const mockService = new MockService(mockRepository, mockResponseRepository);
@@ -134,6 +138,7 @@ async function main(isProxy = true, isServer = true) {
     mockSelectionStrategies,
   );
   const mockResponseTransformer = new MockResponseTransformer();
+  const testFlowService = new TestFlowService(testFlowRepository);
 
   /* Controllers */
   const mockResponseController = new MockResponseController(
@@ -175,6 +180,7 @@ async function main(isProxy = true, isServer = true) {
     testExecutionService,
   );
   const workspaceController = new WorkspaceController(workspaceService);
+  const testFlowController = new TestFlowController(testFlowService);
 
   /* Interceptors */
   const cloudInterceptor = new CloudInterceptor(
@@ -223,6 +229,7 @@ async function main(isProxy = true, isServer = true) {
       testSuiteController.getRouter(),
       mockController.getRouter(),
       workspaceController.getRouter(),
+      testFlowController.getRouter(),
     ],
     swaggerUi,
   );
