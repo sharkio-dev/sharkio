@@ -1,9 +1,7 @@
-import { CreateTestFlowValidator } from "../dto/in/create-test-flow.dto";
-import { useLog } from "../lib/log";
-import { TestFlowService } from "../services/test-flow/test-flow.service";
 import { Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
-import { requestValidator } from "../lib/request-validator/request-validator";
+import { useLog } from "../lib/log";
+import { TestFlowService } from "../services/test-flow/test-flow.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -44,15 +42,14 @@ export class TestFlowController {
      *       500:
      *         description: Server error
      */
-    router.post(
-      "/",
-      //   requestValidator({ body: CreateTestFlowValidator }),
-      async (req: Request, res: Response) => {
-        const ownerId = res.locals.auth.ownerId;
-        const created = await this.testFlowService.createFlow(req.body);
-        res.send(created).status(201);
-      },
-    );
+    router.post("/", async (req: Request, res: Response) => {
+      const ownerId = res.locals.auth.ownerId;
+      const created = await this.testFlowService.createFlow({
+        ownerId,
+        ...req.body,
+      });
+      res.send(created).status(201);
+    });
 
     return {
       router,
