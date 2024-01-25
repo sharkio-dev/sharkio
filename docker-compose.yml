@@ -5,8 +5,7 @@ services:
       context: ./client
       dockerfile: Dockerfile.local
     environment:
-      - VITE_FULLSTORY_ORG_ID=o-1TD77Z-na1
-      - VITE_PROXY_DOMAIN=localhost.sharkio.dev:8000
+      - VITE_PROXY_DOMAIN=localhost.sharkio.dev
       - VITE_SUPABASE_PROJECT_URL='https://rlhmecfbrihwgltuacbn.supabase.co'
       - VITE_SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8'
       - VITE_SERVER_URL=http://localhost:5012
@@ -25,6 +24,7 @@ services:
       - 5012:5012
       - 8000:8000
       - 8001:8001
+      - 443:443
     environment:
       - VITE_SUPABASE_PROJECT_URL=https://rlhmecfbrihwgltuacbn.supabase.co
       - VITE_SUPABASE_ANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8
@@ -35,11 +35,15 @@ services:
       - DB_PORT=5432
       - LOG_LEVEL=info
       - LOG_SQL=true
-      - PROXY_SERVER_DOMAIN=http://localhost.sharkio.dev:8000
+      - PROXY_SERVER_DOMAIN=localhost.sharkio.dev
       - PROXY_HTTP_PORT=8000
-      - PROXY_HTTPS_PORT=8001
+      - PROXY_HTTPS_PORT=443
+      - PROXY_PRIVATE_KEY_FILE=/app/certificates/privkey.pem
+      - PROXY_CERT_FILE=/app/certificates/fullchain.pem
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - ./server/certificates:/app/certificates
   migrations:
     depends_on:
       - db
@@ -56,9 +60,9 @@ services:
       - DB_PORT=5432
       - LOG_LEVEL=info
       - LOG_SQL=true
-      - PROXY_SERVER_DOMAIN=localhost.sharkio.dev:8000
+      - PROXY_SERVER_DOMAIN=localhost.sharkio.dev
       - PROXY_HTTP_PORT=8080
-      - PROXY_HTTPS_PORT=8081
+      - PROXY_HTTPS_PORT=443
   db:
     image: postgres
     ports:
@@ -67,3 +71,4 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+
