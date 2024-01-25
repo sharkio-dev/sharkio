@@ -5,7 +5,6 @@ import { Logo } from "./Logo";
 import { BiTestTube } from "react-icons/bi";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { VscTypeHierarchy } from "react-icons/vsc";
-import { MdOutlineEmergencyRecording } from "react-icons/md";
 import { MdOutlineDashboard } from "react-icons/md";
 
 interface IMenuItem {
@@ -14,27 +13,16 @@ interface IMenuItem {
   Icon: React.FC<any>;
 }
 
-const menus: IMenuItem[] = [
+let productionMenu: IMenuItem[] = [
   {
     to: routes.PROXIES,
-    title: "Sniffers",
+    title: "Proxies",
     Icon: MdOutlineDashboard,
   },
   {
     to: routes.LIVE_INVOCATIONS,
-    title: "Live",
-    Icon: MdOutlineEmergencyRecording,
-  },
-  {
-    to: routes.ENDPOINTS,
     title: "Requests",
     Icon: VscTypeHierarchy,
-  },
-
-  {
-    to: routes.TEST_SUITES,
-    title: "Test Suites",
-    Icon: BiTestTube,
   },
   {
     to: routes.MOCKS,
@@ -43,19 +31,39 @@ const menus: IMenuItem[] = [
   },
 ];
 
+const menus: IMenuItem[] = [
+  {
+    to: routes.ENDPOINTS,
+    title: "endpoints",
+    Icon: VscTypeHierarchy,
+  },
+  {
+    to: routes.TEST_SUITES,
+    title: "Test Suites",
+    Icon: BiTestTube,
+  },
+];
+
+if (import.meta.env.VITE_NODE_ENV !== "production") {
+  productionMenu.push(...menus);
+}
+
 export const SideBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const onIconClicked = (to: string) => {
-    navigate(to);
+    navigate({
+      pathname: to,
+      search: location.search,
+    });
   };
 
   return (
     <div className="h-full sticky flex-col bg-primary border-r border-border-color w-[56px] min-w-[56px]">
       <Logo />
       <div className="flex flex-col justify-center items-center py-4 space-y-4">
-        {menus.map(({ Icon, to, title }, index) => (
+        {productionMenu.map(({ Icon, to, title }, index) => (
           <div
             onClick={() => onIconClicked(to)}
             key={index}

@@ -8,12 +8,12 @@ export class TestSuiteRepository {
     this.repository = this.appDataSource.getRepository(TestSuite);
   }
 
-  getByuserId(userId: string) {
-    return this.repository.find({ where: { userId } });
+  getByOwnerId(ownerId: string) {
+    return this.repository.find({ where: { ownerId } });
   }
 
-  async create(name: string, userId: string): Promise<TestSuite> {
-    const newTestSuite = this.repository.create({ name, userId });
+  async create(name: string, ownerId: string): Promise<TestSuite> {
+    const newTestSuite = this.repository.create({ name, ownerId });
     return this.repository.save(newTestSuite);
   }
 

@@ -20,6 +20,8 @@ export const SelectMethodDropDown = ({
         { value: "PUT", label: "PUT" },
         { value: "PATCH", label: "PATCH" },
         { value: "DELETE", label: "DELETE" },
+        { value: "HEAD", label: "HEAD" },
+        { value: "OPTIONS", label: "OPTIONS" },
       ]}
       value={value.toUpperCase()}
       setValue={(value) => {

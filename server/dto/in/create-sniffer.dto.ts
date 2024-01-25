@@ -1,7 +1,7 @@
 import z from "zod";
 
 export type CreateSnifferDTO = {
-  userId: string;
+  ownerId: string;
   name: string;
   subdomain?: string;
   downstreamUrl: string;

@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { SideBarItem } from "../sniffers/SniffersSideBar";
 import { GiSharkFin } from "react-icons/gi";
@@ -15,6 +15,7 @@ export const MockSideBar: React.FC = () => {
   const { sniffers, loadSniffers } = useSniffersStore();
   const { loadMocks, resetMocks } = useMockStore();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const [_, setSearchParams] = useSearchParams();
 
   const navigator = useNavigate();
 
@@ -34,8 +35,11 @@ export const MockSideBar: React.FC = () => {
 
   useEffect(() => {
     if (!snifferId && sniffers.length > 0) {
-      navigator(`/mocks?snifferId=${sniffers[0].id}`);
-      return;
+      setSearchParams((params) => {
+        const newParams = new URLSearchParams(params);
+        newParams.set("snifferId", sniffers[0].id);
+        return newParams;
+      });
     }
   }, [sniffers]);
 
@@ -43,8 +47,8 @@ export const MockSideBar: React.FC = () => {
     <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 h-[calc(vh-96px)] max-h-[calc(vh-96px)] overflow-y-auto">
       {snackBar}
       <FormControl fullWidth size="small" variant="outlined">
-        <InputLabel>Sniffers</InputLabel>
-        <Select value={snifferId || ""} label="Sniffers">
+        <InputLabel>Proxies</InputLabel>
+        <Select value={snifferId || ""} label="Proxies">
           {sniffers.map((sniffer, i) => (
             <MenuItem
               key={i}

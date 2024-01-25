@@ -1,0 +1,45 @@
+.wrapper {
+  height: 3px;
+  background-image: linear-gradient(
+    to left,
+    rgb(14 165 233) 0% 25%,
+    transparent 25% 50%,
+    rgb(14 165 233) 50% 75%,
+    transparent 75% 100%
+  );
+  background-size: 25px 1px;
+  background-repeat: repeat;
+  background-clip: padding-box, border-box;
+  box-sizing: border-box;
+  animation: ants 50s linear infinite;
+  background-position: 0px 0px;
+}
+
+@keyframes ants {
+  to {
+    background-position: 1000px 0%;
+  }
+}
+
+.wrapperInverted {
+  height: 3px;
+  background-image: linear-gradient(
+    to left,
+    rgb(14 165 233) 0% 25%,
+    transparent 25% 50%,
+    rgb(14 165 233) 50% 75%,
+    transparent 75% 100%
+  );
+  background-size: 25px 1px;
+  background-repeat: repeat;
+  background-clip: padding-box, border-box;
+  box-sizing: border-box;
+  animation: ants 50s linear infinite reverse;
+  background-position: 0px 0px;
+}
+
+@keyframes antsInverted {
+  to {
+    background-position: 1000px 0px;
+  }
+}

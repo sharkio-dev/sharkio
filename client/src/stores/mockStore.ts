@@ -40,7 +40,7 @@ interface MockState {
   loadingNewMock: boolean;
   loadingEditMock: boolean;
   loadingDeleteMock: boolean;
-  loadMocks: (snifferId: string, force?: boolean) => Promise<Mock[]>;
+  loadMocks: (snifferId: string) => Promise<Mock[]>;
   resetMocks: () => void;
   activateMock: (snifferId: string, mockId: string) => Promise<void>;
   deactivateMock: (snifferId: string, mockId: string) => Promise<void>;
@@ -67,10 +67,7 @@ export const useMockStore = create<MockState>((set, get) => ({
   loadingNewMock: false,
   loadingDeleteMock: false,
   loadingEditMock: false,
-  loadMocks: (snifferId, force = false) => {
-    if (get().mocks.length && !force) {
-      return Promise.resolve(get().mocks);
-    }
+  loadMocks: (snifferId) => {
     set({ loadingMocks: true });
     return getMocksAPI(snifferId)
       .then((res) => {
@@ -82,19 +79,19 @@ export const useMockStore = create<MockState>((set, get) => ({
   resetMocks: () => set({ mocks: [] }),
   activateMock: (snifferId: string, mockId: string) => {
     return activateMockAPI(mockId).then(() => {
-      get().loadMocks(snifferId, true);
+      get().loadMocks(snifferId);
     });
   },
   deactivateMock: (snifferId: string, mockId: string) => {
     return deactivateMockAPI(mockId).then(() => {
-      get().loadMocks(snifferId, true);
+      get().loadMocks(snifferId);
     });
   },
   deleteMock: (snifferId: string, mockId: string) => {
     set({ loadingDeleteMock: true });
     return deleteMockAPI(mockId)
       .then(() => {
-        get().loadMocks(snifferId, true);
+        get().loadMocks(snifferId);
       })
       .finally(() => set({ loadingDeleteMock: false }));
   },
@@ -102,7 +99,7 @@ export const useMockStore = create<MockState>((set, get) => ({
     set({ loadingNewMock: true });
     return createMockAPI({ ...mock })
       .then((res: any) => {
-        get().loadMocks(snifferId, true);
+        get().loadMocks(snifferId);
         return res;
       })
       .finally(() => set({ loadingNewMock: false }));
@@ -111,7 +108,7 @@ export const useMockStore = create<MockState>((set, get) => ({
     set({ loadingEditMock: true });
     return editMockAPI(mockId, mock)
       .then(() => {
-        get().loadMocks(snifferId, true);
+        get().loadMocks(snifferId);
       })
       .finally(() => {
         set({ loadingEditMock: false });

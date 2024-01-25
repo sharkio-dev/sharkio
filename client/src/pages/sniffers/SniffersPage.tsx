@@ -21,18 +21,18 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
   useEffect(() => {
     if (!userId) return;
     loadSniffers(true).catch(() => {
-      showSnackbar("Failed to get sniffers", "error");
+      showSnackbar("Failed to get proxies", "error");
     });
   }, [userId]);
 
   return (
-    <>
+    <div className="h-full">
       {snackBar}
       <InnerPageTemplate
         sideBarComponent={SniffersSideBar}
         contentComponent={() => <>{children}</>}
       />
-    </>
+    </div>
   );
 };
 
