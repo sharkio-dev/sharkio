@@ -49,10 +49,10 @@ Request mocking.
 
 ## 🛠️ How to use
 
-- npm install -g @idodav/sharkio@latest
-- sharkio dashboard start
-- sharkio admin start
-- sharkio admin sniffers create --port 5100 --downstreamUrl http://localhost:3000
+1. Log in to https://sharkio.dev
+2. Setup your proxy (local server with ngrok or alternative)
+3. Change the configuration of the project to use https://<generated_subdomain>.sniffer.sharkio.dev
+4. Use Sharkio 🎉
 
 ## 🚀 Getting started
 
@@ -62,19 +62,23 @@ Request mocking.
 
 For the backend
 
-- cd into server.
-- npm install
-- npm run dev
+> cd into server.
+
+> npm install
+
+> npm run dev
 
 For the frontend
 
-- cd into client.
-- npm install
-- npm run dev
+> cd into client.
+
+> npm install
+
+> npm run dev
 
 For both:
 
-- npm run dev ( in root directory )
+> npm run dev ( in root directory )
 
 Note:
 
@@ -106,25 +110,6 @@ Run backend/frontend only:
     `traffic-dashboard` is the frontend code || `traffic-snifer` is the backend code
 </details>
 
-## 🏗️ Architecture
-
-![image](https://github.com/idodav/sharkio/assets/21335259/6447c0cf-3bd5-4219-90b5-e3e064e4a60e)
-
-## 📸 / 🎥 Screenshots
-
-### Visual Demonstration: How to run the application?
-
-<details>
-  <summary>Preview How To Use</summary>
-    <img src="assets/gif-demonstration.gif" raw=true alt=GIF Demonstration” style=“margin-right: 10px;”/>
-</details>
-
-<details>
-  <summary>Preview UI interface</summary>
-    <img width="1267" alt="Screenshot 2023-06-21 at 20 01 38" src="https://github.com/Oferlis/sharkio/assets/62609377/9b892d6c-b9b2-47b7-b265-2180ecd427d4">
-    <img width="1267" alt="Screenshot 2023-06-26 at 12 32 47" src="https://github.com/Oferlis/sharkio/assets/62609377/8832a940-5ed4-4eb8-ac61-795d76a91790">
-</details>
-
 ## ⚡ Social links
 
 - ProductHunt page: https://www.producthunt.com/posts/sharkio **Launch is coming soon!**
@@ -140,7 +125,7 @@ Run backend/frontend only:
 
 ## 🤝 Acknowledgement
 
-- [Readme generator - readme.so](https://readme.so)
+- This was made using this 👉🏻 [Readme generator - readme.so](https://readme.so)
 
 ## 🏆 Contributors
 

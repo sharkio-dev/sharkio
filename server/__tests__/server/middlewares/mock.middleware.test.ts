@@ -1,6 +1,7 @@
 import { Mock } from "../../../model/entities/Mock";
 import { MockResponse } from "../../../model/entities/MockResponse";
 import { Sniffer } from "../../../model/entities/Sniffer";
+import { Interceptor } from "../../../server/interceptors/Interceptor";
 import MockMiddleware from "../../../server/middlewares/mock.middleware";
 import { MockResponseSelector } from "../../../services/mock-response-selector";
 import { MockResponseTransformer } from "../../../services/mock-response-transformer/mock-response-transformer";
@@ -9,7 +10,7 @@ import ResponseService from "../../../services/response/response.service";
 import { SnifferService } from "../../../services/sniffer/sniffer.service";
 
 const defaultSelectedSniffer: Sniffer = {
-  userId: "1234",
+  ownerId: "1234",
   id: "1111",
   name: null,
   createdAt: new Date(),
@@ -21,7 +22,6 @@ const defaultSelectedSniffer: Sniffer = {
   mocks: [],
   requests: [],
   responses: [],
-  user: undefined,
   tests: [],
   mockResponses: [],
 };
@@ -40,7 +40,7 @@ const baseResponseHeaders = {
 const baseResponseMock: MockResponse = {
   id: "38c3b506-67df-4c5b-9596-1f46c12ea9d2",
   mockId: "e07e14fa-fe96-4807-a4a7-86d49f11fbbc",
-  userId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
+  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
   snifferId: "02c9d520-e557-4ab7-9fa3-52ae0e8e85b7",
   status: 200,
   body: "",
@@ -61,7 +61,7 @@ const baseMock: Mock = {
   id: "e07e14fa-fe96-4807-a4a7-86d49f11fbbc",
   snifferId: "02c9d520-e557-4ab7-9fa3-52ae0e8e85b7",
   isActive: true,
-  userId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
+  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
   headers: {},
   name: "",
   responseSelectionMethod: "asdfasdf",
@@ -70,21 +70,19 @@ const baseMock: Mock = {
 };
 
 describe("MockMiddleware", () => {
-  let defaultMockService: Partial<MockService>;
-  let defaultSnifferService: Partial<SnifferService>;
   let defaultResponseService: Partial<ResponseService>;
+  let defaultInterceptorService: Partial<Interceptor>;
 
   beforeAll(() => {
-    defaultMockService = {
-      getByUrl: async () => {
-        return null;
+    defaultInterceptorService = {
+      findSnifferBySubdomain: async () => {
+        return Promise.resolve(null);
+      },
+      findMockByUrl: async () => {
+        return Promise.resolve(null);
       },
     };
-    defaultSnifferService = {
-      findBySubdomain: async () => {
-        return null;
-      },
-    };
+
     defaultResponseService = {};
   });
 
@@ -94,9 +92,7 @@ describe("MockMiddleware", () => {
 
   it("sniffer not found - mock not found - should be undefined", async () => {
     const mockMiddleware = new MockMiddleware(
-      defaultMockService as any,
-      defaultSnifferService as any,
-      defaultResponseService as any,
+      defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
       new MockResponseTransformer(),
     );
@@ -114,14 +110,10 @@ describe("MockMiddleware", () => {
     const findBySubdomain = jest.fn();
     findBySubdomain.mockResolvedValue(defaultSelectedSniffer);
 
-    const snifferService = {
-      findBySubdomain,
-    };
+    defaultInterceptorService.findSnifferBySubdomain = findBySubdomain;
 
     const mockMiddleware = new MockMiddleware(
-      defaultMockService as any,
-      snifferService as any,
-      defaultResponseService as any,
+      defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
       new MockResponseTransformer(),
     );
@@ -139,14 +131,8 @@ describe("MockMiddleware", () => {
     const findBySubdomain = jest.fn();
     findBySubdomain.mockResolvedValue(defaultSelectedSniffer);
 
-    const snifferService = {
-      findBySubdomain,
-    };
-
     const mockMiddleware = new MockMiddleware(
-      defaultMockService as any,
-      snifferService as any,
-      defaultResponseService as any,
+      defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
       new MockResponseTransformer(),
     );
@@ -177,9 +163,7 @@ describe("MockMiddleware", () => {
     };
 
     const mockMiddleware = new MockMiddleware(
-      mockService as any,
-      snifferService as any,
-      defaultResponseService as any,
+      defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
       new MockResponseTransformer(),
     );
@@ -213,9 +197,7 @@ describe("MockMiddleware", () => {
     const nextFunction = jest.fn();
 
     const mockMiddleware = new MockMiddleware(
-      {} as any,
-      {} as any,
-      defaultResponseService as any,
+      defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
       new MockResponseTransformer(),
     );
@@ -270,9 +252,7 @@ describe("MockMiddleware", () => {
     const nextFunction = jest.fn();
 
     const mockMiddleware = new MockMiddleware(
-      {} as any,
-      {} as any,
-      defaultResponseService as any,
+      defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
       new MockResponseTransformer(),
     );

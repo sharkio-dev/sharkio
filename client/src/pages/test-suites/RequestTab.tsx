@@ -19,8 +19,8 @@ const RequestTab = ({
   const [requestPart, setRequestPart] = useState<string>("Body");
 
   return (
-    <TabPanel value="2" style={{ padding: 0, paddingTop: 16 }}>
-      <div className="flex flex-col space-y-4">
+    <TabPanel value="2" style={{ padding: 0, paddingTop: 16, height: "100%" }}>
+      <div className="flex h-full flex-col space-y-4">
         <div className="flex flex-row space-x-4">
           <div className="flex flex-row w-40">
             <SelectMethodDropDown

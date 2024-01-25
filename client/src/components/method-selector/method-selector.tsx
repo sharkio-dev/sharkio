@@ -6,7 +6,7 @@ interface IMethodSelectProps {
 }
 
 export const MethodSelector: React.FC<IMethodSelectProps> = ({ onChange }) => {
-  const methods = ["GET", "POST", "PATCH", "PUT", "DELETE"];
+  const methods = ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"];
   return (
     <Autocomplete
       freeSolo

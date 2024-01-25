@@ -1,20 +1,23 @@
 import { Request as ExpressRequest } from "express";
-import { RequestRepository } from "../../model/repositories/request.repository";
-import { Request } from "../../model/entities/Request";
 import { Endpoint } from "../../model/entities/Endpoint";
-import { EndpointRepository } from "../../model/repositories/endpoint.repository";
+import { Request } from "../../model/entities/Request";
 import { Sniffer } from "../../model/entities/Sniffer";
+import { EndpointRepository } from "../../model/repositories/endpoint.repository";
+import { RequestRepository } from "../../model/repositories/request.repository";
+import { ResponseRepository } from "../../model/repositories/response.repository";
+import { Between, In, LessThanOrEqual, Like, MoreThanOrEqual } from "typeorm";
 
 export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
     private readonly requestRepository: RequestRepository,
+    private readonly responseRepository: ResponseRepository,
   ) {}
 
-  async getByUser(userId: string, limit: number) {
+  async getByOwner(ownerId: string, limit: number) {
     return this.repository.repository.find({
       where: {
-        userId,
+        ownerId: ownerId,
       },
       take: limit,
       order: {
@@ -23,10 +26,10 @@ export class EndpointService {
     });
   }
 
-  async getBySnifferId(userId: string, snifferId: Sniffer["id"]) {
+  async getBySnifferId(ownerId: string, snifferId: Sniffer["id"]) {
     const requests = await this.repository.repository.find({
       where: {
-        userId,
+        ownerId,
         snifferId,
       },
       order: {
@@ -37,20 +40,20 @@ export class EndpointService {
     return requests;
   }
 
-  async getById(userId: string, id: string) {
+  async getById(ownerId: string, id: string) {
     return this.repository.repository.findOne({
-      where: { userId, id },
+      where: { ownerId, id },
     });
   }
 
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    userId: string,
+    ownerId: string,
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
-      userId,
+      ownerId,
       url: req.path,
       method: req.method,
       headers: req.headers as Record<string, string>,
@@ -65,11 +68,11 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    userId: string,
+    ownerId: string,
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
-      userId,
+      ownerId,
       url,
       method,
       headers,
@@ -78,11 +81,11 @@ export class EndpointService {
     return this.repository.repository.save(newRequest);
   }
 
-  async findOrCreate(req: ExpressRequest, snifferId: string, userId: string) {
+  async findOrCreate(req: ExpressRequest, snifferId: string, ownerId: string) {
     const request = await this.repository.repository.findOne({
       where: {
         snifferId,
-        userId,
+        ownerId,
         url: req.path,
         method: req.method,
       },
@@ -92,14 +95,14 @@ export class EndpointService {
       return request;
     }
 
-    return this.createFromExpressReq(req, snifferId, userId);
+    return this.createFromExpressReq(req, snifferId, ownerId);
   }
 
   async addInvocation(request: Partial<Omit<Request, "sniffer">>) {
     const theInvocation = this.requestRepository.repository.create({
       endpointId: request.id,
       snifferId: request.snifferId,
-      userId: request.userId,
+      ownerId: request.ownerId,
       method: request.method,
       body: request.body,
       headers: request.headers,
@@ -118,7 +121,7 @@ export class EndpointService {
       where: {
         endpointId: endpoint.id,
         snifferId: endpoint.snifferId,
-        userId: endpoint.userId,
+        ownerId: endpoint.ownerId,
         method: endpoint.method,
         url: endpoint.url,
       },
@@ -130,7 +133,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -141,12 +144,35 @@ export class EndpointService {
     return mapped;
   }
 
-  async getInvocationsByUser(userId: string, limit: number) {
+  async getInvocationsByOwner(
+    ownerId: string,
+    limit: number,
+    statusCodes: string[],
+    methods: string[],
+    url: string,
+    fromDate: Date | undefined,
+    toDate: Date | undefined,
+  ) {
+    let createdAt;
+
+    if (fromDate !== undefined && toDate !== undefined) {
+      createdAt = Between(fromDate, toDate);
+    } else if (fromDate !== undefined) {
+      createdAt = MoreThanOrEqual(fromDate);
+    } else if (toDate !== undefined) {
+      createdAt = LessThanOrEqual(toDate);
+    }
+
     const invocations = await this.requestRepository.repository.find({
       where: {
-        userId,
+        ownerId,
+        method: methods === undefined ? undefined : In(methods),
+        url: url === undefined ? undefined : Like(`%${url}%`),
+        createdAt,
+        responses: {
+          status: statusCodes === undefined ? undefined : In(statusCodes),
+        },
       },
-      take: limit,
       relations: {
         responses: true,
       },
@@ -155,14 +181,15 @@ export class EndpointService {
           status: true,
         },
       },
+      take: limit,
       order: {
         createdAt: "DESC",
       },
     });
 
-    // make sure only one response is returned
+    //make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -173,10 +200,10 @@ export class EndpointService {
     return mapped;
   }
 
-  async getInvocationsBySnifferId(userId: string, snifferId: Sniffer["id"]) {
+  async getInvocationsBySnifferId(ownerId: string, snifferId: Sniffer["id"]) {
     const invocations = await this.requestRepository.repository.find({
       where: {
-        userId,
+        ownerId,
         snifferId,
       },
       take: 100,
@@ -187,7 +214,7 @@ export class EndpointService {
 
     // make sure only one response is returned
     const mapped = invocations.map((invocation) => {
-      let response = undefined;
+      let response;
       const responses = invocation.responses;
       if (responses && responses.length > 0) {
         response = responses[0];
@@ -198,23 +225,22 @@ export class EndpointService {
     return mapped;
   }
 
-  async getInvocationById(id: string, userId: string) {
+  async getInvocationById(id: string, ownerId: string) {
     const invocation = await this.requestRepository.repository.findOne({
       relations: {
         responses: true,
       },
       where: {
         id,
-        userId,
+        ownerId,
       },
     });
-    console.log(invocation);
     if (!invocation) {
       return undefined;
     }
 
     // make sure only one response is returned
-    let response = undefined;
+    let response;
     const responses = invocation.responses;
     if (responses && responses.length > 0) {
       response = responses[0];

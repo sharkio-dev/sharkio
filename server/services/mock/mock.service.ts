@@ -22,7 +22,7 @@ export class MockService {
     body: string,
     headers: Record<string, string>,
     status: number,
-    userId: string,
+    ownerId: string,
   ) {
     let mock = await this.mockRepository.repository.findOne({
       where: {
@@ -34,7 +34,7 @@ export class MockService {
     if (!mock) {
       log.info("Creating mock for imported response");
       const newMock = await this.create(
-        userId,
+        ownerId,
         url,
         method,
         body,
@@ -44,7 +44,7 @@ export class MockService {
         snifferId,
       );
       const mockResponse = await this.mockResponseRepository.create(
-        userId,
+        ownerId,
         newMock.id,
         {
           body,
@@ -52,47 +52,47 @@ export class MockService {
           status,
           name: "imported-response",
           snifferId,
-          userId,
+          ownerId,
         },
       );
-      await this.setSelectedResponse(userId, newMock.id, mockResponse.id);
+      await this.setSelectedResponse(ownerId, newMock.id, mockResponse.id);
       return newMock;
     } else {
-      await this.mockResponseRepository.create(userId, mock.id, {
+      await this.mockResponseRepository.create(ownerId, mock.id, {
         body,
         headers,
         status,
         name: "imported-response",
         snifferId,
-        userId,
+        ownerId,
       });
       return mock;
     }
   }
 
-  getById(userId: string, mockId: string) {
-    return this.mockRepository.getById(userId, mockId);
+  getById(ownerId: string, mockId: string) {
+    return this.mockRepository.getById(ownerId, mockId);
   }
 
   getByUrl(
-    userId: string,
+    ownerId: string,
     mockId: string,
     url: string,
     method: string,
   ): Promise<Mock | null> {
-    return this.mockRepository.getByUrl(userId, mockId, url, method);
+    return this.mockRepository.getByUrl(ownerId, mockId, url, method);
   }
 
-  getByUser(userId: string, limit: number) {
-    return this.mockRepository.getByUser(userId, limit);
+  getByUser(ownerId: string, limit: number) {
+    return this.mockRepository.getByUser(ownerId, limit);
   }
 
-  getBySnifferId(userId: string, snifferId: string) {
-    return this.mockRepository.getBySnifferId(userId, snifferId);
+  getBySnifferId(ownerId: string, snifferId: string) {
+    return this.mockRepository.getBySnifferId(ownerId, snifferId);
   }
 
   async create(
-    userId: string,
+    ownerId: string,
     url: string,
     method: string,
     body: string,
@@ -110,7 +110,7 @@ export class MockService {
       body,
       headers,
       status,
-      userId,
+      ownerId,
       name,
       snifferId,
       isActive: true,
@@ -130,7 +130,7 @@ export class MockService {
           }));
 
           const createdResponses = await this.mockResponseRepository.createMany(
-            userId,
+            ownerId,
             mock.id,
             mappedResponses,
             false,
@@ -140,13 +140,13 @@ export class MockService {
       },
     );
     if (selectedResponseId != null && mock != null) {
-      await this.setSelectedResponse(userId, mock.id, selectedResponseId);
+      await this.setSelectedResponse(ownerId, mock.id, selectedResponseId);
     }
     return mock as Mock;
   }
 
   async update(
-    userId: string,
+    ownerId: string,
     mockId: string,
     url?: string,
     method?: string,
@@ -160,10 +160,10 @@ export class MockService {
     return this.mockRepository.repository
       .createQueryBuilder()
       .update()
-      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .where("id = :mockId AND ownerId = :ownerId", { mockId, ownerId })
       .set({
         id: mockId,
-        userId,
+        ownerId,
         url,
         method,
         body,
@@ -177,15 +177,15 @@ export class MockService {
       .execute();
   }
 
-  delete(userId: string, mockId: string) {
-    return this.mockRepository.deleteById(userId, mockId);
+  delete(ownerId: string, mockId: string) {
+    return this.mockRepository.deleteById(ownerId, mockId);
   }
 
-  async setIsActive(userId: string, mockId: string, isActive: boolean) {
+  async setIsActive(ownerId: string, mockId: string, isActive: boolean) {
     return this.mockRepository.repository
       .createQueryBuilder()
       .update()
-      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .where("id = :mockId AND ownerId = :ownerId", { mockId, ownerId })
       .set({
         isActive,
       })
@@ -194,17 +194,17 @@ export class MockService {
   }
 
   async setSelectedResponse(
-    userId: string,
+    ownerId: string,
     mockId: string,
     responseId: string,
   ) {
     return this.mockRepository.repository
       .createQueryBuilder()
       .update()
-      .where("id = :mockId AND userId = :userId", { mockId, userId })
+      .where("id = :mockId AND ownerId = :ownerId", { mockId, ownerId })
       .set({
         id: mockId,
-        userId,
+        ownerId,
         selectedResponseId: responseId,
       })
       .returning("*")

@@ -48,8 +48,8 @@ export class Response {
   @Column("uuid", { name: "test_execution_id", nullable: true })
   testExecutionId: string | null;
 
-  @Column("uuid", { name: "user_id", nullable: true })
-  userId: string;
+  @Column("uuid", { name: "owner_id", nullable: true })
+  ownerId: string;
 
   @Column("uuid", { name: "sniffer_id", nullable: true })
   snifferId: string;
@@ -66,10 +66,6 @@ export class Response {
   })
   @JoinColumn([{ name: "test_execution_id", referencedColumnName: "id" }])
   testExecution: Relation<TestExecution>;
-
-  @ManyToOne(() => Users, (users) => users.responses)
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Relation<Users>;
 
   @ManyToOne(() => Sniffer, (sniffer) => sniffer.responses, {
     onDelete: "CASCADE",

@@ -29,11 +29,24 @@ export class InvocationController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const limit = 100;
-        const requests = await this.endpointService.getInvocationsByUser(
-          userId,
+        // const requests = await this.endpointService.getInvocationsByOwner(
+        //   ownerId,
+        const statusCodes = req.query.statusCodes as string[];
+        const methods = req.query.methods as string[];
+        const url = req.query.url as string;
+        const fromDate = req.query.fromDate as Date | undefined;
+        const toDate = req.query.toDate as Date | undefined;
+
+        const requests = await this.endpointService.getInvocationsByOwner(
+          ownerId,
           limit,
+          statusCodes,
+          methods,
+          url,
+          fromDate,
+          toDate,
         );
         res.status(200).send(requests);
       },
@@ -60,11 +73,11 @@ export class InvocationController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const { id } = req.params;
         const request = await this.endpointService.getInvocationById(
           id,
-          userId,
+          ownerId,
         );
         res.status(200).send(request);
       },

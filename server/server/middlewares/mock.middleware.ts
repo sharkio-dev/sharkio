@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { MockResponse } from "../../model/entities/MockResponse";
 import { MockResponseSelector } from "../../services/mock-response-selector/mock-response-selector";
-import { MockService } from "../../services/mock/mock.service";
-import ResponseService from "../../services/response/response.service";
-import { SnifferService } from "../../services/sniffer/sniffer.service";
 import { Mock } from "../../model/entities/Mock";
 import { useLog } from "../../lib/log";
 import { MockResponseTransformer } from "../../services/mock-response-transformer/mock-response-transformer";
+import { Interceptor } from "../interceptors/Interceptor";
 
 const logger = useLog({
   dirname: __dirname,
@@ -15,25 +13,22 @@ const logger = useLog({
 
 export default class MockMiddleware {
   constructor(
-    private readonly mockService: MockService,
-    private readonly snifferService: SnifferService,
-    private readonly responseService: ResponseService,
+    private readonly interceptor: Interceptor,
     private readonly mockResponseSelector: MockResponseSelector,
     private readonly mockResponseTransformer: MockResponseTransformer,
   ) {}
 
   async findMock(hostname: string, url: string, method: string) {
     const subdomain = hostname.split(".")[0];
-    const sniffer = await this.snifferService.findBySubdomain(subdomain);
+    const sniffer = await this.interceptor.findSnifferBySubdomain(subdomain);
 
-    if (sniffer != null && sniffer.userId != null) {
+    if (sniffer != null && sniffer.ownerId != null) {
       const urlNoParams = url.split("?")[0];
 
-      const mock: Mock | null = await this.mockService.getByUrl(
-        sniffer?.userId,
-        sniffer?.id,
+      const mock: Mock | null = await this.interceptor.findMockByUrl(
         urlNoParams,
         method,
+        sniffer,
       );
 
       if (mock != null && mock.isActive === true) {
@@ -72,7 +67,7 @@ export default class MockMiddleware {
       try {
         await this.interceptMockResponse(req, transformedResponse);
         await this.updateSelectedResponse(
-          selectedResponse.userId,
+          selectedResponse.ownerId,
           mock,
           selectedResponse.id,
         );
@@ -87,31 +82,29 @@ export default class MockMiddleware {
   async interceptMockResponse(req: Request, mock: MockResponse | Mock) {
     const invocationId = req.headers["x-sharkio-invocation-id"];
     const snifferId = req.headers["x-sharkio-sniffer-id"] as string;
-    const userId = req.headers["x-sharkio-user-id"] as string;
+    const ownerId = req.headers["x-sharkio-owner-id"] as string;
     const testExecutionId = req.headers[
       "x-sharkio-test-execution-id"
     ] as string;
 
     if (invocationId != null && typeof invocationId === "string") {
-      return await this.responseService.addResponse({
-        userId,
+      return await this.interceptor.saveResponse(
+        { body: mock.body, headers: mock.headers, statusCode: mock.status },
+        ownerId,
         snifferId,
-        requestId: invocationId,
-        headers: mock.headers ?? {},
-        body: mock.body ?? "",
-        status: mock.status,
+        invocationId,
         testExecutionId,
-      });
+      );
     }
   }
 
   updateSelectedResponse(
-    userId: string,
+    ownerId: string,
     mock: Mock,
     selectedResponseId: string,
   ) {
-    return this.mockService.setSelectedResponse(
-      userId,
+    return this.interceptor.setMockSelectedResponse(
+      ownerId,
       mock.id,
       selectedResponseId,
     );

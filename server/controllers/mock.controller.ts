@@ -39,9 +39,9 @@ export class MockController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const limit = +(req.params.limit ?? 1000);
-          const requests = await this.mockService.getByUser(userId, limit);
+          const requests = await this.mockService.getByUser(ownerId, limit);
           res.status(200).send(requests);
         },
       )
@@ -132,7 +132,7 @@ export class MockController {
          */
         async (req: Request, res: Response, next: NextFunction) => {
           try {
-            const userId = res.locals.auth.user.id;
+            const ownerId = res.locals.auth.ownerId;
             const {
               headers,
               body,
@@ -146,7 +146,7 @@ export class MockController {
               responseSelectionMethod,
             } = req.body;
             const mock = await this.mockService.create(
-              userId,
+              ownerId,
               url,
               method,
               body,
@@ -173,11 +173,11 @@ export class MockController {
       }),
       async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { requestId } = req.body;
           const request = await this.endpointService.getInvocationById(
             requestId,
-            userId,
+            ownerId,
           );
           if (!request || !request?.response) {
             res.status(404).send("Not found");
@@ -191,7 +191,7 @@ export class MockController {
             request?.response.body,
             request?.response.headers as Record<string, string>,
             request?.response?.status as number,
-            userId,
+            ownerId,
           );
           res.status(200).send(mock);
         } catch (error) {
@@ -228,11 +228,11 @@ export class MockController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const limit = +(req.params.limit ?? 1000);
           const { mockId } = req.params;
 
-          const mock = await this.mockService.getById(userId, mockId);
+          const mock = await this.mockService.getById(ownerId, mockId);
           res.status(200).send(mock);
         },
       )
@@ -258,9 +258,9 @@ export class MockController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { mockId } = req.params;
-          const response = await this.mockService.delete(userId, mockId);
+          const response = await this.mockService.delete(ownerId, mockId);
           res.status(200).send(response);
         },
       )
@@ -330,7 +330,7 @@ export class MockController {
          *         description: Server error
          */
         async (req: Request, res: Response, next: NextFunction) => {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { mockId } = req.params;
           const {
             method,
@@ -344,7 +344,7 @@ export class MockController {
           } = req.body;
 
           const updatedMock = await this.mockService.update(
-            userId,
+            ownerId,
             mockId,
             url,
             method,
@@ -395,12 +395,12 @@ export class MockController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const { responseId } = req.body;
         const { mockId } = req.params;
 
         const mock = await this.mockService.setSelectedResponse(
-          userId,
+          ownerId,
           mockId,
           responseId,
         );
@@ -431,11 +431,11 @@ export class MockController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const { mockId } = req.params;
 
         const requests = await this.mockService.setIsActive(
-          userId,
+          ownerId,
           mockId,
           true,
         );
@@ -465,12 +465,11 @@ export class MockController {
        *         description: Server error
        */
       async (req: Request, res: Response, next: NextFunction) => {
-        const userId = res.locals.auth.user.id;
-        const limit = +(req.params.limit ?? 1000);
+        const ownerId = res.locals.auth.ownerId;
         const { mockId } = req.params;
 
         const requests = await this.mockService.setIsActive(
-          userId,
+          ownerId,
           mockId,
           false,
         );

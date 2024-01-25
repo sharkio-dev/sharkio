@@ -32,8 +32,8 @@ export class MockResponse {
   @Column({ name: "sniffer_id", type: "uuid" })
   snifferId: string;
 
-  @Column({ name: "user_id", type: "uuid" })
-  userId: string;
+  @Column({ name: "owner_id", type: "uuid" })
+  ownerId: string;
 
   @Column({ name: "mock_id", type: "uuid" })
   mockId: string;
