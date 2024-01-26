@@ -93,7 +93,7 @@ export const InvocationUpperBar = ({
       <div className="flex flex-row items-center space-x-2">
         {component}
         <div className="flex flex-row items-center w-28">
-        <IoMdArrowRoundBack className="text-2xl mr-1" style={{cursor:'pointer'}} onClick={()=>{ navigator(-1)}}/> 
+        <IoMdArrowRoundBack className="text-2xl mr-2 cursor-pointer"   onClick={()=>{ navigator(-1)}}/> 
 
           <SelectMethodDropDown
             disabled={isDisabled}
