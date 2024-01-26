@@ -86,6 +86,9 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
         onDragEnd={onSort}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => {
+          if (openResponseId === mockResponse.id) {
+            return;
+          }
           onOpenResponse(mockResponse.id);
         }}
       >
@@ -94,7 +97,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             <Tooltip title="Select as default response">
               <Radio
                 checked={mockResponse.id === mock.selectedResponseId}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   onMockChange({
                     ...mock,
                     selectedResponseId: mockResponse.id,
@@ -184,7 +188,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
               className={`active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md ${
                 openResponseId === mockResponse.id ? "rotate-90" : ""
               }`}
-              onClick={() => {
+              onClick={(e: any) => {
+                e.stopPropagation();
                 onOpenResponse(mockResponse.id);
               }}
             />
