@@ -184,3 +184,35 @@ export const TemplateWizard: React.FC<FakeDataWizardProps> = ({
     </WizardTemplate>
   );
 };
+
+export const RequestDataWizard: React.FC<FakeDataWizardProps> = ({
+  handleSelection,
+  onClose,
+  goBack,
+}) => {
+  return (
+    <WizardTemplate onClose={onClose} title="Request Data" goBack={goBack}>
+      <WizardItem
+        title="Request Headers"
+        onClick={() => {
+          handleSelection(`{{headers["header-name"]}}`);
+          onClose();
+        }}
+      />
+      <WizardItem
+        title="Request Body"
+        onClick={() => {
+          handleSelection(`{{body["body-property"]}}`);
+          onClose();
+        }}
+      />
+      <WizardItem
+        title="Request Params"
+        onClick={() => {
+          handleSelection(`{{params["param-name"]}}`);
+          onClose();
+        }}
+      />
+    </WizardTemplate>
+  );
+};
