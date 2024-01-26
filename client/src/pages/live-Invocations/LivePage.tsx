@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../constants/routes";
-import { InvocationUpperBar } from "./LiveInvocationUpperBar";
+import { InvocationSection } from "./LiveInvocationUpperBar";
 import { InvocationsSearchBar } from "./LiveInvocationsBottomBar";
 import { InvocationType } from "../sniffers/types";
 import { BackendAxios } from "../../api/backendAxios";
@@ -52,11 +52,9 @@ export const InvocationScreen = () => {
 
   return (
     <div className="flex flex-col p-4 px-4 border-b border-border-color h-full">
-      <InvocationUpperBar
+      <InvocationSection
         invocation={invocation}
-        setEditedInvocation={function (): void {
-          throw new Error("Function not implemented.");
-        }}
+        setEditedInvocation={setInvocation as any}
       />
     </div>
   );

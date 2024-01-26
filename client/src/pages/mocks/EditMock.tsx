@@ -122,6 +122,26 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
     });
   };
 
+  const onDuplicateMockResponse = (mockToDuplicate: MockResponse) => {
+    const index = mock.mockResponses.length;
+
+    return postMockResponse(snifferId as string, mockId as string, {
+      name: `${mockToDuplicate.name} copy`,
+      body: mockToDuplicate.body,
+      status: mockToDuplicate.status,
+      headers: mockToDuplicate.headers,
+      sequenceIndex: index,
+    }).then((res: MockResponse) => {
+      setMock((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          mockResponses: [...prev.mockResponses, res],
+        };
+      });
+    });
+  };
+
   const onDeleteMockResponse = (mockResponseId: string) => {
     return deleteMockResponse(mockResponseId).then((deletedId) => {
       setMock((prev) => {
@@ -179,6 +199,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
           handleMockResponsesChange={onMockResponseChange}
           handleAddMockResponse={onAddMockResponse}
           handleDeleteMockResponse={onDeleteMockResponse}
+          handleDuplicateMockResponse={onDuplicateMockResponse}
         />
       </div>
     </>

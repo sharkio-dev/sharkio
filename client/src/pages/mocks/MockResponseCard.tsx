@@ -1,4 +1,6 @@
 import { Save } from "@mui/icons-material";
+import { HiOutlineDuplicate } from "react-icons/hi";
+
 import { IconButton, Input, Radio, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -21,6 +23,7 @@ interface IMockResponseCard {
   index: number;
   onSort: any;
   onDeleteMockResponse: (responseId: string) => Promise<void>;
+  onDuplicateMockResponse?: (mockToDuplicate: MockResponse) => Promise<void>;
   onOpenResponse: any;
   onMockResponsesChange: any;
   openResponseId?: string | null;
@@ -37,6 +40,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   onDeleteMockResponse,
   onOpenResponse,
   onMockResponsesChange,
+  onDuplicateMockResponse,
 }) => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -45,7 +49,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   const { editMockResponse } = useMockResponseStore();
   const isSelected = mockResponse.id === mock.selectedResponseId;
 
-  const handleSaveNameClicked = () => {
+  const handleSaveNameClicked = (e: any) => {
+    e.stopPropagation();
     setIsSaving(true);
     editMockResponse(mockResponse.id, {
       ...mockResponse,
@@ -80,6 +85,9 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
         onDragEnter={() => (dragOverResponseRef.current = index)}
         onDragEnd={onSort}
         onDragOver={(e) => e.preventDefault()}
+        onClick={() => {
+          onOpenResponse(mockResponse.id);
+        }}
       >
         <div className="flex flex-row items-center justify-between max-w-full">
           <div className="flex flex-row items-center w-full">
@@ -110,12 +118,16 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                     className="w-[50ch] border-none focus:ring-0"
                     defaultValue={name}
                     onChange={(e) => setName(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
                   />
                 </>
               ) : (
                 <>
                   <AiOutlineEdit
-                    onClick={() => setEditName(true)}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      setEditName(true);
+                    }}
                     className=" text-blue-400 active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md"
                   />
                   <span className="truncate max-w-[50ch]">
@@ -126,6 +138,18 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             </div>
           </div>
           <div className="flex flex-row items-center space-x-2">
+            {onDuplicateMockResponse && (
+              <Tooltip title="Duplicate mock response">
+                <HiOutlineDuplicate
+                  sx={{ fontSize: "15px" }}
+                  className="cursor-pointer hover:bg-border-color rounded-md"
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    onDuplicateMockResponse(mockResponse);
+                  }}
+                ></HiOutlineDuplicate>
+              </Tooltip>
+            )}
             {isDeleting ? (
               <LoadingIcon />
             ) : (
@@ -143,7 +167,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                         ? "text-gray-500 "
                         : "hover:bg-border-color text-red-400"
                     }`}
-                    onClick={() => {
+                    onClick={(e: any) => {
+                      e.stopPropagation();
                       if (isSelected) return;
                       setIsDeleting(true);
                       onDeleteMockResponse(mockResponse.id).finally(() => {
@@ -152,7 +177,6 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                     }}
                   />
                 </IconButton>
-                {/* asdasd */}
               </Tooltip>
             )}
 
@@ -171,9 +195,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             response={mockResponse}
             handleResponseChange={(value: MockResponse) => {
               onMockResponsesChange(
-                mock.mockResponses.map((r, i) => {
+                mock.mockResponses.map((r) => {
                   if (r.id === value.id) {
-                    value.name = `Response ${i + 1}`;
                     return value;
                   }
                   return r;

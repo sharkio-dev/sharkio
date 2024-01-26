@@ -65,7 +65,8 @@
     "rsuite": "^5.48.1",
     "swagger-ui-react": "^5.2.0",
     "uuid": "^9.0.1",
-    "zustand": "^4.4.1"
+    "zustand": "^4.4.1",
+    "@faker-js/faker": "^8.3.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
@@ -97,6 +98,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
     "vite": "^4.3.0",
-    "vite-plugin-circular-dependency": "^0.2.1"
+    "vite-plugin-circular-dependency": "^0.2.1",
+    "vite-plugin-pwa": "^0.17.4"
   }
 }
