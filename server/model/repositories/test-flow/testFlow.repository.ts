@@ -14,7 +14,19 @@ export class TestFlowRepository {
     return this.repository.save(newTestFlow);
   }
 
-  delete(ownerId: string, id: string) {
-    return this.repository.delete({ ownerId, id });
+  deleteById(ownerId: string, flowId: string) {
+    return this.repository.delete({ ownerId, id: flowId });
+  }
+
+  getByOwnerId(ownerId: string) {
+    return this.repository.find({ where: { ownerId } });
+  }
+
+  getById(ownerId: any, flowId: string) {
+    return this.repository.findOne({ where: { ownerId, id: flowId } });
+  }
+
+  updateById(ownerId: any, flowId: string, testFlow: Partial<TestFlow>) {
+    return this.repository.update(flowId, testFlow);
   }
 }
