@@ -193,7 +193,9 @@ const ResponseSection = ({
           Headers
         </ToggleButton>
       </ToggleButtonGroup>
-      {section === "Body" && <BodySection body={response?.body} />}
+      {section === "Body" && (
+        <BodySection body={response?.body} showButtons={false} />
+      )}
       {section === "Headers" && (
         <HeaderSection headers={response?.headers || {}} />
       )}
