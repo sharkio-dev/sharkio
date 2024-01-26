@@ -24,7 +24,7 @@ export class MockResponseTransformer {
         } catch (e) {
           return "fakerError";
         }
-      }).bind(this),
+      }).bind(this)
     );
     this.handleBars.registerHelper("compare", this.compareFunction);
     this.handleBars.registerHelper("repeat", this.repeatHelper.bind(this));
@@ -47,7 +47,7 @@ export class MockResponseTransformer {
       method: string;
       params: any;
       query: any;
-    },
+    }
   ) {
     let body, headers;
     try {
@@ -57,7 +57,7 @@ export class MockResponseTransformer {
     }
     try {
       headers = JSON.parse(
-        this.handleBars.compile(JSON.stringify(response.headers))(context),
+        this.handleBars.compile(JSON.stringify(response.headers))(context)
       ) as MockResponse["headers"];
     } catch (e) {
       headers = { "x-sharkio-error": "header transformation error" };
@@ -93,7 +93,7 @@ export class MockResponseTransformer {
 
   repeat(
     { count, start, step }: { count: number; start: number; step: number },
-    thisArg: any,
+    thisArg: any
   ) {
     const max = count * step + start;
     let index = start;
@@ -109,7 +109,7 @@ export class MockResponseTransformer {
   repeatBlock(
     { count, start, step }: { count: number; start: number; step: number },
     thisArg: any,
-    options: any,
+    options: any
   ) {
     let max = count * step + start;
     let index = start;
