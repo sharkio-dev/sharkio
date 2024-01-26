@@ -10,6 +10,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import { RxMagicWand } from "react-icons/rx";
 import { faker } from "@faker-js/faker";
 import { PiRepeat } from "react-icons/pi";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 type BodySectionProps = {
   body: any;
@@ -20,11 +21,11 @@ type BodySectionProps = {
 
 export const BodySection = ({
   body,
-  language,
+  language = "json",
   onBodyChange,
   showButtons = true,
 }: BodySectionProps) => {
-  const [type, setType] = useState("handlebars");
+  const [type, setType] = useState(language);
   const [editor, setEditor] = useState<any>(null);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -72,6 +73,25 @@ export const BodySection = ({
       {showButtons && (
         <div className="flex justify-between items-center">
           <div className="flex items-center">
+            <div className="flex w-28 ml-2">
+              <SelectComponent
+                options={[
+                  { label: "Handlebars", value: "handlebars" },
+                  { label: "Json", value: "json" },
+                  { label: "Xml", value: "xml" },
+                  { label: "Text", value: "text" },
+                  { label: "Html", value: "html" },
+                ]}
+                value={type}
+                setValue={setType}
+                variant="standard"
+              />
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="text" onClick={beautify}>
+              Beautify
+            </Button>
             <Button
               variant="text"
               sx={{ minWidth: 0, borderRadius: "50%" }}
@@ -100,25 +120,6 @@ export const BodySection = ({
               open={wizardOpen}
               onClose={() => setWizardOpen(false)}
             />
-            <div className="flex w-28 ml-2">
-              <SelectComponent
-                options={[
-                  { label: "Handlebars", value: "handlebars" },
-                  { label: "Json", value: "json" },
-                  { label: "Xml", value: "xml" },
-                  { label: "Text", value: "text" },
-                  { label: "Html", value: "html" },
-                ]}
-                value={type}
-                setValue={setType}
-                variant="standard"
-              />
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="text" onClick={beautify}>
-              Beautify
-            </Button>
             <MdOutlineCopyAll
               className="text-2xl cursor-pointer"
               onClick={copyToClipboard}
@@ -132,7 +133,7 @@ export const BodySection = ({
         className="h-[50vh]"
         value={body}
         loading={<LoadingIcon />}
-        language={language || type}
+        language={type}
         onMount={(editor) => {
           setEditor(editor);
         }}
@@ -163,25 +164,7 @@ const Wizard: React.FC<WizardProps> = ({ handleSelection, open, onClose }) => {
       onClose={onClose}
     >
       <Paper className="flex flex-col w-96 rounded-sm outline-none p-4">
-        <div className="flex flex-row justify-between items-center">
-          <div className="flex flex-row items-center space-x-2">
-            <RxMagicWand className="text-xl text-magic" />
-            <div className="text-lg">Dynamic Data</div>
-          </div>
-          <MdOutlineCancel
-            className="text-xl cursor-pointer active:scale-95 transition-all hover:text-magic"
-            onClick={onClose}
-          />
-        </div>
-        <div className="w-full border-b-[0.05px] my-4" />
-        {/* <MainWizard /> */}
-        <FakeDataWizard
-          handleSelection={(text) => {
-            console.log(text);
-            handleSelection(text);
-            onClose();
-          }}
-        />
+        <FakeDataWizard handleSelection={handleSelection} onClose={onClose} />
       </Paper>
     </Modal>
   );
@@ -206,21 +189,15 @@ const WizardItem: React.FC<WizardItemProp> = ({ title, onClick }) => {
   );
 };
 
-const MainWizard = () => {
-  return (
-    <div className="flex flex-col space-y-2">
-      <WizardItem title="Fake Data" />
-      <WizardItem title="Inject Request" />
-      <WizardItem title="Inject Response" />
-    </div>
-  );
-};
-
 interface FakeDataWizardProps {
   handleSelection: (text: string) => void;
+  onClose: () => void;
 }
 
-const FakeDataWizard: React.FC<FakeDataWizardProps> = ({ handleSelection }) => {
+const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
+  handleSelection,
+  onClose,
+}) => {
   const initEntries = () => {
     return Object.entries(faker).filter(
       ([key, _]) => !key.startsWith("_") && !key.startsWith("faker"),
@@ -230,49 +207,67 @@ const FakeDataWizard: React.FC<FakeDataWizardProps> = ({ handleSelection }) => {
   const [entries, setEntries] = useState<any[]>(initEntries());
   const [subEntries, setSubEntries] = useState<any[]>([]);
 
-  const onEntryClick = (key: string, value: any = null) => {
-    if (value) {
-      setSubEntries(
-        Object.entries(value).filter(
-          ([key, _]) => !key.startsWith("_") && !key.startsWith("faker"),
-        ),
-      );
-      setSelectedEntry(key);
-    } else {
-      setEntries(initEntries());
-      setSelectedEntry(null);
-    }
+  const onEntryClick = (key: string, value: any) => {
+    setSubEntries(
+      Object.entries(value).filter(
+        ([key, _]) => !key.startsWith("_") && !key.startsWith("faker"),
+      ),
+    );
+    setSelectedEntry(key);
+  };
+  const reset = () => {
+    setEntries(initEntries());
+    setSelectedEntry(null);
+    setSubEntries([]);
   };
 
   const onSubEntryClick = (key: string) => {
-    debugger;
     handleSelection(`{{faker "${selectedEntry}.${key}"}}`);
-    setSelectedEntry(null);
-    setSubEntries(initEntries());
+    onClose();
+    reset();
   };
 
   return (
-    <div className="flex flex-col space-y-2 max-h-[300px] overflow-y-auto">
-      {subEntries.length === 0 &&
-        entries.map(([key, value]) => (
-          <WizardItem
-            key={key}
-            title={key}
-            onClick={() => {
-              onEntryClick(key, value);
-            }}
-          />
-        ))}
-      {subEntries.length > 0 &&
-        subEntries.map(([key, _]) => (
-          <WizardItem
-            key={key}
-            title={key}
-            onClick={() => {
-              onSubEntryClick(key);
-            }}
-          />
-        ))}
-    </div>
+    <>
+      <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center space-x-2">
+          {subEntries.length > 0 && (
+            <FaArrowLeftLong
+              className="text-xl bg-border-color rounded-full p-1 cursor-pointer active:scale-95 transition-all hover:text-magic"
+              onClick={reset}
+            />
+          )}
+          <div className="text-lg">Dynamic Data</div>
+          <RxMagicWand className="text-xl text-magic" />
+        </div>
+        <MdOutlineCancel
+          className="text-xl cursor-pointer active:scale-95 transition-all hover:text-magic"
+          onClick={onClose}
+        />
+      </div>
+      <div className="w-full border-b-[0.05px] my-4" />
+      <div className="flex flex-col space-y-2 max-h-[300px] overflow-y-auto">
+        {subEntries.length === 0 &&
+          entries.map(([key, value]) => (
+            <WizardItem
+              key={key}
+              title={key}
+              onClick={() => {
+                onEntryClick(key, value);
+              }}
+            />
+          ))}
+        {subEntries.length > 0 &&
+          subEntries.map(([key, _]) => (
+            <WizardItem
+              key={key}
+              title={key}
+              onClick={() => {
+                onSubEntryClick(key);
+              }}
+            />
+          ))}
+      </div>
+    </>
   );
 };
