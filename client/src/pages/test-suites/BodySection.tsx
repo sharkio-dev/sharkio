@@ -3,14 +3,11 @@ import React, { useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { MdOutlineCopyAll } from "react-icons/md";
-import { Button, Modal, Paper, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { MdChevronRight } from "react-icons/md";
-import { MdOutlineCancel } from "react-icons/md";
 import { RxMagicWand } from "react-icons/rx";
-import { faker } from "@faker-js/faker";
 import { PiRepeat } from "react-icons/pi";
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { Wizard } from "../../components/wizard/Wizard";
 
 type BodySectionProps = {
   body: any;
@@ -148,127 +145,5 @@ export const BodySection = ({
         }}
       />
     </div>
-  );
-};
-
-interface WizardProps {
-  handleSelection: (text: string) => void;
-  open: boolean;
-  onClose: () => void;
-}
-
-const Wizard: React.FC<WizardProps> = ({ handleSelection, open, onClose }) => {
-  return (
-    <Modal
-      open={open}
-      className="flex justify-center items-center border-0"
-      onClose={onClose}
-    >
-      <Paper className="flex flex-col w-96 rounded-sm outline-none p-4">
-        <FakeDataWizard handleSelection={handleSelection} onClose={onClose} />
-      </Paper>
-    </Modal>
-  );
-};
-
-interface WizardItemProp {
-  title: string;
-  onClick?: () => void;
-}
-
-const WizardItem: React.FC<WizardItemProp> = ({ title, onClick }) => {
-  return (
-    <div
-      className="flex flex-row w-full items-center justify-between cursor-pointer hover:text-magic shadow-lg rounded-md border-border-color border p-2 active:bg-border-color"
-      onClick={onClick}
-    >
-      <div className="text-lg ">{title}</div>
-      <div className="flex items-center space-x-2">
-        <MdChevronRight className="text-xl hover:scale-95 cursor-pointer" />
-      </div>
-    </div>
-  );
-};
-
-interface FakeDataWizardProps {
-  handleSelection: (text: string) => void;
-  onClose: () => void;
-}
-
-const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
-  handleSelection,
-  onClose,
-}) => {
-  const initEntries = () => {
-    return Object.entries(faker).filter(
-      ([key, _]) => !key.startsWith("_") && !key.startsWith("faker"),
-    );
-  };
-  const [selectedEntry, setSelectedEntry] = useState<any>(null);
-  const [entries, setEntries] = useState<any[]>(initEntries());
-  const [subEntries, setSubEntries] = useState<any[]>([]);
-
-  const onEntryClick = (key: string, value: any) => {
-    setSubEntries(
-      Object.entries(value).filter(
-        ([key, _]) => !key.startsWith("_") && !key.startsWith("faker"),
-      ),
-    );
-    setSelectedEntry(key);
-  };
-  const reset = () => {
-    setEntries(initEntries());
-    setSelectedEntry(null);
-    setSubEntries([]);
-  };
-
-  const onSubEntryClick = (key: string) => {
-    handleSelection(`{{faker "${selectedEntry}.${key}"}}`);
-    onClose();
-    reset();
-  };
-
-  return (
-    <>
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center space-x-2">
-          {subEntries.length > 0 && (
-            <FaArrowLeftLong
-              className="text-xl bg-border-color rounded-full p-1 cursor-pointer active:scale-95 transition-all hover:text-magic"
-              onClick={reset}
-            />
-          )}
-          <div className="text-lg">Dynamic Data</div>
-          <RxMagicWand className="text-xl text-magic" />
-        </div>
-        <MdOutlineCancel
-          className="text-xl cursor-pointer active:scale-95 transition-all hover:text-magic"
-          onClick={onClose}
-        />
-      </div>
-      <div className="w-full border-b-[0.05px] my-4" />
-      <div className="flex flex-col space-y-2 max-h-[300px] overflow-y-auto">
-        {subEntries.length === 0 &&
-          entries.map(([key, value]) => (
-            <WizardItem
-              key={key}
-              title={key}
-              onClick={() => {
-                onEntryClick(key, value);
-              }}
-            />
-          ))}
-        {subEntries.length > 0 &&
-          subEntries.map(([key, _]) => (
-            <WizardItem
-              key={key}
-              title={key}
-              onClick={() => {
-                onSubEntryClick(key);
-              }}
-            />
-          ))}
-      </div>
-    </>
   );
 };
