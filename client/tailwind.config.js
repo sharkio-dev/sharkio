@@ -7,6 +7,7 @@ export default {
         primary: "#181818",
         secondary: "#1d1d1d",
         tertiary: "#232323",
+        magic: "#ce93d8",
         "border-color": "#3a3a3a",
       },
     },
