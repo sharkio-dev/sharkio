@@ -127,6 +127,7 @@ export const BodySection = ({
           </div>
         </div>
       )}
+
       <Editor
         width="100%"
         theme="vs-dark"
