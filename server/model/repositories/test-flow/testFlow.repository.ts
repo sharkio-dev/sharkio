@@ -1,12 +1,18 @@
 import { DataSource, Repository } from "typeorm";
 import { TestFlow } from "../../entities/test-flow/TestFlow";
-import { CreateTestFlowDTO } from "../../../dto/in/create-test-flow.dto";
+import {
+  CreateTestFlowDTO,
+  CreateTestNodeDTO,
+} from "../../../dto/in/test-flow.dto";
+import { TestFlowNode } from "../../entities/test-flow/TestFlowNode";
 
 export class TestFlowRepository {
   repository: Repository<TestFlow>;
+  nodeRepository: Repository<TestFlowNode>;
 
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(TestFlow);
+    this.nodeRepository = appDataSource.manager.getRepository(TestFlowNode);
   }
 
   create(testFlow: CreateTestFlowDTO) {
@@ -28,5 +34,23 @@ export class TestFlowRepository {
 
   updateById(ownerId: any, flowId: string, testFlow: Partial<TestFlow>) {
     return this.repository.update(flowId, testFlow);
+  }
+
+  createTestNode(
+    ownerId: string,
+    flowId: string,
+    testNode: Partial<TestFlowNode>,
+  ) {
+    const createdNode = this.nodeRepository.create({
+      ...testNode,
+      ownerId,
+      flowId,
+    });
+
+    return this.nodeRepository.save(createdNode);
+  }
+
+  getNodesByFlowId(ownerId: any, flowId: string) {
+    return this.nodeRepository.find({ where: { ownerId, flowId } });
   }
 }
