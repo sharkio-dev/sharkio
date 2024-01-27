@@ -24,7 +24,7 @@ import { LoadingIcon } from "./LoadingIcon";
 
 interface EnvStepProps {
   onNextClicked: () => void;
-  value: boolean;
+  value: boolean | null;
   handleChange: (newValue: boolean) => void;
 }
 const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
@@ -39,7 +39,7 @@ const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
           value={value}
           size="large"
           exclusive
-          onChange={(_, newValue) => {
+          onChange={(_: any, newValue: boolean | null) => {
             if (typeof newValue === "boolean") handleChange(newValue);
           }}
         >
@@ -57,7 +57,7 @@ const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
         <Button color="warning" disabled>
           Back
         </Button>
-        <Button onClick={onNextClicked}>Next</Button>
+        <Button onClick={onNextClicked} disabled={value === null}>Next</Button>
       </div>
     </div>
   );
@@ -134,7 +134,7 @@ function SimpleDomainComponent(props: {
           value={props.domain}
           className="w-1/2"
           placeholder="https://example.com"
-          onChange={(e) => props.onDomainChange(e.target.value)}
+          onChange={(e: { target: { value: string; }; }) => props.onDomainChange(e.target.value)}
         />
       </div>
     </>
@@ -183,7 +183,7 @@ function NgrokComponent(props: {
               value={props.domain}
               className="w-1/2"
               placeholder="https://example.com"
-              onChange={(e) => props.onDomainChange(e.target.value)}
+              onChange={(e: { target: { value: string; }; }) => props.onDomainChange(e.target.value)}
             />
           </ListItem>
         </List>
@@ -216,7 +216,7 @@ const NameStep = ({
           className="w-1/2"
           placeholder="Proxy name"
           value={value}
-          onChange={(e) => handleChange(e.target.value)}
+          onChange={(e: { target: { value: string; }; }) => handleChange(e.target.value)}
         />
       </div>
       <div className="mt-8 flex w-full flex-row justify-between">
