@@ -10,10 +10,14 @@ function HomepageHeader() {
   return (
     <header
       style={{ width: "100%", height: "calc(100vh - 60px)" }}
-      className={clsx("hero hero--primary", styles.heroBanner)}
+      className={clsx("hero", styles.heroBanner)}
     >
       <div className="container">
-        <Heading as="h1" className="hero__title">
+        <Heading
+          as="h1"
+          className="hero__title hero--primary"
+          style={{ color: "#879ec4" }}
+        >
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
