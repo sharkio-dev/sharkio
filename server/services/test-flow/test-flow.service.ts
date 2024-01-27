@@ -38,4 +38,8 @@ export class TestFlowService {
   getNodesByFlowId(ownerId: any, flowId: string) {
     return this.repository.getNodesByFlowId(ownerId, flowId);
   }
+
+  getEdgesByFlowId(ownerId: any, flowId: string) {
+    return this.repository.getEdgesByFlowId(ownerId, flowId);
+  }
 }

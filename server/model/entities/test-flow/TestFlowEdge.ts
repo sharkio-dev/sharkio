@@ -10,14 +10,17 @@ export class TestFlowEdge {
   })
   id: string;
 
-  @Column("uuid", { name: "flow_id", nullable: true })
-  flowId: string | null;
+  @Column("uuid", { name: "flow_id" })
+  flowId: string;
 
-  @Column("uuid", { name: "source_id", nullable: true })
-  sourceId: string | null;
+  @Column("uuid", { name: "owner_id" })
+  ownerId: string;
 
-  @Column("uuid", { name: "target_id", nullable: true })
-  targetId: string | null;
+  @Column("uuid", { name: "source_id" })
+  sourceId: string;
+
+  @Column("uuid", { name: "target_id" })
+  targetId: string;
 
   @Column("timestamp with time zone", {
     name: "created_at",

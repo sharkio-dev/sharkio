@@ -29,6 +29,9 @@ export class TestFlowNode {
   @Column("text", { name: "body" })
   body: string;
 
+  @Column("text", { name: "subdomain" })
+  subdomain: string;
+
   @Column("json", { name: "headers" })
   headers: Record<string, string>;
 

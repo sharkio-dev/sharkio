@@ -17,6 +17,7 @@ import { MockResponse } from "./entities/MockResponse";
 import { WorkspacesUsers } from "./entities/WorkspacesUsers";
 import { TestFlow } from "./entities/test-flow/TestFlow";
 import { TestFlowNode } from "./entities/test-flow/TestFlowNode";
+import { TestFlowEdge } from "./entities/test-flow/TestFlowEdge";
 
 config({
   path: "../.env",
@@ -52,6 +53,7 @@ export const createConnection = () => {
       Response,
       TestFlow,
       TestFlowNode,
+      TestFlowEdge,
     ],
     subscribers: [],
     migrations: ["migrations/*.ts"],

@@ -15,6 +15,11 @@ export class TestFlow {
   })
   name: string;
 
+  @Column("text", {
+    name: "execution_type",
+  })
+  executionType: string;
+
   @Column("uuid", { name: "owner_id", nullable: true })
   ownerId: string | null;
 

@@ -5,14 +5,17 @@ import {
   CreateTestNodeDTO,
 } from "../../../dto/in/test-flow.dto";
 import { TestFlowNode } from "../../entities/test-flow/TestFlowNode";
+import { TestFlowEdge } from "../../entities/test-flow/TestFlowEdge";
 
 export class TestFlowRepository {
   repository: Repository<TestFlow>;
   nodeRepository: Repository<TestFlowNode>;
+  edgeRepository: Repository<TestFlowEdge>;
 
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(TestFlow);
     this.nodeRepository = appDataSource.manager.getRepository(TestFlowNode);
+    this.edgeRepository = appDataSource.manager.getRepository(TestFlowEdge);
   }
 
   create(testFlow: CreateTestFlowDTO) {
@@ -52,5 +55,9 @@ export class TestFlowRepository {
 
   getNodesByFlowId(ownerId: any, flowId: string) {
     return this.nodeRepository.find({ where: { ownerId, flowId } });
+  }
+
+  getEdgesByFlowId(ownerId: any, flowId: string) {
+    return this.edgeRepository.find({ where: { ownerId, flowId } });
   }
 }
