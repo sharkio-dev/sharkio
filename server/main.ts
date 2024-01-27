@@ -61,6 +61,9 @@ import { WorkspaceService } from "./services/workspace/workspace.service";
 import { TestFlowRepository } from "./model/repositories/test-flow/testFlow.repository";
 import { TestFlowController } from "./controllers/test-flow.controller";
 import { TestFlowService } from "./services/test-flow/test-flow.service";
+import { TestFlowExecutor } from "./services/test-flow/test-flow-executor/test-flow-executor.service";
+import { ParallelExecutor } from "./services/test-flow/test-flow-executor/parallel-executor";
+import { SequenceExecutor } from "./services/test-flow/test-flow-executor/sequence-executor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -139,6 +142,16 @@ async function main(isProxy = true, isServer = true) {
   );
   const mockResponseTransformer = new MockResponseTransformer();
   const testFlowService = new TestFlowService(testFlowRepository);
+
+  const testFlowExecutionStrategies = {
+    parallel: new ParallelExecutor(requestService),
+    sequence: new SequenceExecutor(requestService),
+  };
+
+  const testFlowExecutor = new TestFlowExecutor(
+    testFlowService,
+    testFlowExecutionStrategies,
+  );
 
   /* Controllers */
   const mockResponseController = new MockResponseController(
