@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
-import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
+import { TextButton } from "../../components/TextButton";
 
 type HeaderSectionProps = {
   headers: { [key: string]: any };
@@ -36,8 +37,8 @@ export const HeaderSection = ({
 
   const addHeader = () => {
     const newh = [
-      ...newHeaders,
       { name: "header-" + newHeaders.length, value: "" },
+      ...newHeaders,
     ];
     onHeadersChange(newh);
   };
@@ -59,6 +60,9 @@ export const HeaderSection = ({
 
   return (
     <div className="flex h-full flex-col items-center space-y-2 w-full overflow-y-auto">
+      {handleHeadersChange && (
+        <TextButton text="Add Header" onClick={addHeader} />
+      )}
       {newHeaders?.map((header, i) => (
         <>
           <div className="flex flex-row items-center space-x-2 w-full">
@@ -93,15 +97,6 @@ export const HeaderSection = ({
           </div>
         </>
       ))}
-      {handleHeadersChange && (
-        <div
-          className="flex self-start flex-row items-center space-x-2 px-2 mt-2 w-32 cursor-pointer"
-          onClick={addHeader}
-        >
-          <AiOutlinePlus className="flex text-green-400 hover:bg-border-color rounded-md hover:cursor-pointer" />
-          <span className="hover:text-green-400">Add Header</span>
-        </div>
-      )}
     </div>
   );
 };
