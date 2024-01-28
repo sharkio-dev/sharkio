@@ -4,12 +4,10 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 
 type InvocationsSearchBarProps = {
-  invocationId?: string;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
 };
 export const InvocationsSearchBar = ({
-  invocationId,
   setActiveInvocation,
   title,
 }: InvocationsSearchBarProps) => {
@@ -31,7 +29,6 @@ export const InvocationsSearchBar = ({
             return (
               <Invocation
                 method={invocation.method}
-                isSelected={invocation.id === invocationId}
                 onClick={() => setActiveInvocation(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}

@@ -24,6 +24,8 @@ export const routes = {
   TEST_SUITE_TEST: "/test-suites/:testSuiteId/tests/:testId",
 
   FLOWS: "/flows",
+  FLOW: "/flows/:flowId",
+  FLOW_TEST: "/flows/:flowId/tests/:testId",
 
   MOCKS: "/mocks",
   MOCK: "/mocks/:mockId",

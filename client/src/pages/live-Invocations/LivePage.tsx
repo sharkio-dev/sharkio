@@ -12,21 +12,17 @@ export const LivePage = () => {
 
 const LivePageMainSection = () => {
   const navigator = useNavigate();
-  const { invocationId } = useParams();
 
-  const onInvocationClick = useCallback(
-    (id: string) => {
-      const currentSearchParams = new URLSearchParams(window.location.search);
-      navigator(
-        `${routes.LIVE_INVOCATIONS}/${id}?${currentSearchParams.toString()}`,
-      );
-    },
-    [invocationId],
-  );
+  const onInvocationClick = (id: string) => {
+    const currentSearchParams = new URLSearchParams(window.location.search);
+    navigator(
+      `${routes.LIVE_INVOCATIONS}/${id}?${currentSearchParams.toString()}`,
+    );
+  };
+
   return (
     <div className={`flex flex-col w-full h-full p-4`}>
       <InvocationsSearchBar
-        invocationId={invocationId}
         title={"Requests"}
         setActiveInvocation={onInvocationClick}
       />

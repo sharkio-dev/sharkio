@@ -20,8 +20,16 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
 
 type InvocationDetailsProps = {
-  invocation: InvocationType | undefined;
-  setInvocation: (invocation: InvocationType) => void;
+  invocation: {
+    body?: InvocationType["body"];
+    headers?: InvocationType["headers"];
+    response?: InvocationType["response"];
+  };
+  setInvocation: (invocation: {
+    body?: InvocationType["body"];
+    headers?: InvocationType["headers"];
+    response?: InvocationType["response"];
+  }) => void;
 };
 
 const defaultCodeLanguage = "bash";
@@ -50,7 +58,7 @@ export function InvocationDetails({
   );
 }
 
-const RequestSection: React.FC<InvocationDetailsProps> = ({
+export const RequestSection: React.FC<InvocationDetailsProps> = ({
   invocation,
   setInvocation,
 }) => {

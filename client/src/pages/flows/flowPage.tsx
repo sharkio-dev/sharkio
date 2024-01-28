@@ -1,7 +1,7 @@
 import { useState } from "react";
 import InnerPageTemplate from "../../components/inner-page-template/inner-page-template";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import { IoSaveOutline } from "react-icons/io5";
 import { Button, Input, Tab } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
@@ -10,6 +10,12 @@ import TabPanel from "@mui/lab/TabPanel";
 import { TextButton } from "../../components/TextButton";
 import { selectIconByMethod } from "../sniffers/selectIconByMethod";
 import { MdChevronRight } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { RequestSection } from "../sniffers/InvocationDetails";
+import { InvocationType } from "../sniffers/types";
+import { InvocationURL } from "../live-Invocations/LiveInvocationUpperBar";
+import { SelectComponent } from "../../components/select-component/SelectComponent";
 
 const FLOW = {
   id: "673bf1a6-8662-41a2-a1eb-6e7acba75629",
@@ -29,6 +35,7 @@ const FLOW_STEP = {
   url: "/URL",
   body: "",
   subdomain: "ron-demo-9usub",
+  snifferId: "8b5ea683-d68d-43fe-b18d-ab516540aac3",
   headers: {},
   assertions: [
     {
@@ -67,6 +74,133 @@ interface FlowStep {
   updatedAt: string;
 }
 
+export const FlowStepPage = () => {
+  const [flowStep, setFlowStep] = useState<FlowStep>(FLOW_STEP);
+  return (
+    <PanelGroup
+      direction={"vertical"}
+      className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh-184px)]"
+    >
+      <Panel defaultSize={60} maxSize={70}>
+        <div className="flex flex-col p-4 w-full h-full pb-0">
+          <InvocationURL
+            invocation={flowStep}
+            setEditedInvocation={setFlowStep}
+            showUrlButtons={false}
+          />
+          <RequestSection invocation={flowStep} setInvocation={setFlowStep} />
+        </div>
+      </Panel>
+      <div className="relative h-[1px] w-full my-4 hover:bg-blue-300 bg-border-color">
+        <PanelResizeHandle
+          className={`absolute h-[30px] w-full top-[-15px] `}
+        />
+      </div>
+      <Panel maxSize={70}>
+        <div className="flex flex-col px-2 w-full h-full space-y-2">
+          <div className="flex flex-row items-center space-x-2">
+            <TextButton
+              text="Header Assertion"
+              onClick={() => {
+                setFlowStep({
+                  ...flowStep,
+                  assertions: [
+                    ...flowStep.assertions!,
+                    {
+                      path: "headers.example",
+                      comparator: "eq",
+                      expectedValue: "example",
+                    },
+                  ],
+                });
+              }}
+            />
+            <TextButton
+              text="Body Assertion"
+              onClick={() => {
+                setFlowStep({
+                  ...flowStep,
+                  assertions: [
+                    ...flowStep.assertions!,
+                    {
+                      path: "body.example",
+                      comparator: "eq",
+                      expectedValue: "example",
+                    },
+                  ],
+                });
+              }}
+            />
+            <TextButton
+              text="Status Assertion"
+              onClick={() => {
+                setFlowStep({
+                  ...flowStep,
+                  assertions: [
+                    ...flowStep.assertions!,
+                    {
+                      path: "status",
+                      comparator: "eq",
+                      expectedValue: "200",
+                    },
+                  ],
+                });
+              }}
+            />
+          </div>
+          {flowStep.assertions?.map((assertion) => (
+            <div className="flex flex-row items-center space-x-2 w-full">
+              <div className="flex flex-row items-center space-x-2 w-full">
+                <input
+                  className="border border-border-color rounded-md px-2 py-1 w-full"
+                  placeholder="Name"
+                  value={assertion.path}
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                  }}
+                />
+                <div className="flex flex-row min-w-28 h-full">
+                  <SelectComponent
+                    options={[
+                      { label: "eq", value: "eq" },
+                      { label: "neq", value: "neq" },
+                    ]}
+                    value={assertion.comparator}
+                    onChange={(value) => {}}
+                    variant="outlined"
+                  />
+                </div>
+
+                <input
+                  className="border border-border-color rounded-md px-2 py-1 w-full"
+                  placeholder="Value"
+                  value={assertion.expectedValue}
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                  }}
+                />
+                <div className="flex flex-row min-w-[20px] h-full">
+                  <AiOutlineDelete
+                    className="flex text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+                    onClick={() => {
+                      setFlowStep({
+                        ...flowStep,
+                        assertions: flowStep.assertions?.filter(
+                          (a) => a !== assertion,
+                        ),
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Panel>
+    </PanelGroup>
+  );
+};
+
 const FlowPage = () => {
   return (
     <InnerPageTemplate
@@ -77,10 +211,23 @@ const FlowPage = () => {
 };
 
 const FlowSideBar: React.FC = () => {
+  const [isNew, setIsNew] = useState(true);
   return (
     <div className="flex flex-col space-y-4 px-2">
-      <div className="flex flex-row items-center">
-        <div className="text-2xl font-bold">Flows</div>
+      <div className="flex flex-col">
+        <div className="text-2xl font-bold mb-2">Flows</div>
+        <div className="border-b border-border-color pb-2 mb-2">
+          <div
+            className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
+          >
+            <div
+              className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
+            >
+              <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1" />
+              New Flow
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -130,6 +277,8 @@ interface TestsTab {
 }
 
 const TestsTab: React.FC<TestsTab> = ({ steps }) => {
+  const navigate = useNavigate();
+
   return (
     <TabPanel value="1" style={{ padding: 0, paddingTop: 16, height: "100%" }}>
       <TextButton text="Add Test" onClick={() => {}} />
@@ -150,7 +299,10 @@ const TestsTab: React.FC<TestsTab> = ({ steps }) => {
             </div>
             <div className="flex flex-row items-center space-x-2">
               <AiOutlineDelete className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
-              <MdChevronRight className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
+              <MdChevronRight
+                className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md"
+                onClick={() => navigate("/flows/123/tests/123")}
+              />
             </div>
           </div>
         </div>
