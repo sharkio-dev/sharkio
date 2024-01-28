@@ -1,3 +1,4 @@
 export const getSnifferDomain = (subdomain: string) => {
-  return `https://${subdomain}.${import.meta.env.VITE_PROXY_DOMAIN}`;
+  // @ts-ignore
+  return `https://${subdomain}.${window._env_.VITE_PROXY_DOMAIN}`;
 };
