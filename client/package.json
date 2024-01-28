@@ -23,7 +23,6 @@
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
     "prestart": "node ./dynamic-env.js ./public/env.js",
     "prebuild": "node ./dynamic-env.js ./public/env.js"
-    
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
