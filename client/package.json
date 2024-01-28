@@ -20,9 +20,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "jest --passWithNoTests",
-    "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
-    "prestart": "node ./dynamic-env.js ./public/env.js",
-    "prebuild": "node ./dynamic-env.js ./public/env.js"
+    "format": "prettier --write \"{,!(node_modules)/**/}*.ts\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
