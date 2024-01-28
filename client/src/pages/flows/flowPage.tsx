@@ -13,7 +13,6 @@ import { MdChevronRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { RequestSection } from "../sniffers/InvocationDetails";
-import { InvocationType } from "../sniffers/types";
 import { InvocationURL } from "../live-Invocations/LiveInvocationUpperBar";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 
@@ -81,8 +80,8 @@ export const FlowStepPage = () => {
       direction={"vertical"}
       className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh-184px)]"
     >
-      <Panel defaultSize={60} maxSize={70}>
-        <div className="flex flex-col p-4 w-full h-full pb-0">
+      <Panel defaultSize={60} maxSize={80}>
+        <div className="flex flex-col p-4 w-full pb-0">
           <InvocationURL
             invocation={flowStep}
             setEditedInvocation={setFlowStep}
@@ -166,7 +165,14 @@ export const FlowStepPage = () => {
                       { label: "neq", value: "neq" },
                     ]}
                     value={assertion.comparator}
-                    onChange={(value) => {}}
+                    setValue={(value: string) => {
+                      setFlowStep({
+                        ...flowStep,
+                        assertions: flowStep.assertions?.map((a) =>
+                          a === assertion ? { ...a, comparator: value } : a,
+                        ),
+                      });
+                    }}
                     variant="outlined"
                   />
                 </div>
@@ -211,7 +217,6 @@ const FlowPage = () => {
 };
 
 const FlowSideBar: React.FC = () => {
-  const [isNew, setIsNew] = useState(true);
   return (
     <div className="flex flex-col space-y-4 px-2">
       <div className="flex flex-col">
