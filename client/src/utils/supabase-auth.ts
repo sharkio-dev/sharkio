@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
 export const supabaseClient = createClient(
-  import.meta.env.VITE_SUPABASE_PROJECT_URL ?? "",
-  import.meta.env.VITE_SUPABASE_ANON ?? "",
+  // @ts-ignore
+  window._env_.VITE_SUPABASE_PROJECT_URL ?? "",
+  // @ts-ignore
+  window._env_.VITE_SUPABASE_ANON ?? "",
 );
