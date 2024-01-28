@@ -33,10 +33,7 @@ if "client/" in changed_files_output:
     # Change to the server directory
     if not args.dry_run:
         os.chdir('client/')
-        if environment == "staging":
-            build_and_push("frontend", "Dockerfile.staging")
-        else:
-            build_and_push("frontend", "Dockerfile")   
+        build_and_push("frontend", "Dockerfile")   
         os.chdir('..')
     images.append({"name": "frontend", "index": 0})
 
