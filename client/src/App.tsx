@@ -40,7 +40,8 @@ function App(): React.JSX.Element {
   });
 
   useEffect(() => {
-    if (import.meta.env.VITE_FULLSTORY_ORG_ID) {
+    // @ts-ignore
+    if (window._env_.VITE_FULLSTORY_ORG_ID) {
       FullStory("setProperties", {
         type: "user",
         properties: {
