@@ -12,6 +12,7 @@ export const LivePage = () => {
 
 const LivePageMainSection = () => {
   const navigator = useNavigate();
+
   const { invocationId } = useParams();
 
   const onInvocationClick = useCallback(

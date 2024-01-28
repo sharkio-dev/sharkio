@@ -11,6 +11,7 @@ export const selectIconByStatus = (status: number) => {
 };
 
 type InvocationProps = {
+  snifferName: string;
   status: number;
   url: string;
   method: string;
@@ -19,6 +20,7 @@ type InvocationProps = {
   onClick?: () => void;
 };
 export const Invocation = ({
+  snifferName,
   status,
   url,
   method,
@@ -29,7 +31,7 @@ export const Invocation = ({
   return (
     <Tooltip title={url} placement="top" arrow enterDelay={500}>
       <div
-        className={`flex flex-row w-full px-2 hover:bg-secondary cursor-pointer active:bg-primary items-center hover:rounded-md justify-between border-b border-border-color 
+        className={`flex flex-row w-full px-2 hover:bg-secondary cursor-pointer active:bg-primary items-center hover:rounded-md justify-between border-b border-border-color
     ${isSelected ? "bg-primary" : ""}`}
         onClick={onClick}
       >
@@ -41,7 +43,7 @@ export const Invocation = ({
         </div>
         <div className="flex flex-row items-center space-x-4">
           {selectIconByStatus(status)}
-
+          <div className="flex text-xs text-gray-500">{snifferName}</div>
           <div className="flex text-xs text-gray-500">{date}</div>
         </div>
       </div>

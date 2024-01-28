@@ -14,6 +14,7 @@ export const InvocationsSearchBar = ({
   title,
 }: InvocationsSearchBarProps) => {
   const { invocations, loadingInvocations } = useSniffersStore();
+
   return (
     <>
       <div className="text-xl font-bold font-mono mb-4">{title}</div>
@@ -30,6 +31,7 @@ export const InvocationsSearchBar = ({
           invocations.map((invocation, i) => {
             return (
               <Invocation
+                snifferName={invocations[i].headers.host}
                 method={invocation.method}
                 isSelected={invocation.id === invocationId}
                 onClick={() => setActiveInvocation(invocation.id)}
