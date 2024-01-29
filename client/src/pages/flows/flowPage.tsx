@@ -1,7 +1,14 @@
 import { useState } from "react";
 import InnerPageTemplate from "../../components/inner-page-template/inner-page-template";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineCloseCircle,
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlinePlayCircle,
+  AiOutlinePlus,
+} from "react-icons/ai";
 import { IoSaveOutline } from "react-icons/io5";
 import { Button, Input, Tab } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
@@ -15,6 +22,15 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { RequestSection } from "../sniffers/InvocationDetails";
 import { InvocationURL } from "../live-Invocations/LiveInvocationUpperBar";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { ExecutionRow } from "../test-suites/ExecutionRowProps";
 
 const FLOW = {
   id: "673bf1a6-8662-41a2-a1eb-6e7acba75629",
@@ -72,6 +88,77 @@ interface FlowStep {
   createdAt: string;
   updatedAt: string;
 }
+
+export const FlowRunPage = () => {
+  const executions = [
+    {
+      checks: [
+        {
+          actualValue: "200",
+          comparator: "eq",
+          expectedValue: "200",
+          isPassed: true,
+          targetPath: "",
+          type: "status_code",
+        },
+      ],
+    },
+    {
+      checks: [
+        {
+          actualValue: "200",
+          comparator: "eq",
+          expectedValue: "400",
+          isPassed: false,
+          targetPath: "",
+          type: "status_code",
+        },
+      ],
+    },
+  ];
+  const loading = false;
+  return (
+    <div className="flex flex-col p-4">
+      <TableContainer className="border-[1px] border-primary rounded-lg">
+        <Table>
+          <TableHead>
+            <TableRow className="bg-secondary">
+              <TableCell style={{ borderBottom: "none" }}>
+                {executions.length} executions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loading && (
+              <TableRow>
+                <TableCell>
+                  <div className="flex flex-row items-center justify-center">
+                    <LoadingIcon />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+            {executions.map((i, index) => (
+              <ExecutionRow
+                title={"TEST NAME"}
+                status={
+                  i.checks.every((check: any) => check.isPassed)
+                    ? "success"
+                    : "failure"
+                }
+                executionDate={"GET /test"}
+                passed={i.checks.filter((check: any) => check.isPassed).length}
+                failed={i.checks.filter((check: any) => !check.isPassed).length}
+                key={index}
+                checks={i.checks}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+};
 
 export const FlowStepPage = () => {
   const [flowStep, setFlowStep] = useState<FlowStep>(FLOW_STEP);
@@ -233,6 +320,24 @@ const FlowSideBar: React.FC = () => {
             </div>
           </div>
         </div>
+        {[FLOW, FLOW, FLOW].map((flow) => (
+          <div
+            className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary`}
+          >
+            <div className="flex flex-row items-center justify-between w-full">
+              <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
+                {flow.name}
+              </div>
+              <div className="flex flex-row items-center space-x-2">
+                <AiOutlineDelete
+                  className="text-sm cursor-pointer hover:bg-border-color rounded-md"
+                  onClick={(e: any) => e.stopPropagation()}
+                />
+                <AiOutlinePlayCircle className="flex text-sm text-green-400 cursor-pointer hover:scale-105 active:scale-100 transition-transform" />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -316,9 +421,46 @@ const TestsTab: React.FC<TestsTab> = ({ steps }) => {
   );
 };
 const RunsTab: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <TabPanel value="2" style={{ padding: 0, paddingTop: 16, height: "100%" }}>
-      Runs
+      <div className="flex flex-col space-y-2">
+        {[
+          { createdAt: "2024-01-26T12:57:18.932Z", status: "success" },
+          { createdAt: "2024-01-26T12:57:18.932Z", status: "failure" },
+          { createdAt: "2024-01-26T12:57:18.932Z", status: "success" },
+        ].map((run, index) => {
+          return (
+            <div className="flex flex-col border border-border-color p-2 px-4 shadow-md hover:border-blue-400 cursor-pointer rounded-md min-h-[48px] justify-center">
+              <div className="flex flex-row items-center justify-between">
+                <div className="flex flex-row justify-center items-center space-x-2">
+                  {run.status === "failure" ? (
+                    <AiOutlineCloseCircle className="text-red-400 text-2xl" />
+                  ) : (
+                    <AiOutlineCheckCircle className="text-green-400 text-2xl" />
+                  )}
+                  <div className="flex flex-col justify-center">
+                    <div className="flex flex-row items-center space-x-2">
+                      <div className="text-lg font-bold">#{3 - index}</div>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {new Date(run.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-row items-center space-x-2">
+                  <MdChevronRight
+                    className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md"
+                    onClick={() => {
+                      navigate("/flows/123/runs/123");
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </TabPanel>
   );
 };
@@ -328,8 +470,6 @@ interface FlowNameAndSaveProps {
   name: string;
   handleSaveClicked: () => void;
   handleNameChange: (namg: string) => void;
-  isNew?: boolean;
-  handleCreateClicked?: () => void;
 }
 
 const FlowNameAndSave: React.FC<FlowNameAndSaveProps> = ({
@@ -337,8 +477,6 @@ const FlowNameAndSave: React.FC<FlowNameAndSaveProps> = ({
   name,
   handleNameChange,
   handleSaveClicked,
-  isNew = true,
-  handleCreateClicked,
 }) => {
   return (
     <div className="flex flex-row items-center justify-between">
@@ -348,26 +486,14 @@ const FlowNameAndSave: React.FC<FlowNameAndSaveProps> = ({
         handleNameChange={handleNameChange}
         handleSaveClicked={handleSaveClicked}
       />
-      {!isNew && (
-        <Button
-          variant="outlined"
-          color="success"
-          sx={{ height: "32px" }}
-          onAbort={handleSaveClicked}
-        >
-          Save
-        </Button>
-      )}
-      {isNew && (
-        <Button
-          variant="outlined"
-          color="success"
-          sx={{ height: "32px" }}
-          onAbort={handleCreateClicked}
-        >
-          Create
-        </Button>
-      )}
+      <Button
+        variant="outlined"
+        color="success"
+        sx={{ height: "32px" }}
+        onAbort={handleSaveClicked}
+      >
+        Save
+      </Button>
     </div>
   );
 };

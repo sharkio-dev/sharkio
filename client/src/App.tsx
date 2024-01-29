@@ -26,7 +26,7 @@ import { AddSnifferPage } from "./pages/sniffers/AddSnifferPage";
 import { FullStory } from "@fullstory/browser";
 import { useSniffersStore } from "./stores/sniffersStores";
 import { JoinWorkspace } from "./components/project-selection/JoinWorkspace";
-import FlowPage, { FlowStepPage } from "./pages/flows/flowPage";
+import FlowPage, { FlowRunPage, FlowStepPage } from "./pages/flows/flowPage";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -76,6 +76,7 @@ function App(): React.JSX.Element {
       { path: routes.FLOWS, element: <FlowPage /> },
       { path: routes.FLOW, element: <FlowPage /> },
       { path: routes.FLOW_TEST, element: <FlowStepPage /> },
+      { path: routes.FLOW_RUN, element: <FlowRunPage /> },
       { path: routes.MOCKS, element: <MockPage /> },
       { path: routes.MOCK, element: <MockPage /> },
       { path: routes.JOIN_WORKSPACE, element: <JoinWorkspace /> },

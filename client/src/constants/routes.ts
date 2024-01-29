@@ -26,6 +26,7 @@ export const routes = {
   FLOWS: "/flows",
   FLOW: "/flows/:flowId",
   FLOW_TEST: "/flows/:flowId/tests/:testId",
+  FLOW_RUN: "/flows/:flowId/runs/:runId",
 
   MOCKS: "/mocks",
   MOCK: "/mocks/:mockId",
