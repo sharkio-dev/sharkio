@@ -28,4 +28,4 @@ COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 # Expose port
 EXPOSE 8080
 # Start nginx
-CMD ["sh", "-c", "ls && node './dynamic-env.js' ./dist/env.js && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "ls && node './dynamic-env.js' ./dist/env.js && mv ./dist/env.js /usr/share/nginx/html && nginx -g 'daemon off;'"]
