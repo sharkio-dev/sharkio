@@ -36,10 +36,13 @@ export class RequestService {
     });
     const newHeaders = Object.entries(headers)
       .filter(([key, _]) => key !== "host" && key !== "content-length")
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
     const res: AxiosResponse = await axios
       .request({
