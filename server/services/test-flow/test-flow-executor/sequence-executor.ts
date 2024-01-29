@@ -1,33 +1,58 @@
-import { TestFlow } from "../../../model/entities/test-flow/TestFlow";
-import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
-import { ITestFlowExecutor } from "./test-flow-executor.service";
-import { RequestService } from "../../request/request.service";
+import { AxiosResponse } from "axios";
 import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
+import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
+import { RequestService } from "../../request/request.service";
+import {
+  AssertionResult,
+  NodeResponseValidator,
+} from "./node-response-validator";
+import { ITestFlowExecutor } from "./test-flow-executor.service";
 
 export class SequenceExecutor implements ITestFlowExecutor {
-  constructor(private readonly requestService: RequestService) {}
+  constructor(
+    private readonly requestService: RequestService,
+    private readonly nodeResponseValidator: NodeResponseValidator,
+  ) {}
 
-  async execute(
-    testFlow: TestFlow,
-    nodes: TestFlowNode[],
-    edges: TestFlowEdge[],
-  ) {
+  async execute(nodes: TestFlowNode[], edges: TestFlowEdge[]) {
     const sortedNodes = this.sortNodesByEdges(nodes, edges);
 
-    for (let i = 0; i < nodes.length; i++) {
-      const node = sortedNodes[i];
-      try {
+    try {
+      const result: {
+        node: TestFlowNode;
+        response: AxiosResponse;
+        assertionResult: AssertionResult;
+      }[] = [];
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = sortedNodes[i];
+
         const { method, url, headers, body, subdomain } = node;
-        await this.requestService.execute({
+        const response = await this.requestService.execute({
           method,
           url: url ?? "/",
           headers: headers || {},
           body,
           subdomain,
         });
-      } catch (e) {
-        throw new Error(`Failed to execute step: ${node.id}`);
+
+        const assertionResult = await this.nodeResponseValidator.assert(
+          node,
+          response,
+        );
+
+        const resultItem = { node, response, assertionResult };
+
+        result.push(resultItem);
+
+        if (!assertionResult.success) {
+          break;
+        }
       }
+
+      return result;
+    } catch (e) {
+      throw new Error("Failed to run test flow");
     }
   }
 

@@ -15,9 +15,9 @@ import { Workspace } from "./entities/Workspace";
 import { config } from "dotenv";
 import { MockResponse } from "./entities/MockResponse";
 import { WorkspacesUsers } from "./entities/WorkspacesUsers";
-import { TestFlow } from "./entities/test-flow/TestFlow";
 import { TestFlowNode } from "./entities/test-flow/TestFlowNode";
 import { TestFlowEdge } from "./entities/test-flow/TestFlowEdge";
+import { TestFlow } from "./entities/test-flow/TestFlow";
 
 config({
   path: "../.env",

@@ -1,14 +1,25 @@
-import { TestFlow } from "../../../model/entities/test-flow/TestFlow";
+import { AxiosResponse } from "axios";
 import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
 import { TestFlowService } from "../test-flow.service";
+import { FlowRunStatus } from "../../../model/entities/test-flow/TestFlowRun";
+import {
+  AssertionResult,
+  NodeResponseValidator,
+} from "./node-response-validator";
+import { result } from "lodash";
+
+export type TestExecutionResult = {
+  node: TestFlowNode;
+  response: AxiosResponse;
+  assertionResult: AssertionResult;
+}[];
 
 export interface ITestFlowExecutor {
   execute(
-    testFlow: TestFlow,
     nodes: TestFlowNode[],
     edges?: TestFlowEdge[],
-  ): Promise<void>;
+  ): Promise<TestExecutionResult>;
 }
 
 export class TestFlowExecutor {
@@ -28,6 +39,25 @@ export class TestFlowExecutor {
 
     if (!executionStrategy) throw new Error("execution strategy not found");
 
-    return executionStrategy.execute(testFlow, nodes, edges);
+    const flowRun = await this.testFlowService.createTestFlowRun(
+      ownerId,
+      flowId,
+      {
+        status: FlowRunStatus.running,
+        startedAt: new Date(),
+      },
+    );
+
+    const runResult = await executionStrategy.execute(nodes, edges);
+
+    const isPassed = runResult.every(
+      (result) => result.assertionResult.success,
+    );
+
+    await this.testFlowService.updateFlowRun(ownerId, flowId, {
+      status: isPassed ? FlowRunStatus.success : FlowRunStatus.failed,
+    });
+
+    return flowRun;
   }
 }

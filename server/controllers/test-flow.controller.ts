@@ -8,6 +8,7 @@ import {
   CreateTestFlowValidator,
   CreateTestNodeValidator,
 } from "../dto/in/test-flow.dto";
+import { TestFlowExecutor } from "../services/test-flow/test-flow-executor/test-flow-executor.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -17,6 +18,7 @@ const log = useLog({
 export class TestFlowController {
   constructor(
     private readonly testFlowService: TestFlowService,
+    private readonly testFlowExecutorService: TestFlowExecutor,
     private readonly baseUrl: string = "/sharkio/test-flows",
   ) {}
 
@@ -326,6 +328,41 @@ export class TestFlowController {
           res.send(testNode).status(201);
         },
       );
+
+    router.post(
+      "/:flowId/execute",
+      /**
+       * @openapi
+       * /sharkio/test-flows/{flowId}:
+       *   get:
+       *     tags:
+       *      - TestFlow
+       *     description: Get a test flow
+       *     parameters:
+       *       - name: flowId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: flowId
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Gets a test flow
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response) => {
+        const ownerId = res.locals.auth.ownerId;
+        const { flowId } = req.params;
+
+        const testFlow = await this.testFlowExecutorService.execute(
+          ownerId,
+          flowId,
+        );
+
+        res.send(testFlow).status(200);
+      },
+    );
 
     return {
       router,

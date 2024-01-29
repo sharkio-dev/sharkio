@@ -1,21 +1,21 @@
 import { DataSource, Repository } from "typeorm";
-import { TestFlow } from "../../entities/test-flow/TestFlow";
-import {
-  CreateTestFlowDTO,
-  CreateTestNodeDTO,
-} from "../../../dto/in/test-flow.dto";
-import { TestFlowNode } from "../../entities/test-flow/TestFlowNode";
+import { CreateTestFlowDTO } from "../../../dto/in/test-flow.dto";
 import { TestFlowEdge } from "../../entities/test-flow/TestFlowEdge";
+import { TestFlowNode } from "../../entities/test-flow/TestFlowNode";
+import { TestFlowRun } from "../../entities/test-flow/TestFlowRun";
+import { TestFlow } from "../../entities/test-flow/TestFlow";
 
 export class TestFlowRepository {
   repository: Repository<TestFlow>;
   nodeRepository: Repository<TestFlowNode>;
   edgeRepository: Repository<TestFlowEdge>;
+  flowRunRepository: Repository<TestFlowRun>;
 
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(TestFlow);
     this.nodeRepository = appDataSource.manager.getRepository(TestFlowNode);
     this.edgeRepository = appDataSource.manager.getRepository(TestFlowEdge);
+    this.flowRunRepository = appDataSource.manager.getRepository(TestFlowRun);
   }
 
   create(testFlow: CreateTestFlowDTO) {
@@ -59,5 +59,27 @@ export class TestFlowRepository {
 
   getEdgesByFlowId(ownerId: any, flowId: string) {
     return this.edgeRepository.find({ where: { ownerId, flowId } });
+  }
+
+  createFlowRun(
+    ownerId: string,
+    flowId: string,
+    flowRun?: Partial<TestFlowRun>,
+  ) {
+    const newFlowRun = this.flowRunRepository.create({
+      ownerId,
+      flowId,
+      ...flowRun,
+    });
+
+    return this.flowRunRepository.save(newFlowRun);
+  }
+
+  updateTestFlowRun(
+    ownerId: string,
+    flowRunId: string,
+    testFlowRun: Partial<TestFlowRun>,
+  ) {
+    return this.flowRunRepository.update(flowRunId, testFlowRun);
   }
 }

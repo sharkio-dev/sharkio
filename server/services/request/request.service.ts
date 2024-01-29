@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useLog } from "../../lib/log";
 import { RequestRepository } from "../../model/repositories/request.repository";
 import https from "https";
@@ -36,15 +36,12 @@ export class RequestService {
     });
     const newHeaders = Object.entries(headers)
       .filter(([key, _]) => key !== "host" && key !== "content-length")
-      .reduce(
-        (acc, [key, value]) => {
-          acc[key] = value;
-          return acc;
-        },
-        {} as Record<string, string>,
-      );
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
 
-    const res = await axios
+    const res: AxiosResponse = await axios
       .request({
         method,
         url: calculatedUrl,

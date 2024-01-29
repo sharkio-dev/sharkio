@@ -16,6 +16,11 @@ export type TestFlowAssertion = {
   expectedValue: any;
 };
 
+export type TestFlowAssertionResult = TestFlowAssertion & {
+  actualValue: any;
+  isPassed: boolean;
+};
+
 export type CreateTestNodeDTO = {
   name: string;
   proxyId: string;

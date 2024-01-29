@@ -1,8 +1,8 @@
-import { ParamsDictionary } from "express-serve-static-core";
 import { CreateTestFlowDTO } from "../../dto/in/test-flow.dto";
-import { TestFlowRepository } from "../../model/repositories/test-flow/testFlow.repository";
 import { TestFlow } from "../../model/entities/test-flow/TestFlow";
 import { TestFlowNode } from "../../model/entities/test-flow/TestFlowNode";
+import { TestFlowRun } from "../../model/entities/test-flow/TestFlowRun";
+import { TestFlowRepository } from "../../model/repositories/test-flow/testFlow.repository";
 
 export class TestFlowService {
   constructor(private readonly repository: TestFlowRepository) {}
@@ -41,5 +41,21 @@ export class TestFlowService {
 
   getEdgesByFlowId(ownerId: any, flowId: string) {
     return this.repository.getEdgesByFlowId(ownerId, flowId);
+  }
+
+  createTestFlowRun(
+    ownerId: string,
+    flowId: string,
+    testFlowRun: Partial<TestFlowRun>,
+  ) {
+    return this.repository.createFlowRun(ownerId, flowId, testFlowRun);
+  }
+
+  updateFlowRun(
+    ownerId: string,
+    flowRunId: string,
+    testFlowRun: Partial<TestFlowRun>,
+  ) {
+    return this.repository.updateTestFlowRun(ownerId, flowRunId, testFlowRun);
   }
 }
