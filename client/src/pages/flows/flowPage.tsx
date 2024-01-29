@@ -371,7 +371,10 @@ const FlowContent: React.FC = () => {
         handleSaveClicked={handleSaveClicked}
       />
       <TabContext value={tabNumber}>
-        <TabList onChange={handleTabChange}>
+        <TabList
+          onChange={handleTabChange}
+          className="border-b-[0.1px] border-border-color"
+        >
           <Tab label="Tests" value="1" />
           <Tab label="Runs" value="2" />
         </TabList>
@@ -390,7 +393,7 @@ const TestsTab: React.FC<TestsTab> = ({ steps }) => {
   const navigate = useNavigate();
 
   return (
-    <TabPanel value="1" style={{ padding: 0, paddingTop: 16, height: "100%" }}>
+    <TabPanel value="1" style={{ padding: 0, height: "100%" }}>
       <TextButton text="Add Test" onClick={() => {}} />
       {steps.map((step) => (
         <div className="flex flex-col border border-border-color p-2 px-4 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[48px] active:cursor-grabbing justify-center">
@@ -423,7 +426,7 @@ const TestsTab: React.FC<TestsTab> = ({ steps }) => {
 const RunsTab: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <TabPanel value="2" style={{ padding: 0, paddingTop: 16, height: "100%" }}>
+    <TabPanel value="2" style={{ padding: 0, height: "100%" }}>
       <div className="flex flex-col space-y-2">
         {[
           { createdAt: "2024-01-26T12:57:18.932Z", status: "success" },
