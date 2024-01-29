@@ -1,6 +1,6 @@
 import fs from "fs";
 import dotenv from "dotenv";
-dotenv.config();  
+dotenv.config();
 
 const variables = {
   VITE_SERVER_URL: process.env.VITE_SERVER_URL,
