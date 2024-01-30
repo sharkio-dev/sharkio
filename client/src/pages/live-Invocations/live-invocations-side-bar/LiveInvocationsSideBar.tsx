@@ -6,13 +6,16 @@ import dayjs from "dayjs";
 import MethodsFilter from "./MethodsFilter";
 import { useEffect, useRef, useState } from "react";
 import UrlFilter from "./UrlFilter";
+import ProxyFilter from "./ProxyFilter";
 
 export enum searchParamFilters {
   fromDate = "FromDateFilter",
   toDate = "ToDateFilter",
+  toDate2 = "ToDateFilter",
   methods = "filteredMethods",
   statusCodes = "statusCodes",
   url = "filteredUrl",
+  sniffers = "sniffers",
 }
 const DEBOUNCE_TIME_WAIT: number = 1000;
 const LiveInvocations = () => {
@@ -33,7 +36,6 @@ const LiveInvocations = () => {
     const toDate = searchParams.get(searchParamFilters.toDate)
       ? dayjs(searchParams.get(searchParamFilters.toDate)).toDate()
       : undefined;
-
     const url = searchParams.get(searchParamFilters.url) || undefined;
     loadLiveInvocations(statusCodes, methods, fromDate, toDate, url);
   };
@@ -60,6 +62,7 @@ const LiveInvocations = () => {
       <StatusCodeFilter />
       <MethodsFilter />
       <DateFilter />
+      <ProxyFilter />
     </div>
   );
 };
