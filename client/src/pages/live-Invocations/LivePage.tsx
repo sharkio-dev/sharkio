@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { InvocationSection } from "./LiveInvocationUpperBar";
@@ -50,7 +50,7 @@ export const InvocationScreen = () => {
     <div className="flex flex-col p-4 px-4 border-b border-border-color h-full">
       <InvocationSection
         invocation={invocation}
-        setEditedInvocation={setInvocation as any}
+        setEditedInvocation={setInvocation}
       />
     </div>
   );

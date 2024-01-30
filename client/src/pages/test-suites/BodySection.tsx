@@ -68,59 +68,61 @@ export const BodySection = ({
     <div className="flex flex-col h-full w-full">
       {snackBar}
       {showButtons && (
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="flex w-28 ml-2">
-              <SelectComponent
-                options={[
-                  { label: "Handlebars", value: "handlebars" },
-                  { label: "Json", value: "json" },
-                  { label: "Xml", value: "xml" },
-                  { label: "Text", value: "text" },
-                  { label: "Html", value: "html" },
-                ]}
-                value={type}
-                setValue={setType}
-                variant="standard"
+        <div className="flex justify-between items-center  bg-secondary pb-2">
+          <div className="flex justify-between items-center border-border-color border-b-[0.1px] w-full bg-secondary pb-1 px-2">
+            <div className="flex items-center">
+              <div className="flex w-28 ml-2">
+                <SelectComponent
+                  options={[
+                    { label: "Handlebars", value: "handlebars" },
+                    { label: "Json", value: "json" },
+                    { label: "Xml", value: "xml" },
+                    { label: "Text", value: "text" },
+                    { label: "Html", value: "html" },
+                  ]}
+                  value={type}
+                  setValue={setType}
+                  variant="standard"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="text" onClick={beautify}>
+                Beautify
+              </Button>
+              <Button
+                variant="text"
+                sx={{ minWidth: 0, borderRadius: "50%" }}
+                onClick={repeatSelectedText}
+              >
+                <Tooltip title="Repeat Selected Text" placement="top">
+                  <div className="h-4 w-4 items-center justify-center">
+                    <PiRepeat className="text-lg" />
+                  </div>
+                </Tooltip>
+              </Button>
+              <Button
+                variant="text"
+                color="secondary"
+                sx={{ minWidth: 0, borderRadius: "50%" }}
+                onClick={() => setWizardOpen(true)}
+              >
+                <Tooltip title="Generate Data" placement="top">
+                  <div className="h-4 w-4 items-center justify-center">
+                    <RxMagicWand className="text-lg" />
+                  </div>
+                </Tooltip>
+              </Button>
+              <Wizard
+                handleSelection={insertText}
+                open={wizardOpen}
+                onClose={() => setWizardOpen(false)}
+              />
+              <MdOutlineCopyAll
+                className="text-2xl cursor-pointer"
+                onClick={copyToClipboard}
               />
             </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="text" onClick={beautify}>
-              Beautify
-            </Button>
-            <Button
-              variant="text"
-              sx={{ minWidth: 0, borderRadius: "50%" }}
-              onClick={repeatSelectedText}
-            >
-              <Tooltip title="Repeat Selected Text" placement="top">
-                <div className="h-4 w-4 items-center justify-center">
-                  <PiRepeat className="text-lg" />
-                </div>
-              </Tooltip>
-            </Button>
-            <Button
-              variant="text"
-              color="secondary"
-              sx={{ minWidth: 0, borderRadius: "50%" }}
-              onClick={() => setWizardOpen(true)}
-            >
-              <Tooltip title="Generate Data" placement="top">
-                <div className="h-4 w-4 items-center justify-center">
-                  <RxMagicWand className="text-lg" />
-                </div>
-              </Tooltip>
-            </Button>
-            <Wizard
-              handleSelection={insertText}
-              open={wizardOpen}
-              onClose={() => setWizardOpen(false)}
-            />
-            <MdOutlineCopyAll
-              className="text-2xl cursor-pointer"
-              onClick={copyToClipboard}
-            />
           </div>
         </div>
       )}

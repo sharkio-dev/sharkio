@@ -16,7 +16,7 @@ type ExecutionRowProps = {
     expectedValue: string;
     actualValue: string;
     targetPath: string;
-    comparator: "equals";
+    comparator: "eq" | "neq" | "contains" | "not_contains";
   }[];
 };
 

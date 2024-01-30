@@ -37,7 +37,7 @@ export const InvocationSection = ({
         isDisabled={isDisabled}
       />
       <InvocationDetails
-        invocation={{ ...invocation }}
+        invocation={invocation as InvocationType}
         setInvocation={setEditedInvocation}
       />
     </div>
