@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
 import { MenuItem, Autocomplete, TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { allStatusCodes } from "../StatusCodeData";
 import { useSearchParams } from "react-router-dom";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
 import { useSniffersStore } from "../../../stores/sniffersStores";
 
-type StatusCode = {
-  value: string;
-  label: string;
-};
-
 const ProxyFilter = () => {
-  const [selectedStatusCodes, setSelectedStatusCodes] = useState<StatusCode[]>(
-    [],
-  );
+  const [selectedProxies, setSelectedProxies] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { loadSniffers } = useSniffersStore();
   const [proxies, setProxies] = useState<string[]>([]);
-
-  console.log({ proxies });
 
   useEffect(() => {
     const getProxiesNames = async () => {
@@ -30,15 +20,13 @@ const ProxyFilter = () => {
     };
 
     getProxiesNames();
-  }, []);
+  }, [loadSniffers]);
 
   useEffect(() => {
-    const statusCodes = searchParams.get(searchParamFilters.statusCodes);
-    if (!statusCodes) return;
-    const selectedCodes = statusCodes.split(",");
-    setSelectedStatusCodes(
-      allStatusCodes.filter((code) => selectedCodes.includes(code.value)),
-    );
+    const proxyParam = searchParams.get(searchParamFilters.proxies);
+    if (!proxyParam) return;
+    const selectedProxies = proxyParam.split(",");
+    setSelectedProxies(selectedProxies);
   }, [searchParams]);
 
   return (
@@ -46,29 +34,27 @@ const ProxyFilter = () => {
       multiple
       size="small"
       id="tags-standard"
-      options={allStatusCodes}
-      getOptionLabel={(status) => status.value}
-      onChange={(_, selectedCodes: StatusCode[]) => {
+      options={proxies}
+      getOptionLabel={(proxy) => proxy}
+      onChange={(_, selectedProxies: string[]) => {
         setSearchParams((prevParams) => {
-          const statusCodeValues = selectedCodes.map((code) => code.value);
           const newSearchParams = new URLSearchParams(prevParams);
           newSearchParams.set(
-            searchParamFilters.statusCodes,
-            statusCodeValues.join(","),
+            searchParamFilters.proxies,
+            selectedProxies.join(","),
           );
           return newSearchParams;
         });
-        setSelectedStatusCodes(selectedCodes);
+        setSelectedProxies(selectedProxies);
       }}
-      value={selectedStatusCodes}
-      renderOption={(props, method, { selected }) => (
+      value={selectedProxies}
+      renderOption={(props, proxy, { selected }) => (
         <MenuItem
-          key={method.value}
-          value={method.value}
+          value={proxy}
           sx={{ justifyContent: "space-between" }}
           {...props}
         >
-          {method.label}
+          {proxy}
           {selected ? <CheckIcon color="info" /> : null}
         </MenuItem>
       )}
