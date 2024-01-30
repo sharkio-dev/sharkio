@@ -15,7 +15,7 @@ export enum searchParamFilters {
   methods = "filteredMethods",
   statusCodes = "statusCodes",
   url = "filteredUrl",
-  sniffers = "sniffers",
+  proxies = "proxies",
 }
 const DEBOUNCE_TIME_WAIT: number = 1000;
 const LiveInvocations = () => {
@@ -38,6 +38,7 @@ const LiveInvocations = () => {
       : undefined;
     const url = searchParams.get(searchParamFilters.url) || undefined;
     loadLiveInvocations(statusCodes, methods, fromDate, toDate, url);
+
   };
   useEffect(() => {
     handleFilterClick();
