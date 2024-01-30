@@ -7,7 +7,6 @@ import { AxiosResponse } from "axios";
 import { get } from "lodash";
 
 export type AssertionResult = {
-  node: TestFlowNode;
   passed: TestFlowAssertionResult[];
   failed: TestFlowAssertionResult[];
   success: boolean;
@@ -54,7 +53,6 @@ export class NodeResponseValidator {
     }
 
     return {
-      node: testFlowNode,
       passed,
       failed,
       success,

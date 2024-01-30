@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Endpoint } from "../../model/entities/Endpoint";
 
 export type CreateTestFlowDTO = {
   ownerId: string;

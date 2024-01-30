@@ -7,14 +7,25 @@ import {
   NodeResponseValidator,
 } from "./node-response-validator";
 import { ITestFlowExecutor } from "./test-flow-executor.service";
+import { TestFlowReporter } from "../test-flow-reporter.service";
+import { useLog } from "../../../lib/log";
+
+const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export class SequenceExecutor implements ITestFlowExecutor {
   constructor(
     private readonly requestService: RequestService,
     private readonly nodeResponseValidator: NodeResponseValidator,
+    private readonly testFlowReporter: TestFlowReporter,
   ) {}
 
-  async execute(nodes: TestFlowNode[], edges: TestFlowEdge[]) {
+  async execute(
+    ownerId: string,
+    flowId: string,
+    flowRunId: string,
+    nodes: TestFlowNode[],
+    edges: TestFlowEdge[],
+  ) {
     const sortedNodes = this.sortNodesByEdges(nodes, edges);
 
     try {
@@ -41,6 +52,14 @@ export class SequenceExecutor implements ITestFlowExecutor {
           response,
         );
 
+        await this.testFlowReporter.reportNodeRun(
+          ownerId,
+          flowId,
+          flowRunId,
+          node,
+          assertionResult,
+        );
+
         const resultItem = { node, response, assertionResult };
 
         result.push(resultItem);
@@ -52,6 +71,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
 
       return result;
     } catch (e) {
+      logger.error(e);
       throw new Error("Failed to run test flow");
     }
   }

@@ -1,13 +1,16 @@
 import { DataSource, Repository } from "typeorm";
 import { CreateTestFlowDTO } from "../../../dto/in/test-flow.dto";
+import { TestFlow } from "../../entities/test-flow/TestFlow";
 import { TestFlowEdge } from "../../entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../entities/test-flow/TestFlowNode";
+import { TestFlowNodeRun } from "../../entities/test-flow/TestFlowNodeRun";
 import { TestFlowRun } from "../../entities/test-flow/TestFlowRun";
-import { TestFlow } from "../../entities/test-flow/TestFlow";
+import { AssertionResult } from "../../../services/test-flow/test-flow-executor/node-response-validator";
 
 export class TestFlowRepository {
   repository: Repository<TestFlow>;
   nodeRepository: Repository<TestFlowNode>;
+  nodeRunRepository: Repository<TestFlowNodeRun>;
   edgeRepository: Repository<TestFlowEdge>;
   flowRunRepository: Repository<TestFlowRun>;
 
@@ -16,6 +19,8 @@ export class TestFlowRepository {
     this.nodeRepository = appDataSource.manager.getRepository(TestFlowNode);
     this.edgeRepository = appDataSource.manager.getRepository(TestFlowEdge);
     this.flowRunRepository = appDataSource.manager.getRepository(TestFlowRun);
+    this.nodeRunRepository =
+      appDataSource.manager.getRepository(TestFlowNodeRun);
   }
 
   create(testFlow: CreateTestFlowDTO) {
@@ -81,5 +86,24 @@ export class TestFlowRepository {
     testFlowRun: Partial<TestFlowRun>,
   ) {
     return this.flowRunRepository.update(flowRunId, testFlowRun);
+  }
+
+  async addNodeRun(
+    ownerId: string,
+    flowId: string,
+    flowRunId: string,
+    node: TestFlowNode,
+    nodeRun: Partial<TestFlowNodeRun>,
+  ) {
+    const createdNodeRun = this.nodeRunRepository.create({
+      ownerId,
+      flowId,
+      flowRunId,
+      nodeId: node.id,
+      ...nodeRun,
+      ...node,
+    });
+
+    return await this.nodeRunRepository.save(createdNodeRun);
   }
 }

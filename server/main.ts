@@ -65,6 +65,7 @@ import { TestExecutionService } from "./services/testSuite/testExecution.service
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
+import { TestFlowReporter } from "./services/test-flow/test-flow-reporter.service";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -144,10 +145,19 @@ async function main(isProxy = true, isServer = true) {
   const mockResponseTransformer = new MockResponseTransformer();
   const testFlowService = new TestFlowService(testFlowRepository);
   const nodeResponseValidator = new NodeResponseValidator();
+  const testFlowReporter = new TestFlowReporter(testFlowService);
 
   const testFlowExecutionStrategies = {
-    parallel: new ParallelExecutor(requestService, nodeResponseValidator),
-    sequence: new SequenceExecutor(requestService, nodeResponseValidator),
+    parallel: new ParallelExecutor(
+      requestService,
+      nodeResponseValidator,
+      testFlowReporter,
+    ),
+    sequence: new SequenceExecutor(
+      requestService,
+      nodeResponseValidator,
+      testFlowReporter,
+    ),
   };
 
   const testFlowExecutor = new TestFlowExecutor(

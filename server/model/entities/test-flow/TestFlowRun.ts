@@ -23,6 +23,13 @@ export class TestFlowRun {
   })
   startedAt: Date;
 
+  @Column("timestamp with time zone", {
+    name: "finished_at",
+    nullable: true,
+    default: () => "now()",
+  })
+  finishedAt: Date;
+
   @Column("text")
   status: string;
 

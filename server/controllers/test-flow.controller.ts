@@ -333,11 +333,11 @@ export class TestFlowController {
       "/:flowId/execute",
       /**
        * @openapi
-       * /sharkio/test-flows/{flowId}:
-       *   get:
+       * /sharkio/test-flows/{flowId}/execute:
+       *   post:
        *     tags:
        *      - TestFlow
-       *     description: Get a test flow
+       *     description: Execute a test flow
        *     parameters:
        *       - name: flowId
        *         in: path
@@ -347,7 +347,7 @@ export class TestFlowController {
        *         required: true
        *     responses:
        *       200:
-       *         description: Gets a test flow
+       *         description: Test flow executed
        *       500:
        *         description: Server error
        */
@@ -355,12 +355,12 @@ export class TestFlowController {
         const ownerId = res.locals.auth.ownerId;
         const { flowId } = req.params;
 
-        const testFlow = await this.testFlowExecutorService.execute(
+        const testFlowRun = await this.testFlowExecutorService.execute(
           ownerId,
           flowId,
         );
 
-        res.send(testFlow).status(200);
+        res.send(testFlowRun).status(200);
       },
     );
 

@@ -1,8 +1,13 @@
-import { CreateTestFlowDTO } from "../../dto/in/test-flow.dto";
+import {
+  CreateTestFlowDTO,
+  TestFlowAssertionResult,
+} from "../../dto/in/test-flow.dto";
 import { TestFlow } from "../../model/entities/test-flow/TestFlow";
 import { TestFlowNode } from "../../model/entities/test-flow/TestFlowNode";
+import { TestFlowNodeRun } from "../../model/entities/test-flow/TestFlowNodeRun";
 import { TestFlowRun } from "../../model/entities/test-flow/TestFlowRun";
 import { TestFlowRepository } from "../../model/repositories/test-flow/testFlow.repository";
+import { AssertionResult } from "./test-flow-executor/node-response-validator";
 
 export class TestFlowService {
   constructor(private readonly repository: TestFlowRepository) {}
@@ -57,5 +62,18 @@ export class TestFlowService {
     testFlowRun: Partial<TestFlowRun>,
   ) {
     return this.repository.updateTestFlowRun(ownerId, flowRunId, testFlowRun);
+  }
+
+  addNodeRun(
+    ownerId: string,
+    flowId: string,
+    flowRunId: string,
+    node: TestFlowNode,
+    nodeRunResult: AssertionResult,
+  ) {
+    return this.repository.addNodeRun(ownerId, flowId, flowRunId, node, {
+      assertionsResult: nodeRunResult,
+      status: nodeRunResult.success ? "success" : "failed",
+    });
   }
 }
