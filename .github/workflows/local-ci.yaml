@@ -15,7 +15,7 @@ env:
   region: eu-central-1
 
 jobs:
-  deploy:
+  local-ci:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -57,16 +57,21 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set up QEMU
-        run: | 
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          docker buildx create --use
+      - name: Set Up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+
+    #   - name: Set up QEMU
+    #     run: | 
+    #       docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    #       docker buildx create --use
         
-            docker buildx build \
-            -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-            --push \
-            --platform linux/amd64,linux/arm64,linux/arm/v7 \
-            -f Dockerfile.${{ github.event.inputs.service }} .
+    #         docker buildx build \
+    #         -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+    #         --push \
+    #         --platform linux/amd64,linux/arm64,linux/arm/v7 \
+    #         -f Dockerfile.${{ github.event.inputs.service }} .
 
       - name: Build, tag, and push docker image to Amazon ECR
         working-directory: ${{ env.working_dir }}
@@ -74,7 +79,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ github.event.inputs.service }}
           IMAGE_TAG: local-${{ env.short_sha }}
-          DOCKER_BUILDKIT: 1
+        #   DOCKER_BUILDKIT: 1
         run: |
           if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
             docker buildx build \
