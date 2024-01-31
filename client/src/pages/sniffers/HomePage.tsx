@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -43,7 +43,11 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
       <div className="flex flex-row justify-between items-center mt-2">
         <div className="text-sm text-gray-400">Domain</div>
         <div className="text-sm text-gray-400">
-          https://{sniffer.subdomain}.{import.meta.env.VITE_PROXY_DOMAIN}
+          https://{sniffer.subdomain}.
+          {
+            // @ts-ignore
+            window._env_.VITE_PROXY_DOMAIN
+          }
         </div>
       </div>
       <div className="flex flex-row justify-between items-center mt-2">
@@ -66,6 +70,7 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
 export const HomePage = () => {
   const { sniffers, loadSniffers } = useSniffersStore();
   const navigate = useNavigate();
+  const { workspaceId } = useParams();
 
   useEffect(() => {
     loadSniffers(true).then((data) => {
@@ -73,14 +78,14 @@ export const HomePage = () => {
         navigate(routes.PROXY_CREATE);
       }
     });
-  }, []);
+  }, [workspaceId]);
 
   return (
     <div
       className={`flex flex-col bg-tertiary h-full w-[calc(100vw-56px)] p-4 overflow-y-auto`}
     >
       <div className="flex flex-row justify-between items-center">
-        <div className="text-2xl font-bold">Sniffers</div>
+        <div className="text-2xl font-bold">Proxies</div>
         <Button
           variant="outlined"
           color="primary"

@@ -53,8 +53,8 @@ export class TestSuiteController {
        *         description: Error
        */
       catchAsync(async (req: Request, res: Response) => {
-        const userId = res.locals.auth.user.id;
-        const testSuites = await this.testSuiteService.getByUserId(userId);
+        const ownerId = res.locals.auth.ownerId;
+        const testSuites = await this.testSuiteService.getByOwnerId(ownerId);
         res.json(testSuites);
       }),
     );
@@ -75,9 +75,9 @@ export class TestSuiteController {
        *         description: Error
        */
       catchAsync(async (req: Request, res: Response) => {
-        const userId = res.locals.auth.user.id;
+        const ownerId = res.locals.auth.ownerId;
         const { name } = req.body;
-        const testSuite = await this.testSuiteService.create(name, userId);
+        const testSuite = await this.testSuiteService.create(name, ownerId);
         res.status(201).json(testSuite);
       }),
     );
@@ -99,12 +99,12 @@ export class TestSuiteController {
        */
       catchAsync(async (req: Request, res: Response) => {
         try {
-          const userId = res.locals.auth.user.id;
+          const ownerId = res.locals.auth.ownerId;
           const { name } = req.body;
           const { invocationId, testSuiteId } = req.params;
           const invocation = await this.endpointService.getInvocationById(
             invocationId,
-            userId,
+            ownerId,
           );
 
           if (!invocation) {
@@ -355,8 +355,7 @@ export class TestSuiteController {
       catchAsync(async (req: Request, res: Response) => {
         try {
           const { testSuiteId, testId } = req.params;
-          const userId = res.locals.auth.user.id;
-
+          const ownerId = res.locals.auth.ownerId;
           const testSuite =
             await this.testService.getByTestSuiteId(testSuiteId);
           if (!testSuite) {
@@ -369,7 +368,7 @@ export class TestSuiteController {
           }
 
           const sniffer = await this.snifferService.getSniffer(
-            userId,
+            ownerId,
             test.snifferId,
           );
           if (!sniffer) {

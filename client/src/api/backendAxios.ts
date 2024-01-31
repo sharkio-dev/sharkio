@@ -1,8 +1,12 @@
 import axios from "axios";
 
-export const BackendAxios = axios.create({
-  baseURL: `${import.meta.env.VITE_SERVER_URL ?? ""}/sharkio`,
+export let BackendAxios = axios.create({
+  // @ts-ignore
+  baseURL: `${window._env_.VITE_SERVER_URL ?? ""}/sharkio`,
   headers: {
     "Content-Type": "application/json",
+  },
+  params: {
+    workspaceId: new URLSearchParams(window.location.search).get("workspaceId"),
   },
 });

@@ -2,7 +2,7 @@ import z from "zod";
 
 export type EditSnifferDTO = {
   id: string;
-  userId: string;
+  ownerId: string;
   name?: string;
   subdomain?: string;
   downstreamUrl?: string;

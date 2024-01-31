@@ -5,21 +5,21 @@ export class MockRepository {
   repository: Repository<Mock>;
 
   constructor(private readonly appDataSource: DataSource) {
-    this.repository = appDataSource.manager.getRepository(Mock);
+    this.repository = this.appDataSource.manager.getRepository(Mock);
   }
 
-  getById(userId: string, mockId: string) {
+  getById(ownerId: string, mockId: string) {
     return this.repository.findOne({
-      where: { userId: userId, id: mockId },
+      where: { ownerId, id: mockId },
       relations: {
         mockResponses: true,
       },
     });
   }
 
-  getByUser(userId: string, limit: number) {
+  getByUser(ownerId: string, limit: number) {
     return this.repository.find({
-      where: { userId: userId },
+      where: { ownerId },
       take: limit,
       relations: {
         mockResponses: true,
@@ -28,9 +28,9 @@ export class MockRepository {
     });
   }
 
-  getBySnifferId(userId: string, snifferId: string) {
+  getBySnifferId(ownerId: string, snifferId: string) {
     return this.repository.find({
-      where: { userId, snifferId },
+      where: { ownerId, snifferId },
       order: { createdAt: "DESC" },
       relations: {
         mockResponses: true,
@@ -38,9 +38,9 @@ export class MockRepository {
     });
   }
 
-  getByUrl(userId: string, snifferId: string, url: string, method: string) {
+  getByUrl(ownerId: string, snifferId: string, url: string, method: string) {
     return this.repository.findOne({
-      where: { userId, url, snifferId, method },
+      where: { ownerId, url, snifferId, method },
       order: { createdAt: "DESC" },
       relations: {
         mockResponses: true,
@@ -48,18 +48,18 @@ export class MockRepository {
     });
   }
 
-  deleteById(userId: string, mockId: string) {
+  deleteById(ownerId: string, mockId: string) {
     return this.repository
       .createQueryBuilder()
       .delete()
       .from(Mock)
-      .where("id = :mockId AND userId = :userId", { userId, mockId })
+      .where("id = :mockId AND ownerId = :ownerId", { ownerId, mockId })
       .execute();
   }
 
-  setDefaultResponse(userId: string, mockId: string, responseId: string) {
+  setDefaultResponse(ownerId: string, mockId: string, responseId: string) {
     return this.repository.update(
-      { userId, id: mockId },
+      { ownerId, id: mockId },
       { selectedResponseId: responseId },
     );
   }

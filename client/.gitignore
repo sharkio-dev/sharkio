@@ -30,3 +30,6 @@ dist-ssr
 .yarnrc
 yarn.lock
 yarn-error.log
+
+dev-dist
+public/env.js

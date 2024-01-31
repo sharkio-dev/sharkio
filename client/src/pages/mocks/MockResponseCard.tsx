@@ -49,7 +49,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   const { editMockResponse } = useMockResponseStore();
   const isSelected = mockResponse.id === mock.selectedResponseId;
 
-  const handleSaveNameClicked = () => {
+  const handleSaveNameClicked = (e: any) => {
+    e.stopPropagation();
     setIsSaving(true);
     editMockResponse(mockResponse.id, {
       ...mockResponse,
@@ -84,13 +85,20 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
         onDragEnter={() => (dragOverResponseRef.current = index)}
         onDragEnd={onSort}
         onDragOver={(e) => e.preventDefault()}
+        onClick={() => {
+          if (openResponseId === mockResponse.id) {
+            return;
+          }
+          onOpenResponse(mockResponse.id);
+        }}
       >
         <div className="flex flex-row items-center justify-between max-w-full">
           <div className="flex flex-row items-center w-full">
             <Tooltip title="Select as default response">
               <Radio
                 checked={mockResponse.id === mock.selectedResponseId}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   onMockChange({
                     ...mock,
                     selectedResponseId: mockResponse.id,
@@ -114,12 +122,16 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                     className="w-[50ch] border-none focus:ring-0"
                     defaultValue={name}
                     onChange={(e) => setName(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
                   />
                 </>
               ) : (
                 <>
                   <AiOutlineEdit
-                    onClick={() => setEditName(true)}
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      setEditName(true);
+                    }}
                     className=" text-blue-400 active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md"
                   />
                   <span className="truncate max-w-[50ch]">
@@ -134,7 +146,9 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
               <Tooltip title="Duplicate mock response">
                 <HiOutlineDuplicate
                   sx={{ fontSize: "15px" }}
-                  onClick={() => {
+                  className="cursor-pointer hover:bg-border-color rounded-md"
+                  onClick={(e: any) => {
+                    e.stopPropagation();
                     onDuplicateMockResponse(mockResponse);
                   }}
                 ></HiOutlineDuplicate>
@@ -157,7 +171,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
                         ? "text-gray-500 "
                         : "hover:bg-border-color text-red-400"
                     }`}
-                    onClick={() => {
+                    onClick={(e: any) => {
+                      e.stopPropagation();
                       if (isSelected) return;
                       setIsDeleting(true);
                       onDeleteMockResponse(mockResponse.id).finally(() => {
@@ -173,7 +188,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
               className={`active:scale-110 text-lg cursor-pointer ml-4 hover:bg-border-color rounded-md ${
                 openResponseId === mockResponse.id ? "rotate-90" : ""
               }`}
-              onClick={() => {
+              onClick={(e: any) => {
+                e.stopPropagation();
                 onOpenResponse(mockResponse.id);
               }}
             />
@@ -184,9 +200,8 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
             response={mockResponse}
             handleResponseChange={(value: MockResponse) => {
               onMockResponsesChange(
-                mock.mockResponses.map((r, i) => {
+                mock.mockResponses.map((r) => {
                   if (r.id === value.id) {
-                    value.name = `Response ${i + 1}`;
                     return value;
                   }
                   return r;

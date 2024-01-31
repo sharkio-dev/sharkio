@@ -11,6 +11,7 @@ type SelectComponentProps = {
   inputClassName?: string;
   setValue?: (value: string) => void;
   disabled?: boolean;
+  variant?: "standard" | "outlined" | "filled";
 };
 
 export function SelectComponent({
@@ -20,9 +21,15 @@ export function SelectComponent({
   setValue,
   disabled,
   inputClassName,
+  variant = "outlined",
 }: SelectComponentProps) {
   return (
-    <FormControl size="small" disabled={disabled} className="w-full">
+    <FormControl
+      size="small"
+      disabled={disabled}
+      className="w-full"
+      variant={variant}
+    >
       {title && <InputLabel>{title}</InputLabel>}
       <Select
         value={value}
