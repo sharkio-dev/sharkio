@@ -364,6 +364,119 @@ export class TestFlowController {
       },
     );
 
+    router.get(
+      "/:flowId/runs",
+      /**
+       * @openapi
+       * /sharkio/test-flows/{flowId}/runs:
+       *   get:
+       *     tags:
+       *      - TestFlowRun
+       *     description: Execute a test flow
+       *     parameters:
+       *       - name: flowId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: flowId
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Get test flow runs
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response) => {
+        const ownerId = res.locals.auth.ownerId;
+        const { flowId } = req.params;
+
+        const testFlowRun = await this.testFlowExecutorService.getFlowRuns(
+          ownerId,
+          flowId,
+        );
+
+        res.send(testFlowRun).status(200);
+      },
+    );
+
+    router.get(
+      "/:flowId/runs/:runId",
+      /**
+       * @openapi
+       * /sharkio/test-flows/{flowId}/runs:
+       *   get:
+       *     tags:
+       *      - TestFlowRun
+       *     description: Execute a test flow
+       *     parameters:
+       *       - name: flowId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: flowId
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Get test flow runs
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response) => {
+        const ownerId = res.locals.auth.ownerId;
+        const { flowId, runId } = req.params;
+
+        const testFlowRun = await this.testFlowExecutorService.getFlowRun(
+          ownerId,
+          flowId,
+          runId,
+        );
+
+        res.send(testFlowRun).status(200);
+      },
+    );
+
+    router.get(
+      "/:flowId/runs/:runId/node-runs",
+      /**
+       * @openapi
+       * /sharkio/test-flows/{flowId}/runs/{runId}/node-runs:
+       *   get:
+       *     tags:
+       *      - TestFlowRun
+       *     description: Execute a test flow
+       *     parameters:
+       *       - name: flowId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: flowId
+       *         required: true
+       *       - name: runId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: flowId
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Get test flow runs
+       *       500:
+       *         description: Server error
+       */
+      async (req: Request, res: Response) => {
+        const ownerId = res.locals.auth.ownerId;
+        const { flowId, runId } = req.params;
+
+        const testFlowRun = await this.testFlowExecutorService.getFlowRunNodes(
+          ownerId,
+          flowId,
+          runId,
+        );
+
+        res.send(testFlowRun).status(200);
+      },
+    );
+
     return {
       router,
       path: this.baseUrl,

@@ -69,4 +69,16 @@ export class TestFlowExecutor {
 
     return flowRun;
   }
+
+  getFlowRuns(ownerId: any, flowId: string) {
+    return this.testFlowService.getFlowRuns(ownerId, flowId);
+  }
+
+  getFlowRun(ownerId: any, flowId: string, runId: string) {
+    return this.testFlowService.getFlowRun(ownerId, flowId, runId);
+  }
+
+  getFlowRunNodes(ownerId: any, flowId: string, runId: string) {
+    return this.testFlowService.getFlowRunNodes(ownerId, flowId, runId);
+  }
 }

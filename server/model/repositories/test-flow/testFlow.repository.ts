@@ -17,6 +17,8 @@ export class TestFlowRepository {
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(TestFlow);
     this.nodeRepository = appDataSource.manager.getRepository(TestFlowNode);
+    this.nodeRunRepository =
+      appDataSource.manager.getRepository(TestFlowNodeRun);
     this.edgeRepository = appDataSource.manager.getRepository(TestFlowEdge);
     this.flowRunRepository = appDataSource.manager.getRepository(TestFlowRun);
     this.nodeRunRepository =
@@ -105,5 +107,21 @@ export class TestFlowRepository {
     });
 
     return await this.nodeRunRepository.save(createdNodeRun);
+  }
+
+  getFlowRuns(ownerId: any, flowId: string) {
+    return this.flowRunRepository.find({ where: { ownerId, flowId } });
+  }
+
+  getFlowRun(ownerId: any, flowId: string, runId: string) {
+    return this.flowRunRepository.find({
+      where: { ownerId, flowId, id: runId },
+    });
+  }
+
+  getFlowRunNodes(ownerId: any, flowId: string, runId: string) {
+    return this.nodeRunRepository.find({
+      where: { ownerId, flowId, flowRunId: runId },
+    });
   }
 }

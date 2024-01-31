@@ -1,10 +1,6 @@
-import {
-  CreateTestFlowDTO,
-  TestFlowAssertionResult,
-} from "../../dto/in/test-flow.dto";
+import { CreateTestFlowDTO } from "../../dto/in/test-flow.dto";
 import { TestFlow } from "../../model/entities/test-flow/TestFlow";
 import { TestFlowNode } from "../../model/entities/test-flow/TestFlowNode";
-import { TestFlowNodeRun } from "../../model/entities/test-flow/TestFlowNodeRun";
 import { TestFlowRun } from "../../model/entities/test-flow/TestFlowRun";
 import { TestFlowRepository } from "../../model/repositories/test-flow/testFlow.repository";
 import { AssertionResult } from "./test-flow-executor/node-response-validator";
@@ -75,5 +71,17 @@ export class TestFlowService {
       assertionsResult: nodeRunResult,
       status: nodeRunResult.success ? "success" : "failed",
     });
+  }
+
+  getFlowRuns(ownerId: any, flowId: string) {
+    return this.repository.getFlowRuns(ownerId, flowId);
+  }
+
+  getFlowRun(ownerId: any, flowId: string, runId: string) {
+    return this.repository.getFlowRun(ownerId, flowId, runId);
+  }
+
+  getFlowRunNodes(ownerId: any, flowId: string, runId: string) {
+    return this.repository.getFlowRunNodes(ownerId, flowId, runId);
   }
 }
