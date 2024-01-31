@@ -14,10 +14,12 @@ environment = os.getenv('ENVIRONMENT')
 github_event_before = os.getenv('github_event_before')
 
 def build_and_push(repository, dockerfile):
-    docker_build=f'docker buildx build \
+    docker_build=f'docker buildx create --use 
+    docker buildx build \
     -t {registry}/{repository}:{environment}-{full_sha} \
     -t {registry}/{repository}:{environment}-{short_sha} \
     --push \
+    --platform linux/amd64,linux/arm64,linux/arm/v7 \
     -f {dockerfile} . '
     subprocess.run(docker_build, shell=True, text=True, check=True)
 
