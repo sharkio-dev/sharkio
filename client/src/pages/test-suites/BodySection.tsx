@@ -41,7 +41,7 @@ export const BodySection = ({
   const copyToClipboard = () => {
     if (!editor) return;
     navigator.clipboard.writeText(editor.getValue());
-    showSnackbar("Copied to clipboard", "success");
+    showSnackbar("Copied to clipboard ", "success");
   };
 
   const insertText = (text: string) => {
