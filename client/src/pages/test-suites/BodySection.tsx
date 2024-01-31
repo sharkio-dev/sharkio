@@ -1,6 +1,6 @@
 import Editor from "@monaco-editor/react";
-import { useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { useState } from "react";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { MdOutlineCopyAll } from "react-icons/md";
 import { Button, Tooltip } from "@mui/material";
@@ -41,7 +41,7 @@ export const BodySection = ({
   const copyToClipboard = () => {
     if (!editor) return;
     navigator.clipboard.writeText(editor.getValue());
-    showSnackbar("Copied to clipboard", "success");
+    showSnackbar("Copied to clipboard ", "success");
   };
 
   const insertText = (text: string) => {

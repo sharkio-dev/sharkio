@@ -11,7 +11,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "node ./dynamic-env.js './public/env.js' && vite --host",
     "dev2": "vite -c vite.production.config.ts",
     "start": "node ./main.js",
     "build": "tsc && vite build",
