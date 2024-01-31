@@ -15,7 +15,6 @@ WORKDIR /app
 COPY --from=builder /app .
 
 EXPOSE 5012
-EXPOSE 8000
-EXPOSE 8001
+EXPOSE 80
 
-CMD npm run prod
+CMD npm run prod 

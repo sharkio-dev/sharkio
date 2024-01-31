@@ -8,6 +8,7 @@ import styles from "./sniffer.module.scss";
 
 import { VscTypeHierarchy } from "react-icons/vsc";
 import "reactflow/dist/style.css";
+import { getSnifferDomain } from "../../../utils/getSnifferUrl";
 
 const Sniffer: React.FC = () => {
   const location = useLocation();
@@ -31,9 +32,7 @@ const Sniffer: React.FC = () => {
       </div>
     );
 
-  const snifferDomain = `https://${sniffer.subdomain}.${
-    import.meta.env.VITE_PROXY_DOMAIN
-  }`;
+  const snifferDomain = getSnifferDomain(sniffer.subdomain);
 
   return (
     <div className="relative flex w-full h-full  overflow-auto">

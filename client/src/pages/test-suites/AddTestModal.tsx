@@ -49,7 +49,7 @@ export const AddTestModal = ({ open, onClose }: AddTestModalProps) => {
 
   const onClickAdd = () => {
     if (!testSuiteId) {
-      show("Test Suite not selected", "error");
+      show("Test Suite not selected ", "error");
       return;
     }
     if (name === "") {
