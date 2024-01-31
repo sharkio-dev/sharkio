@@ -1,0 +1,27 @@
+name: local-ci
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        type: choice
+        description: "Choose Which Image to Build"
+        required: true
+        options:
+          - frontend
+          - backend
+          - migrations
+
+env:
+  region: eu-central-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      pull-requests: "write"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
