@@ -1,22 +1,19 @@
 version: "3"
 services:
   frontend:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.local
+    image: 461908338554.dkr.ecr.eu-central-1.amazonaws.com/frontend:production-48d40c6
     environment:
       - VITE_PROXY_DOMAIN=localhost.sharkio.dev
-      - VITE_SUPABASE_PROJECT_URL='https://rlhmecfbrihwgltuacbn.supabase.co'
-      - VITE_SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8'
+      - VITE_SUPABASE_PROJECT_URL=https://rlhmecfbrihwgltuacbn.supabase.co
+      - VITE_SUPABASE_ANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8
       - VITE_SERVER_URL=http://localhost:5012
+      - NODE_ENV=production
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - 8080:8080
   backend:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.backend
+    image: 461908338554.dkr.ecr.eu-central-1.amazonaws.com/backend:production-48d40c6
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -47,9 +44,7 @@ services:
   migrations:
     depends_on:
       - db
-    build:
-      context: ./server
-      dockerfile: Dockerfile.migrations
+    image: 461908338554.dkr.ecr.eu-central-1.amazonaws.com/migrations:production-48d40c6
     environment:
       - VITE_SUPABASE_PROJECT_URL=https://rlhmecfbrihwgltuacbn.supabase.co
       - VITE_SUPABASE_ANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8
@@ -64,11 +59,10 @@ services:
       - PROXY_HTTP_PORT=8080
       - PROXY_HTTPS_PORT=443
   db:
-    image: postgres
+    image: postgres:latest
     ports:
       - 5432:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-
