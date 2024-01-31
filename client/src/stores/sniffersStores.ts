@@ -61,6 +61,7 @@ interface SniffersState {
     dateStart?: Date | undefined,
     dateEnd?: Date | undefined,
     url?: string,
+    proxies?: string,
   ) => Promise<InvocationType[]>;
 }
 

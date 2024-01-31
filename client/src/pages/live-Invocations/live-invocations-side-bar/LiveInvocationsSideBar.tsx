@@ -37,8 +37,10 @@ const LiveInvocations = () => {
       ? dayjs(searchParams.get(searchParamFilters.toDate)).toDate()
       : undefined;
     const url = searchParams.get(searchParamFilters.url) || undefined;
-    loadLiveInvocations(statusCodes, methods, fromDate, toDate, url);
-
+    const proxies = searchParams.get(searchParamFilters.statusCodes)
+    ? searchParams.get(searchParamFilters.proxies)!.split(",")
+    : [];
+    loadLiveInvocations(statusCodes, methods, fromDate, toDate, url,proxies);
   };
   useEffect(() => {
     handleFilterClick();

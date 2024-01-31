@@ -17,8 +17,8 @@ export const InvocationsSearchBar = ({
 }: InvocationsSearchBarProps) => {
   const { invocations, loadingInvocations, loadSniffers } = useSniffersStore();
   const [proxies, setProxies] = useState<string[]>([]);
-
-  console.log({ proxies });
+  // invocations[0].id;
+  console.log({ invocations });
 
   useEffect(() => {
     const getProxiesNames = async () => {
