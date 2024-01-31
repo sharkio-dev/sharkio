@@ -64,31 +64,26 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
-      - name: Build, tag, and push docker image to Amazon ECR
-        working-directory: ${{ env.working_dir }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ github.event.inputs.service }}
-          IMAGE_TAG: local-${{ env.short_sha }}
-          CACHE_TAG: "cache" 
-        run: |
-          if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
-            docker buildx build \
-            -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-            --push \
-            --platform linux/amd64,linux/arm64,linux/arm/v7 \
-            --cache-from=type=registry,ref=$REGISTRY/$REPOSITORY:$CACHE_TAG \
-            --cache-to=type=registry,ref=$REGISTRY/$REPOSITORY:$CACHE_TAG,mode=max \
-            -f Dockerfile .
-          else
-            docker buildx build \
-            -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-            --push \
-            --platform linux/amd64,linux/arm64,linux/arm/v7 \
-            --cache-from=type=registry,ref=$REGISTRY/$REPOSITORY:$CACHE_TAG \
-            --cache-to=type=registry,ref=$REGISTRY/$REPOSITORY:$CACHE_TAG,mode=max \
-            -f Dockerfile.${{ github.event.inputs.service }} .
-          fi
+      # - name: Build, tag, and push docker image to Amazon ECR
+      #   working-directory: ${{ env.working_dir }}
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: ${{ github.event.inputs.service }}
+      #     IMAGE_TAG: local-${{ env.short_sha }}
+      #   run: |
+      #     if [ "${{ github.event.inputs.service }}" == "frontend" ]; then
+      #       docker buildx build \
+      #       -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+      #       --push \
+      #       --platform linux/amd64,linux/arm64,linux/arm/v7 \
+      #       -f Dockerfile .
+      #     else
+      #       docker buildx build \
+      #       -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+      #       --push \
+      #       --platform linux/amd64,linux/arm64,linux/arm/v7 \
+      #       -f Dockerfile.${{ github.event.inputs.service }} .
+      #     fi
 
       - name: Workflow Dispatch
         uses: benc-uk/workflow-dispatch@v1.2.2
