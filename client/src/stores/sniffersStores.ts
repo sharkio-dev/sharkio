@@ -63,6 +63,7 @@ interface SniffersState {
     url?: string,
     proxies?: string[],
   ) => Promise<InvocationType[]>;
+  getSnifferById: (snifferId: string) => SnifferType | null;
 }
 
 export const useSniffersStore = create<SniffersState>((set, get) => ({
@@ -88,6 +89,11 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
         return res.data;
       })
       .finally(() => set({ loadingSniffers: false }));
+  },
+  getSnifferById: (snifferId: string): SnifferType | null => {
+    console.log({ aaaaaaaaa: get().sniffers });
+    const sniffer = get().sniffers.find((s) => s.id === snifferId);
+    return sniffer || null;
   },
   setSelectedSniffer: (sniffer: SnifferType | null) => {
     set({ selectedSniffer: sniffer });
