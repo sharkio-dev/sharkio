@@ -11,8 +11,7 @@ ALTER TABLE public.response rename column user_id to owner_id;
 ALTER TABLE public.sniffer rename column user_id to owner_id;
 ALTER TABLE public.test_suite rename column user_id to owner_id;
 ALTER TABLE public.sniffer DROP CONSTRAINT "FK_4912b7246be02f3ae913fe862a6";
-COMMIT;
-        `);
+COMMIT;`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
