@@ -11,7 +11,7 @@ RUN npm run build
 FROM nginx:1.23-alpine as production
 
 ENV NODE_ENV production
-
+ 
 WORKDIR /app
 
 RUN apk add --update nodejs npm
