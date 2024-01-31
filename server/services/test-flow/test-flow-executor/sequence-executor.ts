@@ -12,6 +12,12 @@ import { useLog } from "../../../lib/log";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
+export type ExecutionResult = {
+  node: TestFlowNode;
+  response: AxiosResponse;
+  assertionResult: AssertionResult;
+}[];
+
 export class SequenceExecutor implements ITestFlowExecutor {
   constructor(
     private readonly requestService: RequestService,
@@ -25,15 +31,11 @@ export class SequenceExecutor implements ITestFlowExecutor {
     flowRunId: string,
     nodes: TestFlowNode[],
     edges: TestFlowEdge[],
-  ) {
+  ): Promise<ExecutionResult> {
     const sortedNodes = this.sortNodesByEdges(nodes, edges);
 
     try {
-      const result: {
-        node: TestFlowNode;
-        response: AxiosResponse;
-        assertionResult: AssertionResult;
-      }[] = [];
+      const result: ExecutionResult = [];
 
       for (let i = 0; i < nodes.length; i++) {
         const node = sortedNodes[i];
