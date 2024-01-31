@@ -26,10 +26,10 @@ interface SniffersState {
   endpointsCache: Record<string, EndpointType[]>;
   invocations: InvocationType[];
   invocationCache: Record<string, InvocationType[]>;
+  loadingInvocations: boolean;
   loadingSniffers: boolean;
   loadingEndpoints: boolean;
   loadingExecution: boolean;
-  loadingInvocations: boolean;
   loadSniffers: (force?: boolean) => Promise<SnifferType[]>;
   setSelectedSniffer: (sniffer: SnifferType | null) => void;
   createSniffer: (sniffer: Omit<SnifferType, "id">) => Promise<any>;
@@ -91,7 +91,6 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
       .finally(() => set({ loadingSniffers: false }));
   },
   getSnifferById: (snifferId: string): SnifferType | null => {
-    console.log({ aaaaaaaaa: get().sniffers });
     const sniffer = get().sniffers.find((s) => s.id === snifferId);
     return sniffer || null;
   },

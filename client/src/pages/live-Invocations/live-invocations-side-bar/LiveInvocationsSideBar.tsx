@@ -11,7 +11,6 @@ import ProxyFilter from "./ProxyFilter";
 export enum searchParamFilters {
   fromDate = "FromDateFilter",
   toDate = "ToDateFilter",
-  toDate2 = "ToDateFilter",
   methods = "filteredMethods",
   statusCodes = "statusCodes",
   url = "filteredUrl",
@@ -38,9 +37,9 @@ const LiveInvocations = () => {
       : undefined;
     const url = searchParams.get(searchParamFilters.url) || undefined;
     const proxies = searchParams.get(searchParamFilters.statusCodes)
-    ? searchParams.get(searchParamFilters.proxies)!.split(",")
-    : [];
-    loadLiveInvocations(statusCodes, methods, fromDate, toDate, url,proxies);
+      ? searchParams.get(searchParamFilters.proxies)!.split(",")
+      : [];
+    loadLiveInvocations(statusCodes, methods, fromDate, toDate, url, proxies);
   };
   useEffect(() => {
     handleFilterClick();
