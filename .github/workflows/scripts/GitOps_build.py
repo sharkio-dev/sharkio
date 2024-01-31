@@ -18,8 +18,7 @@ def build_and_push(repository, dockerfile):
     -t {registry}/{repository}:{environment}-{full_sha} \
     -t {registry}/{repository}:{environment}-{short_sha} \
     --push \
-    --cache-from=type=registry,ref={registry}/{repository}:latest \
-    --cache-to=type=registry,ref={registry}/{repository}:latest,mode=max \
+    --platform linux/amd64,linux/arm64,linux/arm/v7 \
     -f {dockerfile} . '
     subprocess.run(docker_build, shell=True, text=True, check=True)
 
@@ -33,10 +32,7 @@ if "client/" in changed_files_output:
     # Change to the server directory
     if not args.dry_run:
         os.chdir('client/')
-        if environment == "staging":
-            build_and_push("frontend", "Dockerfile.staging")
-        else:
-            build_and_push("frontend", "Dockerfile")   
+        build_and_push("frontend", "Dockerfile")   
         os.chdir('..')
     images.append({"name": "frontend", "index": 0})
 
