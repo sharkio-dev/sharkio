@@ -3,7 +3,6 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
-import { useState, useEffect } from "react";
 
 type InvocationsSearchBarProps = {
   invocationId?: string;
@@ -15,20 +14,7 @@ export const InvocationsSearchBar = ({
   setActiveInvocation,
   title,
 }: InvocationsSearchBarProps) => {
-  const { invocations, loadingInvocations, loadSniffers } = useSniffersStore();
-  const [proxies, setProxies] = useState<string[]>([]);
-  // invocations[0].id;
-  console.log({ invocations });
-
-  useEffect(() => {
-    const getProxiesNames = async () => {
-      const sniffers = await loadSniffers();
-      const proxiesNames = sniffers.map((snifferObj) => snifferObj.name);
-      setProxies(proxiesNames);
-    };
-
-    getProxiesNames();
-  }, []);
+  const { invocations, loadingInvocations,getSnifferById } = useSniffersStore();
 
   return (
     <>

@@ -29,6 +29,10 @@ const ProxyFilter = () => {
     setSelectedProxies(selectedProxies);
   }, [searchParams]);
 
+  const validInitialSelectedProxies = selectedProxies.filter((proxy) =>
+    proxies.includes(proxy),
+  );
+
   return (
     <Autocomplete
       multiple
@@ -47,7 +51,7 @@ const ProxyFilter = () => {
         });
         setSelectedProxies(selectedProxies);
       }}
-      value={selectedProxies}
+      value={validInitialSelectedProxies}
       renderOption={(props, proxy, { selected }) => (
         <MenuItem
           value={proxy}
