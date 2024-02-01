@@ -6,39 +6,48 @@ import { InvocationURL } from "../live-Invocations/LiveInvocationUpperBar";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { InvocationType } from "../sniffers/types";
 import { RequestSection } from "../sniffers/InvocationDetails";
-import { useFlowStore } from "../../stores/flowStore";
-import { FlowStep } from "./flowPage";
+import { NodeType, useFlowStore } from "../../stores/flowStore";
 import { useParams } from "react-router-dom";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { Button } from "@mui/material";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 
 export const FlowStepPage = () => {
-  const { loadNode } = useFlowStore();
-  const [flowStep, setFlowStep] = useState<FlowStep>();
+  const { loadNode, putNode } = useFlowStore();
+  const [flowStep, setFlowStep] = useState<NodeType>();
   const { flowId, testId } = useParams();
 
   useEffect(() => {
     if (!flowId || !testId) return;
-    loadNode(flowId, testId).then((node) => {
+    loadNode(flowId, testId).then((node: NodeType) => {
       setFlowStep(node);
     });
   }, [flowId, testId]);
 
   const handleAssertionChange = (assertion: any, index: number) => {
-    // setFlowStep((prev) => ({
-    //   ...prev,
-    //   assertions: prev.assertions?.map((a, i) => (i === index ? assertion : a)),
-    // }));
+    setFlowStep((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        assertions: prev.assertions?.map((a, i) =>
+          i === index ? assertion : a,
+        ),
+      };
+    });
   };
 
   const handleAddAssertion = (newAssertion: AssertionType) => {
-    // return setFlowStep((prev) => {
-    //   return {
-    //     ...prev,
-    //     assertions: [...(prev.assertions ?? []), newAssertion],
-    //   };
-    // });
+    return setFlowStep((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        assertions: [...(prev.assertions ?? []), newAssertion],
+      };
+    });
   };
 
-  if (!flowStep) return null;
+  if (!flowStep) return <LoadingIcon />;
 
   return (
     <PanelGroup
@@ -47,22 +56,36 @@ export const FlowStepPage = () => {
     >
       <Panel defaultSize={60} maxSize={80}>
         <div className="flex flex-col p-4 w-full pb-0">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              if (!flowId) return;
+              putNode(flowId, { ...flowStep, snifferId: undefined });
+            }}
+          >
+            Save
+          </Button>
           <InvocationURL
             // @ts-ignore
-            invocation={flowStep as InvocationType}
-            setEditedInvocation={
-              (invocation) => {}
-              // setFlowStep((prev) => ({ ...prev, ...invocation }))
-            }
+            invocation={{ ...flowStep, snifferId: flowStep.proxyId }}
+            setEditedInvocation={(invocation) => {
+              setFlowStep((prev) => {
+                if (!prev) return prev;
+                return { ...prev, ...invocation };
+              });
+            }}
             showUrlButtons={false}
           />
           <RequestSection
             // @ts-ignore
-            invocation={flowStep as InvocationType}
-            setInvocation={
-              (invocation: InvocationType) => {}
-              // setFlowStep((prev) => ({ ...prev, ...invocation }))
-            }
+            invocation={{ ...flowStep, snifferId: flowStep.proxyId }}
+            setInvocation={(invocation: InvocationType) => {
+              setFlowStep((prev) => {
+                if (!prev) return prev;
+                return { ...prev, ...invocation };
+              });
+            }}
           />
         </div>
       </Panel>

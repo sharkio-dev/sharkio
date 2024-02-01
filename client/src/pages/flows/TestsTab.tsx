@@ -5,9 +5,11 @@ import { selectIconByMethod } from "../sniffers/selectIconByMethod";
 import { MdChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFlowStore, NodeType } from "../../stores/flowStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { useSniffersStore } from "../../stores/sniffersStores";
+import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 const Step = ({ step }: { step: NodeType }) => {
   const navigate = useNavigate();
@@ -31,13 +33,89 @@ const Step = ({ step }: { step: NodeType }) => {
           </div>
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <AiOutlineDelete className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
+          <FlowNodeDeleteButton flowId={flowId as string} nodeId={step.id} />
           <MdChevronRight
-            className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md"
+            className=" active:scale-110 text-xl cursor-pointer hover:bg-border-color rounded-md"
             onClick={() => navigate("/flows/" + flowId + "/tests/" + step.id)}
           />
         </div>
       </div>
+    </div>
+  );
+};
+
+const FlowNodeDeleteButton = ({
+  flowId,
+  nodeId,
+}: {
+  flowId: string;
+  nodeId: string;
+}) => {
+  const { deleteNode } = useFlowStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [flowName, setFlowName] = useState("");
+  const { nodes } = useFlowStore();
+  const node = nodes.find((node) => node.id === nodeId);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+
+  const handleFlowNameChange = (event: any) => {
+    setFlowName(event.target.value);
+  };
+
+  const handleDeleteFlow = () => {
+    if (flowName !== node?.name) {
+      showSnackbar(
+        "Flow name does not match. Please enter the flow name to delete.",
+        "error",
+      );
+      return;
+    }
+    deleteNode(flowId, nodeId);
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div>
+      {snackBar}
+      <GenericEditingModal
+        modalProps={{
+          open: isModalOpen,
+          onClose: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        paperHeadLine="Delete Flow"
+        acceptButtonValue="Delete"
+        acceptButtonProps={{
+          onClick: () => {
+            setIsLoading(true);
+            handleDeleteFlow();
+            setIsLoading(false);
+          },
+          style: { color: "red" },
+        }}
+        cancelButtonProps={{
+          onClick: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        textFieldProps={{
+          label: `Enter "${node?.name}" to delete`,
+          placeholder: `Enter "${node?.name}" to delete`,
+          onChange: (event: any) => {
+            handleFlowNameChange(event);
+          },
+        }}
+        isLoading={isLoading}
+      />
+      <AiOutlineDelete
+        className="text-md cursor-pointer hover:bg-border-color rounded-md"
+        onClick={(e: any) => {
+          e.stopPropagation();
+          setIsModalOpen(true);
+        }}
+      />
     </div>
   );
 };
