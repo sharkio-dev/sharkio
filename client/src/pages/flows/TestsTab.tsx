@@ -56,12 +56,10 @@ export const TestsTab: React.FC = () => {
           if (!flowId) return;
           postNode(flowId, {
             name: "New Test",
-            request: {
-              url: "/",
-              method: "GET",
-              headers: {},
-              body: "",
-            },
+            url: "/",
+            method: "GET",
+            headers: {},
+            body: "",
             assertions: [],
             proxyId: "1fc60d49-7c13-48ab-bcdc-3717ff40ffac",
           });

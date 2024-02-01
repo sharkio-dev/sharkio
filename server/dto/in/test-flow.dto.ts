@@ -36,18 +36,16 @@ export type CreateTestNodeDTO = {
 export const CreateTestNodeValidator = z.object({
   name: z.string(),
   proxyId: z.string(),
-  request: z.object({
-    method: z.string(),
-    url: z.string(),
-    headers: z.record(z.string()),
-    body: z.string(),
-    requestId: z.string().uuid().optional(),
-  }),
+  method: z.string(),
+  url: z.string(),
+  headers: z.record(z.string()),
+  body: z.string(),
+  requestId: z.string().uuid().optional(),
   assertions: z.array(
     z.object({
       path: z.string(),
       comparator: z.string(),
       expectedValue: z.any(),
-    })
+    }),
   ),
 });

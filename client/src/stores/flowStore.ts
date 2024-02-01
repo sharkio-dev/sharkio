@@ -58,7 +58,7 @@ interface flowState {
   runFlow: (flowId: string) => void;
   postFlow: (flow: Flow["name"]) => void;
   putFlow: (flow: Flow) => void;
-  postNode: (flowId: string, node: Node) => void;
+  postNode: (flowId: string, node: Partial<Node>) => void;
   deleteNode: (flowId: string, nodeId: string) => void;
   putNode: (flowId: string, node: Node) => void;
 }
@@ -103,7 +103,7 @@ const putFlow = (flow: Flow) => {
   return BackendAxios.put(`/test-flows/${flow.id}`, flow);
 };
 
-const postNode = (flowId: string, node: Node) => {
+const postNode = (flowId: string, node: Partial<Node>) => {
   return BackendAxios.post(`/test-flows/${flowId}/nodes`, node);
 };
 
@@ -188,7 +188,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     get().loadFlows();
   },
-  postNode: async (flowId: string, node: Node) => {
+  postNode: async (flowId: string, node: Partial<Node>) => {
     set({ isNodeLoading: true });
     await postNode(flowId, node).finally(() => {
       set({ isNodeLoading: false });
