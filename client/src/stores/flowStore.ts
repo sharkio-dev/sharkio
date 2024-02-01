@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { BackendAxios } from "../api/backendAxios";
-import { get } from "lodash";
 
 export interface Flow {
   id: string;
@@ -10,29 +9,6 @@ export interface Flow {
   createdAt: string;
   updatedAt: string;
 }
-
-export const FLOW_NODE = {
-  id: "d70692d2-5ab8-44ba-ad0e-3e9cb0ab91d4",
-  ownerId: "d60ed1e5-0502-4fd3-a3f0-4603fcca1cbc",
-  flowId: "673bf1a6-8662-41a2-a1eb-6e7acba75629",
-  proxyId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  name: "Test name",
-  url: "/URL",
-  body: "",
-  subdomain: "ron-demo-9usub",
-  snifferId: "8b5ea683-d68d-43fe-b18d-ab516540aac3",
-  headers: {},
-  assertions: [
-    {
-      path: "body.example",
-      comparator: "eq",
-      expectedValue: "example",
-    },
-  ],
-  method: "GET",
-  createdAt: "2024-01-26T14:22:52.255Z",
-  updatedAt: "2024-01-26T14:22:52.255Z",
-};
 
 interface Assertion {
   path: string;
@@ -89,51 +65,67 @@ interface flowState {
 }
 
 const getFlows = () => {
-  return BackendAxios.get("/flows");
+  return BackendAxios.get("/test-flows");
 };
 
 const getNodes = () => {
-  return BackendAxios.get("/nodes");
+  return BackendAxios.get(
+    "/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes",
+  );
 };
 
 const getTestRuns = () => {
-  return BackendAxios.get("/test-runs");
+  return BackendAxios.get(
+    "/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/runs",
+  );
 };
 
 const getNode = (flowId: string, nodeId: string) => {
-  return BackendAxios.get(`/nodes/id`);
+  return BackendAxios.get(
+    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes/d70692d2-5ab8-44ba-ad0e-3e9cb0ab91d4`,
+  );
 };
 
 const getRun = (flowId: string, runId: string) => {
-  return BackendAxios.get(`/test-runs/id`);
+  return BackendAxios.get(
+    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/runs/eefae5f8-367e-4361-9204-1764be5a4b92/node-runs`,
+  );
 };
 
 const deleteFlow = (flowId: string) => {
-  return BackendAxios.delete(`/flows/${flowId}`);
+  return BackendAxios.delete(`/test-flows/${flowId}`);
 };
 
 const runFlow = (flowId: string) => {
-  return BackendAxios.post(`/flows/${flowId}/run`);
+  return BackendAxios.post(`/test-flows/${flowId}/run`);
 };
 
 const postFlow = (flow: Flow) => {
-  return BackendAxios.post(`/flows`, flow);
+  return BackendAxios.post(`/test-flows`, flow);
 };
 
 const putFlow = (flow: Flow) => {
-  return BackendAxios.put(`/flows/${flow.id}`, flow);
+  return BackendAxios.put(`/test-flows/${flow.id}`, flow);
 };
 
 const postNode = (node: Node) => {
-  return BackendAxios.post(`/nodes`, node);
+  return BackendAxios.post(
+    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes`,
+    node,
+  );
 };
 
 const deleteNode = (nodeId: string) => {
-  return BackendAxios.delete(`/nodes/${nodeId}`);
+  return BackendAxios.delete(
+    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes/${nodeId}`,
+  );
 };
 
 const putNode = (node: Node) => {
-  return BackendAxios.put(`/nodes/${node.id}`, node);
+  return BackendAxios.put(
+    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes/${node.id}`,
+    node,
+  );
 };
 
 export const useFlowStore = create<flowState>((set, get) => ({
