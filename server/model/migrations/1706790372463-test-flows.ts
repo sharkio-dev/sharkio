@@ -7,7 +7,9 @@ export class Migrations1706790372463 implements MigrationInterface {
 
             -- Drop table
             
-            -- DROP TABLE public.test_flow;
+            DROP TABLE public.test_flow;
+            DROP TABLE public.test_flow_edge;
+            DROP TABLE public.test_flow_node;
             
             CREATE TABLE public.test_flow (
                 id uuid NOT NULL DEFAULT gen_random_uuid(),
