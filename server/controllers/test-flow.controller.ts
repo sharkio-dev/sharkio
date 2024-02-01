@@ -329,6 +329,95 @@ export class TestFlowController {
         },
       );
 
+    router
+      .route("/:flowId/nodes/:nodeId")
+      .get(
+        /**
+         * @openapi
+         *  /sharkio/test-flows/{flowId}/nodes/{nodeId}:
+         *    get:
+         *      tags:
+         *        - TestNode
+         *      parameters:
+         *        - name: flowId
+         *          in: path
+         *          schema:
+         *            type: string
+         *            format: uuid
+         *          description: flowId
+         *          required: true
+         *        - name: nodeId
+         *          in: path
+         *          schema:
+         *            type: string
+         *            format: uuid
+         *          description: nodeId
+         *          required: true
+         *      responses:
+         *        '200':
+         *          description: Returns test flow node
+         *        '400':
+         *          description: Bad Request
+         *        '500':
+         *          description: Server Error
+         */
+        async (req: Request, res: Response) => {
+          const ownerId = res.locals.auth.ownerId;
+          const { flowId, nodeId } = req.params;
+
+          const testNodes = await this.testFlowService.getFlowRunNode(
+            ownerId,
+            flowId,
+            nodeId,
+          );
+
+          res.send(testNodes).status(200);
+        },
+      )
+      .delete(
+        /**
+         * @openapi
+         *  /sharkio/test-flows/{flowId}/nodes/{nodeId}:
+         *    delete:
+         *      tags:
+         *        - TestNode
+         *      parameters:
+         *        - name: flowId
+         *          in: path
+         *          schema:
+         *            type: string
+         *            format: uuid
+         *          description: flowId
+         *          required: true
+         *        - name: nodeId
+         *          in: path
+         *          schema:
+         *            type: string
+         *            format: uuid
+         *          description: nodeId
+         *          required: true
+         *      responses:
+         *        '200':
+         *          description: Deleted
+         *        '400':
+         *          description: Bad Request
+         *        '500':
+         *          description: Server Error
+         */
+        async (req: Request, res: Response) => {
+          const ownerId = res.locals.auth.ownerId;
+          const { flowId, nodeId } = req.params;
+
+          const testNodes = await this.testFlowService.deleteFlowNode(
+            ownerId,
+            flowId,
+            nodeId,
+          );
+
+          res.send(testNodes).status(200);
+        },
+      );
+
     router.post(
       "/:flowId/execute",
       /**

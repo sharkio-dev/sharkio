@@ -124,4 +124,14 @@ export class TestFlowRepository {
       where: { ownerId, flowId, flowRunId: runId },
     });
   }
+
+  getFlowNode(ownerId: any, flowId: string, nodeId: string) {
+    return this.nodeRepository.findOne({
+      where: { ownerId, flowId, id: nodeId },
+    });
+  }
+
+  deleteFlowNode(ownerId: any, flowId: string, nodeId: string) {
+    return this.nodeRepository.delete({ ownerId, flowId, id: nodeId });
+  }
 }

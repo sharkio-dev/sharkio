@@ -84,4 +84,12 @@ export class TestFlowService {
   getFlowRunNodes(ownerId: any, flowId: string, runId: string) {
     return this.repository.getFlowRunNodes(ownerId, flowId, runId);
   }
+
+  getFlowRunNode(ownerId: any, flowId: string, nodeId: string) {
+    return this.repository.getFlowNode(ownerId, flowId, nodeId);
+  }
+
+  deleteFlowNode(ownerId: any, flowId: string, nodeId: string) {
+    return this.repository.deleteFlowNode(ownerId, flowId, nodeId);
+  }
 }
