@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { BackendAxios } from "../api/backendAxios";
+import { AiOutlineNodeIndex } from "react-icons/ai";
 
 export interface Flow {
   id: string;
@@ -51,7 +52,7 @@ interface flowState {
   isNodeLoading: boolean;
   isFlowLoading: boolean;
   loadFlows: () => void;
-  loadNodes: () => void;
+  loadNodes: (flowId: string) => void;
   loadTestRuns: () => void;
   loadNode: (flowId: string, id: string) => Promise<Node>;
   loadRun: (flowId: string, id: string) => Promise<TestRun>;
@@ -68,10 +69,8 @@ const getFlows = () => {
   return BackendAxios.get("/test-flows");
 };
 
-const getNodes = () => {
-  return BackendAxios.get(
-    "/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes",
-  );
+const getNodes = (flowId: string) => {
+  return BackendAxios.get(`/test-flows/${flowId}/nodes`);
 };
 
 const getTestRuns = () => {
@@ -81,9 +80,7 @@ const getTestRuns = () => {
 };
 
 const getNode = (flowId: string, nodeId: string) => {
-  return BackendAxios.get(
-    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes/d70692d2-5ab8-44ba-ad0e-3e9cb0ab91d4`,
-  );
+  return BackendAxios.get(`/test-flows/${flowId}/nodes/${nodeId}`);
 };
 
 const getRun = (flowId: string, runId: string) => {
@@ -145,9 +142,9 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     set({ flows: data || [] });
   },
-  loadNodes: async () => {
+  loadNodes: async (flowId: string) => {
     set({ isNodesLoading: true });
-    const { data } = await getNodes().finally(() => {
+    const { data } = await getNodes(flowId).finally(() => {
       set({ isNodesLoading: false });
     });
     set({ nodes: data || [] });

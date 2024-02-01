@@ -14,6 +14,7 @@ export const FlowContent: React.FC = () => {
   const [tabNumber, setTabNumber] = useState("1");
   const { flows, isFlowsLoading } = useFlowStore();
   const { flowId } = useParams();
+  const flow = flows.find((f) => f.id === flowId);
 
   const handleTabChange = (_: any, newValue: string) => {
     setTabNumber(newValue);
@@ -40,7 +41,7 @@ export const FlowContent: React.FC = () => {
         <>
           <FlowNameAndSave
             isLoading={isLoading}
-            name={flows[0]?.name || ""}
+            name={flow?.name ?? ""}
             handleNameChange={handleFlowNameChange}
             handleSaveClicked={handleSaveClicked}
           />

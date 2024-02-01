@@ -3,7 +3,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { TextButton } from "../../components/TextButton";
 import { selectIconByMethod } from "../sniffers/selectIconByMethod";
 import { MdChevronRight } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FlowStep } from "./flowPage";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect } from "react";
@@ -41,10 +41,13 @@ const Step = ({ step }: { step: FlowStep }) => {
 
 export const TestsTab: React.FC = () => {
   const { nodes, loadNodes, isNodesLoading } = useFlowStore();
+  const { flowId } = useParams();
 
   useEffect(() => {
-    loadNodes();
-  }, []);
+    if (!flowId) return;
+    loadNodes(flowId);
+  }, [flowId]);
+
   return (
     <TabPanel value="1" style={{ padding: 0, height: "100%" }}>
       <TextButton text="Add Test" onClick={() => {}} />
