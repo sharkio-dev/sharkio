@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { BackendAxios } from "../api/backendAxios";
-import { AiOutlineNodeIndex } from "react-icons/ai";
 
 export interface Flow {
   id: string;
@@ -25,7 +24,6 @@ interface Node {
   name: string;
   url: string;
   body: string;
-  subdomain: string;
   snifferId: string;
   headers: {};
   assertions: Assertion[];
@@ -60,9 +58,9 @@ interface flowState {
   runFlow: (flowId: string) => void;
   postFlow: (flow: Flow["name"]) => void;
   putFlow: (flow: Flow) => void;
-  postNode: (node: Node) => void;
-  deleteNode: (nodeId: string) => void;
-  putNode: (node: Node) => void;
+  postNode: (flowId: string, node: Node) => void;
+  deleteNode: (flowId: string, nodeId: string) => void;
+  putNode: (flowId: string, node: Node) => void;
 }
 
 const getFlows = () => {
@@ -105,24 +103,16 @@ const putFlow = (flow: Flow) => {
   return BackendAxios.put(`/test-flows/${flow.id}`, flow);
 };
 
-const postNode = (node: Node) => {
-  return BackendAxios.post(
-    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes`,
-    node,
-  );
+const postNode = (flowId: string, node: Node) => {
+  return BackendAxios.post(`/test-flows/${flowId}/nodes`, node);
 };
 
-const deleteNode = (nodeId: string) => {
-  return BackendAxios.delete(
-    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes/${nodeId}`,
-  );
+const deleteNode = (flowId: string, nodeId: string) => {
+  return BackendAxios.delete(`/test-flows/${flowId}/nodes/${nodeId}`);
 };
 
-const putNode = (node: Node) => {
-  return BackendAxios.put(
-    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/nodes/${node.id}`,
-    node,
-  );
+const putNode = (flowId: string, node: Node) => {
+  return BackendAxios.put(`/test-flows/${flowId}/nodes/${node.id}`, node);
 };
 
 export const useFlowStore = create<flowState>((set, get) => ({
@@ -198,25 +188,25 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     get().loadFlows();
   },
-  postNode: async (node: Node) => {
+  postNode: async (flowId: string, node: Node) => {
     set({ isNodeLoading: true });
-    await postNode(node).finally(() => {
+    await postNode(flowId, node).finally(() => {
       set({ isNodeLoading: false });
     });
-    get().loadNodes();
+    get().loadNodes(flowId);
   },
-  deleteNode: async (nodeId: string) => {
+  deleteNode: async (flowId: string, nodeId: string) => {
     set({ isNodeLoading: true });
-    await deleteNode(nodeId).finally(() => {
+    await deleteNode(flowId, nodeId).finally(() => {
       set({ isNodeLoading: false });
     });
-    get().loadNodes();
+    get().loadNodes(flowId);
   },
-  putNode: async (node: Node) => {
+  putNode: async (flowId: string, node: Node) => {
     set({ isNodeLoading: true });
-    await putNode(node).finally(() => {
+    await putNode(flowId, node).finally(() => {
       set({ isNodeLoading: false });
     });
-    get().loadNodes();
+    get().loadNodes(flowId);
   },
 }));

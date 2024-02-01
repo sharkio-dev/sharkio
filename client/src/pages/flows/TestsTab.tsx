@@ -40,7 +40,7 @@ const Step = ({ step }: { step: FlowStep }) => {
 };
 
 export const TestsTab: React.FC = () => {
-  const { nodes, loadNodes, isNodesLoading } = useFlowStore();
+  const { nodes, loadNodes, isNodesLoading, postNode } = useFlowStore();
   const { flowId } = useParams();
 
   useEffect(() => {
@@ -50,7 +50,23 @@ export const TestsTab: React.FC = () => {
 
   return (
     <TabPanel value="1" style={{ padding: 0, height: "100%" }}>
-      <TextButton text="Add Test" onClick={() => {}} />
+      <TextButton
+        text="Add Test"
+        onClick={() => {
+          if (!flowId) return;
+          postNode(flowId, {
+            name: "New Test",
+            request: {
+              url: "/",
+              method: "GET",
+              headers: {},
+              body: "",
+            },
+            assertions: [],
+            proxyId: "1fc60d49-7c13-48ab-bcdc-3717ff40ffac",
+          });
+        }}
+      />
       {isNodesLoading ? (
         <LoadingIcon />
       ) : (

@@ -48,6 +48,6 @@ export const CreateTestNodeValidator = z.object({
       path: z.string(),
       comparator: z.string(),
       expectedValue: z.any(),
-    }),
+    })
   ),
 });
