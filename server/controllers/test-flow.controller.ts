@@ -374,6 +374,58 @@ export class TestFlowController {
           res.send(testNodes).status(200);
         },
       )
+      .put(
+        /**
+         * @openapi
+         *  /sharkio/test-flows/{flowId}/nodes/{nodeId}:
+         *    put:
+         *      tags:
+         *        - TestNode
+         *      parameters:
+         *        - name: flowId
+         *          in: path
+         *          schema:
+         *            type: string
+         *            format: uuid
+         *          description: flowId
+         *          required: true
+         *        - name: nodeId
+         *          in: path
+         *          schema:
+         *            type: string
+         *            format: uuid
+         *          description: nodeId
+         *          required: true
+         *      responses:
+         *        '200':
+         *          description: Returns test flow node
+         *        '400':
+         *          description: Bad Request
+         *        '500':
+         *          description: Server Error
+         */
+        requestValidator({
+          body: CreateTestNodeValidator,
+          params: z.object({
+            flowId: z.string().uuid(),
+            nodeId: z.string().uuid(),
+          }),
+        }),
+        async (req: Request, res: Response) => {
+          const ownerId = res.locals.auth.ownerId;
+          const { flowId, nodeId } = req.params;
+          const createNode = req.body;
+
+          const testNodes = await this.testFlowService.updateNode(
+            ownerId,
+            flowId,
+            nodeId,
+            createNode,
+          );
+
+          res.send(testNodes).status(200);
+        },
+      )
       .delete(
         /**
          * @openapi

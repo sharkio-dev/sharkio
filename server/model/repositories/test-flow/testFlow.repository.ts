@@ -60,6 +60,18 @@ export class TestFlowRepository {
     return this.nodeRepository.save(createdNode);
   }
 
+  updateTestNode(
+    ownerId: any,
+    flowId: string,
+    nodeId: string,
+    testFlowNode: Partial<TestFlowNode>,
+  ) {
+    return this.nodeRepository.update(
+      { ownerId, flowId, id: nodeId },
+      testFlowNode,
+    );
+  }
+
   getNodesByFlowId(ownerId: any, flowId: string) {
     return this.nodeRepository.find({ where: { ownerId, flowId } });
   }

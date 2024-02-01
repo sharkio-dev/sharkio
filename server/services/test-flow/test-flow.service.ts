@@ -36,6 +36,20 @@ export class TestFlowService {
     return this.repository.createTestNode(ownerId, flowId, testFlowNode);
   }
 
+  updateNode(
+    ownerId: any,
+    flowId: string,
+    nodeId: string,
+    testFlowNode: Partial<TestFlowNode>,
+  ) {
+    return this.repository.updateTestNode(
+      ownerId,
+      flowId,
+      nodeId,
+      testFlowNode,
+    );
+  }
+
   getNodesByFlowId(ownerId: any, flowId: string) {
     return this.repository.getNodesByFlowId(ownerId, flowId);
   }
