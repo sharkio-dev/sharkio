@@ -50,7 +50,7 @@ export function InvocationDetails({
   );
 }
 
-const RequestSection: React.FC<InvocationDetailsProps> = ({
+export const RequestSection: React.FC<InvocationDetailsProps> = ({
   invocation,
   setInvocation,
 }) => {
@@ -157,7 +157,11 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
             </IconButton>
           </div>
         </div>
-        <BodySection language={codeLanguage} body={languageCodeText} />
+        <BodySection
+          language={codeLanguage}
+          body={languageCodeText}
+          showButtons={false}
+        />
       </TabPanel>
     </TabContext>
   );
@@ -189,7 +193,9 @@ const ResponseSection = ({
           Headers
         </ToggleButton>
       </ToggleButtonGroup>
-      {section === "Body" && <BodySection body={response?.body} />}
+      {section === "Body" && (
+        <BodySection body={response?.body} showButtons={false} />
+      )}
       {section === "Headers" && (
         <HeaderSection headers={response?.headers || {}} />
       )}

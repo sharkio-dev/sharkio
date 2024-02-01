@@ -16,7 +16,7 @@ type ExecutionRowProps = {
     expectedValue: string;
     actualValue: string;
     targetPath: string;
-    comparator: "equals";
+    comparator: "eq" | "neq" | "contains" | "not_contains";
   }[];
 };
 
@@ -47,9 +47,7 @@ export const ExecutionRow = ({
               <span className="text-lg font-bold hover:cursor-pointer hover:scale-105">
                 {title}
               </span>
-              <span className="text-xs">
-                {new Date(executionDate).toDateString()}
-              </span>
+              <span className="text-xs">{executionDate}</span>
             </div>
           </div>
           <div className="flex flex-row items-center space-x-4">

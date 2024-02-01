@@ -19,32 +19,36 @@ type InvocationSectionProps = {
   >;
   invocation?: InvocationType | undefined;
   isDisabled?: boolean;
+  showUrlButtons?: boolean;
 };
 
 export const InvocationSection = ({
   invocation,
   setEditedInvocation,
   isDisabled = true,
+  showUrlButtons = true,
 }: InvocationSectionProps) => {
   return (
     <div>
       <InvocationURL
+        showUrlButtons={showUrlButtons}
         invocation={invocation}
         setEditedInvocation={setEditedInvocation}
         isDisabled={isDisabled}
       />
       <InvocationDetails
-        invocation={invocation}
+        invocation={invocation as InvocationType}
         setInvocation={setEditedInvocation}
       />
     </div>
   );
 };
 
-const InvocationURL: React.FC<InvocationSectionProps> = ({
+export const InvocationURL: React.FC<InvocationSectionProps> = ({
   invocation,
   setEditedInvocation,
   isDisabled,
+  showUrlButtons = true,
 }) => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -146,31 +150,35 @@ const InvocationURL: React.FC<InvocationSectionProps> = ({
         style={{ width: "100%" }}
       />
       <div className="flex flex-row items-center justify-between h-full">
-        <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-          <Tooltip title="Mock Request">
-            <div onClick={importMock}>
-              {loading ? (
-                <LoadingIcon />
-              ) : (
-                <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
-              )}
+        {showUrlButtons && (
+          <>
+            <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+              <Tooltip title="Mock Request">
+                <div onClick={importMock}>
+                  {loading ? (
+                    <LoadingIcon />
+                  ) : (
+                    <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
+                  )}
+                </div>
+              </Tooltip>
             </div>
-          </Tooltip>
-        </div>
-        <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-          <Tooltip title="Execute Request">
-            <div>
-              {loadingExecution ? (
-                <LoadingIcon />
-              ) : (
-                <PlayArrow
-                  className="text-green-500 cursor-pointer"
-                  onClick={executeRequest}
-                />
-              )}
+            <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+              <Tooltip title="Execute Request">
+                <div>
+                  {loadingExecution ? (
+                    <LoadingIcon />
+                  ) : (
+                    <PlayArrow
+                      className="text-green-500 cursor-pointer"
+                      onClick={executeRequest}
+                    />
+                  )}
+                </div>
+              </Tooltip>
             </div>
-          </Tooltip>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

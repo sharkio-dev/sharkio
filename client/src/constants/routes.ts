@@ -21,8 +21,12 @@ export const routes = {
 
   TEST_SUITES: "/test-suites",
   TEST_SUITE: "/test-suites/:testSuiteId",
-  TEST_ENDPOINT: "/test-suites/:testSuiteId/tests/:testId",
   TEST_SUITE_TEST: "/test-suites/:testSuiteId/tests/:testId",
+
+  FLOWS: "/flows",
+  FLOW: "/flows/:flowId",
+  FLOW_TEST: "/flows/:flowId/tests/:testId",
+  FLOW_RUN: "/flows/:flowId/runs/:runId",
 
   MOCKS: "/mocks",
   MOCK: "/mocks/:mockId",

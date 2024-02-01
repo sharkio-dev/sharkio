@@ -21,10 +21,10 @@ def build_and_push(repository, dockerfile):
     --cache-from=type=registry,ref={registry}/{repository}:latest \
     --cache-to=type=registry,ref={registry}/{repository}:latest,mode=max \
     -f {dockerfile} . '
-    subprocess.run(docker_build, shell=True, text=True)
+    subprocess.run(docker_build, shell=True, text=True, check=True)
 
 git_command = f"git diff --name-only {str(github_event_before)} {str(full_sha)} | uniq"
-changed_files = subprocess.run(git_command, shell=True, text=True, capture_output=True)
+changed_files = subprocess.run(git_command, shell=True, text=True, capture_output=True, check=True)
 changed_files_output = changed_files.stdout.strip()
 
 images = []
@@ -55,6 +55,14 @@ if "server/model/" in changed_files_output:
         build_and_push("migrations", "Dockerfile.migrations")
         os.chdir('..')
     images.append({"name": "migrations", "index": 2})
+
+if "sharkio-docs/" in changed_files_output:
+    # Change to the server directory
+    if not args.dry_run:
+        os.chdir('sharkio-docs/')
+        build_and_push("docs", "Dockerfile")
+        os.chdir('..')
+    images.append({"name": "docs", "index": 3})
 
 if  args.dry_run:
     warpped_images = '{"images_builder":' + str(images).replace("'", '"') + '}'
