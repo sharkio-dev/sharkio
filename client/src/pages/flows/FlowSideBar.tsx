@@ -123,7 +123,7 @@ const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
           },
         }}
         textFieldProps={{
-          label: "Flow Name",
+          label: `Enter ${flow?.name} to delete`,
           placeholder: `Enter ${flow?.name} to delete`,
           onChange: (event: any) => {
             handleFlowNameChange(event);

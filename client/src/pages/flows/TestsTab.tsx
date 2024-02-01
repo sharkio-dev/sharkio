@@ -4,13 +4,16 @@ import { TextButton } from "../../components/TextButton";
 import { selectIconByMethod } from "../sniffers/selectIconByMethod";
 import { MdChevronRight } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { FlowStep } from "./flowPage";
-import { useFlowStore } from "../../stores/flowStore";
+import { useFlowStore, NodeType } from "../../stores/flowStore";
 import { useEffect } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { useSniffersStore } from "../../stores/sniffersStores";
 
-const Step = ({ step }: { step: FlowStep }) => {
+const Step = ({ step }: { step: NodeType }) => {
   const navigate = useNavigate();
+  const { sniffers } = useSniffersStore();
+  const sniffer = sniffers.find((s) => s.id === step.proxyId);
+  const { flowId } = useParams();
 
   return (
     <div className="flex flex-col border border-border-color p-2 px-4 mt-2 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[48px] active:cursor-grabbing justify-center">
@@ -21,7 +24,7 @@ const Step = ({ step }: { step: FlowStep }) => {
           </div>
           <div className="flex flex-row items-center space-x-2">
             {selectIconByMethod(step.method)}
-            <div className="text-sm text-gray-400">ProxyName</div>
+            <div className="text-sm text-gray-400">{sniffer?.name}</div>
             <div className="text-sm text-gray-400 truncate max-w-[75ch]">
               {step.url}
             </div>
@@ -31,7 +34,7 @@ const Step = ({ step }: { step: FlowStep }) => {
           <AiOutlineDelete className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md" />
           <MdChevronRight
             className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md"
-            onClick={() => navigate("/flows/123/tests/123")}
+            onClick={() => navigate("/flows/" + flowId + "/tests/" + step.id)}
           />
         </div>
       </div>
