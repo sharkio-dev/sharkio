@@ -4,14 +4,33 @@ import {
   AiOutlinePlus,
 } from "react-icons/ai";
 import { Flow, useFlowStore } from "../../stores/flowStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
+import { flowRight } from "lodash";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { useNavigate, useParams } from "react-router-dom";
 
 const NewFlowButton = () => {
+  const { postFlow } = useFlowStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [flowName, setFlowName] = useState("");
+
+  const handleFlowNameChange = (event: any) => {
+    setFlowName(event.target.value);
+  };
+
+  const handleCreateFlow = () => {
+    postFlow(flowName);
+  };
   return (
     <div className="border-b border-border-color pb-2 mb-2">
       <div
         className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
       >
         <div
           className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
@@ -20,6 +39,105 @@ const NewFlowButton = () => {
           New Flow
         </div>
       </div>
+      <GenericEditingModal
+        modalProps={{
+          open: isModalOpen,
+          onClose: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        paperHeadLine="New Flow"
+        acceptButtonValue="Create"
+        acceptButtonProps={{
+          onClick: () => {
+            setIsLoading(true);
+            handleCreateFlow();
+            setIsLoading(false);
+            setIsModalOpen(false);
+          },
+        }}
+        cancelButtonProps={{
+          onClick: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        textFieldProps={{
+          label: "Flow Name",
+          placeholder: "Enter flow name",
+          onChange: handleFlowNameChange,
+        }}
+        isLoading={isLoading}
+      />
+    </div>
+  );
+};
+
+const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
+  const { deleteFlow } = useFlowStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [flowName, setFlowName] = useState("");
+  const { flows } = useFlowStore();
+  const flow = flows.find((flow) => flow.id === flowId);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+
+  const handleFlowNameChange = (event: any) => {
+    setFlowName(event.target.value);
+  };
+
+  const handleDeleteFlow = () => {
+    if (flowName !== flow?.name) {
+      showSnackbar(
+        "Flow name does not match. Please enter the flow name to delete.",
+        "error",
+      );
+      return;
+    }
+    deleteFlow(flowId);
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div>
+      {snackBar}
+      <GenericEditingModal
+        modalProps={{
+          open: isModalOpen,
+          onClose: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        paperHeadLine="Delete Flow"
+        acceptButtonValue="Delete"
+        acceptButtonProps={{
+          onClick: () => {
+            setIsLoading(true);
+            handleDeleteFlow();
+            setIsLoading(false);
+          },
+          style: { color: "red" },
+        }}
+        cancelButtonProps={{
+          onClick: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        textFieldProps={{
+          label: "Flow Name",
+          placeholder: `Enter ${flow?.name} to delete`,
+          onChange: (event: any) => {
+            handleFlowNameChange(event);
+          },
+        }}
+        isLoading={isLoading}
+      />
+      <AiOutlineDelete
+        className="text-sm cursor-pointer hover:bg-border-color rounded-md"
+        onClick={(e: any) => {
+          e.stopPropagation();
+          setIsModalOpen(true);
+        }}
+      />
     </div>
   );
 };
@@ -31,21 +149,24 @@ interface FlowSideBarProps {
 }
 
 const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
+  const navigate = useNavigate();
+  const { flowId } = useParams();
   return (
     <>
       {flows.map((flow) => (
         <div
-          className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary`}
+          className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
+          ${flow.id === flowId ? "bg-primary" : ""}`}
+          onClick={() => {
+            navigate(`/flows/${flow.id}`);
+          }}
         >
           <div className="flex flex-row items-center justify-between w-full">
             <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
               {flow.name}
             </div>
             <div className="flex flex-row items-center space-x-2">
-              <AiOutlineDelete
-                className="text-sm cursor-pointer hover:bg-border-color rounded-md"
-                onClick={(e: any) => e.stopPropagation()}
-              />
+              <FlowDeleteButton flowId={flow.id} />
               <AiOutlinePlayCircle className="flex text-sm text-green-400 cursor-pointer hover:scale-105 active:scale-100 transition-transform" />
             </div>
           </div>

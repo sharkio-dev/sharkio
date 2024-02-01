@@ -57,7 +57,7 @@ interface flowState {
   loadRun: (flowId: string, id: string) => Promise<TestRun>;
   deleteFlow: (flowId: string) => void;
   runFlow: (flowId: string) => void;
-  postFlow: (flow: Flow) => void;
+  postFlow: (flow: Flow["name"]) => void;
   putFlow: (flow: Flow) => void;
   postNode: (node: Node) => void;
   deleteNode: (nodeId: string) => void;
@@ -100,8 +100,8 @@ const runFlow = (flowId: string) => {
   return BackendAxios.post(`/test-flows/${flowId}/run`);
 };
 
-const postFlow = (flow: Flow) => {
-  return BackendAxios.post(`/test-flows`, flow);
+const postFlowAPI = (flowName: Flow["name"]) => {
+  return BackendAxios.post(`/test-flows`, { name: flowName });
 };
 
 const putFlow = (flow: Flow) => {
@@ -187,9 +187,9 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     get().loadTestRuns();
   },
-  postFlow: async (flow: Flow) => {
+  postFlow: async (flowName: Flow["name"]) => {
     set({ isFlowLoading: true });
-    await postFlow(flow).finally(() => {
+    await postFlowAPI(flowName).finally(() => {
       set({ isFlowLoading: false });
     });
     get().loadFlows();

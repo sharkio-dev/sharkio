@@ -7,11 +7,13 @@ import { FlowNameAndSave } from "./FlowNameAndSaveProps";
 import { RunsTab } from "./RunsTab";
 import { TestsTab } from "./TestsTab";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { useParams } from "react-router-dom";
 
 export const FlowContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [tabNumber, setTabNumber] = useState("1");
   const { flows, isFlowsLoading } = useFlowStore();
+  const { flowId } = useParams();
 
   const handleTabChange = (_: any, newValue: string) => {
     setTabNumber(newValue);
@@ -26,6 +28,9 @@ export const FlowContent: React.FC = () => {
     console.log("save clicked");
     setIsLoading(false);
   };
+  if (!flowId) {
+    return null;
+  }
 
   return (
     <>
