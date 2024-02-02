@@ -1,7 +1,7 @@
 import { PlayArrow } from "@mui/icons-material";
 import { TextField, Tooltip } from "@mui/material";
 import queryString from "query-string";
-import { useState } from "react";
+import React, { useState } from "react";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BackendAxios } from "../../api/backendAxios";
@@ -12,6 +12,7 @@ import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "../sniffers/InvocationDetails";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { InvocationType } from "../sniffers/types";
+import { SnifferSelector } from "../sniffers/SniffersSideBar";
 
 type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
@@ -106,49 +107,43 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
         setLoading(false);
       });
   };
-  const snifferUrl = sniffer == null ? "" : getSnifferDomain(sniffer.subdomain);
 
   return (
-    <div className="flex flex-row items-center space-x-2">
+    <div className="flex flex-row items-center space-x-[2px]">
       {component}
-      <div className="flex flex-row items-center w-28">
-        <SelectMethodDropDown
-          disabled={isDisabled}
-          value={invocation?.method || ""}
-          onChange={(value: string) => {
-            if (invocation) {
-              setEditedInvocation({
-                ...invocation,
-                method: value,
-              });
-            }
-          }}
-        />
-      </div>
-      <div className="flex flex-row items-center w-[550px]">
-        <TextField
-          disabled={true}
-          value={snifferUrl}
-          variant="outlined"
-          size="small"
-          style={{ width: "100%" }}
-        />
-      </div>
-      <TextField
-        disabled={isDisabled}
-        value={invocation?.url}
-        onChange={(e: any) => {
+      <URLComponent
+        onMethodChange={(value) => {
           if (invocation) {
             setEditedInvocation({
               ...invocation,
-              url: e.target.value,
+              method: value,
             });
           }
         }}
-        variant="outlined"
-        size="small"
-        style={{ width: "100%" }}
+        onUrlChange={(value) => {
+          if (invocation) {
+            setEditedInvocation({
+              ...invocation,
+              url: value,
+            });
+          }
+        }}
+        method={invocation?.method || ""}
+        url={invocation?.url || ""}
+        snifferId={invocation?.snifferId || (snifferId as string)}
+        onSnifferChange={(value) => {
+          if (invocation) {
+            setEditedInvocation({
+              ...invocation,
+              snifferId: value,
+            });
+          }
+        }}
+        isSnifferDisabled={isDisabled}
+        isMethodDisabled={isDisabled}
+        isUrlDisabled={isDisabled}
       />
+
       <div className="flex flex-row items-center justify-between h-full">
         {showUrlButtons && (
           <>
@@ -180,6 +175,66 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
           </>
         )}
       </div>
+    </div>
+  );
+};
+
+interface URLComponentProps {
+  onMethodChange: (value: string) => void;
+  onUrlChange: (value: string) => void;
+  method: string;
+  url: string;
+  snifferId: string;
+  onSnifferChange?: (value: string) => void;
+  isSnifferDisabled?: boolean;
+  isMethodDisabled?: boolean;
+  isUrlDisabled?: boolean;
+}
+
+export const URLComponent: React.FC<URLComponentProps> = ({
+  onMethodChange,
+  onUrlChange,
+  method,
+  url,
+  snifferId,
+  onSnifferChange,
+  isSnifferDisabled,
+  isMethodDisabled,
+  isUrlDisabled,
+}) => {
+  const { sniffers } = useSniffersStore();
+  const sniffer = sniffers.find((s) => s.id === snifferId);
+
+  const snifferUrl = sniffer == null ? "" : getSnifferDomain(sniffer.subdomain);
+
+  return (
+    <div className="flex flex-row items-center space-x-[2px] w-full">
+      <div className="flex flex-row items-center w-28">
+        <SelectMethodDropDown
+          disabled={isMethodDisabled}
+          value={method}
+          onChange={onMethodChange}
+        />
+      </div>
+      <div className="flex flex-row items-center w-[200px]">
+        <Tooltip title={snifferUrl} placement="top">
+          <div className="flex flex-row items-center w-full">
+            <SnifferSelector
+              onSnifferSelected={onSnifferChange}
+              snifferId={snifferId}
+              isDisabled={isSnifferDisabled}
+            />
+          </div>
+        </Tooltip>
+      </div>
+      <TextField
+        disabled={isUrlDisabled}
+        value={url}
+        onChange={(e: any) => onUrlChange(e.target.value)}
+        variant="outlined"
+        size="small"
+        style={{ width: "100%" }}
+      />
     </div>
   );
 };

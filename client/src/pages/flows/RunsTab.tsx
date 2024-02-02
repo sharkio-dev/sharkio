@@ -1,7 +1,7 @@
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import TabPanel from "@mui/lab/TabPanel";
 import { MdChevronRight } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
@@ -10,10 +10,12 @@ interface RunProps {
   createdAt: string;
   status: string;
   title: string;
+  runId: string;
 }
 
-const Run: React.FC<RunProps> = ({ createdAt, status, title }) => {
+const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
   const navigate = useNavigate();
+  const { flowId } = useParams();
   return (
     <div className="flex flex-col border border-border-color p-2 px-4 shadow-md hover:border-blue-400 cursor-pointer rounded-md min-h-[48px] justify-center">
       <div className="flex flex-row items-center justify-between">
@@ -36,7 +38,7 @@ const Run: React.FC<RunProps> = ({ createdAt, status, title }) => {
           <MdChevronRight
             className=" active:scale-110 text-lg cursor-pointer hover:bg-border-color rounded-md"
             onClick={() => {
-              navigate("/flows/123/runs/123");
+              navigate(`/flows/${flowId}/runs/${runId}`);
             }}
           />
         </div>
@@ -47,9 +49,10 @@ const Run: React.FC<RunProps> = ({ createdAt, status, title }) => {
 
 export const RunsTab: React.FC = () => {
   const { runs, loadTestRuns, isRunsLoading } = useFlowStore();
+  const { flowId } = useParams();
 
   useEffect(() => {
-    loadTestRuns();
+    loadTestRuns(flowId as string);
   }, []);
 
   return (
@@ -62,6 +65,7 @@ export const RunsTab: React.FC = () => {
             return (
               <Run
                 key={index}
+                runId={run.id}
                 createdAt={run.createdAt}
                 status={run.status}
                 title={`Run ${index + 1}`}

@@ -1,5 +1,8 @@
 import { Button } from "@mui/material";
 import { EditableNameField } from "./EditableNameProps";
+import { AiOutlinePlayCircle } from "react-icons/ai";
+import { useFlowStore } from "../../stores/flowStore";
+import { useParams } from "react-router-dom";
 
 interface FlowNameAndSaveProps {
   isLoading: boolean;
@@ -8,12 +11,14 @@ interface FlowNameAndSaveProps {
   handleNameChange: (namg: string) => void;
 }
 
-export const FlowNameAndSave: React.FC<FlowNameAndSaveProps> = ({
+export const FlowNameAndRun: React.FC<FlowNameAndSaveProps> = ({
   isLoading,
   name,
   handleNameChange,
   handleSaveClicked,
 }) => {
+  const { flowId } = useParams();
+  const { runFlow } = useFlowStore();
   return (
     <div className="flex flex-row items-center justify-between">
       <EditableNameField
@@ -22,13 +27,15 @@ export const FlowNameAndSave: React.FC<FlowNameAndSaveProps> = ({
         handleNameChange={handleNameChange}
         handleSaveClicked={handleSaveClicked}
       />
+
       <Button
-        variant="outlined"
+        variant="text"
         color="success"
-        sx={{ height: "32px" }}
-        onAbort={handleSaveClicked}
+        size="small"
+        startIcon={<AiOutlinePlayCircle />}
+        onClick={() => runFlow(flowId as string)}
       >
-        Save
+        Run
       </Button>
     </div>
   );

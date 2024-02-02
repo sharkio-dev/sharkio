@@ -25,8 +25,9 @@ export class RequestService {
 
   async execute({ method, url, headers, body, subdomain }: ExecutionType) {
     const calculatedUrl =
-      `${process.env.PROXY_SERVER_PROTOCOL}://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` +
-      url;
+      `${process.env.PROXY_SERVER_PROTOCOL ?? "https"}://${subdomain}.${
+        process.env.PROXY_SERVER_DOMAIN
+      }` + url;
     log.info({
       method,
       url: calculatedUrl,
@@ -36,13 +37,10 @@ export class RequestService {
     });
     const newHeaders = Object.entries(headers)
       .filter(([key, _]) => key !== "host" && key !== "content-length")
-      .reduce(
-        (acc, [key, value]) => {
-          acc[key] = value;
-          return acc;
-        },
-        {} as Record<string, string>,
-      );
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
 
     const res: AxiosResponse = await axios
       .request({

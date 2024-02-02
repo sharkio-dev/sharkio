@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TextButton } from "../../components/TextButton";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { InvocationURL } from "../live-Invocations/LiveInvocationUpperBar";
+import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
 import { InvocationType } from "../sniffers/types";
 import { RequestSection } from "../sniffers/InvocationDetails";
@@ -11,12 +11,12 @@ import { useParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 
 export const FlowStepPage = () => {
   const { loadNode, putNode } = useFlowStore();
   const [flowStep, setFlowStep] = useState<NodeType>();
   const { flowId, testId } = useParams();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
     if (!flowId || !testId) return;
@@ -54,29 +54,49 @@ export const FlowStepPage = () => {
       direction={"vertical"}
       className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh-184px)]"
     >
-      <Panel defaultSize={60} maxSize={80}>
+      <Panel defaultSize={70} maxSize={80}>
         <div className="flex flex-col p-4 w-full pb-0">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              if (!flowId) return;
-              putNode(flowId, { ...flowStep, snifferId: undefined });
-            }}
-          >
-            Save
-          </Button>
-          <InvocationURL
-            // @ts-ignore
-            invocation={{ ...flowStep, snifferId: flowStep.proxyId }}
-            setEditedInvocation={(invocation) => {
-              setFlowStep((prev) => {
-                if (!prev) return prev;
-                return { ...prev, ...invocation };
-              });
-            }}
-            showUrlButtons={false}
-          />
+          {snackBar}
+
+          <div className="flex flex-row items-center space-x-2">
+            <URLComponent
+              method={flowStep.method}
+              url={flowStep.url}
+              snifferId={flowStep.proxyId}
+              onMethodChange={(value) => {
+                setFlowStep((prev) => {
+                  if (!prev) return prev;
+                  return { ...prev, method: value };
+                });
+              }}
+              onUrlChange={(value) => {
+                setFlowStep((prev) => {
+                  if (!prev) return prev;
+                  return { ...prev, url: value };
+                });
+              }}
+              onSnifferChange={(value) => {
+                setFlowStep((prev) => {
+                  if (!prev) return prev;
+                  return { ...prev, proxyId: value };
+                });
+              }}
+            />
+            <Button
+              variant="outlined"
+              color="success"
+              onClick={() => {
+                if (!flowId) return;
+                putNode(flowId, { ...flowStep, snifferId: undefined }).then(
+                  () => {
+                    showSnackbar("Saved", "success");
+                  },
+                );
+              }}
+            >
+              Save
+            </Button>
+          </div>
           <RequestSection
             // @ts-ignore
             invocation={{ ...flowStep, snifferId: flowStep.proxyId }}
@@ -103,7 +123,7 @@ export const FlowStepPage = () => {
                 handleAddAssertion({
                   path: "headers.example",
                   comparator: "eq",
-                  expectedValue: "example",
+                  expectedValue: "",
                 });
               }}
             />
@@ -113,7 +133,7 @@ export const FlowStepPage = () => {
                 handleAddAssertion({
                   path: "body.example",
                   comparator: "eq",
-                  expectedValue: "example",
+                  expectedValue: "",
                 });
               }}
             />
@@ -123,7 +143,7 @@ export const FlowStepPage = () => {
                 handleAddAssertion({
                   path: "status",
                   comparator: "eq",
-                  expectedValue: "200",
+                  expectedValue: "",
                 });
               }}
             />
@@ -131,8 +151,8 @@ export const FlowStepPage = () => {
           {flowStep.assertions?.map((assertion, index) => (
             <Assertion
               assertion={assertion}
-              handleAssertionChange={() => {
-                handleAssertionChange(assertion, index);
+              handleAssertionChange={(newAssertion) => {
+                handleAssertionChange(newAssertion, index);
               }}
             />
           ))}

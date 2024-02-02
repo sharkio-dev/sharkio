@@ -41,26 +41,16 @@ export const SniffersSideBar: React.FC = () => {
     <>
       <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 overflow-y-auto">
         {snackBar}
-        <FormControl fullWidth size="small" variant="outlined">
-          <InputLabel>Sniffers</InputLabel>
-          <Select value={snifferId || ""} label="Proxies">
-            {sniffers.map((sniffer, i) => (
-              <MenuItem
-                key={i}
-                onClick={() => {
-                  navigator(routes.ENDPOINTS + "?snifferId=" + sniffer.id);
-                }}
-                value={sniffer.id}
-              >
-                <SideBarItem
-                  LeftIcon={GiSharkFin}
-                  isSelected={snifferId === sniffer.id}
-                  name={sniffer.name}
-                />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <SnifferSelector
+          onSnifferSelected={(snifferId) => {
+            setSearchParams((params) => {
+              const newParams = new URLSearchParams(params);
+              newParams.set("snifferId", snifferId);
+              return newParams;
+            });
+          }}
+          snifferId={(snifferId as string) || ""}
+        />
         {snifferId && (
           <div className="flex flex-col w-full overflow-y-auto">
             {loadingEndpoints ? (
@@ -74,6 +64,42 @@ export const SniffersSideBar: React.FC = () => {
         )}
       </div>
     </>
+  );
+};
+
+export const SnifferSelector = ({
+  onSnifferSelected,
+  snifferId,
+  isDisabled,
+}: {
+  onSnifferSelected: (snifferId: string) => void;
+  snifferId?: string;
+  isDisabled?: boolean;
+}) => {
+  const { sniffers } = useSniffersStore();
+
+  return (
+    <FormControl fullWidth size="small" variant="outlined">
+      <InputLabel>Proxies</InputLabel>
+      <Select value={snifferId || ""} label="Proxies">
+        {sniffers.map((sniffer, i) => (
+          <MenuItem
+            key={i}
+            onClick={() => {
+              onSnifferSelected(sniffer.id);
+            }}
+            value={sniffer.id}
+            disabled
+          >
+            <SideBarItem
+              LeftIcon={GiSharkFin}
+              isSelected={snifferId === sniffer.id}
+              name={sniffer.name}
+            />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

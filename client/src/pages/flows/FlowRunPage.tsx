@@ -24,16 +24,9 @@ interface Check {
 export const FlowRunPage = () => {
   const { loadRun, isRunLoading } = useFlowStore();
   const { runId, flowId } = useParams();
-  const [run, setRun] = useState<
-    {
-      name: string;
-      checks: Check[];
-    }[]
-  >();
+  const [run, setRun] = useState<{ name: string; checks: Check[] }[]>();
 
   useEffect(() => {
-    console.log("flowId", flowId);
-    console.log("nodeId", runId);
     if (!flowId || !runId) return;
     loadRun(flowId, runId).then((run) => {
       console.log("run", run);

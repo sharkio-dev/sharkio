@@ -26,7 +26,7 @@ export const EditableNameField: React.FC<EditableNameProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center space-x-2 justify-center h-8">
+    <div className="flex flex-row items-center space-x-2 h-8">
       {isEditing ? (
         <>
           {isLoading ? (

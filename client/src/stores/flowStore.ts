@@ -32,7 +32,7 @@ export interface NodeType {
   updatedAt: string;
 }
 
-interface TestRun {
+export interface TestRun {
   id: string;
   status: string;
   flowId: string;
@@ -51,7 +51,7 @@ interface flowState {
   isFlowLoading: boolean;
   loadFlows: () => void;
   loadNodes: (flowId: string) => void;
-  loadTestRuns: () => void;
+  loadTestRuns: (flowId: string) => void;
   loadNode: (flowId: string, id: string) => Promise<NodeType>;
   loadRun: (flowId: string, id: string) => Promise<TestRun>;
   deleteFlow: (flowId: string) => void;
@@ -60,7 +60,7 @@ interface flowState {
   putFlow: (flow: Flow) => void;
   postNode: (flowId: string, node: Partial<NodeType>) => void;
   deleteNode: (flowId: string, nodeId: string) => void;
-  putNode: (flowId: string, node: Partial<NodeType>) => void;
+  putNode: (flowId: string, node: Partial<NodeType>) => Promise<void>;
 }
 
 const getFlows = () => {
@@ -71,10 +71,8 @@ const getNodes = (flowId: string) => {
   return BackendAxios.get(`/test-flows/${flowId}/nodes`);
 };
 
-const getTestRuns = () => {
-  return BackendAxios.get(
-    "/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/runs",
-  );
+const getTestRuns = (flowId: string) => {
+  return BackendAxios.get(`/test-flows/${flowId}/runs`);
 };
 
 const getNode = (flowId: string, nodeId: string) => {
@@ -82,9 +80,7 @@ const getNode = (flowId: string, nodeId: string) => {
 };
 
 const getRun = (flowId: string, runId: string) => {
-  return BackendAxios.get(
-    `/test-flows/673bf1a6-8662-41a2-a1eb-6e7acba75629/runs/eefae5f8-367e-4361-9204-1764be5a4b92/node-runs`,
-  );
+  return BackendAxios.get(`/test-flows/${flowId}/runs/${runId}/node-runs`);
 };
 
 const deleteFlow = (flowId: string) => {
@@ -92,7 +88,7 @@ const deleteFlow = (flowId: string) => {
 };
 
 const runFlow = (flowId: string) => {
-  return BackendAxios.post(`/test-flows/${flowId}/run`);
+  return BackendAxios.post(`/test-flows/${flowId}/execute`);
 };
 
 const postFlowAPI = (flowName: Flow["name"]) => {
@@ -139,11 +135,12 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     set({ nodes: data || [] });
   },
-  loadTestRuns: async () => {
+  loadTestRuns: async (flowId: string) => {
     set({ isRunsLoading: true });
-    const { data } = await getTestRuns().finally(() => {
+    const { data } = await getTestRuns(flowId).finally(() => {
       set({ isRunsLoading: false });
     });
+    console.log(data);
     set({ runs: data || [] });
   },
   loadNode: async (flowId: string, nodeId: string) => {
@@ -172,7 +169,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
     await runFlow(flowId).finally(() => {
       set({ isFlowLoading: false });
     });
-    get().loadTestRuns();
+    get().loadTestRuns(flowId);
   },
   postFlow: async (flowName: Flow["name"]) => {
     set({ isFlowLoading: true });
@@ -207,6 +204,6 @@ export const useFlowStore = create<flowState>((set, get) => ({
     await putNode(flowId, node).finally(() => {
       set({ isNodeLoading: false });
     });
-    get().loadNodes(flowId);
+    return get().loadNodes(flowId);
   },
 }));
