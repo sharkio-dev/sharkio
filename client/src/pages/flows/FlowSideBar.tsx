@@ -3,11 +3,10 @@ import {
   AiOutlinePlayCircle,
   AiOutlinePlus,
 } from "react-icons/ai";
-import { Flow, useFlowStore } from "../../stores/flowStore";
+import { FlowType, useFlowStore } from "../../stores/flowStore";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
-import { flowRight } from "lodash";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -16,13 +15,16 @@ const NewFlowButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [flowName, setFlowName] = useState("");
+  const navigate = useNavigate();
 
   const handleFlowNameChange = (event: any) => {
     setFlowName(event.target.value);
   };
 
   const handleCreateFlow = () => {
-    postFlow(flowName);
+    postFlow(flowName).then((res) => {
+      navigate(`/flows/${res.id}`);
+    });
   };
   return (
     <div className="border-b border-border-color pb-2 mb-2">
@@ -80,6 +82,7 @@ const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
   const { flows } = useFlowStore();
   const flow = flows.find((flow) => flow.id === flowId);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const navigate = useNavigate();
 
   const handleFlowNameChange = (event: any) => {
     setFlowName(event.target.value);
@@ -93,7 +96,10 @@ const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
       );
       return;
     }
-    deleteFlow(flowId);
+    deleteFlow(flowId).then(() => {
+      navigate("/flows");
+    });
+
     setIsModalOpen(false);
   };
 
@@ -123,8 +129,8 @@ const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
           },
         }}
         textFieldProps={{
-          label: `Enter ${flow?.name} to delete`,
-          placeholder: `Enter ${flow?.name} to delete`,
+          label: `Enter "${flow?.name}" to delete`,
+          placeholder: `Enter "${flow?.name}" to delete`,
           onChange: (event: any) => {
             handleFlowNameChange(event);
           },
@@ -143,9 +149,9 @@ const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
 };
 
 interface FlowSideBarProps {
-  flows: Flow[];
-  selectedFlow?: Flow;
-  setSelectedFlow?: (flow: Flow) => void;
+  flows: FlowType[];
+  selectedFlow?: FlowType;
+  setSelectedFlow?: (flow: FlowType) => void;
 }
 
 const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {

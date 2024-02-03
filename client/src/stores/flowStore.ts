@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { BackendAxios } from "../api/backendAxios";
 
-export interface Flow {
+export interface FlowType {
   id: string;
   name: string;
   executionType: string;
@@ -10,7 +10,7 @@ export interface Flow {
   updatedAt: string;
 }
 
-interface Assertion {
+interface AssertionType {
   path: string;
   comparator: string;
   expectedValue: string;
@@ -26,13 +26,13 @@ export interface NodeType {
   body: string;
   snifferId: string;
   headers: {};
-  assertions: Assertion[];
+  assertions: AssertionType[];
   method: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface TestRun {
+export interface TestRunType {
   id: string;
   status: string;
   flowId: string;
@@ -40,9 +40,9 @@ export interface TestRun {
 }
 
 interface flowState {
-  flows: Flow[];
+  flows: FlowType[];
   nodes: NodeType[];
-  runs: TestRun[];
+  runs: TestRunType[];
   isFlowsLoading: boolean;
   isNodesLoading: boolean;
   isRunsLoading: boolean;
@@ -53,11 +53,11 @@ interface flowState {
   loadNodes: (flowId: string) => void;
   loadTestRuns: (flowId: string) => void;
   loadNode: (flowId: string, id: string) => Promise<NodeType>;
-  loadRun: (flowId: string, id: string) => Promise<TestRun>;
-  deleteFlow: (flowId: string) => void;
+  loadRun: (flowId: string, id: string) => Promise<TestRunType>;
+  deleteFlow: (flowId: string) => Promise<void>;
   runFlow: (flowId: string) => void;
-  postFlow: (flow: Flow["name"]) => void;
-  putFlow: (flow: Flow) => void;
+  postFlow: (flow: FlowType["name"]) => Promise<FlowType>;
+  putFlow: (flow: FlowType) => void;
   postNode: (flowId: string, node: Partial<NodeType>) => void;
   deleteNode: (flowId: string, nodeId: string) => void;
   putNode: (flowId: string, node: Partial<NodeType>) => Promise<void>;
@@ -91,11 +91,13 @@ const runFlow = (flowId: string) => {
   return BackendAxios.post(`/test-flows/${flowId}/execute`);
 };
 
-const postFlowAPI = (flowName: Flow["name"]) => {
-  return BackendAxios.post(`/test-flows`, { name: flowName });
+const postFlowAPI = (flowName: FlowType["name"]) => {
+  return BackendAxios.post(`/test-flows`, { name: flowName }).then((res) => {
+    return res.data;
+  });
 };
 
-const putFlow = (flow: Flow) => {
+const putFlow = (flow: FlowType) => {
   return BackendAxios.put(`/test-flows/${flow.id}`, flow);
 };
 
@@ -159,10 +161,13 @@ export const useFlowStore = create<flowState>((set, get) => ({
   },
   deleteFlow: async (flowId: string) => {
     set({ isFlowLoading: true });
-    await deleteFlow(flowId).finally(() => {
-      set({ isFlowLoading: false });
-    });
-    get().loadFlows();
+    return await deleteFlow(flowId)
+      .then(() => {
+        get().loadFlows();
+      })
+      .finally(() => {
+        set({ isFlowLoading: false });
+      });
   },
   runFlow: async (flowId: string) => {
     set({ isFlowLoading: true });
@@ -171,14 +176,18 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     get().loadTestRuns(flowId);
   },
-  postFlow: async (flowName: Flow["name"]) => {
+  postFlow: async (flowName: FlowType["name"]) => {
     set({ isFlowLoading: true });
-    await postFlowAPI(flowName).finally(() => {
-      set({ isFlowLoading: false });
-    });
-    get().loadFlows();
+    return await postFlowAPI(flowName)
+      .then((res) => {
+        get().loadFlows();
+        return res;
+      })
+      .finally(() => {
+        set({ isFlowLoading: false });
+      });
   },
-  putFlow: async (flow: Flow) => {
+  putFlow: async (flow: FlowType) => {
     set({ isFlowLoading: true });
     await putFlow(flow).finally(() => {
       set({ isFlowLoading: false });

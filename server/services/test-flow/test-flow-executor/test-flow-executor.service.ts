@@ -20,14 +20,14 @@ export interface ITestFlowExecutor {
     flowId: string,
     flowRunId: string,
     nodes: TestFlowNode[],
-    edges?: TestFlowEdge[]
+    edges?: TestFlowEdge[],
   ): Promise<TestExecutionResult>;
 }
 
 export class TestFlowExecutor {
   constructor(
     private readonly testFlowService: TestFlowService,
-    private readonly executionStrategies: Record<string, ITestFlowExecutor>
+    private readonly executionStrategies: Record<string, ITestFlowExecutor>,
   ) {}
 
   async execute(ownerId: any, flowId: string): Promise<TestFlowRun> {
@@ -47,7 +47,7 @@ export class TestFlowExecutor {
       {
         status: FlowRunStatus.running,
         startedAt: new Date(),
-      }
+      },
     );
 
     const runResult = await executionStrategy.execute(
@@ -55,11 +55,11 @@ export class TestFlowExecutor {
       flowId,
       flowRun.id,
       nodes,
-      edges
+      edges,
     );
 
     const isPassed = runResult.every(
-      (result) => result.assertionResult.success
+      (result) => result.assertionResult.success,
     );
 
     await this.testFlowService.updateFlowRun(ownerId, flowId, {

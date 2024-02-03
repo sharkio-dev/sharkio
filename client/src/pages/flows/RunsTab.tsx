@@ -13,6 +13,19 @@ interface RunProps {
   runId: string;
 }
 
+const getRunStatusIcon = (status: string) => {
+  switch (status) {
+    case "failed":
+      return <AiOutlineCloseCircle className="text-red-400 text-2xl" />;
+    case "passed":
+      return <AiOutlineCheckCircle className="text-green-400 text-2xl" />;
+    case "running":
+      return <LoadingIcon />;
+    default:
+      return <AiOutlineCheckCircle className="text-gray-400 text-2xl" />;
+  }
+};
+
 const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
   const navigate = useNavigate();
   const { flowId } = useParams();
@@ -20,11 +33,7 @@ const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
     <div className="flex flex-col border border-border-color p-2 px-4 shadow-md hover:border-blue-400 cursor-pointer rounded-md min-h-[48px] justify-center">
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row justify-center items-center space-x-2">
-          {status === "failed" ? (
-            <AiOutlineCloseCircle className="text-red-400 text-2xl" />
-          ) : (
-            <AiOutlineCheckCircle className="text-green-400 text-2xl" />
-          )}
+          {getRunStatusIcon(status)}
           <div className="flex flex-col justify-center">
             <div className="flex flex-row items-center space-x-2">
               <div className="text-lg font-bold">{title}</div>

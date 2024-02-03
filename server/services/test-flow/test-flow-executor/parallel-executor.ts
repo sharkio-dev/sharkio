@@ -9,14 +9,14 @@ export class ParallelExecutor implements ITestFlowExecutor {
   constructor(
     private readonly requestService: RequestService,
     private readonly nodeResponseValidator: NodeResponseValidator,
-    private readonly testFlowReporter: TestFlowReporter
+    private readonly testFlowReporter: TestFlowReporter,
   ) {}
 
   async execute(
     ownerId: string,
     flowId: string,
     flowRunId: string,
-    nodes: TestFlowNode[]
+    nodes: TestFlowNode[],
   ) {
     const res = await Promise.all(
       nodes.map(async (node) => {
@@ -33,7 +33,7 @@ export class ParallelExecutor implements ITestFlowExecutor {
           });
           const assertionResult = await this.nodeResponseValidator.assert(
             node,
-            response
+            response,
           );
 
           await this.testFlowReporter.reportNodeRun(
@@ -41,7 +41,7 @@ export class ParallelExecutor implements ITestFlowExecutor {
             flowId,
             flowRunId,
             node,
-            assertionResult
+            assertionResult,
           );
 
           const resultItem = { node, response, assertionResult };
@@ -49,7 +49,7 @@ export class ParallelExecutor implements ITestFlowExecutor {
         } catch (e) {
           throw new Error("Failed to execute test flow node");
         }
-      })
+      }),
     );
     return res;
   }
