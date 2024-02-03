@@ -49,6 +49,7 @@ interface flowState {
   isRunLoading: boolean;
   isNodeLoading: boolean;
   isFlowLoading: boolean;
+  isFlowRunning: boolean;
   loadFlows: (isLoading?: boolean) => void;
   loadNodes: (flowId: string, isLoading?: boolean) => void;
   loadTestRuns: (flowId: string, isLoading?: boolean) => void;
@@ -143,6 +144,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
   isRunLoading: false,
   isNodeLoading: false,
   isFlowLoading: false,
+  isFlowRunning: false,
   loadFlows: async (isLoading = false) => {
     if (isLoading) {
       set({ isFlowsLoading: true });
@@ -203,12 +205,11 @@ export const useFlowStore = create<flowState>((set, get) => ({
   },
   runFlow: async (flowId: string, isLoading = false) => {
     if (isLoading) {
-      set({ isFlowLoading: true });
+      set({ isFlowRunning: true });
     }
     await runFlow(flowId).finally(() => {
-      set({ isFlowLoading: false });
+      set({ isFlowRunning: false });
     });
-    get().loadTestRuns(flowId);
   },
   postFlow: async (flowName: FlowType["name"], isLoading = false) => {
     if (isLoading) {

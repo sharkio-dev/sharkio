@@ -6,7 +6,7 @@ import { useFlowStore } from "../../stores/flowStore";
 import { FlowNameAndRun } from "./FlowNameAndSaveProps";
 import { RunsTab } from "./RunsTab";
 import { TestsTab } from "./TestsTab";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export const FlowContent: React.FC = () => {
   const [tabNumber, setTabNumber] = useState("1");
@@ -14,6 +14,7 @@ export const FlowContent: React.FC = () => {
   const { flowId } = useParams();
   const flow = flows.find((f) => f.id === flowId);
   const [flowName, setFlowName] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     if (flow) {
@@ -22,7 +23,11 @@ export const FlowContent: React.FC = () => {
   }, [flow]);
 
   const handleTabChange = (_: any, newValue: string) => {
-    setTabNumber(newValue);
+    setSearchParams((prevSearchParams) => {
+      const newSearchParams = new URLSearchParams(prevSearchParams);
+      newSearchParams.set("tab", newValue);
+      return newSearchParams;
+    });
   };
 
   const handleFlowNameChange = (name: string) => {
@@ -46,7 +51,7 @@ export const FlowContent: React.FC = () => {
         handleNameChange={handleFlowNameChange}
         handleSaveClicked={handleSaveClicked}
       />
-      <TabContext value={tabNumber}>
+      <TabContext value={searchParams.get("tab") || "1"}>
         <TabList
           onChange={handleTabChange}
           className="border-b-[0.1px] border-border-color"

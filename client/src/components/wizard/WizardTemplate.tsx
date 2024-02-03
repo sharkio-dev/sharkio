@@ -2,6 +2,7 @@ import React from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import { RxMagicWand } from "react-icons/rx";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { GoBackButton } from "../../pages/flows/FlowStepPage";
 
 interface WizardTemplateProps {
   onClose: () => void;
@@ -19,12 +20,7 @@ export const WizardTemplate: React.FC<WizardTemplateProps> = ({
     <>
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center space-x-2">
-          {goBack && (
-            <FaArrowLeftLong
-              className="text-xl bg-border-color rounded-full p-1 cursor-pointer active:scale-95 transition-all hover:text-magic"
-              onClick={goBack}
-            />
-          )}
+          {goBack && <GoBackButton onClick={goBack} />}
           <div className="text-lg">{title}</div>
           <RxMagicWand className="text-xl text-magic" />
         </div>

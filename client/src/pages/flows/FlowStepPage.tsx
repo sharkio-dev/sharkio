@@ -7,16 +7,18 @@ import { SelectComponent } from "../../components/select-component/SelectCompone
 import { InvocationType } from "../sniffers/types";
 import { RequestSection } from "../sniffers/InvocationDetails";
 import { NodeType, useFlowStore } from "../../stores/flowStore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 export const FlowStepPage = () => {
   const { loadNode, putNode } = useFlowStore();
   const [flowStep, setFlowStep] = useState<NodeType>();
   const { flowId, testId } = useParams();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!flowId || !testId) return;
@@ -58,7 +60,8 @@ export const FlowStepPage = () => {
         <div className="flex flex-col p-4 w-full pb-0">
           {snackBar}
 
-          <div className="flex flex-row items-center space-x-2">
+          <div className="flex flex-row items-center space-x-4">
+            <GoBackButton onClick={() => navigate(-1)} />
             <URLComponent
               method={flowStep.method}
               url={flowStep.url}
@@ -221,5 +224,18 @@ const Assertion: React.FC<AssertionProps> = ({
         </div>
       </div>
     </div>
+  );
+};
+
+interface GoBackButtonProps {
+  onClick: () => void;
+}
+
+export const GoBackButton: React.FC<GoBackButtonProps> = ({ onClick }) => {
+  return (
+    <FaArrowLeftLong
+      className="text-xl bg-border-color rounded-full p-1 cursor-pointer active:scale-95 transition-all hover:text-magic"
+      onClick={onClick}
+    />
   );
 };
