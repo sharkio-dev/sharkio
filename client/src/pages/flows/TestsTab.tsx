@@ -11,6 +11,8 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { EditableNameField } from "./EditableNameProps";
+import { TextField } from "@mui/material";
+import { ProxySelector } from "../sniffers/SniffersSideBar";
 
 const Step = ({ step }: { step: NodeType }) => {
   const navigate = useNavigate();
@@ -143,26 +145,84 @@ export const TestsTab: React.FC = () => {
 
   return (
     <TabPanel value="1" style={{ padding: 0, height: "100%" }}>
-      <TextButton
-        text="Add Test"
-        onClick={() => {
-          if (!flowId) return;
-          postNode(flowId, {
-            name: "New Test",
-            url: "/",
-            method: "GET",
-            headers: {},
-            body: "",
-            assertions: [],
-            proxyId: "1fc60d49-7c13-48ab-bcdc-3717ff40ffac",
-          });
-        }}
-      />
+      <AddTestButton />
       {isNodesLoading ? (
         <LoadingIcon />
       ) : (
         nodes.map((step) => <Step step={step} />)
       )}
     </TabPanel>
+  );
+};
+
+const AddTestButton = () => {
+  const { flowId } = useParams();
+  const { postNode } = useFlowStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stepName, setStepName] = useState("");
+  const [proxyId, setProxyId] = useState("");
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
+
+  const onAddTest = () => {
+    if (!flowId) return;
+    if (!stepName) {
+      showSnackbar("Please enter step name", "warning");
+      return;
+    }
+    if (!proxyId) {
+      showSnackbar("Please select a proxy", "warning");
+      return;
+    }
+
+    postNode(flowId, {
+      name: stepName,
+      url: "/",
+      method: "GET",
+      headers: {},
+      body: "",
+      assertions: [],
+      proxyId: proxyId,
+    }).then(() => {
+      setIsModalOpen(false);
+      setStepName("");
+      setProxyId("");
+    });
+  };
+  return (
+    <>
+      {snackBar}
+      <TextButton text="Add Step" onClick={() => setIsModalOpen(true)} />
+      <GenericEditingModal
+        modalProps={{
+          open: isModalOpen,
+          onClose: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        paperHeadLine="Add Step"
+        acceptButtonValue="Add"
+        acceptButtonProps={{
+          onClick: onAddTest,
+        }}
+        cancelButtonProps={{
+          onClick: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        isLoading={false}
+      >
+        <TextField
+          label="Enter step name"
+          placeholder="Enter step name"
+          size="small"
+          value={stepName}
+          onChange={(e) => setStepName(e.target.value)}
+        />
+        <ProxySelector
+          snifferId={proxyId}
+          onSnifferSelected={(id) => setProxyId(id)}
+        />
+      </GenericEditingModal>
+    </>
   );
 };

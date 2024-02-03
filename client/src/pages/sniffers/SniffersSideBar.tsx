@@ -41,7 +41,7 @@ export const SniffersSideBar: React.FC = () => {
     <>
       <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 overflow-y-auto">
         {snackBar}
-        <SnifferSelector
+        <ProxySelector
           onSnifferSelected={(snifferId) => {
             setSearchParams((params) => {
               const newParams = new URLSearchParams(params);
@@ -67,7 +67,7 @@ export const SniffersSideBar: React.FC = () => {
   );
 };
 
-export const SnifferSelector = ({
+export const ProxySelector = ({
   onSnifferSelected,
   snifferId,
   isDisabled,
@@ -89,7 +89,7 @@ export const SnifferSelector = ({
               onSnifferSelected(sniffer.id);
             }}
             value={sniffer.id}
-            disabled
+            disabled={isDisabled}
           >
             <SideBarItem
               LeftIcon={GiSharkFin}

@@ -173,7 +173,6 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
             </div>
             <div className="flex flex-row items-center space-x-2">
               <FlowDeleteButton flowId={flow.id} />
-              <AiOutlinePlayCircle className="flex text-sm text-green-400 cursor-pointer hover:scale-105 active:scale-100 transition-transform" />
             </div>
           </div>
         </div>

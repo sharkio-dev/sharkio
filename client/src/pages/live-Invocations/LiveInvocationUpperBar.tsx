@@ -12,7 +12,7 @@ import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "../sniffers/InvocationDetails";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { InvocationType } from "../sniffers/types";
-import { SnifferSelector } from "../sniffers/SniffersSideBar";
+import { ProxySelector } from "../sniffers/SniffersSideBar";
 
 type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
@@ -219,7 +219,7 @@ export const URLComponent: React.FC<URLComponentProps> = ({
       <div className="flex flex-row items-center w-[200px]">
         <Tooltip title={snifferUrl} placement="top">
           <div className="flex flex-row items-center w-full">
-            <SnifferSelector
+            <ProxySelector
               onSnifferSelected={onSnifferChange}
               snifferId={snifferId}
               isDisabled={isSnifferDisabled}

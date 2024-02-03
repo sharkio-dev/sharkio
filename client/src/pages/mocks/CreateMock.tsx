@@ -104,12 +104,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
           onUrlChange={(value) => {
             handleUrlChange(value);
           }}
-          onSnifferChange={(value) => {
-            setEditedMock((prev) => {
-              if (!prev) return prev;
-              return { ...prev, snifferId: value };
-            });
-          }}
+          isSnifferDisabled={true}
         />
         <div className="w-40 py-2">
           <SelectComponent

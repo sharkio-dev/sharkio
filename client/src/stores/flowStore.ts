@@ -58,7 +58,7 @@ interface flowState {
   runFlow: (flowId: string) => void;
   postFlow: (flow: FlowType["name"]) => Promise<FlowType>;
   putFlow: (flow: FlowType) => void;
-  postNode: (flowId: string, node: Partial<NodeType>) => void;
+  postNode: (flowId: string, node: Partial<NodeType>) => Promise<void>;
   deleteNode: (flowId: string, nodeId: string) => void;
   putNode: (flowId: string, node: Partial<NodeType>) => Promise<void>;
 }
@@ -196,10 +196,13 @@ export const useFlowStore = create<flowState>((set, get) => ({
   },
   postNode: async (flowId: string, node: Partial<NodeType>) => {
     set({ isNodeLoading: true });
-    await postNode(flowId, node).finally(() => {
-      set({ isNodeLoading: false });
-    });
-    get().loadNodes(flowId);
+    return await postNode(flowId, node)
+      .then(() => {
+        get().loadNodes(flowId);
+      })
+      .finally(() => {
+        set({ isNodeLoading: false });
+      });
   },
   deleteNode: async (flowId: string, nodeId: string) => {
     set({ isNodeLoading: true });
