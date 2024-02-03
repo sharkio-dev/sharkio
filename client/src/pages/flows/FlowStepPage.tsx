@@ -44,7 +44,7 @@ export const FlowStepPage = () => {
       if (!prev) return prev;
       return {
         ...prev,
-        assertions: [...(prev.assertions ?? []), newAssertion],
+        assertions: [newAssertion, ...(prev.assertions ?? [])],
       };
     });
   };
