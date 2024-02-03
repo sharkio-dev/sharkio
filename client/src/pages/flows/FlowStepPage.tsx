@@ -54,7 +54,7 @@ export const FlowStepPage = () => {
   return (
     <PanelGroup
       direction={"vertical"}
-      className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh-184px)]"
+      className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh)] overflow-y-auto"
     >
       <Panel defaultSize={70} maxSize={80}>
         <div className="flex flex-col p-4 w-full pb-0">
@@ -118,7 +118,7 @@ export const FlowStepPage = () => {
         />
       </div>
       <Panel maxSize={70}>
-        <div className="flex flex-col px-2 w-full h-full space-y-2">
+        <div className=" flex-col px-2 w-full h-full space-y-2 overflow-y-auto">
           <div className="flex flex-row items-center space-x-2">
             <TextButton
               text="Header Assertion"
