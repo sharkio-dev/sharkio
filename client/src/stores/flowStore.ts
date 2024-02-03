@@ -49,18 +49,38 @@ interface flowState {
   isRunLoading: boolean;
   isNodeLoading: boolean;
   isFlowLoading: boolean;
-  loadFlows: () => void;
-  loadNodes: (flowId: string) => void;
-  loadTestRuns: (flowId: string) => void;
-  loadNode: (flowId: string, id: string) => Promise<NodeType>;
-  loadRun: (flowId: string, id: string) => Promise<TestRunType>;
-  deleteFlow: (flowId: string) => Promise<void>;
-  runFlow: (flowId: string) => void;
-  postFlow: (flow: FlowType["name"]) => Promise<FlowType>;
-  putFlow: (flow: FlowType) => void;
-  postNode: (flowId: string, node: Partial<NodeType>) => Promise<void>;
-  deleteNode: (flowId: string, nodeId: string) => void;
-  putNode: (flowId: string, node: Partial<NodeType>) => Promise<void>;
+  loadFlows: (isLoading?: boolean) => void;
+  loadNodes: (flowId: string, isLoading?: boolean) => void;
+  loadTestRuns: (flowId: string, isLoading?: boolean) => void;
+  loadNode: (
+    flowId: string,
+    id: string,
+    isLoading?: boolean,
+  ) => Promise<NodeType>;
+  loadRun: (
+    flowId: string,
+    id: string,
+    isLoading?: boolean,
+  ) => Promise<TestRunType>;
+  deleteFlow: (flowId: string, isLoading?: boolean) => Promise<void>;
+  runFlow: (flowId: string, isLoading?: boolean) => void;
+  postFlow: (flow: FlowType["name"], isLoading?: boolean) => Promise<FlowType>;
+  putFlow: (flow: FlowType, isLoading?: boolean) => Promise<void>;
+  postNode: (
+    flowId: string,
+    node: Partial<NodeType>,
+    isLoading?: boolean,
+  ) => Promise<void>;
+  deleteNode: (
+    flowId: string,
+    nodeId: string,
+    isLoading?: boolean,
+  ) => Promise<void>;
+  putNode: (
+    flowId: string,
+    node: Partial<NodeType>,
+    isLoading?: boolean,
+  ) => Promise<void>;
 }
 
 const getFlows = () => {
@@ -123,44 +143,56 @@ export const useFlowStore = create<flowState>((set, get) => ({
   isRunLoading: false,
   isNodeLoading: false,
   isFlowLoading: false,
-  loadFlows: async () => {
-    set({ isFlowsLoading: true });
+  loadFlows: async (isLoading = false) => {
+    if (isLoading) {
+      set({ isFlowsLoading: true });
+    }
     const { data } = await getFlows().finally(() => {
       set({ isFlowsLoading: false });
     });
     set({ flows: data || [] });
   },
-  loadNodes: async (flowId: string) => {
-    set({ isNodesLoading: true });
+  loadNodes: async (flowId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isNodesLoading: true });
+    }
+
     const { data } = await getNodes(flowId).finally(() => {
       set({ isNodesLoading: false });
     });
     set({ nodes: data || [] });
   },
-  loadTestRuns: async (flowId: string) => {
-    set({ isRunsLoading: true });
+  loadTestRuns: async (flowId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isRunsLoading: true });
+    }
     const { data } = await getTestRuns(flowId).finally(() => {
       set({ isRunsLoading: false });
     });
-    console.log(data);
     set({ runs: data || [] });
   },
-  loadNode: async (flowId: string, nodeId: string) => {
-    set({ isNodeLoading: true });
+  loadNode: async (flowId: string, nodeId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isNodeLoading: true });
+    }
     const { data } = await getNode(flowId, nodeId).finally(() => {
       set({ isNodeLoading: false });
     });
     return data;
   },
-  loadRun: async (flowId: string, runId: string) => {
-    set({ isRunLoading: true });
+  loadRun: async (flowId: string, runId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isRunLoading: true });
+    }
     const { data } = await getRun(flowId, runId).finally(() => {
       set({ isRunLoading: false });
     });
     return data;
   },
-  deleteFlow: async (flowId: string) => {
-    set({ isFlowLoading: true });
+  deleteFlow: async (flowId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isFlowLoading: true });
+    }
     return await deleteFlow(flowId)
       .then(() => {
         get().loadFlows();
@@ -169,15 +201,19 @@ export const useFlowStore = create<flowState>((set, get) => ({
         set({ isFlowLoading: false });
       });
   },
-  runFlow: async (flowId: string) => {
-    set({ isFlowLoading: true });
+  runFlow: async (flowId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isFlowLoading: true });
+    }
     await runFlow(flowId).finally(() => {
       set({ isFlowLoading: false });
     });
     get().loadTestRuns(flowId);
   },
-  postFlow: async (flowName: FlowType["name"]) => {
-    set({ isFlowLoading: true });
+  postFlow: async (flowName: FlowType["name"], isLoading = false) => {
+    if (isLoading) {
+      set({ isFlowLoading: true });
+    }
     return await postFlowAPI(flowName)
       .then((res) => {
         get().loadFlows();
@@ -187,15 +223,23 @@ export const useFlowStore = create<flowState>((set, get) => ({
         set({ isFlowLoading: false });
       });
   },
-  putFlow: async (flow: FlowType) => {
-    set({ isFlowLoading: true });
+  putFlow: async (flow: FlowType, isLoading = false) => {
+    if (isLoading) {
+      set({ isFlowLoading: true });
+    }
     await putFlow(flow).finally(() => {
       set({ isFlowLoading: false });
     });
     get().loadFlows();
   },
-  postNode: async (flowId: string, node: Partial<NodeType>) => {
-    set({ isNodeLoading: true });
+  postNode: async (
+    flowId: string,
+    node: Partial<NodeType>,
+    isLoading = false,
+  ) => {
+    if (isLoading) {
+      set({ isNodeLoading: true });
+    }
     return await postNode(flowId, node)
       .then(() => {
         get().loadNodes(flowId);
@@ -204,15 +248,23 @@ export const useFlowStore = create<flowState>((set, get) => ({
         set({ isNodeLoading: false });
       });
   },
-  deleteNode: async (flowId: string, nodeId: string) => {
-    set({ isNodeLoading: true });
+  deleteNode: async (flowId: string, nodeId: string, isLoading = false) => {
+    if (isLoading) {
+      set({ isNodeLoading: true });
+    }
     await deleteNode(flowId, nodeId).finally(() => {
       set({ isNodeLoading: false });
     });
     get().loadNodes(flowId);
   },
-  putNode: async (flowId: string, node: Partial<NodeType>) => {
-    set({ isNodeLoading: true });
+  putNode: async (
+    flowId: string,
+    node: Partial<NodeType>,
+    isLoading = false,
+  ) => {
+    if (isLoading) {
+      set({ isNodeLoading: true });
+    }
     await putNode(flowId, node).finally(() => {
       set({ isNodeLoading: false });
     });

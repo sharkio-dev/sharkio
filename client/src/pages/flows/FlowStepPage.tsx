@@ -20,7 +20,7 @@ export const FlowStepPage = () => {
 
   useEffect(() => {
     if (!flowId || !testId) return;
-    loadNode(flowId, testId).then((node: NodeType) => {
+    loadNode(flowId, testId, true).then((node: NodeType) => {
       setFlowStep(node);
     });
   }, [flowId, testId]);

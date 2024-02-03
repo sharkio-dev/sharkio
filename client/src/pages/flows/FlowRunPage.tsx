@@ -28,8 +28,7 @@ export const FlowRunPage = () => {
 
   useEffect(() => {
     if (!flowId || !runId) return;
-    loadRun(flowId, runId).then((run) => {
-      console.log("run", run);
+    loadRun(flowId, runId, true).then((run) => {
       setRun(run);
     });
   }, [flowId, runId]);

@@ -61,8 +61,8 @@ export const RunsTab: React.FC = () => {
   const { flowId } = useParams();
 
   useEffect(() => {
-    loadTestRuns(flowId as string);
-  }, []);
+    loadTestRuns(flowId as string, true);
+  }, [flowId]);
 
   return (
     <TabPanel value="2" style={{ padding: 0, height: "100%" }}>

@@ -140,7 +140,7 @@ export const TestsTab: React.FC = () => {
 
   useEffect(() => {
     if (!flowId) return;
-    loadNodes(flowId);
+    loadNodes(flowId, true);
   }, [flowId]);
 
   return (
