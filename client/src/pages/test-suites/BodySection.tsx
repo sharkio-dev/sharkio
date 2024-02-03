@@ -76,6 +76,7 @@ export const BodySection = ({
                   options={[
                     { label: "Handlebars", value: "handlebars" },
                     { label: "Json", value: "json" },
+                    { label: "Yaml", value: "yaml" },
                     { label: "Xml", value: "xml" },
                     { label: "Text", value: "text" },
                     { label: "Html", value: "html" },
@@ -126,7 +127,6 @@ export const BodySection = ({
           </div>
         </div>
       )}
-
       <Editor
         width="100%"
         theme="vs-dark"
@@ -140,7 +140,6 @@ export const BodySection = ({
         onChange={(value) => onChangeBodyValue(value)}
         options={{
           formatOnPaste: true,
-          readOnly: !onBodyChange,
           minimap: {
             enabled: false,
           },
