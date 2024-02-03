@@ -157,6 +157,15 @@ export const FlowStepPage = () => {
               handleAssertionChange={(newAssertion) => {
                 handleAssertionChange(newAssertion, index);
               }}
+              hadndlDeleteAssertion={() => {
+                setFlowStep((prev) => {
+                  if (!prev) return prev;
+                  return {
+                    ...prev,
+                    assertions: prev.assertions?.filter((_, i) => i !== index),
+                  };
+                });
+              }}
             />
           ))}
         </div>
@@ -174,11 +183,13 @@ interface AssertionType {
 interface AssertionProps {
   assertion: AssertionType;
   handleAssertionChange: (assertion: AssertionType) => void;
+  hadndlDeleteAssertion: () => void;
 }
 
 const Assertion: React.FC<AssertionProps> = ({
   assertion,
   handleAssertionChange,
+  hadndlDeleteAssertion,
 }) => {
   return (
     <div className="flex flex-row items-center space-x-2 w-full">
@@ -219,7 +230,9 @@ const Assertion: React.FC<AssertionProps> = ({
         <div className="flex flex-row min-w-[20px] h-full">
           <AiOutlineDelete
             className="flex text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-            onClick={() => {}}
+            onClick={() => {
+              hadndlDeleteAssertion();
+            }}
           />
         </div>
       </div>

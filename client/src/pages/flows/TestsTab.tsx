@@ -26,10 +26,14 @@ const Step = ({ step }: { step: NodeType }) => {
     setStepName(step.name);
   }, [step.name]);
 
+  const onStepClick = () => {
+    navigate("/flows/" + flowId + "/tests/" + step.id);
+  };
+
   return (
     <div className="flex flex-col border border-border-color p-2 px-4 mt-2 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[48px] active:cursor-grabbing justify-center">
       <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full" onClick={onStepClick}>
           <EditableNameField
             isLoading={isNodeLoading}
             name={stepName}
@@ -50,7 +54,7 @@ const Step = ({ step }: { step: NodeType }) => {
           <FlowNodeDeleteButton flowId={flowId as string} nodeId={step.id} />
           <MdChevronRight
             className=" active:scale-110 text-xl cursor-pointer hover:bg-border-color rounded-md"
-            onClick={() => navigate("/flows/" + flowId + "/tests/" + step.id)}
+            onClick={onStepClick}
           />
         </div>
       </div>
@@ -135,7 +139,7 @@ const FlowNodeDeleteButton = ({
 };
 
 export const TestsTab: React.FC = () => {
-  const { nodes, loadNodes, isNodesLoading, postNode } = useFlowStore();
+  const { nodes, loadNodes, isNodesLoading } = useFlowStore();
   const { flowId } = useParams();
 
   useEffect(() => {
@@ -186,6 +190,7 @@ const AddTestButton = () => {
       setIsModalOpen(false);
       setStepName("");
       setProxyId("");
+      showSnackbar("Step added successfully", "success");
     });
   };
   return (

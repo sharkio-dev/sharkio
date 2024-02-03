@@ -9,7 +9,6 @@ import { TestsTab } from "./TestsTab";
 import { useParams, useSearchParams } from "react-router-dom";
 
 export const FlowContent: React.FC = () => {
-  const [tabNumber, setTabNumber] = useState("1");
   const { flows, putFlow } = useFlowStore();
   const { flowId } = useParams();
   const flow = flows.find((f) => f.id === flowId);

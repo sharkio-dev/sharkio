@@ -7,7 +7,6 @@ import {
   useMockResponseStore,
   useMockStore,
 } from "../../stores/mockStore";
-import { useSniffersStore } from "../../stores/sniffersStores";
 import { MockButton } from "./MockButton";
 import { MockResponsesSection } from "./MockResponsesSection";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -31,10 +30,8 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
     deleteMock,
     patchSelectedResponseId,
   } = useMockStore();
-  const { sniffers } = useSniffersStore();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
-  const sniffer = sniffers.find((s) => s.id === snifferId);
   const navigator = useNavigate();
 
   const handleUrlChange = (value: string) => {

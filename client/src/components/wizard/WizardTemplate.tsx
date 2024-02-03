@@ -1,7 +1,6 @@
 import React from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import { RxMagicWand } from "react-icons/rx";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import { GoBackButton } from "../../pages/flows/FlowStepPage";
 
 interface WizardTemplateProps {

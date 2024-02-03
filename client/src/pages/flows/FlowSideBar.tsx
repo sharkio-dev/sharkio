@@ -1,8 +1,4 @@
-import {
-  AiOutlineDelete,
-  AiOutlinePlayCircle,
-  AiOutlinePlus,
-} from "react-icons/ai";
+import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
 import { FlowType, useFlowStore } from "../../stores/flowStore";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
@@ -16,6 +12,7 @@ const NewFlowButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [flowName, setFlowName] = useState("");
   const navigate = useNavigate();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const handleFlowNameChange = (event: any) => {
     setFlowName(event.target.value);
@@ -24,10 +21,12 @@ const NewFlowButton = () => {
   const handleCreateFlow = () => {
     postFlow(flowName).then((res) => {
       navigate(`/flows/${res.id}`);
+      showSnackbar("Flow created successfully", "success");
     });
   };
   return (
     <div className="border-b border-border-color pb-2 mb-2">
+      {snackBar}
       <div
         className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
         onClick={() => {
@@ -98,6 +97,7 @@ const FlowDeleteButton = ({ flowId }: { flowId: string }) => {
     }
     deleteFlow(flowId).then(() => {
       navigate("/flows");
+      showSnackbar("Flow deleted successfully", "success");
     });
 
     setIsModalOpen(false);
