@@ -1,7 +1,7 @@
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import TabPanel from "@mui/lab/TabPanel";
 import { MdChevronRight } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
@@ -59,10 +59,11 @@ const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
 export const RunsTab: React.FC = () => {
   const { runs, loadTestRuns, isRunsLoading } = useFlowStore();
   const { flowId } = useParams();
+  const [searchParams, _] = useSearchParams();
 
   useEffect(() => {
     loadTestRuns(flowId as string, true);
-  }, [flowId]);
+  }, [flowId, searchParams.get("tab")]);
 
   return (
     <TabPanel value="2" style={{ padding: 0, height: "100%" }}>

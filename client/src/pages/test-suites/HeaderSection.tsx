@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TextButton } from "../../components/TextButton";
+import { TextField } from "@mui/material";
 
 type HeaderSectionProps = {
   headers: { [key: string]: any };
@@ -66,7 +67,7 @@ export const HeaderSection = ({
       {newHeaders?.map((header, i) => (
         <>
           <div className="flex flex-row items-center space-x-2 w-full">
-            <input
+            <TextField
               className="border border-border-color rounded-md px-2 py-1 w-full"
               placeholder="Name"
               value={header.name}
@@ -74,10 +75,11 @@ export const HeaderSection = ({
               onChange={(event) => {
                 setHeaders(i, header.value, event.target.value);
               }}
+              size="small"
             />
             <div className="flex flex-row">=</div>
 
-            <input
+            <TextField
               className="border border-border-color rounded-md px-2 py-1 w-full"
               placeholder="Value"
               value={header.value}
@@ -85,6 +87,7 @@ export const HeaderSection = ({
               onChange={(event) => {
                 setHeaders(i, event.target.value, header.name);
               }}
+              size="small"
             />
             {handleHeadersChange && (
               <div className="flex flex-row min-w-[20px] h-full">

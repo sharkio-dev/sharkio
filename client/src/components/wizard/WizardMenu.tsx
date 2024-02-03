@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { WizardItem } from "./WizardItem";
 import { WizardTemplate } from "./WizardTemplate";
-import {
-  FakeDataWizard,
-  RequestDataWizard,
-  TemplateWizard,
-} from "./FakeDataWizard";
+import { FakeDataWizard, TemplateWizard } from "./FakeDataWizard";
 
 interface WizardMenuProps {
   handleSelection: (text: string) => void;
@@ -29,10 +25,6 @@ export const WizardMenu: React.FC<WizardMenuProps> = ({
             title="Templates"
             onClick={() => setWizardType("templates")}
           />
-          <WizardItem
-            title="Inject Request Data"
-            onClick={() => setWizardType("inject-request-data")}
-          />
           <WizardItem title="AI ⭒˚" />
         </WizardTemplate>
       )}
@@ -45,13 +37,6 @@ export const WizardMenu: React.FC<WizardMenuProps> = ({
       )}
       {wizardType === "templates" && (
         <TemplateWizard
-          onClose={onClose}
-          goBack={() => setWizardType("")}
-          handleSelection={handleSelection}
-        />
-      )}
-      {wizardType === "inject-request-data" && (
-        <RequestDataWizard
           onClose={onClose}
           goBack={() => setWizardType("")}
           handleSelection={handleSelection}

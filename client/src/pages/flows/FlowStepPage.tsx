@@ -9,7 +9,7 @@ import { RequestSection } from "../sniffers/InvocationDetails";
 import { NodeType, useFlowStore } from "../../stores/flowStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { FaArrowLeftLong } from "react-icons/fa6";
 
@@ -57,11 +57,10 @@ export const FlowStepPage = () => {
       className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh)] overflow-y-auto"
     >
       <Panel defaultSize={70} maxSize={80}>
-        <div className="flex flex-col p-4 w-full pb-0">
+        <div className="flex flex-col p-4 w-full pb-0 space-y-2">
           {snackBar}
-
+          <GoBackButton onClick={() => navigate(-1)} />
           <div className="flex flex-row items-center space-x-4">
-            <GoBackButton onClick={() => navigate(-1)} />
             <URLComponent
               method={flowStep.method}
               url={flowStep.url}
@@ -194,13 +193,14 @@ const Assertion: React.FC<AssertionProps> = ({
   return (
     <div className="flex flex-row items-center space-x-2 w-full">
       <div className="flex flex-row items-center space-x-2 w-full">
-        <input
+        <TextField
           className="border border-border-color rounded-md px-2 py-1 w-full"
           placeholder="Path"
           value={assertion.path}
           onChange={(event) => {
             handleAssertionChange({ ...assertion, path: event.target.value });
           }}
+          size="small"
         />
         <div className="flex flex-row min-w-28 h-full">
           <SelectComponent
@@ -216,7 +216,7 @@ const Assertion: React.FC<AssertionProps> = ({
           />
         </div>
 
-        <input
+        <TextField
           className="border border-border-color rounded-md px-2 py-1 w-full"
           placeholder="Value"
           value={assertion.expectedValue}
@@ -226,6 +226,7 @@ const Assertion: React.FC<AssertionProps> = ({
               expectedValue: event.target.value,
             });
           }}
+          size="small"
         />
         <div className="flex flex-row min-w-[20px] h-full">
           <AiOutlineDelete

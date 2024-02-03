@@ -8,9 +8,10 @@ import {
   TableRow,
 } from "@mui/material";
 import { ExecutionRow } from "../test-suites/ExecutionRowProps";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect, useState } from "react";
+import { GoBackButton } from "./FlowStepPage";
 
 interface Check {
   actualValue: string;
@@ -24,7 +25,11 @@ interface Check {
 export const FlowRunPage = () => {
   const { loadRun, isRunLoading } = useFlowStore();
   const { runId, flowId } = useParams();
-  const [run, setRun] = useState<{ name: string; checks: Check[] }[]>();
+  const [run, setRun] =
+    useState<
+      { name: string; assertionsResult: { passed: Check[]; failed: Check[] } }[]
+    >();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!flowId || !runId) return;
@@ -36,7 +41,8 @@ export const FlowRunPage = () => {
   if (!run) return null;
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-4 space-y-2">
+      <GoBackButton onClick={() => navigate(-1)} />
       <TableContainer className="border-[1px] border-primary rounded-lg">
         <Table>
           <TableHead>
@@ -57,7 +63,9 @@ export const FlowRunPage = () => {
               </TableRow>
             )}
             {run.map((r, index) => {
-              const checks = r.checks || [];
+              const passed = r.assertionsResult.passed;
+              const failed = r.assertionsResult.failed;
+              const checks = passed.concat(failed);
               return (
                 <ExecutionRow
                   title={r.name}
@@ -67,8 +75,8 @@ export const FlowRunPage = () => {
                       : "failure"
                   }
                   executionDate={"GET /test"}
-                  passed={checks.filter((check: any) => check.isPassed).length}
-                  failed={checks.filter((check: any) => !check.isPassed).length}
+                  passed={passed.length}
+                  failed={failed.length}
                   key={index}
                   checks={checks}
                 />

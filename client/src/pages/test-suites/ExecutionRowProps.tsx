@@ -3,6 +3,8 @@ import { TableRow } from "@mui/material";
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import { FiChevronRight } from "react-icons/fi";
 import { ExecutionDetails } from "./ExecutionDetailsProps";
+import { GoBackButton } from "../flows/FlowStepPage";
+import { useNavigate } from "react-router-dom";
 
 type ExecutionRowProps = {
   status: "success" | "failure";
@@ -15,7 +17,7 @@ type ExecutionRowProps = {
     isPassed: boolean;
     expectedValue: string;
     actualValue: string;
-    targetPath: string;
+    path: string;
     comparator: "eq" | "neq" | "contains" | "not_contains";
   }[];
 };
@@ -29,7 +31,6 @@ export const ExecutionRow = ({
   executionDate,
 }: ExecutionRowProps) => {
   const [show, setShow] = React.useState<boolean>(false);
-
   return (
     <TableRow className="border-t-[1px] border-primary h-10 w-full">
       <div className="flex flex-col items-center w-full p-4 space-y-4">
@@ -66,9 +67,15 @@ export const ExecutionRow = ({
           <div className="flex flex-col bg-primary rounded-lg w-full transition-all duration-500 border-[1px] border-border-color ">
             {checks.map((check, i) => (
               <ExecutionDetails
-                targetPath={check.targetPath}
+                targetPath={check.path}
                 status={check.isPassed ? "success" : "failure"}
-                type={check.type}
+                type={
+                  check.path.startsWith("header")
+                    ? "header"
+                    : check.path.startsWith("status")
+                    ? "status_code"
+                    : "body"
+                }
                 key={i}
                 expectedValue={check.expectedValue}
                 actualValue={check.actualValue}
