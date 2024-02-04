@@ -120,13 +120,14 @@ export class TestFlowRepository {
     node: TestFlowNode,
     nodeRun: Partial<TestFlowNodeRun>,
   ) {
+    const { id, ...rest } = node;
     const createdNodeRun = this.nodeRunRepository.create({
+      ...rest,
+      ...nodeRun,
       ownerId,
       flowId,
       flowRunId,
       nodeId: node.id,
-      ...nodeRun,
-      ...node,
     });
 
     return this.nodeRunRepository.save(createdNodeRun);
@@ -165,12 +166,12 @@ export class TestFlowRepository {
     const createdNodeRuns = nodes.map((node) => {
       const { id, ...rest } = node;
       return this.nodeRunRepository.create({
+        ...rest,
         ownerId,
         flowId,
         flowRunId,
         nodeId: node.id,
         status: "pending",
-        ...rest,
       });
     });
 

@@ -13,6 +13,7 @@ export class TestFlowReporter {
     flowRunId: string,
     nodeRun: TestFlowNodeRun,
     nodeRunResult: AssertionResult,
+    response: any,
   ) {
     return this.testFlowService.updateNodeRun(
       ownerId,
@@ -23,6 +24,7 @@ export class TestFlowReporter {
       {
         status: nodeRunResult.success ? "success" : "failed",
         finishedAt: new Date(),
+        response,
       },
     );
   }

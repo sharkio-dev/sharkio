@@ -1,13 +1,11 @@
-import * as React from "react";
 import { TableRow } from "@mui/material";
-import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
+import * as React from "react";
 import { FiChevronRight } from "react-icons/fi";
+import { getRunStatusIcon } from "../flows/RunsTab";
 import { ExecutionDetails } from "./ExecutionDetailsProps";
-import { GoBackButton } from "../flows/FlowStepPage";
-import { useNavigate } from "react-router-dom";
 
 type ExecutionRowProps = {
-  status: "success" | "failure";
+  status: string;
   title: string;
   passed: number;
   failed: number;
@@ -31,6 +29,9 @@ export const ExecutionRow = ({
   executionDate,
 }: ExecutionRowProps) => {
   const [show, setShow] = React.useState<boolean>(false);
+
+  const shouldShowData = status === "success" || status === "failed";
+
   return (
     <TableRow className="border-t-[1px] border-primary h-10 w-full">
       <div className="flex flex-col items-center w-full p-4 space-y-4">
@@ -39,11 +40,7 @@ export const ExecutionRow = ({
           onClick={() => setShow(!show)}
         >
           <div className="flex flex-row items-center space-x-4">
-            {status === "failure" ? (
-              <AiOutlineCloseCircle className="text-red-400 text-2xl" />
-            ) : (
-              <AiOutlineCheckCircle className="text-green-400 text-2xl" />
-            )}
+            {getRunStatusIcon(status)}
             <div className="flex flex-col h-full">
               <span className="text-lg font-bold hover:cursor-pointer hover:scale-105">
                 {title}
@@ -52,18 +49,22 @@ export const ExecutionRow = ({
             </div>
           </div>
           <div className="flex flex-row items-center space-x-4">
-            <div className="flex flex-col h-full">
-              <span className="text-xs">Passed: {passed}</span>
-              <span className="text-xs">Errors: {failed}</span>
-            </div>
-            {show ? (
-              <FiChevronRight className="text-gray-400 text-2xl transform rotate-90" />
-            ) : (
-              <FiChevronRight className="text-gray-400 text-2xl" />
+            {shouldShowData && (
+              <>
+                <div className="flex flex-col h-full">
+                  <span className="text-xs">Passed: {passed}</span>
+                  <span className="text-xs">Errors: {failed}</span>
+                </div>
+                {show ? (
+                  <FiChevronRight className="text-gray-400 text-2xl transform rotate-90" />
+                ) : (
+                  <FiChevronRight className="text-gray-400 text-2xl" />
+                )}
+              </>
             )}
           </div>
         </div>
-        {show && (
+        {shouldShowData && show && (
           <div className="flex flex-col bg-primary rounded-lg w-full transition-all duration-500 border-[1px] border-border-color ">
             {checks.map((check, i) => (
               <ExecutionDetails
@@ -73,8 +74,8 @@ export const ExecutionRow = ({
                   check.path.startsWith("header")
                     ? "header"
                     : check.path.startsWith("status")
-                      ? "status_code"
-                      : "body"
+                    ? "status_code"
+                    : "body"
                 }
                 key={i}
                 expectedValue={check.expectedValue}

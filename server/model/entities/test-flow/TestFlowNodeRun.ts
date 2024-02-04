@@ -50,6 +50,9 @@ export class TestFlowNodeRun {
   @Column("json", { name: "assertions_result" })
   assertionsResult: AssertionResult;
 
+  @Column("json", { name: "response" })
+  response: AssertionResult;
+
   @Column("text")
   status: string;
 

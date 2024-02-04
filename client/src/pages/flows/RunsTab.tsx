@@ -13,7 +13,7 @@ interface RunProps {
   runId: string;
 }
 
-const getRunStatusIcon = (status: string) => {
+export const getRunStatusIcon = (status: string) => {
   switch (status) {
     case "error":
     case "failed":
@@ -22,8 +22,9 @@ const getRunStatusIcon = (status: string) => {
       return <AiOutlineCheckCircle className="text-green-400 text-2xl" />;
     case "running":
       return <LoadingIcon />;
+    case "pending":
     default:
-      return <AiOutlineCheckCircle className="text-gray-400 text-2xl" />;
+      return <AiOutlineCloseCircle className="text-gray-400 text-2xl" />;
   }
 };
 

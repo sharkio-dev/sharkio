@@ -49,6 +49,7 @@ export class TestFlowExecutor {
       {
         status: FlowRunStatus.running,
         startedAt: new Date(),
+        edges,
       },
     );
 

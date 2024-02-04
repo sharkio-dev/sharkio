@@ -25,7 +25,7 @@ interface Check {
 export const FlowRunPage = () => {
   const { loadRun, isRunLoading } = useFlowStore();
   const { runId, flowId } = useParams();
-  const [run, setRun] =
+  const [runs, setRuns] =
     useState<
       { name: string; assertionsResult: { passed: Check[]; failed: Check[] } }[]
     >();
@@ -34,11 +34,11 @@ export const FlowRunPage = () => {
   useEffect(() => {
     if (!flowId || !runId) return;
     loadRun(flowId, runId, true).then((run) => {
-      setRun(run);
+      setRuns(run);
     });
   }, [flowId, runId]);
 
-  if (!run) return null;
+  if (!runs) return null;
 
   return (
     <div className="flex flex-col p-4 space-y-2">
@@ -48,7 +48,7 @@ export const FlowRunPage = () => {
           <TableHead>
             <TableRow className="bg-secondary">
               <TableCell style={{ borderBottom: "none" }}>
-                {run.length} executions
+                {runs.length} executions
               </TableCell>
             </TableRow>
           </TableHead>
@@ -62,18 +62,14 @@ export const FlowRunPage = () => {
                 </TableCell>
               </TableRow>
             )}
-            {run.map((r, index) => {
-              const passed = r.assertionsResult.passed;
-              const failed = r.assertionsResult.failed;
+            {runs.map((run, index) => {
+              const passed = run.assertionsResult.passed ?? [];
+              const failed = run.assertionsResult.failed ?? [];
               const checks = passed.concat(failed);
               return (
                 <ExecutionRow
-                  title={r.name}
-                  status={
-                    checks.every((check: any) => check.isPassed)
-                      ? "success"
-                      : "failure"
-                  }
+                  title={run.name}
+                  status={run.status}
                   executionDate={"GET /test"}
                   passed={passed.length}
                   failed={failed.length}

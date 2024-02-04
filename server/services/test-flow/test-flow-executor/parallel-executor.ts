@@ -35,6 +35,7 @@ export class ParallelExecutor implements ITestFlowExecutor {
             body,
             subdomain,
           });
+
           const assertionResult = await this.nodeResponseValidator.assert(
             nodeRun,
             response,
@@ -46,6 +47,7 @@ export class ParallelExecutor implements ITestFlowExecutor {
             flowRunId,
             nodeRun,
             assertionResult,
+            response,
           );
 
           const resultItem = { node: nodeRun, response, assertionResult };

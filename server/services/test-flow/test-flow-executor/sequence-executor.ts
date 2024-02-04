@@ -62,6 +62,11 @@ export class SequenceExecutor implements ITestFlowExecutor {
           flowRunId,
           nodeRun,
           assertionResult,
+          {
+            headers: response.headers,
+            body: response.data,
+            status: response.status,
+          },
         );
 
         const resultItem = { node: nodeRun, response, assertionResult };

@@ -1,4 +1,5 @@
 import { Column, Entity, Index } from "typeorm";
+import { TestFlowEdge } from "./TestFlowEdge";
 
 @Index("test_flow_run_pk", ["id"], { unique: true })
 @Entity("test_flow_run", { schema: "public" })
@@ -32,6 +33,9 @@ export class TestFlowRun {
 
   @Column("text")
   status: string;
+
+  @Column("json")
+  edges: TestFlowEdge[];
 
   @Column("timestamp with time zone", {
     name: "created_at",
