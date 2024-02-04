@@ -1,5 +1,6 @@
 import { Column, Entity, Index } from "typeorm";
 import { AssertionResult } from "../../../services/test-flow/test-flow-executor/node-response-validator";
+import { TestFlowAssertion } from "../../../dto/in/test-flow.dto";
 
 @Entity("test_flow_node_run", { schema: "public" })
 export class TestFlowNodeRun {
@@ -43,11 +44,20 @@ export class TestFlowNodeRun {
   @Column("text", { name: "method" })
   method: string;
 
+  @Column("json", { name: "assertions" })
+  assertions: Array<TestFlowAssertion>;
+
   @Column("json", { name: "assertions_result" })
   assertionsResult: AssertionResult;
 
   @Column("text")
   status: string;
+
+  @Column("timestamp with time zone", {
+    name: "finished_at",
+    default: () => "now()",
+  })
+  finishedAt: Date;
 
   @Column("timestamp with time zone", {
     name: "created_at",

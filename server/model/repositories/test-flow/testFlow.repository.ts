@@ -1,4 +1,4 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource, FindManyOptions, Repository } from "typeorm";
 import { CreateTestFlowDTO } from "../../../dto/in/test-flow.dto";
 import { TestFlow } from "../../entities/test-flow/TestFlow";
 import { TestFlowEdge } from "../../entities/test-flow/TestFlowEdge";
@@ -80,6 +80,14 @@ export class TestFlowRepository {
     return this.edgeRepository.find({ where: { ownerId, flowId } });
   }
 
+  deleteEdgesByFlowId(ownerId: any, flowId: string) {
+    return this.edgeRepository.delete({ ownerId, flowId });
+  }
+
+  saveEdges(edges: Partial<TestFlowEdge>[]) {
+    return this.edgeRepository.save(edges);
+  }
+
   createFlowRun(
     ownerId: string,
     flowId: string,
@@ -99,10 +107,13 @@ export class TestFlowRepository {
     flowRunId: string,
     testFlowRun: Partial<TestFlowRun>,
   ) {
-    return this.flowRunRepository.update(flowRunId, testFlowRun);
+    return this.flowRunRepository.update(
+      { id: flowRunId, ownerId: ownerId },
+      testFlowRun,
+    );
   }
 
-  async addNodeRun(
+  addNodeRun(
     ownerId: string,
     flowId: string,
     flowRunId: string,
@@ -118,11 +129,64 @@ export class TestFlowRepository {
       ...node,
     });
 
-    return await this.nodeRunRepository.save(createdNodeRun);
+    return this.nodeRunRepository.save(createdNodeRun);
   }
 
-  getFlowRuns(ownerId: any, flowId: string) {
-    return this.flowRunRepository.find({ where: { ownerId, flowId } });
+  async updateNodeRun(
+    ownerId: string,
+    flowId: string,
+    flowRunId: string,
+    nodeRunId: string,
+    nodeRunResult: AssertionResult,
+    nodeRun: Partial<TestFlowNodeRun>,
+  ) {
+    const updatedNodeRun = await this.nodeRunRepository.update(
+      {
+        id: nodeRunId,
+        flowId,
+        ownerId,
+        flowRunId,
+      },
+      {
+        ...nodeRun,
+        assertionsResult: nodeRunResult,
+      },
+    );
+
+    return updatedNodeRun;
+  }
+
+  addNodeRuns(
+    ownerId: string,
+    flowId: string,
+    flowRunId: string,
+    nodes: TestFlowNode[],
+  ) {
+    const createdNodeRuns = nodes.map((node) => {
+      return this.nodeRunRepository.create({
+        ownerId,
+        flowId,
+        flowRunId,
+        nodeId: node.id,
+        status: "pending",
+        ...node,
+      });
+    });
+
+    return this.nodeRunRepository.save(createdNodeRuns);
+  }
+
+  getFlowRuns(ownerId: any, flowId: string, isSorted: boolean) {
+    const searchOptions: FindManyOptions<TestFlowRun> = isSorted
+      ? {
+          where: { ownerId, flowId },
+          order: {
+            createdAt: "DESC",
+          },
+        }
+      : { where: { ownerId, flowId } };
+
+    return this.flowRunRepository.find(searchOptions);
   }
 
   getFlowRun(ownerId: any, flowId: string, runId: string) {

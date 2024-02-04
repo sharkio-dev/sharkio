@@ -1,4 +1,5 @@
 import { TestFlowNode } from "../../model/entities/test-flow/TestFlowNode";
+import { TestFlowNodeRun } from "../../model/entities/test-flow/TestFlowNodeRun";
 import { TestFlowRun } from "../../model/entities/test-flow/TestFlowRun";
 import { AssertionResult } from "./test-flow-executor/node-response-validator";
 import { TestFlowService } from "./test-flow.service";
@@ -10,15 +11,19 @@ export class TestFlowReporter {
     ownerId: string,
     flowId: string,
     flowRunId: string,
-    node: TestFlowNode,
+    nodeRun: TestFlowNodeRun,
     nodeRunResult: AssertionResult,
   ) {
-    return this.testFlowService.addNodeRun(
+    return this.testFlowService.updateNodeRun(
       ownerId,
       flowId,
       flowRunId,
-      node,
+      nodeRun.id,
       nodeRunResult,
+      {
+        status: nodeRunResult.success ? "success" : "failed",
+        finishedAt: new Date(),
+      },
     );
   }
 }

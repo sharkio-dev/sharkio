@@ -53,4 +53,5 @@ export const FlowRunStatus = {
   running: "running",
   success: "success",
   failed: "failed",
+  error: "error",
 } as const;

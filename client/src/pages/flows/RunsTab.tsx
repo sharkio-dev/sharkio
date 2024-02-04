@@ -15,9 +15,10 @@ interface RunProps {
 
 const getRunStatusIcon = (status: string) => {
   switch (status) {
+    case "error":
     case "failed":
       return <AiOutlineCloseCircle className="text-red-400 text-2xl" />;
-    case "passed":
+    case "success":
       return <AiOutlineCheckCircle className="text-green-400 text-2xl" />;
     case "running":
       return <LoadingIcon />;
