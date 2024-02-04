@@ -10,21 +10,18 @@ const ProxyFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { loadSniffers, sniffers } = useSniffersStore();
-  const [proxies, setProxies] = useState<string[]>([]);
 
   useEffect(() => {
-    const getProxiesNames = async () => {
-      const sniffers = await loadSniffers();
-      const proxiesIds = sniffers.map((snifferObj) => snifferObj.id);
-      setProxies(proxiesIds);
-    };
-
-    getProxiesNames();
-  }, [loadSniffers]);
+    loadSniffers();
+  }, []);
 
   useEffect(() => {
     const proxyIds = searchParams.get(searchParamFilters.proxies);
-    if (!proxyIds) return;
+    if (!proxyIds) {
+      setSelectedProxies([]);
+      return;
+    }
+
     const selectedProxies = proxyIds.split(",");
     setSelectedProxies(selectedProxies);
   }, [searchParams]);
