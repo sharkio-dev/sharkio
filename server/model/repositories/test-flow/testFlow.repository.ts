@@ -163,13 +163,14 @@ export class TestFlowRepository {
     nodes: TestFlowNode[],
   ) {
     const createdNodeRuns = nodes.map((node) => {
+      const { id, ...rest } = node;
       return this.nodeRunRepository.create({
         ownerId,
         flowId,
         flowRunId,
         nodeId: node.id,
         status: "pending",
-        ...node,
+        ...rest,
       });
     });
 
