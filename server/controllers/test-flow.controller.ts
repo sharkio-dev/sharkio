@@ -328,6 +328,98 @@ export class TestFlowController {
           res.send(testNode).status(201);
         },
       );
+    router.post(
+      "/:flowId/reorder-nodes",
+      requestValidator({
+        body: z.array(z.string().uuid()),
+        params: z.object({ flowId: z.string().uuid() }),
+      }),
+      /**
+       * @openapi
+       *  /sharkio/test-flows/{flowId}/reorder-nodes:
+       *    post:
+       *      operationId: createTestNode
+       *      tags:
+       *        - TestNode
+       *      parameters:
+       *        - name: flowId
+       *          in: path
+       *          schema:
+       *            type: string
+       *            format: uuid
+       *          description: flowId
+       *          required: true
+       *      requestBody:
+       *        required: true
+       *        content:
+       *          application/json:
+       *            schema:
+       *              type: object
+       *              required:
+       *                - name
+       *                - proxyId
+       *                - request
+       *                - assertions
+       *              properties:
+       *                name:
+       *                  type: string
+       *                  description: The name of the test node
+       *                proxyId:
+       *                  type: string
+       *                  format: uuid
+       *                  description: The proxy ID associated with the test node
+       *                assertions:
+       *                  type: array
+       *                  items:
+       *                    type: object
+       *                    properties:
+       *                      path:
+       *                        type: string
+       *                        example: body.example
+       *                      comparator:
+       *                        type: string
+       *                        example: eq
+       *                      expectedValue:
+       *                        type: string
+       *                        example: example
+       *                request:
+       *                  schema:
+       *                  type: object
+       *                  properties:
+       *                    url:
+       *                      type: string
+       *                    method:
+       *                      type: string
+       *                    headers:
+       *                      type: object
+       *                    body:
+       *                      type: string
+       *                    requestId:
+       *                      type: string
+       *                      format: uuid
+
+       *      responses:
+       *        '201':
+       *          description: Created
+       *        '400':
+       *          description: Bad Request
+       *        '500':
+       *          description: Server Error
+       */
+      async (req: Request, res: Response) => {
+        const ownerId = res.locals.auth.ownerId;
+        const { flowId } = req.params;
+        const { nodeIds } = req.body;
+
+        const testNode = await this.testFlowService.reorderNodes(
+          ownerId,
+          flowId,
+          nodeIds,
+        );
+
+        res.send(testNode).status(201);
+      },
+    );
 
     router
       .route("/:flowId/nodes/:nodeId")
@@ -521,6 +613,12 @@ export class TestFlowController {
        *           type: string
        *         description: flowId
        *         required: true
+       *       - name: isSorted
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Sorted by createdAt
+       *         required: false
        *     responses:
        *       200:
        *         description: Get test flow runs
@@ -530,10 +628,12 @@ export class TestFlowController {
       async (req: Request, res: Response) => {
         const ownerId = res.locals.auth.ownerId;
         const { flowId } = req.params;
+        const { isSorted } = req.query;
 
         const testFlowRun = await this.testFlowExecutorService.getFlowRuns(
           ownerId,
           flowId,
+          isSorted === "true" ?? false,
         );
 
         res.send(testFlowRun).status(200);

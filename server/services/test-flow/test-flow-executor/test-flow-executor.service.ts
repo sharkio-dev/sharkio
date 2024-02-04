@@ -7,6 +7,7 @@ import {
 } from "../../../model/entities/test-flow/TestFlowRun";
 import { TestFlowService } from "../test-flow.service";
 import { AssertionResult } from "./node-response-validator";
+import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 
 export type TestExecutionResult = {
   node: TestFlowNode;
@@ -20,7 +21,8 @@ export interface ITestFlowExecutor {
     flowId: string,
     flowRunId: string,
     nodes: TestFlowNode[],
-    edges?: TestFlowEdge[],
+    nodeRuns: TestFlowNodeRun[],
+    edges: TestFlowEdge[],
   ): Promise<TestExecutionResult>;
 }
 
@@ -50,28 +52,44 @@ export class TestFlowExecutor {
       },
     );
 
-    const runResult = await executionStrategy.execute(
-      ownerId,
-      flowId,
-      flowRun.id,
-      nodes,
-      edges,
-    );
+    try {
+      const nodeRuns: TestFlowNodeRun[] =
+        await this.testFlowService.createNodeRuns(
+          ownerId,
+          flowId,
+          flowRun,
+          nodes,
+        );
 
-    const isPassed = runResult.every(
-      (result) => result.assertionResult.success,
-    );
+      const runResult = await executionStrategy.execute(
+        ownerId,
+        flowId,
+        flowRun.id,
+        nodes,
+        nodeRuns,
+        edges,
+      );
 
-    await this.testFlowService.updateFlowRun(ownerId, flowId, {
-      finishedAt: new Date(),
-      status: isPassed ? FlowRunStatus.success : FlowRunStatus.failed,
-    });
+      const isPassed = runResult.every(
+        (result) => result.assertionResult.success,
+      );
+
+      await this.testFlowService.updateFlowRun(ownerId, flowRun.id, {
+        finishedAt: new Date(),
+        status: isPassed ? FlowRunStatus.success : FlowRunStatus.failed,
+      });
+    } catch (e) {
+      await this.testFlowService.updateFlowRun(ownerId, flowRun.id, {
+        finishedAt: new Date(),
+        status: FlowRunStatus.error,
+      });
+    }
 
     return flowRun;
   }
 
-  getFlowRuns(ownerId: any, flowId: string) {
-    return this.testFlowService.getFlowRuns(ownerId, flowId);
+  getFlowRuns(ownerId: any, flowId: string, isSorted: boolean) {
+    return this.testFlowService.getFlowRuns(ownerId, flowId, isSorted);
   }
 
   getFlowRun(ownerId: any, flowId: string, runId: string) {

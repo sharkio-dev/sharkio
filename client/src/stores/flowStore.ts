@@ -93,7 +93,7 @@ const getNodes = (flowId: string) => {
 };
 
 const getTestRuns = (flowId: string) => {
-  return BackendAxios.get(`/test-flows/${flowId}/runs`);
+  return BackendAxios.get(`/test-flows/${flowId}/runs?isSorted=true`);
 };
 
 const getNode = (flowId: string, nodeId: string) => {

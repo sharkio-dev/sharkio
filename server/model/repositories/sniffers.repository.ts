@@ -17,6 +17,14 @@ export class SnifferRepository {
     });
   }
 
+  getByIds(ids: string[]) {
+    return this.repository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+  }
+
   findByDownstream(url: string) {
     return this.repository.findOne({ where: { downstreamUrl: url } });
   }

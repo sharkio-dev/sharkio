@@ -143,7 +143,10 @@ async function main(isProxy = true, isServer = true) {
     mockSelectionStrategies,
   );
   const mockResponseTransformer = new MockResponseTransformer();
-  const testFlowService = new TestFlowService(testFlowRepository);
+  const testFlowService = new TestFlowService(
+    testFlowRepository,
+    snifferRepository,
+  );
   const nodeResponseValidator = new NodeResponseValidator();
   const testFlowReporter = new TestFlowReporter(testFlowService);
 

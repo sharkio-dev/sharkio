@@ -5,6 +5,7 @@ import {
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
 import { AxiosResponse } from "axios";
 import { get, includes } from "lodash";
+import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 
 export type AssertionResult = {
   passed: TestFlowAssertionResult[];
@@ -37,7 +38,7 @@ export class NodeResponseValidator {
   }
 
   async assert(
-    testFlowNode: TestFlowNode,
+    testFlowNode: TestFlowNodeRun,
     response: AxiosResponse,
   ): Promise<AssertionResult> {
     const passed: TestFlowAssertionResult[] = [];
@@ -55,7 +56,7 @@ export class NodeResponseValidator {
           actualValue: result.data,
         });
       } else {
-        passed.push({
+        failed.push({
           ...currentAssertion,
           isPassed: false,
           actualValue: result.data,

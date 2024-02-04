@@ -9,6 +9,7 @@ import {
 import { ITestFlowExecutor } from "./test-flow-executor.service";
 import { TestFlowReporter } from "../test-flow-reporter.service";
 import { useLog } from "../../../lib/log";
+import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -30,17 +31,18 @@ export class SequenceExecutor implements ITestFlowExecutor {
     flowId: string,
     flowRunId: string,
     nodes: TestFlowNode[],
+    nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
   ): Promise<ExecutionResult> {
-    const sortedNodes = this.sortNodesByEdges(nodes, edges);
+    const sortedNodes = this.sortNodesByEdges(nodeRuns, edges);
 
     try {
       const result: ExecutionResult = [];
 
       for (let i = 0; i < nodes.length; i++) {
-        const node = sortedNodes[i];
+        const nodeRun = sortedNodes[i];
 
-        const { method, url, headers, body, subdomain } = node;
+        const { method, url, headers, body, subdomain } = nodeRun;
         const response = await this.requestService.execute({
           method,
           url: url ?? "/",
@@ -50,7 +52,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
         });
 
         const assertionResult = await this.nodeResponseValidator.assert(
-          node,
+          nodeRun,
           response,
         );
 
@@ -58,11 +60,11 @@ export class SequenceExecutor implements ITestFlowExecutor {
           ownerId,
           flowId,
           flowRunId,
-          node,
+          nodeRun,
           assertionResult,
         );
 
-        const resultItem = { node, response, assertionResult };
+        const resultItem = { node: nodeRun, response, assertionResult };
 
         result.push(resultItem);
 
@@ -79,12 +81,12 @@ export class SequenceExecutor implements ITestFlowExecutor {
   }
 
   sortNodesByEdges(
-    nodes: TestFlowNode[],
+    nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
-  ): TestFlowNode[] {
+  ): TestFlowNodeRun[] {
     // Create a map to count incoming edges for each node
     const incomingEdges: Map<string, number> = new Map(
-      nodes.map((node) => [node.id, 0]),
+      nodeRuns.map((node) => [node.nodeId, 0]),
     );
 
     // Count incoming edges
@@ -124,7 +126,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
         });
       }
     }
-    const res = nodes.filter((node) => sorted.includes(node.id));
+    const res = nodeRuns.filter((nodeRun) => sorted.includes(nodeRun.nodeId));
 
     // Return nodes in sorted order
     return res;
