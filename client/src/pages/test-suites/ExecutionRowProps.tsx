@@ -74,8 +74,8 @@ export const ExecutionRow = ({
                   check.path.startsWith("header")
                     ? "header"
                     : check.path.startsWith("status")
-                    ? "status_code"
-                    : "body"
+                      ? "status_code"
+                      : "body"
                 }
                 key={i}
                 expectedValue={check.expectedValue}
