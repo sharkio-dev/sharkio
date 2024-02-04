@@ -38,6 +38,7 @@ export class InvocationController {
         const url = req.query.url as string;
         const fromDate = req.query.fromDate as Date | undefined;
         const toDate = req.query.toDate as Date | undefined;
+        const proxies = req.query.proxies as string[];
 
         const requests = await this.endpointService.getInvocationsByOwner(
           ownerId,
@@ -47,9 +48,10 @@ export class InvocationController {
           url,
           fromDate,
           toDate,
+          proxies
         );
         res.status(200).send(requests);
-      },
+      }
     );
 
     router.route("/:id").get(
@@ -77,10 +79,10 @@ export class InvocationController {
         const { id } = req.params;
         const request = await this.endpointService.getInvocationById(
           id,
-          ownerId,
+          ownerId
         );
         res.status(200).send(request);
-      },
+      }
     );
 
     return { router, path: "/sharkio/invocation" };

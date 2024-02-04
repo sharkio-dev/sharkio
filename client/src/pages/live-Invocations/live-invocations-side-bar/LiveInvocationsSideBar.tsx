@@ -36,9 +36,10 @@ const LiveInvocations = () => {
       ? dayjs(searchParams.get(searchParamFilters.toDate)).toDate()
       : undefined;
     const url = searchParams.get(searchParamFilters.url) || undefined;
-    const proxies = searchParams.get(searchParamFilters.statusCodes)
+    const proxies = searchParams.get(searchParamFilters.proxies)
       ? searchParams.get(searchParamFilters.proxies)!.split(",")
       : [];
+
     loadLiveInvocations(statusCodes, methods, fromDate, toDate, url, proxies);
   };
   useEffect(() => {

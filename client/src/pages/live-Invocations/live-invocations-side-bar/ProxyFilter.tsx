@@ -9,28 +9,28 @@ const ProxyFilter = () => {
   const [selectedProxies, setSelectedProxies] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { loadSniffers } = useSniffersStore();
+  const { loadSniffers, sniffers } = useSniffersStore();
   const [proxies, setProxies] = useState<string[]>([]);
 
   useEffect(() => {
     const getProxiesNames = async () => {
       const sniffers = await loadSniffers();
-      const proxiesNames = sniffers.map((snifferObj) => snifferObj.name);
-      setProxies(proxiesNames);
+      const proxiesIds = sniffers.map((snifferObj) => snifferObj.id);
+      setProxies(proxiesIds);
     };
 
     getProxiesNames();
   }, [loadSniffers]);
 
   useEffect(() => {
-    const proxyParam = searchParams.get(searchParamFilters.proxies);
-    if (!proxyParam) return;
-    const selectedProxies = proxyParam.split(",");
+    const proxyIds = searchParams.get(searchParamFilters.proxies);
+    if (!proxyIds) return;
+    const selectedProxies = proxyIds.split(",");
     setSelectedProxies(selectedProxies);
   }, [searchParams]);
 
-  const validInitialSelectedProxies = selectedProxies.filter((proxy) =>
-    proxies.includes(proxy),
+  const validInitialSelectedProxies = sniffers.filter((proxy) =>
+    selectedProxies.includes(proxy.id),
   );
 
   return (
@@ -38,27 +38,27 @@ const ProxyFilter = () => {
       multiple
       size="small"
       id="tags-standard"
-      options={proxies}
-      getOptionLabel={(proxy) => proxy}
-      onChange={(_, selectedProxies: string[]) => {
+      options={sniffers}
+      getOptionLabel={(proxy) => proxy.name}
+      onChange={(_, selectedProxies) => {
         setSearchParams((prevParams) => {
           const newSearchParams = new URLSearchParams(prevParams);
           newSearchParams.set(
             searchParamFilters.proxies,
-            selectedProxies.join(","),
+            selectedProxies.map((proxy) => proxy.id).join(","),
           );
           return newSearchParams;
         });
-        setSelectedProxies(selectedProxies);
+        setSelectedProxies(selectedProxies.map((proxy) => proxy.id));
       }}
       value={validInitialSelectedProxies}
       renderOption={(props, proxy, { selected }) => (
         <MenuItem
-          value={proxy}
+          value={proxy.id}
           sx={{ justifyContent: "space-between" }}
           {...props}
         >
-          {proxy}
+          {proxy.name}
           {selected ? <CheckIcon color="info" /> : null}
         </MenuItem>
       )}

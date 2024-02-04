@@ -183,9 +183,17 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     fromDate?: Date | undefined,
     toDate?: Date | undefined,
     url?: string,
+    proxies?: string[],
   ) => {
     set({ loadingInvocations: true });
-    return getLiveInvocations(statusCodes, methods, fromDate, toDate, url)
+    return getLiveInvocations(
+      statusCodes,
+      methods,
+      fromDate,
+      toDate,
+      url,
+      proxies,
+    )
       .then((res) => {
         set({ invocations: res });
         return res;
