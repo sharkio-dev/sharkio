@@ -26,6 +26,7 @@ export class SnifferService {
     return this.snifferRepository.repository.find();
   }
 
+
   async createSniffer(snifferConfig: CreateSnifferDTO): Promise<Sniffer> {
     const subdomain = snifferConfig.subdomain
       ? snifferConfig.subdomain

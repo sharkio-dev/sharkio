@@ -147,6 +147,7 @@ export const getLiveInvocations = (
   fromDate?: Date | undefined,
   toDate?: Date | undefined,
   url?: string,
+  proxies?: string[],
 ) => {
   return BackendAxios.get(`/invocation`, {
     params: {
@@ -155,6 +156,7 @@ export const getLiveInvocations = (
       fromDate,
       toDate,
       url,
+      proxies,
     },
   }).then((res) => {
     return res.data;
