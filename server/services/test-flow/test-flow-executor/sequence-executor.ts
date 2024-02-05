@@ -23,7 +23,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
   constructor(
     private readonly requestService: RequestService,
     private readonly nodeResponseValidator: NodeResponseValidator,
-    private readonly testFlowReporter: TestFlowReporter,
+    private readonly testFlowReporter: TestFlowReporter
   ) {}
 
   async execute(
@@ -32,7 +32,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
     flowRunId: string,
     nodes: TestFlowNode[],
     nodeRuns: TestFlowNodeRun[],
-    edges: TestFlowEdge[],
+    edges: TestFlowEdge[]
   ): Promise<ExecutionResult> {
     const sortedNodes = this.sortNodesByEdges(nodeRuns, edges);
 
@@ -53,7 +53,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
 
         const assertionResult = await this.nodeResponseValidator.assert(
           nodeRun,
-          response,
+          response
         );
 
         await this.testFlowReporter.reportNodeRun(
@@ -63,10 +63,10 @@ export class SequenceExecutor implements ITestFlowExecutor {
           nodeRun,
           assertionResult,
           {
-            headers: response.headers,
-            body: response.data,
-            status: response.status,
-          },
+            headers: response?.headers,
+            body: response?.data,
+            status: response?.status,
+          }
         );
 
         const resultItem = { node: nodeRun, response, assertionResult };
@@ -87,18 +87,18 @@ export class SequenceExecutor implements ITestFlowExecutor {
 
   sortNodesByEdges(
     nodeRuns: TestFlowNodeRun[],
-    edges: TestFlowEdge[],
+    edges: TestFlowEdge[]
   ): TestFlowNodeRun[] {
     // Create a map to count incoming edges for each node
     const incomingEdges: Map<string, number> = new Map(
-      nodeRuns.map((node) => [node.nodeId, 0]),
+      nodeRuns.map((node) => [node.nodeId, 0])
     );
 
     // Count incoming edges
     edges.forEach((edge) => {
       incomingEdges.set(
         edge.targetId,
-        (incomingEdges.get(edge.targetId) || 0) + 1,
+        (incomingEdges.get(edge.targetId) || 0) + 1
       );
     });
 
