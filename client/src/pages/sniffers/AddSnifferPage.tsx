@@ -132,19 +132,16 @@ function SimpleDomainComponent(props: {
 }) {
   const [error, setError] = React.useState<string | null>(null);
 
-  const isValidHttpUrl = (string: string) => {
-    try {
-      new URL(string);
-      return true;
-    } catch (_) {
-      return false;
-    }
+  const isValidUrl = (string: string) => {
+    const urlPattern = /^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
+
+    return urlPattern.test(string);
   };
 
   const handleDomainChange = (newValue: string) => {
     props.onDomainChange(newValue);
 
-    if (!isValidHttpUrl(newValue)) {
+    if (!isValidUrl(newValue)) {
       setError("Please enter a valid URL.");
     } else {
       setError(null);
