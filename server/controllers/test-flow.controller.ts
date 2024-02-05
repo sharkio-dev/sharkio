@@ -216,6 +216,12 @@ export class TestFlowController {
          *            format: uuid
          *          description: flowId
          *          required: true
+         *        - name: isSorted
+         *          in: query
+         *          schema:
+         *            type: boolean
+         *          description: isSorted
+         *          required: false
          *      responses:
          *        '200':
          *          description: Created
@@ -227,10 +233,12 @@ export class TestFlowController {
         async (req: Request, res: Response) => {
           const ownerId = res.locals.auth.ownerId;
           const { flowId } = req.params;
+          const { isSorted } = req.query;
 
           const testNodes = await this.testFlowService.getNodesByFlowId(
             ownerId,
             flowId,
+            isSorted === "true",
           );
 
           res.send(testNodes).status(200);
@@ -328,6 +336,7 @@ export class TestFlowController {
           res.send(testNode).status(201);
         },
       );
+
     router.post(
       "/:flowId/reorder-nodes",
       requestValidator({
@@ -354,50 +363,10 @@ export class TestFlowController {
        *        content:
        *          application/json:
        *            schema:
-       *              type: object
-       *              required:
-       *                - name
-       *                - proxyId
-       *                - request
-       *                - assertions
-       *              properties:
-       *                name:
-       *                  type: string
-       *                  description: The name of the test node
-       *                proxyId:
-       *                  type: string
-       *                  format: uuid
-       *                  description: The proxy ID associated with the test node
-       *                assertions:
-       *                  type: array
-       *                  items:
-       *                    type: object
-       *                    properties:
-       *                      path:
-       *                        type: string
-       *                        example: body.example
-       *                      comparator:
-       *                        type: string
-       *                        example: eq
-       *                      expectedValue:
-       *                        type: string
-       *                        example: example
-       *                request:
-       *                  schema:
-       *                  type: object
-       *                  properties:
-       *                    url:
-       *                      type: string
-       *                    method:
-       *                      type: string
-       *                    headers:
-       *                      type: object
-       *                    body:
-       *                      type: string
-       *                    requestId:
-       *                      type: string
-       *                      format: uuid
-
+       *              type: array
+       *              items:
+       *                type: string
+       *                format: uuid
        *      responses:
        *        '201':
        *          description: Created
@@ -409,12 +378,11 @@ export class TestFlowController {
       async (req: Request, res: Response) => {
         const ownerId = res.locals.auth.ownerId;
         const { flowId } = req.params;
-        const { nodeIds } = req.body;
 
         const testNode = await this.testFlowService.reorderNodes(
           ownerId,
           flowId,
-          nodeIds,
+          req.body,
         );
 
         res.send(testNode).status(201);
@@ -698,6 +666,12 @@ export class TestFlowController {
        *           type: string
        *         description: flowId
        *         required: true
+       *       - name: isSorted
+       *         in: query
+       *         schema:
+       *           type: boolean
+       *         description: isSorted
+       *         required: false
        *     responses:
        *       200:
        *         description: Get test flow runs
@@ -707,11 +681,13 @@ export class TestFlowController {
       async (req: Request, res: Response) => {
         const ownerId = res.locals.auth.ownerId;
         const { flowId, runId } = req.params;
+        const { isSorted } = req.query;
 
-        const testFlowRun = await this.testFlowExecutorService.getFlowRunNodes(
+        const testFlowRun = await this.testFlowService.getFlowRunNodes(
           ownerId,
           flowId,
           runId,
+          isSorted === "true",
         );
 
         res.send(testFlowRun).status(200);
