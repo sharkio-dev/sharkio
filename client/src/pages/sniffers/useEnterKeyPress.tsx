@@ -2,11 +2,11 @@ import { useEffect } from "react";
 
 const ENTER_KEY = "Enter";
 
-export const useEnterKeyPress = (onEnter: () => void) => {
+export const useEnterKeyPress = (onEnter: () => void, isValid: boolean) => {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       const { key } = event;
-      if (key === ENTER_KEY) {
+      if (key === ENTER_KEY && isValid) {
         onEnter();
       }
     };
@@ -16,5 +16,5 @@ export const useEnterKeyPress = (onEnter: () => void) => {
     return () => {
       document.removeEventListener("keypress", handleKeyPress);
     };
-  }, [onEnter]);
+  }, [onEnter, isValid]);
 };

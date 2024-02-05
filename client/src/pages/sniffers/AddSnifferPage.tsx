@@ -30,7 +30,7 @@ interface EnvStepProps {
 }
 
 const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
-  useEnterKeyPress(onNextClicked);
+  useEnterKeyPress(onNextClicked, true);
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -81,7 +81,7 @@ const DomainStep = ({
   handleChange,
 }: DomainStepProps) => {
   const [isValid, setIsValid] = React.useState(false);
-  useEnterKeyPress(onNextClicked);
+  useEnterKeyPress(onNextClicked, isValid);
 
   const isValidHttpUrl = (string: string) => {
     let url;
@@ -235,7 +235,7 @@ const NameStep = ({
   handleChange,
   isLoading,
 }: NameStepProps) => {
-  useEnterKeyPress(onNextClicked);
+  useEnterKeyPress(onNextClicked, value !== "");
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -267,7 +267,7 @@ const NameStep = ({
   );
 };
 const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
-  useEnterKeyPress(onNextClicked);
+  useEnterKeyPress(onNextClicked, true);
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
