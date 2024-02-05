@@ -21,13 +21,17 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
+import { useEnterKeyPress } from "./useEnterKeyPress";
 
 interface EnvStepProps {
   onNextClicked: () => void;
   value: boolean;
   handleChange: (newValue: boolean) => void;
 }
+
 const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
+  useEnterKeyPress(onNextClicked);
+
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
@@ -77,6 +81,8 @@ const DomainStep = ({
   handleChange,
 }: DomainStepProps) => {
   const [isValid, setIsValid] = React.useState(false);
+  useEnterKeyPress(onNextClicked);
+
   const isValidHttpUrl = (string: string) => {
     let url;
 
@@ -206,6 +212,8 @@ const NameStep = ({
   handleChange,
   isLoading,
 }: NameStepProps) => {
+  useEnterKeyPress(onNextClicked);
+
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
@@ -236,6 +244,7 @@ const NameStep = ({
   );
 };
 const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
+  useEnterKeyPress(onNextClicked);
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
