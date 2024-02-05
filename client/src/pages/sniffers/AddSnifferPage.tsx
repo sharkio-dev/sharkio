@@ -130,6 +130,27 @@ function SimpleDomainComponent(props: {
   domain: string;
   onDomainChange: (domain: string) => void;
 }) {
+  const [error, setError] = React.useState<string | null>(null);
+
+  const isValidHttpUrl = (string: string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const handleDomainChange = (newValue: string) => {
+    props.onDomainChange(newValue);
+
+    if (!isValidHttpUrl(newValue)) {
+      setError("Please enter a valid URL.");
+    } else {
+      setError(null);
+    }
+  };
+
   return (
     <>
       <div className="font-sarif self-start text-2xl font-bold">
@@ -140,8 +161,10 @@ function SimpleDomainComponent(props: {
           value={props.domain}
           className="w-1/2"
           placeholder="https://example.com"
-          onChange={(e) => props.onDomainChange(e.target.value)}
+          onChange={(e) => handleDomainChange(e.target.value)}
+          error={Boolean(error)}
         />
+        {error && <p>{error}</p>}
       </div>
     </>
   );
