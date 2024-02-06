@@ -59,7 +59,7 @@ const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
 };
 
 export const RunsTab: React.FC = () => {
-  const { runs, loadTestRuns, isRunsLoading } = useFlowStore();
+  const { runs, loadFlowRuns: loadTestRuns, isRunsLoading } = useFlowStore();
   const { flowId } = useParams();
   const [searchParams, _] = useSearchParams();
 

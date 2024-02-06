@@ -167,7 +167,7 @@ export const RequestSection: React.FC<InvocationDetailsProps> = ({
   );
 };
 
-const ResponseSection = ({
+export const ResponseSection = ({
   response,
 }: {
   response?: InvocationType["response"];

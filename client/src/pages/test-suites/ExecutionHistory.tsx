@@ -9,7 +9,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ExecutionRow } from "./ExecutionRowProps";
+import { ExecutionRow } from "../flows/ExecutionRow";
 import { useTestStore } from "../../stores/testStore";
 
 export const ExecutionHistory = () => {
@@ -69,7 +69,7 @@ export const ExecutionHistory = () => {
               passed={i.checks.filter((check: any) => check.isPassed).length}
               failed={i.checks.filter((check: any) => !check.isPassed).length}
               key={index}
-              checks={i.checks}
+              assertions={i.checks}
             />
           ))}
         </TableBody>
