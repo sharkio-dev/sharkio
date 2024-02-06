@@ -56,8 +56,17 @@ export class TestFlowService {
     );
   }
 
-  getNodesByFlowId(ownerId: any, flowId: string) {
-    return this.repository.getNodesByFlowId(ownerId, flowId);
+  async getNodesByFlowId(ownerId: any, flowId: string, isSorted = false) {
+    const nodes = await this.repository.getNodesByFlowId(ownerId, flowId);
+
+    if (!isSorted) {
+      return nodes;
+    }
+
+    const edges = await this.repository.getEdgesByFlowId(ownerId, flowId);
+    const sorted = this.sortNodesByEdges(nodes, edges);
+
+    return sorted;
   }
 
   getEdgesByFlowId(ownerId: any, flowId: string) {
@@ -153,8 +162,21 @@ export class TestFlowService {
     return this.repository.getFlowRun(ownerId, flowId, runId);
   }
 
-  getFlowRunNodes(ownerId: any, flowId: string, runId: string) {
-    return this.repository.getFlowRunNodes(ownerId, flowId, runId);
+  async getFlowRunNodes(
+    ownerId: any,
+    flowId: string,
+    runId: string,
+    isSorted = false,
+  ) {
+    const nodes = await this.repository.getFlowRunNodes(ownerId, flowId, runId);
+    if (!isSorted) {
+      return nodes;
+    }
+
+    const edges = await this.repository.getEdgesByFlowId(ownerId, flowId);
+    const sorted = this.sortNodesByEdges(nodes, edges);
+
+    return sorted;
   }
 
   getFlowRunNode(ownerId: any, flowId: string, nodeId: string) {
@@ -179,5 +201,69 @@ export class TestFlowService {
     }
 
     return this.repository.saveEdges(edges);
+  }
+
+  sortNodesByEdges(
+    nodes: TestFlowNodeRun[] | TestFlowNode[],
+    edges: TestFlowEdge[],
+  ): TestFlowNodeRun[] | TestFlowNode[] {
+    // Create a map to count incoming edges for each node
+    const incomingEdges: Map<string, number> = new Map(
+      nodes.map((node: TestFlowNodeRun | TestFlowNode) => {
+        let id = node instanceof TestFlowNode ? node.id : node.nodeId;
+
+        return [id, 0];
+      }),
+    );
+
+    // Count incoming edges
+    edges.forEach((edge) => {
+      incomingEdges.set(
+        edge.targetId,
+        (incomingEdges.get(edge.targetId) || 0) + 1,
+      );
+    });
+
+    // Find the starting node(s) with no incoming edges
+    const startNodes: string[] = Array.from(incomingEdges.entries())
+      .filter(([nodeId, count]) => count === 0)
+      .map(([nodeId, _]) => nodeId);
+
+    // Perform topological sort
+    let sorted: string[] = [];
+    let toProcess: string[] = [...startNodes];
+
+    while (toProcess.length) {
+      const nodeId = toProcess.pop();
+      if (nodeId) {
+        sorted.push(nodeId);
+        const outEdges = edges.filter((edge) => edge.sourceId === nodeId);
+
+        // Find and process nodes that this node points to
+        outEdges.forEach((edge) => {
+          const targetId = edge.targetId;
+          const incomingEdge = incomingEdges.get(targetId) ?? 0;
+          const currentScore = incomingEdge - 1;
+          incomingEdges.set(targetId, currentScore);
+
+          // If no more incoming edges, add to processing list
+          if (incomingEdges.get(targetId) === 0) {
+            toProcess.push(targetId);
+          }
+        });
+      }
+    }
+    // const res = nodes.filter((node: TestFlowNodeRun | TestFlowNode) =>
+    //   sorted.includes(node instanceof TestFlowNode ? node.id : node.nodeId),
+    // );
+
+    const res = sorted.map((id) =>
+      nodes.find((node: TestFlowNodeRun | TestFlowNode) =>
+        node instanceof TestFlowNode ? node.id : node.nodeId === id,
+      ),
+    ) as (TestFlowNodeRun | TestFlowNode)[];
+
+    // Return nodes in sorted order
+    return res;
   }
 }
