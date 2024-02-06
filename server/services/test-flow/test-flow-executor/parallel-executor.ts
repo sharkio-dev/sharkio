@@ -39,6 +39,7 @@ export class ParallelExecutor implements ITestFlowExecutor {
           const assertionResult = await this.nodeResponseValidator.assert(
             nodeRun,
             response,
+            {},
           );
 
           await this.testFlowReporter.reportNodeRun(

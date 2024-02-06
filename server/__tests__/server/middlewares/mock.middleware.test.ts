@@ -4,10 +4,8 @@ import { Sniffer } from "../../../model/entities/Sniffer";
 import { Interceptor } from "../../../server/interceptors/Interceptor";
 import MockMiddleware from "../../../server/middlewares/mock.middleware";
 import { MockResponseSelector } from "../../../services/mock-response-selector";
-import { MockResponseTransformer } from "../../../services/mock-response-transformer/mock-response-transformer";
-import { MockService } from "../../../services/mock/mock.service";
+import { RequestTransformer } from "../../../services/request-transformer/request-transformer";
 import ResponseService from "../../../services/response/response.service";
-import { SnifferService } from "../../../services/sniffer/sniffer.service";
 
 const defaultSelectedSniffer: Sniffer = {
   ownerId: "1234",
@@ -94,7 +92,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer(),
+      new RequestTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -115,7 +113,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer(),
+      new RequestTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -134,7 +132,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer(),
+      new RequestTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -165,7 +163,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer(),
+      new RequestTransformer(),
     );
 
     const mock = await mockMiddleware.findMock(
@@ -199,7 +197,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer(),
+      new RequestTransformer(),
     );
 
     mockMiddleware.findMock = jest.fn().mockResolvedValue(baseMock);
@@ -254,7 +252,7 @@ describe("MockMiddleware", () => {
     const mockMiddleware = new MockMiddleware(
       defaultInterceptorService as Interceptor,
       new MockResponseSelector({}),
-      new MockResponseTransformer(),
+      new RequestTransformer(),
     );
 
     mockMiddleware.findMock = jest.fn().mockResolvedValue(undefined);

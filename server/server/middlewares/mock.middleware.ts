@@ -3,7 +3,7 @@ import { MockResponse } from "../../model/entities/MockResponse";
 import { MockResponseSelector } from "../../services/mock-response-selector/mock-response-selector";
 import { Mock } from "../../model/entities/Mock";
 import { useLog } from "../../lib/log";
-import { MockResponseTransformer } from "../../services/mock-response-transformer/mock-response-transformer";
+import { RequestTransformer } from "../../services/request-transformer/request-transformer";
 import { Interceptor } from "../interceptors/Interceptor";
 
 const logger = useLog({
@@ -15,7 +15,7 @@ export default class MockMiddleware {
   constructor(
     private readonly interceptor: Interceptor,
     private readonly mockResponseSelector: MockResponseSelector,
-    private readonly mockResponseTransformer: MockResponseTransformer,
+    private readonly mockResponseTransformer: RequestTransformer,
   ) {}
 
   async findMock(hostname: string, url: string, method: string) {
@@ -44,17 +44,15 @@ export default class MockMiddleware {
       : null;
 
     if (mock != null && selectedResponse != null) {
-      const transformedResponse = this.mockResponseTransformer.transform(
-        selectedResponse,
-        {
+      const transformedResponse =
+        this.mockResponseTransformer.transformResponse(selectedResponse, {
           body: req.body,
           headers: req.headers,
           method: req.method,
           url: req.url,
           params: req.params,
           query: req.query,
-        },
-      );
+        });
 
       Object.entries(transformedResponse.headers || {}).forEach(
         ([key, value]) => {

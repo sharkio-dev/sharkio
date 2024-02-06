@@ -47,7 +47,7 @@ import {
   SequentialResponseSelector,
 } from "./services/mock-response-selector";
 import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
-import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
+import { RequestTransformer } from "./services/request-transformer/request-transformer";
 import { MockResponseService } from "./services/mock-response/mock-response.service";
 import { MockService } from "./services/mock/mock.service";
 import { RequestService } from "./services/request/request.service";
@@ -142,12 +142,12 @@ async function main(isProxy = true, isServer = true) {
   const mockResponseSelectorService = new MockResponseSelector(
     mockSelectionStrategies,
   );
-  const mockResponseTransformer = new MockResponseTransformer();
+  const requestTransformer = new RequestTransformer();
   const testFlowService = new TestFlowService(
     testFlowRepository,
     snifferRepository,
   );
-  const nodeResponseValidator = new NodeResponseValidator();
+  const nodeResponseValidator = new NodeResponseValidator(requestTransformer);
   const testFlowReporter = new TestFlowReporter(testFlowService);
 
   const testFlowExecutionStrategies = {
@@ -160,6 +160,8 @@ async function main(isProxy = true, isServer = true) {
       requestService,
       nodeResponseValidator,
       testFlowReporter,
+      testFlowService,
+      requestTransformer,
     ),
   };
 
@@ -237,7 +239,7 @@ async function main(isProxy = true, isServer = true) {
   const mockMiddleware = new MockMiddleware(
     selectedInterceptor,
     mockResponseSelectorService,
-    mockResponseTransformer,
+    requestTransformer,
   );
 
   /* Servers */
