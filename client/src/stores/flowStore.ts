@@ -77,7 +77,7 @@ interface flowState {
   isFlowLoading: boolean;
   isFlowRunning: boolean;
   loadFlows: (isLoading?: boolean) => void;
-  loadNodes: (flowId: string, isLoading?: boolean) => void;
+  loadNodes: (flowId: string, isLoading?: boolean) => Promise<NodeType[]>;
   loadFlowRuns: (flowId: string, isLoading?: boolean) => void;
   loadNode: (
     flowId: string,
@@ -108,6 +108,7 @@ interface flowState {
     node: Partial<NodeType>,
     isLoading?: boolean,
   ) => Promise<void>;
+  reorderNodes: (flowId: string, nodes: NodeType["id"][]) => Promise<void>;
 }
 
 const getFlows = () => {
@@ -160,6 +161,10 @@ const putNode = (flowId: string, node: Partial<NodeType>) => {
   return BackendAxios.put(`/test-flows/${flowId}/nodes/${node.id}`, node);
 };
 
+const reorderNodes = (flowId: string, nodes: NodeType["id"][]) => {
+  return BackendAxios.post(`/test-flows/${flowId}/reorder-nodes`, nodes);
+};
+
 export const useFlowStore = create<flowState>((set, get) => ({
   flows: [],
   nodes: [],
@@ -185,10 +190,14 @@ export const useFlowStore = create<flowState>((set, get) => ({
       set({ isNodesLoading: true });
     }
 
-    const { data } = await getNodes(flowId).finally(() => {
-      set({ isNodesLoading: false });
-    });
-    set({ nodes: data || [] });
+    return getNodes(flowId)
+      .then(({ data }) => {
+        set({ nodes: data || [] });
+        return data;
+      })
+      .finally(() => {
+        set({ isNodesLoading: false });
+      });
   },
   loadFlowRuns: async (flowId: string, isLoading = false) => {
     if (isLoading) {
@@ -268,8 +277,11 @@ export const useFlowStore = create<flowState>((set, get) => ({
       set({ isNodeLoading: true });
     }
     return await postNode(flowId, node)
-      .then(() => {
-        get().loadNodes(flowId);
+      .then((res) => {
+        get().reorderNodes(flowId, [
+          ...get().nodes.map((node) => node.id),
+          res.data.id,
+        ]);
       })
       .finally(() => {
         set({ isNodeLoading: false });
@@ -279,10 +291,17 @@ export const useFlowStore = create<flowState>((set, get) => ({
     if (isLoading) {
       set({ isNodeLoading: true });
     }
-    await deleteNode(flowId, nodeId).finally(() => {
-      set({ isNodeLoading: false });
-    });
-    get().loadNodes(flowId);
+    await deleteNode(flowId, nodeId)
+      .then(() => {
+        const newNodes = get().nodes.filter((node) => node.id !== nodeId);
+        get().reorderNodes(
+          flowId,
+          newNodes.map((node) => node.id),
+        );
+      })
+      .finally(() => {
+        set({ isNodeLoading: false });
+      });
   },
   putNode: async (
     flowId: string,
@@ -295,6 +314,14 @@ export const useFlowStore = create<flowState>((set, get) => ({
     await putNode(flowId, node).finally(() => {
       set({ isNodeLoading: false });
     });
-    return get().loadNodes(flowId);
+    get().loadNodes(flowId);
+  },
+  reorderNodes: async (flowId: string, nodesIds: NodeType["id"][]) => {
+    set({
+      nodes: get().nodes.sort(
+        (a, b) => nodesIds.indexOf(a.id) - nodesIds.indexOf(b.id),
+      ),
+    });
+    reorderNodes(flowId, nodesIds).then(() => get().loadNodes(flowId));
   },
 }));

@@ -13,14 +13,28 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { EditableNameField } from "./EditableNameProps";
 import { TextField } from "@mui/material";
 import { ProxySelector } from "../sniffers/SniffersSideBar";
+import React from "react";
 
-const Step = ({ step }: { step: NodeType }) => {
+const Step = ({
+  step,
+  stepIds,
+  index,
+  dragResponseRef,
+  dragOverResponseRef,
+}: {
+  step: NodeType;
+  stepIds: string[];
+  index: number;
+  dragResponseRef: any;
+  dragOverResponseRef: any;
+}) => {
   const navigate = useNavigate();
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find((s) => s.id === step.proxyId);
   const { flowId } = useParams();
   const [stepName, setStepName] = useState(step.name);
   const { putNode, isNodeLoading } = useFlowStore();
+  const { reorderNodes } = useFlowStore();
 
   useEffect(() => {
     setStepName(step.name);
@@ -30,23 +44,43 @@ const Step = ({ step }: { step: NodeType }) => {
     navigate("/flows/" + flowId + "/tests/" + step.id);
   };
 
+  const handleSort = () => {
+    if (!flowId) return;
+
+    const newNodesIds = stepIds ? [...stepIds] : [];
+    const draggedResponse = newNodesIds[dragResponseRef.current];
+    newNodesIds.splice(dragResponseRef.current, 1);
+    newNodesIds.splice(dragOverResponseRef.current, 0, draggedResponse);
+    reorderNodes(flowId, newNodesIds);
+  };
+
   return (
-    <div className="flex flex-col border border-border-color p-2 px-4 mt-2 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[48px] active:cursor-grabbing justify-center">
+    <div
+      className="flex flex-col border border-border-color p-2 px-4 mt-2 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[48px] active:cursor-grabbing justify-center"
+      key={`${index}-${step.id}`}
+      draggable
+      onDragStart={() => (dragResponseRef.current = index)}
+      onDragEnter={() => (dragOverResponseRef.current = index)}
+      onDragEnd={handleSort}
+      onDragOver={(e) => e.preventDefault()}
+    >
       <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-col w-full" onClick={onStepClick}>
-          <EditableNameField
-            isLoading={isNodeLoading}
-            name={stepName}
-            handleNameChange={setStepName}
-            handleSaveClicked={() => {
-              putNode(flowId as string, { ...step, name: stepName });
-            }}
-          />
-          <div className="flex flex-row items-center space-x-2">
-            {selectIconByMethod(step.method)}
-            <div className="text-sm text-gray-400">{sniffer?.name}</div>
-            <div className="text-sm text-gray-400 truncate max-w-[75ch]">
-              {step.url}
+        <div className="flex flex-row w-full" onClick={onStepClick}>
+          <div className="flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <EditableNameField
+              isLoading={isNodeLoading}
+              name={stepName}
+              handleNameChange={setStepName}
+              handleSaveClicked={() => {
+                putNode(flowId as string, { ...step, name: stepName });
+              }}
+            />
+            <div className="flex flex-row items-center space-x-2">
+              {selectIconByMethod(step.method)}
+              <div className="text-sm text-gray-400">{sniffer?.name}</div>
+              <div className="text-sm text-gray-400 truncate max-w-[75ch]">
+                {step.url}
+              </div>
             </div>
           </div>
         </div>
@@ -141,11 +175,15 @@ const FlowNodeDeleteButton = ({
 export const TestsTab: React.FC = () => {
   const { nodes, loadNodes, isNodesLoading } = useFlowStore();
   const { flowId } = useParams();
+  const dragResponseRef = React.useRef<number>(0);
+  const dragOverResponseRef = React.useRef<number>(0);
 
   useEffect(() => {
     if (!flowId) return;
     loadNodes(flowId, true);
   }, [flowId]);
+
+  const nodesIds = nodes.map((node) => node.id);
 
   return (
     <TabPanel value="1" style={{ padding: 0, height: "100%" }}>
@@ -153,7 +191,16 @@ export const TestsTab: React.FC = () => {
       {isNodesLoading ? (
         <LoadingIcon />
       ) : (
-        nodes.map((step) => <Step step={step} />)
+        nodes.map((step, index) => (
+          <Step
+            step={step}
+            stepIds={nodesIds}
+            index={index}
+            key={step.id}
+            dragOverResponseRef={dragOverResponseRef}
+            dragResponseRef={dragResponseRef}
+          />
+        ))
       )}
     </TabPanel>
   );

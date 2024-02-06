@@ -24,6 +24,7 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
   const passed = nodeRun.assertionsResult.passed ?? [];
   const failed = nodeRun.assertionsResult.failed ?? [];
   const assertions = passed.concat(failed);
+  console.log(nodeRun);
 
   return (
     <TableRow className="border-t-[1px] border-primary h-10 w-full">
@@ -39,7 +40,7 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
                 {nodeRun.name}
               </span>
               <span className="text-xs">
-                {new Date(nodeRun.createdAt).toLocaleString()}
+                {new Date(nodeRun.finishedAt).toLocaleString()}
               </span>
             </div>
           </div>

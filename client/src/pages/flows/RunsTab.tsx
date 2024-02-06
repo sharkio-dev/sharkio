@@ -5,6 +5,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import React from "react";
 
 interface RunProps {
   createdAt: string;
@@ -30,7 +31,11 @@ export const getRunStatusIcon = (status: string) => {
 
 const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
   const navigate = useNavigate();
+  const { reorderNodes } = useFlowStore();
   const { flowId } = useParams();
+  const dragResponseRef = React.useRef<number>(0);
+  const dragOverResponseRef = React.useRef<number>(0);
+
   return (
     <div className="flex flex-col border border-border-color p-2 px-4 shadow-md hover:border-blue-400 cursor-pointer rounded-md min-h-[48px] justify-center">
       <div className="flex flex-row items-center justify-between">
@@ -67,20 +72,24 @@ export const RunsTab: React.FC = () => {
     loadTestRuns(flowId as string, true);
   }, [flowId, searchParams.get("tab")]);
 
+  const runIds = runs.map((run) => run.id);
+
   return (
     <TabPanel value="2" style={{ padding: 0, height: "100%" }}>
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col space-y-2 pb-2">
         {isRunsLoading ? (
           <LoadingIcon />
         ) : (
           runs.map((run, index) => {
             return (
               <Run
-                key={index}
+                key={runs.length - index}
                 runId={run.id}
+                runIds={runIds}
+                index={index}
                 createdAt={run.createdAt}
                 status={run.status}
-                title={`Run ${index + 1}`}
+                title={`Run ${runs.length - index}`}
               />
             );
           })

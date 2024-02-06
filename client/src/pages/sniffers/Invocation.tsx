@@ -35,7 +35,7 @@ export const Invocation = ({
       >
         <div className="flex flex-row items-center space-x-4">
           {selectIconByMethod(method)}
-          <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap w-[120ch]">
+          <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap w-[100ch]">
             {url}
           </div>
         </div>
