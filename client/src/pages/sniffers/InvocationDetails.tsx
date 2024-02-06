@@ -13,14 +13,12 @@ import Tab from "@mui/material/Tab";
 import * as React from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { generateApiRequestSnippet } from "../../lib/jsonSchema";
-import { BodySection } from "../test-suites/BodySection";
-import { HeaderSection } from "../test-suites/HeaderSection";
 import { InvocationType } from "./types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
 
 type InvocationDetailsProps = {
-  invocation: InvocationType | undefined;
+  invocation: InvocationType;
   setInvocation: (invocation: InvocationType) => void;
 };
 
@@ -36,7 +34,15 @@ export function InvocationDetails({
       className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh-184px)]"
     >
       <Panel defaultSize={50} maxSize={70}>
-        <RequestSection invocation={invocation} setInvocation={setInvocation} />
+        <RequestSection
+          invocation={invocation}
+          setInvocation={(newInvocation) =>
+            setInvocation({
+              ...invocation,
+              ...newInvocation,
+            })
+          }
+        />
       </Panel>
       <div className="relative h-[1px] w-full my-4 hover:bg-blue-300 bg-border-color">
         <PanelResizeHandle
@@ -50,10 +56,21 @@ export function InvocationDetails({
   );
 }
 
-export const RequestSection: React.FC<InvocationDetailsProps> = ({
-  invocation,
-  setInvocation,
-}) => {
+export const RequestSection: React.FC<{
+  invocation: {
+    body: string;
+    headers: { [key: string]: string };
+    url: string;
+    method: string;
+  };
+  setInvocation?: (invocation: {
+    body?: string;
+    headers?: { [key: string]: string };
+    url?: string;
+    method?: string;
+  }) => void;
+  disabled?: boolean;
+}> = ({ invocation, setInvocation, disabled }) => {
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
@@ -63,7 +80,7 @@ export const RequestSection: React.FC<InvocationDetailsProps> = ({
   };
 
   const handleBodyChange = (body: string) => {
-    if (invocation) {
+    if (invocation && setInvocation) {
       setInvocation({
         ...invocation,
         body,
@@ -72,7 +89,7 @@ export const RequestSection: React.FC<InvocationDetailsProps> = ({
   };
 
   const onHeadersChange = (headers: { [key: string]: string }) => {
-    if (invocation) {
+    if (invocation && setInvocation) {
       setInvocation({
         ...invocation,
         headers,
@@ -104,7 +121,11 @@ export const RequestSection: React.FC<InvocationDetailsProps> = ({
           height: "calc(100% - 48px)",
         }}
       >
-        <BodySection body={invocation?.body} onBodyChange={handleBodyChange} />
+        <BodySection
+          body={invocation?.body}
+          onBodyChange={handleBodyChange}
+          isReadOnly={disabled}
+        />
       </TabPanel>
       <TabPanel
         value="2"

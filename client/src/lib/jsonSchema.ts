@@ -102,9 +102,12 @@ export function jsonSchemaToTypescriptInterface(
   return output;
 }
 
-export function generateCurlCommand(
-  req: InvocationType | EndpointType,
-): string {
+export function generateCurlCommand(req: {
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  body: string;
+}): string {
   const host = req?.headers?.host;
   let curlCommand = `curl -X ${req?.method} http://${host}${req.url} \\\n`;
 
@@ -128,7 +131,12 @@ export function generateCurlCommand(
 
 export function generateApiRequestSnippet(
   language: string,
-  req: InvocationType | EndpointType,
+  req: {
+    url: string;
+    method: string;
+    headers: any;
+    body: any;
+  },
 ) {
   let snippet = "";
 

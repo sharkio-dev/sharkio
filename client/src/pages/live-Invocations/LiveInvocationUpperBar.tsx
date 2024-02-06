@@ -180,8 +180,8 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
 };
 
 interface URLComponentProps {
-  onMethodChange: (value: string) => void;
-  onUrlChange: (value: string) => void;
+  onMethodChange?: (value: string) => void;
+  onUrlChange?: (value: string) => void;
   method: string;
   url: string;
   snifferId: string;
@@ -213,7 +213,9 @@ export const URLComponent: React.FC<URLComponentProps> = ({
         <SelectMethodDropDown
           disabled={isMethodDisabled}
           value={method}
-          onChange={onMethodChange}
+          onChange={() => {
+            onMethodChange && onMethodChange(method);
+          }}
         />
       </div>
       <div className="flex flex-row items-center w-[200px]">
@@ -230,7 +232,9 @@ export const URLComponent: React.FC<URLComponentProps> = ({
       <TextField
         disabled={isUrlDisabled}
         value={url}
-        onChange={(e: any) => onUrlChange(e.target.value)}
+        onChange={(e: any) => {
+          onUrlChange && onUrlChange(e.target.value);
+        }}
         variant="outlined"
         size="small"
         style={{ width: "100%" }}

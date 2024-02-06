@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { BackendAxios } from "../api/backendAxios";
-interface AssertionResult {
+export interface AssertionResult {
   path: string;
   comparator: string;
   expectedValue: string;
@@ -90,7 +90,7 @@ interface flowState {
     isLoading?: boolean,
   ) => Promise<NodeRunType[]>;
   deleteFlow: (flowId: string, isLoading?: boolean) => Promise<void>;
-  runFlow: (flowId: string, isLoading?: boolean) => Promise<void>;
+  runFlow: (flowId: string, isLoading?: boolean) => Promise<any>;
   postFlow: (flow: FlowType["name"], isLoading?: boolean) => Promise<FlowType>;
   putFlow: (flow: FlowType, isLoading?: boolean) => Promise<void>;
   postNode: (
@@ -233,7 +233,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
     if (isLoading) {
       set({ isFlowRunning: true });
     }
-    return await runFlow(flowId).finally(() => {
+    return runFlow(flowId).finally(() => {
       set({ isFlowRunning: false });
     });
   },

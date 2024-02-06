@@ -14,6 +14,7 @@ type BodySectionProps = {
   language?: string;
   onBodyChange?: (body: any) => void;
   showButtons?: boolean;
+  isReadOnly?: boolean;
 };
 
 export const BodySection = ({
@@ -21,6 +22,7 @@ export const BodySection = ({
   language = "json",
   onBodyChange,
   showButtons = true,
+  isReadOnly = false,
 }: BodySectionProps) => {
   const [type, setType] = useState(language);
   const [editor, setEditor] = useState<any>(null);
@@ -91,34 +93,38 @@ export const BodySection = ({
               <Button variant="text" onClick={beautify}>
                 Beautify
               </Button>
-              <Button
-                variant="text"
-                sx={{ minWidth: 0, borderRadius: "50%" }}
-                onClick={repeatSelectedText}
-              >
-                <Tooltip title="Repeat Selected Text" placement="top">
-                  <div className="h-4 w-4 items-center justify-center">
-                    <PiRepeat className="text-lg" />
-                  </div>
-                </Tooltip>
-              </Button>
-              <Button
-                variant="text"
-                color="secondary"
-                sx={{ minWidth: 0, borderRadius: "50%" }}
-                onClick={() => setWizardOpen(true)}
-              >
-                <Tooltip title="Generate Data" placement="top">
-                  <div className="h-4 w-4 items-center justify-center">
-                    <RxMagicWand className="text-lg" />
-                  </div>
-                </Tooltip>
-              </Button>
-              <Wizard
-                handleSelection={insertText}
-                open={wizardOpen}
-                onClose={() => setWizardOpen(false)}
-              />
+              {isReadOnly && (
+                <>
+                  <Button
+                    variant="text"
+                    sx={{ minWidth: 0, borderRadius: "50%" }}
+                    onClick={repeatSelectedText}
+                  >
+                    <Tooltip title="Repeat Selected Text" placement="top">
+                      <div className="h-4 w-4 items-center justify-center">
+                        <PiRepeat className="text-lg" />
+                      </div>
+                    </Tooltip>
+                  </Button>
+                  <Button
+                    variant="text"
+                    color="secondary"
+                    sx={{ minWidth: 0, borderRadius: "50%" }}
+                    onClick={() => setWizardOpen(true)}
+                  >
+                    <Tooltip title="Generate Data" placement="top">
+                      <div className="h-4 w-4 items-center justify-center">
+                        <RxMagicWand className="text-lg" />
+                      </div>
+                    </Tooltip>
+                  </Button>
+                  <Wizard
+                    handleSelection={insertText}
+                    open={wizardOpen}
+                    onClose={() => setWizardOpen(false)}
+                  />
+                </>
+              )}
               <MdOutlineCopyAll
                 className="text-2xl cursor-pointer"
                 onClick={copyToClipboard}
