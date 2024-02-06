@@ -9,7 +9,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ExecutionRow } from "../flows/ExecutionRow";
 import { useTestStore } from "../../stores/testStore";
 
 export const ExecutionHistory = () => {
@@ -57,21 +56,6 @@ export const ExecutionHistory = () => {
               </TableCell>
             </TableRow>
           )}
-          {executions.map((i, index) => (
-            <ExecutionRow
-              title={i.request.method + " " + i.request.url}
-              status={
-                i.checks.every((check: any) => check.isPassed)
-                  ? "success"
-                  : "failure"
-              }
-              executionDate={i.testExecution.createdAt}
-              passed={i.checks.filter((check: any) => check.isPassed).length}
-              failed={i.checks.filter((check: any) => !check.isPassed).length}
-              key={index}
-              assertions={i.checks}
-            />
-          ))}
         </TableBody>
       </Table>
     </TableContainer>

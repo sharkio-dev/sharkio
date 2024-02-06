@@ -4,7 +4,6 @@ import { TextButton } from "../../components/TextButton";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
-import { InvocationType } from "../sniffers/types";
 import { RequestSection } from "../sniffers/InvocationDetails";
 import { NodeType, useFlowStore } from "../../stores/flowStore";
 import { useNavigate, useParams } from "react-router-dom";
@@ -100,12 +99,21 @@ export const FlowStepPage = () => {
             </Button>
           </div>
           <RequestSection
-            // @ts-ignore
-            invocation={{ ...flowStep, snifferId: flowStep.proxyId }}
-            setInvocation={(invocation: InvocationType) => {
+            invocation={{
+              headers: flowStep.headers,
+              body: flowStep.body,
+              url: flowStep.url,
+              method: flowStep.method,
+            }}
+            setInvocation={(newRequest: {
+              headers?: any;
+              body?: string;
+              url?: string;
+              method?: string;
+            }) => {
               setFlowStep((prev) => {
                 if (!prev) return prev;
-                return { ...prev, ...invocation };
+                return { ...prev, ...newRequest };
               });
             }}
           />

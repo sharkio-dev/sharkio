@@ -25,7 +25,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
     private readonly requestService: RequestService,
     private readonly nodeResponseValidator: NodeResponseValidator,
     private readonly testFlowReporter: TestFlowReporter,
-    private readonly testFlowService: TestFlowService,
+    private readonly testFlowService: TestFlowService
   ) {}
 
   async execute(
@@ -34,11 +34,11 @@ export class SequenceExecutor implements ITestFlowExecutor {
     flowRunId: string,
     nodes: TestFlowNode[],
     nodeRuns: TestFlowNodeRun[],
-    edges: TestFlowEdge[],
+    edges: TestFlowEdge[]
   ): Promise<ExecutionResult> {
     const sortedNodes = this.testFlowService.sortNodesByEdges(
       nodeRuns,
-      edges,
+      edges
     ) as TestFlowNodeRun[];
 
     try {
@@ -58,7 +58,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
 
         const assertionResult = await this.nodeResponseValidator.assert(
           nodeRun,
-          response,
+          response
         );
 
         await this.testFlowReporter.reportNodeRun(
@@ -71,7 +71,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
             headers: response?.headers,
             body: response?.data,
             status: response?.status,
-          },
+          }
         );
 
         const resultItem = { node: nodeRun, response, assertionResult };

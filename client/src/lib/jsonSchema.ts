@@ -1,5 +1,3 @@
-import { EndpointType, InvocationType } from "../pages/sniffers/types";
-
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 export interface JsonObject {

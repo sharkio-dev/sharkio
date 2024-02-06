@@ -16,6 +16,8 @@ import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import { InvocationType } from "./types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
+import { BodySection } from "../test-suites/BodySection";
+import { HeaderSection } from "../test-suites/HeaderSection";
 
 type InvocationDetailsProps = {
   invocation: InvocationType;
