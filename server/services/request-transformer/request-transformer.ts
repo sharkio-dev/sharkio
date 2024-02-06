@@ -1,9 +1,45 @@
-import { MockResponse } from "./../../model/entities/MockResponse";
-import HandleBars from "handlebars";
 import { faker } from "@faker-js/faker";
+import HandleBars from "handlebars";
 import { parse } from "json5";
+import { MockResponse } from "../../model/entities/MockResponse";
+import {
+  ExecutionResult,
+  NodeRunResult,
+} from "../test-flow/test-flow-executor/sequence-executor";
+import { TestFlowNodeRun } from "../../model/entities/test-flow/TestFlowNodeRun";
 
-export class MockResponseTransformer {
+export type MockTransformerContext = {
+  body: any;
+  headers: any;
+  url: string;
+  method: string;
+  params: any;
+  query: any;
+};
+
+export type TestFlowTransformerContext = Record<
+  TestFlowNodeRun["id"],
+  NodeRunResult
+>;
+
+export type TransformContext =
+  | MockTransformerContext
+  | TestFlowTransformerContext;
+
+export type InputResponse = {
+  body: string;
+  headers: Record<string, string>;
+  status: number;
+};
+
+export type InputRequest = {
+  body: string;
+  headers: Record<string, string>;
+  method: string;
+  url: string;
+};
+
+export class RequestTransformer {
   constructor(private readonly handleBars = HandleBars.create()) {
     this.handleBars.registerHelper(
       "faker",
@@ -28,6 +64,12 @@ export class MockResponseTransformer {
     );
     this.handleBars.registerHelper("compare", this.compareFunction);
     this.handleBars.registerHelper("repeat", this.repeatHelper.bind(this));
+    this.handleBars.registerHelper(
+      "raw",
+      function (this: typeof HandleBars, options: any) {
+        return options.fn(this);
+      }.bind(this.handleBars),
+    );
   }
 
   parseParams(params: string) {
@@ -38,18 +80,39 @@ export class MockResponseTransformer {
     }
   }
 
-  transform(
-    response: MockResponse,
-    context?: {
-      body: any;
-      headers: any;
-      url: string;
-      method: string;
-      params: any;
-      query: any;
-    },
+  transformRequest(
+    request: Partial<InputRequest>,
+    context?: TestFlowTransformerContext,
   ) {
-    let body, headers;
+    let body, headers, method, url;
+    try {
+      body = this.handleBars.compile(request.body)(context);
+    } catch (e) {
+      body = "transformation error";
+    }
+    try {
+      method = this.handleBars.compile(request.method)(context);
+    } catch (e) {
+      method = "transformation error";
+    }
+    try {
+      url = this.handleBars.compile(request.url)(context);
+    } catch (e) {
+      url = "transformation error";
+    }
+    try {
+      headers = JSON.parse(
+        this.handleBars.compile(JSON.stringify(request.headers))(context),
+      ) as MockResponse["headers"];
+    } catch (e) {
+      headers = { "x-sharkio-error": "header transformation error" };
+    }
+
+    return { ...request, body, headers, method };
+  }
+
+  transformResponse(response: MockResponse, context?: TransformContext) {
+    let body, headers, status;
     try {
       body = this.handleBars.compile(response.body)(context);
     } catch (e) {
@@ -63,9 +126,23 @@ export class MockResponseTransformer {
       headers = { "x-sharkio-error": "header transformation error" };
     }
 
-    return { ...response, body, headers };
+    try {
+      status = +this.handleBars.compile(`${response.status}`)(context);
+    } catch (e) {
+      status = 500;
+    }
+
+    return { ...response, body, headers, status };
   }
 
+  transformAssertion(expectedValue: any, context: TransformContext) {
+    try {
+      const res = this.handleBars.compile(expectedValue)(context);
+      return res;
+    } catch (e) {
+      return "transformation error";
+    }
+  }
   repeatHelper() {
     var args = arguments;
 

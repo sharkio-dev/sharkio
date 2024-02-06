@@ -11,21 +11,27 @@ import { TestFlowReporter } from "../test-flow-reporter.service";
 import { useLog } from "../../../lib/log";
 import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 import { TestFlowService } from "../test-flow.service";
+import { RequestTransformer } from "../../request-transformer/request-transformer";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
-export type ExecutionResult = {
+export type NodeRunResult = {
   node: TestFlowNode;
   response: AxiosResponse;
   assertionResult: AssertionResult;
-}[];
+};
+
+export type ExecutionResult = NodeRunResult[];
+
+export type ExecutionContext = Record<string, NodeRunResult>;
 
 export class SequenceExecutor implements ITestFlowExecutor {
   constructor(
     private readonly requestService: RequestService,
     private readonly nodeResponseValidator: NodeResponseValidator,
     private readonly testFlowReporter: TestFlowReporter,
-    private readonly testFlowService: TestFlowService
+    private readonly testFlowService: TestFlowService,
+    private readonly requestTransformer: RequestTransformer,
   ) {}
 
   async execute(
@@ -34,20 +40,24 @@ export class SequenceExecutor implements ITestFlowExecutor {
     flowRunId: string,
     nodes: TestFlowNode[],
     nodeRuns: TestFlowNodeRun[],
-    edges: TestFlowEdge[]
+    edges: TestFlowEdge[],
   ): Promise<ExecutionResult> {
     const sortedNodes = this.testFlowService.sortNodesByEdges(
       nodeRuns,
-      edges
+      edges,
     ) as TestFlowNodeRun[];
 
     try {
       const result: ExecutionResult = [];
+      const context: ExecutionContext = {};
 
-      for (let i = 0; i < nodes.length; i++) {
+      for (let i = 0; i < sortedNodes.length; i++) {
         const nodeRun = sortedNodes[i];
+        const { subdomain } = nodeRun;
 
-        const { method, url, headers, body, subdomain } = nodeRun;
+        const { method, url, headers, body } =
+          this.requestTransformer.transformRequest(nodeRun, context);
+
         const response = await this.requestService.execute({
           method,
           url: url ?? "/",
@@ -58,7 +68,8 @@ export class SequenceExecutor implements ITestFlowExecutor {
 
         const assertionResult = await this.nodeResponseValidator.assert(
           nodeRun,
-          response
+          response,
+          context,
         );
 
         await this.testFlowReporter.reportNodeRun(
@@ -71,10 +82,12 @@ export class SequenceExecutor implements ITestFlowExecutor {
             headers: response?.headers,
             body: response?.data,
             status: response?.status,
-          }
+          },
         );
 
         const resultItem = { node: nodeRun, response, assertionResult };
+
+        context[nodeRun.nodeId] = resultItem;
 
         result.push(resultItem);
 

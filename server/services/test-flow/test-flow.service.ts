@@ -258,9 +258,12 @@ export class TestFlowService {
     // );
 
     const res = sorted.map((id) =>
-      nodes.find((node: TestFlowNodeRun | TestFlowNode) =>
-        node instanceof TestFlowNode ? node.id : node.nodeId === id,
-      ),
+      nodes.find((node: TestFlowNodeRun | TestFlowNode) => {
+        const calculatedId =
+          node instanceof TestFlowNode ? node.id : node.nodeId;
+
+        return calculatedId === id;
+      }),
     ) as (TestFlowNodeRun | TestFlowNode)[];
 
     // Return nodes in sorted order

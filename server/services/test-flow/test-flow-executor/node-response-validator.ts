@@ -1,11 +1,12 @@
+import { AxiosResponse } from "axios";
+import { get } from "lodash";
 import {
   TestFlowAssertion,
   TestFlowAssertionResult,
 } from "../../../dto/in/test-flow.dto";
-import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
-import { AxiosResponse } from "axios";
-import { get, includes } from "lodash";
 import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
+import { RequestTransformer } from "../../request-transformer/request-transformer";
+import { ExecutionContext } from "./sequence-executor";
 
 export type AssertionResult = {
   passed: TestFlowAssertionResult[];
@@ -19,7 +20,7 @@ export class NodeResponseValidator {
     (expected: any, data: any) => boolean
   >;
 
-  constructor() {
+  constructor(private readonly requestTransformer: RequestTransformer) {
     this.assertionHandlers = {
       eq: this.eq,
       ne: this.ne,
@@ -40,6 +41,7 @@ export class NodeResponseValidator {
   async assert(
     testFlowNode: TestFlowNodeRun,
     response: AxiosResponse,
+    context: ExecutionContext,
   ): Promise<AssertionResult> {
     const passed: TestFlowAssertionResult[] = [];
     const failed: TestFlowAssertionResult[] = [];
@@ -47,7 +49,7 @@ export class NodeResponseValidator {
 
     for (let i = 0; i < testFlowNode.assertions.length; i++) {
       const currentAssertion = testFlowNode.assertions[i];
-      const result = this.checkAssertion(currentAssertion, response);
+      const result = this.checkAssertion(currentAssertion, response, context);
 
       if (result.success) {
         passed.push({
@@ -72,11 +74,20 @@ export class NodeResponseValidator {
     };
   }
 
-  checkAssertion(assertion: TestFlowAssertion, response: AxiosResponse) {
+  checkAssertion(
+    assertion: TestFlowAssertion,
+    response: AxiosResponse,
+    context: ExecutionContext,
+  ) {
     const data = get(response, assertion.path);
 
-    const assertionResult = this.assertionHandlers[assertion.comparator](
+    const transformedExpectedValue = this.requestTransformer.transformAssertion(
       assertion.expectedValue,
+      context,
+    );
+
+    const assertionResult = this.assertionHandlers[assertion.comparator](
+      transformedExpectedValue,
       data,
     );
 
@@ -118,6 +129,7 @@ export class NodeResponseValidator {
 
     return false;
   }
+
   includes(expected: any, data: any) {
     if (Array.isArray(data)) {
       return !data.includes(expected);
