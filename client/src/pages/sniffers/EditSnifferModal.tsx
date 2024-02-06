@@ -3,6 +3,8 @@ import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
+import React from "react";
+import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
 
 const splitByLast = (str: string, delimiter: string) => {
   const lastIndex = str.lastIndexOf(delimiter);
@@ -37,6 +39,17 @@ export const EditSnifferModal = ({
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { editSniffer } = useSniffersStore();
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleUrlEdit = (newValue: string) => {
+    setDownstreamUrl(newValue);
+
+    if (!validateHttpUrlFormat(newValue)) {
+      setError("Please enter a valid URL.");
+    } else {
+      setError(null);
+    }
+  };
 
   const handleEditSniffer = useCallback(() => {
     if (name === "") {
@@ -90,7 +103,9 @@ export const EditSnifferModal = ({
               label={"Downstream Url"}
               placeholder="http://example.com"
               value={downstreamUrl}
-              onChange={(event) => setDownstreamUrl(event.target.value)}
+              onChange={(event) => handleUrlEdit(event.target.value)}
+              error={Boolean(error)}
+              helperText={error}
             />
             <TextField
               label={"Subdomain"}

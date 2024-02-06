@@ -23,6 +23,7 @@ import { routes } from "../../constants/routes";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
 import { useEnterKeyPress } from "./useEnterKeyPress";
+import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
 
 interface EnvStepProps {
   onNextClicked: () => void;
@@ -133,15 +134,10 @@ function SimpleDomainComponent(props: {
 }) {
   const [error, setError] = React.useState<string | null>(null);
 
-  const isValidUrl = (string: string) => {
-    const urlPattern = /^https:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
-    return urlPattern.test(string);
-  };
-
   const handleDomainChange = (newValue: string) => {
     props.onDomainChange(newValue);
 
-    if (!isValidUrl(newValue)) {
+    if (!validateHttpUrlFormat(newValue)) {
       setError("Please enter a valid URL.");
     } else {
       setError(null);
