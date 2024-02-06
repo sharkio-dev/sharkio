@@ -7,38 +7,27 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ExecutionRow } from "../test-suites/ExecutionRowProps";
+import { ExecutionRow } from "./ExecutionRow";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect, useState } from "react";
 import { GoBackButton } from "./FlowStepPage";
-
-interface Check {
-  actualValue: string;
-  comparator: "eq" | "neq" | "contains" | "not_contains";
-  expectedValue: string;
-  isPassed: boolean;
-  targetPath: string;
-  type: "status_code" | "body" | "header";
-}
+import { NodeRunType } from "../../stores/flowStore";
 
 export const FlowRunPage = () => {
-  const { loadRun, isRunLoading } = useFlowStore();
+  const { loadNodeRuns, isRunLoading } = useFlowStore();
   const { runId, flowId } = useParams();
-  const [runs, setRuns] =
-    useState<
-      { name: string; assertionsResult: { passed: Check[]; failed: Check[] } }[]
-    >();
+  const [nodeRuns, setNodeRuns] = useState<NodeRunType[]>();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!flowId || !runId) return;
-    loadRun(flowId, runId, true).then((run) => {
-      setRuns(run);
+    loadNodeRuns(flowId, runId, true).then((run) => {
+      setNodeRuns(run);
     });
   }, [flowId, runId]);
 
-  if (!runs) return null;
+  if (!nodeRuns) return null;
 
   return (
     <div className="flex flex-col p-4 space-y-2">
@@ -48,7 +37,7 @@ export const FlowRunPage = () => {
           <TableHead>
             <TableRow className="bg-secondary">
               <TableCell style={{ borderBottom: "none" }}>
-                {runs.length} executions
+                {nodeRuns.length} executions
               </TableCell>
             </TableRow>
           </TableHead>
@@ -62,21 +51,8 @@ export const FlowRunPage = () => {
                 </TableCell>
               </TableRow>
             )}
-            {runs.map((run, index) => {
-              const passed = run.assertionsResult.passed ?? [];
-              const failed = run.assertionsResult.failed ?? [];
-              const checks = passed.concat(failed);
-              return (
-                <ExecutionRow
-                  title={run.name}
-                  status={run.status}
-                  executionDate={"GET /test"}
-                  passed={passed.length}
-                  failed={failed.length}
-                  key={index}
-                  checks={checks}
-                />
-              );
+            {nodeRuns.map((run) => {
+              return <ExecutionRow nodeRun={run} />;
             })}
           </TableBody>
         </Table>

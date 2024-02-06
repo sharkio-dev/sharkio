@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { EditableNameField } from "./EditableNameProps";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import { useFlowStore } from "../../stores/flowStore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 interface FlowNameAndSaveProps {
@@ -20,6 +20,17 @@ export const FlowNameAndRun: React.FC<FlowNameAndSaveProps> = ({
 }) => {
   const { flowId } = useParams();
   const { runFlow, isFlowRunning } = useFlowStore();
+  const [_, setSearchParams] = useSearchParams();
+
+  const onClickRun = () => {
+    runFlow(flowId as string, true).then(() => {
+      setSearchParams((prevSearchParams) => {
+        const newSearchParams = new URLSearchParams(prevSearchParams);
+        newSearchParams.set("tab", "2");
+        return newSearchParams;
+      });
+    });
+  };
   return (
     <div className="flex flex-row items-center justify-between">
       <EditableNameField
@@ -34,7 +45,7 @@ export const FlowNameAndRun: React.FC<FlowNameAndSaveProps> = ({
         color="success"
         size="small"
         startIcon={isFlowRunning ? <LoadingIcon /> : <AiOutlinePlayCircle />}
-        onClick={() => runFlow(flowId as string, true)}
+        onClick={onClickRun}
       >
         Run
       </Button>

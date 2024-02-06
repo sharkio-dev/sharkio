@@ -1,6 +1,45 @@
 import { create } from "zustand";
 import { BackendAxios } from "../api/backendAxios";
-
+interface AssertionResult {
+  path: string;
+  comparator: string;
+  expectedValue: string;
+  actualValue: string;
+  isPassed: boolean;
+}
+interface AssertionType {
+  path: string;
+  comparator: string;
+  expectedValue: string;
+}
+export interface NodeRunType {
+  id: string;
+  name: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  finishedAt: string;
+  assertionsResult: {
+    passed: AssertionResult[];
+    failed: AssertionResult[];
+    success: boolean;
+  };
+  response: {
+    status: number;
+    headers: Record<string, string>;
+    body: string;
+  };
+  nodeId: string;
+  ownerId: string;
+  flowId: string;
+  flowRunId: string;
+  proxyId: string;
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  body: string;
+  assertions: AssertionType[];
+}
 export interface FlowType {
   id: string;
   name: string;
@@ -8,12 +47,6 @@ export interface FlowType {
   ownerId: string;
   createdAt: string;
   updatedAt: string;
-}
-
-interface AssertionType {
-  path: string;
-  comparator: string;
-  expectedValue: string;
 }
 
 export interface NodeType {
@@ -32,17 +65,10 @@ export interface NodeType {
   updatedAt: string;
 }
 
-export interface TestRunType {
-  id: string;
-  status: string;
-  flowId: string;
-  createdAt: string;
-}
-
 interface flowState {
   flows: FlowType[];
   nodes: NodeType[];
-  runs: TestRunType[];
+  runs: NodeRunType[];
   isFlowsLoading: boolean;
   isNodesLoading: boolean;
   isRunsLoading: boolean;
@@ -52,19 +78,19 @@ interface flowState {
   isFlowRunning: boolean;
   loadFlows: (isLoading?: boolean) => void;
   loadNodes: (flowId: string, isLoading?: boolean) => void;
-  loadTestRuns: (flowId: string, isLoading?: boolean) => void;
+  loadFlowRuns: (flowId: string, isLoading?: boolean) => void;
   loadNode: (
     flowId: string,
     id: string,
     isLoading?: boolean,
   ) => Promise<NodeType>;
-  loadRun: (
+  loadNodeRuns: (
     flowId: string,
     id: string,
     isLoading?: boolean,
-  ) => Promise<TestRunType>;
+  ) => Promise<NodeRunType[]>;
   deleteFlow: (flowId: string, isLoading?: boolean) => Promise<void>;
-  runFlow: (flowId: string, isLoading?: boolean) => void;
+  runFlow: (flowId: string, isLoading?: boolean) => Promise<void>;
   postFlow: (flow: FlowType["name"], isLoading?: boolean) => Promise<FlowType>;
   putFlow: (flow: FlowType, isLoading?: boolean) => Promise<void>;
   postNode: (
@@ -164,7 +190,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     set({ nodes: data || [] });
   },
-  loadTestRuns: async (flowId: string, isLoading = false) => {
+  loadFlowRuns: async (flowId: string, isLoading = false) => {
     if (isLoading) {
       set({ isRunsLoading: true });
     }
@@ -182,7 +208,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
     });
     return data;
   },
-  loadRun: async (flowId: string, runId: string, isLoading = false) => {
+  loadNodeRuns: async (flowId: string, runId: string, isLoading = false) => {
     if (isLoading) {
       set({ isRunLoading: true });
     }
@@ -207,7 +233,7 @@ export const useFlowStore = create<flowState>((set, get) => ({
     if (isLoading) {
       set({ isFlowRunning: true });
     }
-    await runFlow(flowId).finally(() => {
+    return await runFlow(flowId).finally(() => {
       set({ isFlowRunning: false });
     });
   },

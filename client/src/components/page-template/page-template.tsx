@@ -25,7 +25,9 @@ export const PageTemplate: React.FC<
       <div className={styles.navbarContainer}>
         <Navbar />
       </div>
-      <div className={`${styles.contentContainer} bg-tertiary`}>{children}</div>
+      <div className={`${styles.contentContainer} bg-tertiary overflow-y-auto`}>
+        {children}
+      </div>
       {withBottomBar && (
         <div className={styles.bottomBarContainer}>
           <BottomBar />
