@@ -13,6 +13,7 @@ import {
   Stepper,
   ToggleButton,
   ToggleButtonGroup,
+  TextField,
 } from "@mui/material";
 import randomString from "random-string";
 import React from "react";
@@ -153,14 +154,14 @@ function SimpleDomainComponent(props: {
         What is your server's domain?
       </div>
       <div className="flex h-[50vh] w-full flex-col items-center justify-center">
-        <OutlinedInput
+        <TextField
           value={props.domain}
           className="w-1/2"
           placeholder="https://example.com"
           onChange={(e) => handleDomainChange(e.target.value)}
           error={Boolean(error)}
+          helperText={error}
         />
-        {error && <p>{error}</p>}
       </div>
     </>
   );
