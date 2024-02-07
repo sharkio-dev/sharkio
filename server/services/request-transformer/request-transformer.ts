@@ -108,7 +108,7 @@ export class RequestTransformer {
       headers = { "x-sharkio-error": "header transformation error" };
     }
 
-    return { ...request, body, headers, method };
+    return { ...request, body, headers, method, url };
   }
 
   transformResponse(response: MockResponse, context?: TransformContext) {
