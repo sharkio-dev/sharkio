@@ -62,10 +62,10 @@ export const EditSnifferModal = ({
     }
     setIsLoading(true);
     editSniffer({
-      name,
+      name: name.toLowerCase().replace(/\s/g, "-"),
       downstreamUrl,
       id: sniffer.id,
-      subdomain: name + "-" + subdomain,
+      subdomain: sniffer.name + "-" + subdomain,
     })
       .then(() => {
         setName("");
@@ -110,7 +110,7 @@ export const EditSnifferModal = ({
             <TextField
               label={"Subdomain"}
               placeholder="subdomain"
-              value={name + "-" + subdomain}
+              value={sniffer.subdomain}
               onChange={(event) => setSubdomain(event.target.value)}
               disabled={true}
             />

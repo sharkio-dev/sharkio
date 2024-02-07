@@ -292,7 +292,7 @@ export const AddSnifferPage = () => {
       name,
       downstreamUrl: domain,
       port: 80,
-      subdomain: `${name}-${subdomain}`,
+      subdomain: `${name.toLowerCase().replace(/\s/g, "-")}-${subdomain}`,
     }).then(() => {
       setActiveStep(3);
     });
