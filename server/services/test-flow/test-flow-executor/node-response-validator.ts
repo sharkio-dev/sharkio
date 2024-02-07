@@ -183,7 +183,7 @@ export class NodeResponseValidator {
       case "boolean":
         return !!data;
       default:
-        throw new Error("Unknown data type");
+        return data;
     }
   }
 }

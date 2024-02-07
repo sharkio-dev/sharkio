@@ -34,11 +34,12 @@ export const ExecutionDetails = ({
                 FAILED
               </span>
             )}
-            <span className="text text-xs">
+            <span className="text text-sm">
               {type === "status_code" && "Status Code"}
               {type === "header" && "Header"}
               {type === "body" && "Body"}
             </span>
+            <span className="text text-xs">&nbsp;response.{targetPath}</span>
           </div>
           <span
             className="text text-xs text-blue-400 font-bold hover:cursor-pointer hover:scale-105 active:scale-100"
@@ -48,6 +49,7 @@ export const ExecutionDetails = ({
           </span>
         </div>
       </div>
+
       {type === "status_code" && show && (
         <StatusCodeDetails
           status={status}

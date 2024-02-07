@@ -128,7 +128,9 @@ const getNode = (flowId: string, nodeId: string) => {
 };
 
 const getRun = (flowId: string, runId: string) => {
-  return BackendAxios.get(`/test-flows/${flowId}/runs/${runId}/node-runs`);
+  return BackendAxios.get(
+    `/test-flows/${flowId}/runs/${runId}/node-runs?isSorted=true`,
+  );
 };
 
 const deleteFlow = (flowId: string) => {

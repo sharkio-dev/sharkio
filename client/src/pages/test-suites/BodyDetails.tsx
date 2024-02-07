@@ -17,7 +17,7 @@ export const BodyDetails = ({
           height={"20vh"}
           theme="vs-dark"
           defaultLanguage="json"
-          value={expectedValue}
+          value={JSON.stringify(expectedValue)}
           options={{
             readOnly: true,
             minimap: {

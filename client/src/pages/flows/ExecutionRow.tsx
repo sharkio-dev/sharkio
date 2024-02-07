@@ -24,7 +24,6 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
   const passed = nodeRun.assertionsResult.passed ?? [];
   const failed = nodeRun.assertionsResult.failed ?? [];
   const assertions = passed.concat(failed);
-  console.log(nodeRun);
 
   return (
     <TableRow className="border-t-[1px] border-primary h-10 w-full">

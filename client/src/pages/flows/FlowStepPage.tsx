@@ -58,7 +58,10 @@ export const FlowStepPage = () => {
       <Panel defaultSize={70} maxSize={80}>
         <div className="flex flex-col p-4 w-full pb-0 space-y-2">
           {snackBar}
-          <GoBackButton onClick={() => navigate(-1)} />
+          <div className="flex items-center space-x-4 mb-4">
+            <GoBackButton className="h-full" onClick={() => navigate(-1)} />
+            <div className="text-xl">{flowStep.name}</div>
+          </div>
           <div className="flex flex-row items-center space-x-4">
             <URLComponent
               method={flowStep.method}
@@ -242,7 +245,7 @@ const Assertion: React.FC<AssertionProps> = ({
           onChange={(event) => {
             handleAssertionChange({
               ...assertion,
-              expectedValue: +event.target.value,
+              expectedValue: event.target.value,
             });
           }}
           size="small"
@@ -262,12 +265,16 @@ const Assertion: React.FC<AssertionProps> = ({
 
 interface GoBackButtonProps {
   onClick: () => void;
+  className?: string;
 }
 
-export const GoBackButton: React.FC<GoBackButtonProps> = ({ onClick }) => {
+export const GoBackButton: React.FC<GoBackButtonProps> = ({
+  className,
+  onClick,
+}) => {
   return (
     <FaArrowLeftLong
-      className="text-xl bg-border-color rounded-full p-1 cursor-pointer active:scale-95 transition-all hover:text-magic"
+      className={`text-xl bg-border-color rounded-full p-1 cursor-pointer active:scale-95 transition-all hover:text-magic ${className}`}
       onClick={onClick}
     />
   );

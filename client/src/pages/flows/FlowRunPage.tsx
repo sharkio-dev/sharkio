@@ -52,7 +52,7 @@ export const FlowRunPage = () => {
               </TableRow>
             )}
             {nodeRuns.map((run) => {
-              return <ExecutionRow nodeRun={run} />;
+              return <ExecutionRow key={run.id} nodeRun={run} />;
             })}
           </TableBody>
         </Table>
