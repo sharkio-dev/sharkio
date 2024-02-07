@@ -82,7 +82,7 @@ export const EditSnifferModal = ({
       });
   }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
 
-  useEnterKeyPress(handleEditSniffer);
+  const enterPressed = useEnterKeyPress(handleEditSniffer);
 
   return (
     <>
@@ -107,8 +107,8 @@ export const EditSnifferModal = ({
               placeholder="http://example.com"
               value={downstreamUrl}
               onChange={(event) => handleUrlEdit(event.target.value)}
-              error={Boolean(error)}
-              helperText={error}
+              error={enterPressed && Boolean(error)}
+              helperText={enterPressed && error}
             />
             <TextField
               label={"Subdomain"}

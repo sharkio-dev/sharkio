@@ -85,21 +85,9 @@ const DomainStep = ({
   const [isValid, setIsValid] = React.useState(false);
   useEnterKeyPress(onNextClicked, isValid);
 
-  const isValidHttpUrl = (string: string) => {
-    let url;
-
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
-  };
-
   const onDomainChange = (newValue: string) => {
     handleChange(newValue);
-    setIsValid(isValidHttpUrl(newValue));
+    setIsValid(validateHttpUrlFormat(newValue));
   };
 
   return (
@@ -138,7 +126,7 @@ function SimpleDomainComponent(props: {
     props.onDomainChange(newValue);
 
     if (!validateHttpUrlFormat(newValue)) {
-      setError("Please enter a valid URL.");
+      setError("The url is not in the https://example.com format.");
     } else {
       setError(null);
     }
