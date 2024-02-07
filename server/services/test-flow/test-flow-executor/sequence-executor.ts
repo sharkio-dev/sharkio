@@ -55,20 +55,27 @@ export class SequenceExecutor implements ITestFlowExecutor {
         const nodeRun = sortedNodes[i];
         const { subdomain } = nodeRun;
 
-        const { method, url, headers, body } =
-          this.requestTransformer.transformRequest(nodeRun, context);
+        const {
+          method,
+          url,
+          headers: reqHeaders,
+          body: reqBody,
+        } = this.requestTransformer.transformRequest(nodeRun, context);
 
         const response = await this.requestService.execute({
           method,
           url: url ?? "/",
-          headers: headers || {},
-          body,
+          headers: reqHeaders || {},
+          body: reqBody,
           subdomain,
         });
 
+        const { data: body, headers, status, ...rest } = response;
+        const assertionResponse = { body, headers, status };
+
         const assertionResult = await this.nodeResponseValidator.assert(
           nodeRun,
-          response,
+          assertionResponse,
           context,
         );
 

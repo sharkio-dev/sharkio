@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosHeaderValue, AxiosResponse } from "axios";
 import { get } from "lodash";
 import {
   TestFlowAssertion,
@@ -7,6 +7,12 @@ import {
 import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 import { RequestTransformer } from "../../request-transformer/request-transformer";
 import { ExecutionContext } from "./sequence-executor";
+
+export type AssertionResponse = {
+  body: any;
+  headers: Record<string, AxiosHeaderValue | undefined>;
+  status: number;
+};
 
 export type AssertionResult = {
   passed: TestFlowAssertionResult[];
@@ -40,7 +46,7 @@ export class NodeResponseValidator {
 
   async assert(
     testFlowNode: TestFlowNodeRun,
-    response: AxiosResponse,
+    response: AssertionResponse,
     context: ExecutionContext,
   ): Promise<AssertionResult> {
     const passed: TestFlowAssertionResult[] = [];
@@ -76,19 +82,23 @@ export class NodeResponseValidator {
 
   checkAssertion(
     assertion: TestFlowAssertion,
-    response: AxiosResponse,
+    response: AssertionResponse,
     context: ExecutionContext,
   ) {
     const data = get(response, assertion.path);
 
-    const transformedExpectedValue = this.requestTransformer.transformAssertion(
-      assertion.expectedValue,
-      context,
-    );
+    const transformedExpectedValue = assertion.useTemplateEngine
+      ? this.requestTransformer.transformAssertion(
+          assertion.expectedValue,
+          context,
+        )
+      : assertion.expectedValue;
+
+    const transformedData = this.transformData(assertion, data);
 
     const assertionResult = this.assertionHandlers[assertion.comparator](
       transformedExpectedValue,
-      data,
+      transformedData,
     );
 
     return { success: assertionResult, data };
@@ -160,5 +170,20 @@ export class NodeResponseValidator {
 
   typeof(expected: any, data: any) {
     return typeof data === expected;
+  }
+
+  transformData(assertion: TestFlowAssertion, data: any) {
+    switch (assertion.dataType) {
+      case "json":
+        return JSON.parse(data);
+      case "string":
+        return `${data}`;
+      case "number":
+        return +data;
+      case "boolean":
+        return !!data;
+      default:
+        throw new Error("Unknown data type");
+    }
   }
 }

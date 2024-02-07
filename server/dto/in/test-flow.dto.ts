@@ -9,10 +9,14 @@ export const CreateTestFlowValidator = z.object({
   name: z.string(),
 });
 
+type AssertionDataType = "string" | "number" | "boolean" | "json";
+
 export type TestFlowAssertion = {
   path: string;
   comparator: string;
   expectedValue: any;
+  dataType: AssertionDataType;
+  useTemplateEngine: boolean;
 };
 
 export type TestFlowAssertionResult = TestFlowAssertion & {

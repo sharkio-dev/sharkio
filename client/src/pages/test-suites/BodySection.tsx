@@ -93,7 +93,7 @@ export const BodySection = ({
               <Button variant="text" onClick={beautify}>
                 Beautify
               </Button>
-              {isReadOnly && (
+              {!isReadOnly && (
                 <>
                   <Button
                     variant="text"

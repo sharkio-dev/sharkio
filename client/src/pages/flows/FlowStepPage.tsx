@@ -184,7 +184,7 @@ export const FlowStepPage = () => {
 interface AssertionType {
   path: string;
   comparator: string;
-  expectedValue: string;
+  expectedValue: any;
 }
 
 interface AssertionProps {
@@ -242,7 +242,7 @@ const Assertion: React.FC<AssertionProps> = ({
           onChange={(event) => {
             handleAssertionChange({
               ...assertion,
-              expectedValue: event.target.value,
+              expectedValue: +event.target.value,
             });
           }}
           size="small"
