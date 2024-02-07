@@ -214,7 +214,18 @@ const Assertion: React.FC<AssertionProps> = ({
           <SelectComponent
             options={[
               { label: "eq", value: "eq" },
-              { label: "neq", value: "neq" },
+              { label: "ne", value: "ne" },
+              { label: "seq", value: "seq" },
+              { label: "sne", value: "sne" },
+              { label: "gt", value: "gt" },
+              { label: "gte", value: "gte" },
+              { label: "lt", value: "lt" },
+              { label: "lte", value: "lte" },
+              { label: "contains", value: "contains" },
+              { label: "not_contains", value: "not_contains" },
+              { label: "includes", value: "includes" },
+              { label: "not_includes", value: "not_includes" },
+              { label: "typeof", value: "typeof" },
             ]}
             value={assertion.comparator}
             setValue={(value: string) => {
