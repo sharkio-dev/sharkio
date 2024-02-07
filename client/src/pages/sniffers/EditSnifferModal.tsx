@@ -5,6 +5,7 @@ import { CircularProgress } from "@mui/material";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import React from "react";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
+import { useEnterKeyPress } from "./useEnterKeyPress";
 
 const splitByLast = (str: string, delimiter: string) => {
   const lastIndex = str.lastIndexOf(delimiter);
@@ -80,6 +81,8 @@ export const EditSnifferModal = ({
         setIsLoading(false);
       });
   }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
+
+  useEnterKeyPress(handleEditSniffer);
 
   return (
     <>
