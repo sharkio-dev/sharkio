@@ -1,11 +1,10 @@
-import { AxiosResponse } from "axios";
-import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
-import { RequestService } from "../../request/request.service";
-import { ITestFlowExecutor } from "./test-flow-executor.service";
-import { NodeResponseValidator } from "./node-response-validator";
-import { TestFlowReporter } from "../test-flow-reporter.service";
-import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
+import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
+import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
+import { RequestService } from "../../request/request.service";
+import { TestFlowReporter } from "../test-flow-reporter.service";
+import { NodeResponseValidator } from "./node-response-validator";
+import { ITestFlowExecutor } from "./test-flow-executor.service";
 
 export class ParallelExecutor implements ITestFlowExecutor {
   constructor(
@@ -25,20 +24,28 @@ export class ParallelExecutor implements ITestFlowExecutor {
     const res = await Promise.all(
       nodeRuns.map(async (nodeRun) => {
         try {
-          const { method, url, headers, body, subdomain } = nodeRun;
-          let response: AxiosResponse | Error;
+          const {
+            method,
+            url,
+            headers: reqHeaders,
+            body: reqBody,
+            subdomain,
+          } = nodeRun;
 
-          response = await this.requestService.execute({
+          const response = await this.requestService.execute({
             method,
             url: url ?? "/",
-            headers: headers || {},
-            body,
+            headers: reqHeaders || {},
+            body: reqBody,
             subdomain,
           });
 
+          const { data: body, headers, status, ...rest } = response;
+          const assertionResponse = { body, headers, status };
+
           const assertionResult = await this.nodeResponseValidator.assert(
             nodeRun,
-            response,
+            assertionResponse,
             {},
           );
 
@@ -48,10 +55,15 @@ export class ParallelExecutor implements ITestFlowExecutor {
             flowRunId,
             nodeRun,
             assertionResult,
-            response,
+            assertionResponse,
           );
 
-          const resultItem = { node: nodeRun, response, assertionResult };
+          const resultItem = {
+            node: nodeRun,
+            response: assertionResponse,
+            assertionResult,
+          };
+
           return resultItem;
         } catch (e) {
           throw new Error("Failed to execute test flow node");

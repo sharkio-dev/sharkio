@@ -47,7 +47,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
               targetPath: name,
               expectedValue: value,
               comparator: "equals",
-            }) as Rule,
+            } as Rule),
         ),
       ],
     });

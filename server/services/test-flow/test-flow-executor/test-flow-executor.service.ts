@@ -1,19 +1,14 @@
-import { AxiosResponse } from "axios";
 import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
+import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 import {
   FlowRunStatus,
   TestFlowRun,
 } from "../../../model/entities/test-flow/TestFlowRun";
 import { TestFlowService } from "../test-flow.service";
-import { AssertionResult } from "./node-response-validator";
-import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
+import { NodeRunResult } from "./sequence-executor";
 
-export type TestExecutionResult = {
-  node: TestFlowNode;
-  response: AxiosResponse;
-  assertionResult: AssertionResult;
-}[];
+export type TestExecutionResult = NodeRunResult[];
 
 export interface ITestFlowExecutor {
   execute(

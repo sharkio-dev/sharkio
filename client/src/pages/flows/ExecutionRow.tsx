@@ -113,7 +113,7 @@ const AssertionsTable = ({ assertions }: { assertions: AssertionResult[] }) => {
             type={assertionType(assertion.path)}
             key={i}
             expectedValue={assertion.expectedValue}
-            actualValue={assertion.actualValue}
+            actualValue={JSON.stringify(assertion.actualValue)}
           />
         ))}
       </div>

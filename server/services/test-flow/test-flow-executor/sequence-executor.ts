@@ -3,6 +3,7 @@ import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
 import { RequestService } from "../../request/request.service";
 import {
+  AssertionResponse,
   AssertionResult,
   NodeResponseValidator,
 } from "./node-response-validator";
@@ -17,7 +18,7 @@ const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export type NodeRunResult = {
   node: TestFlowNode;
-  response: AxiosResponse;
+  response: AssertionResponse;
   assertionResult: AssertionResult;
 };
 
@@ -87,12 +88,19 @@ export class SequenceExecutor implements ITestFlowExecutor {
           assertionResult,
           {
             headers: response?.headers,
-            body: response?.data,
+            body:
+              typeof response?.data === "string"
+                ? response?.data
+                : JSON.stringify(response?.data ?? "", null, 2),
             status: response?.status,
           },
         );
 
-        const resultItem = { node: nodeRun, response, assertionResult };
+        const resultItem = {
+          node: nodeRun,
+          response: assertionResponse,
+          assertionResult,
+        };
 
         context[nodeRun.nodeId] = resultItem;
 
