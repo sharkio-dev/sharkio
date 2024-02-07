@@ -213,8 +213,8 @@ export const URLComponent: React.FC<URLComponentProps> = ({
         <SelectMethodDropDown
           disabled={isMethodDisabled}
           value={method}
-          onChange={() => {
-            onMethodChange && onMethodChange(method);
+          onChange={(value) => {
+            onMethodChange && onMethodChange(value);
           }}
         />
       </div>

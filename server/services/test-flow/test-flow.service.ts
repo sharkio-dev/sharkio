@@ -11,7 +11,7 @@ import { AssertionResult } from "./test-flow-executor/node-response-validator";
 export class TestFlowService {
   constructor(
     private readonly repository: TestFlowRepository,
-    private readonly snifferRepository: SnifferRepository
+    private readonly snifferRepository: SnifferRepository,
   ) {}
 
   createFlow(createFlowDTO: CreateTestFlowDTO) {
@@ -37,7 +37,7 @@ export class TestFlowService {
   createNode(
     ownerId: string,
     flowId: string,
-    testFlowNode: Partial<TestFlowNode>
+    testFlowNode: Partial<TestFlowNode>,
   ) {
     return this.repository.createTestNode(ownerId, flowId, testFlowNode);
   }
@@ -46,13 +46,13 @@ export class TestFlowService {
     ownerId: any,
     flowId: string,
     nodeId: string,
-    testFlowNode: Partial<TestFlowNode>
+    testFlowNode: Partial<TestFlowNode>,
   ) {
     return this.repository.updateTestNode(
       ownerId,
       flowId,
       nodeId,
-      testFlowNode
+      testFlowNode,
     );
   }
 
@@ -76,7 +76,7 @@ export class TestFlowService {
   createTestFlowRun(
     ownerId: string,
     flowId: string,
-    testFlowRun: Partial<TestFlowRun>
+    testFlowRun: Partial<TestFlowRun>,
   ) {
     return this.repository.createFlowRun(ownerId, flowId, testFlowRun);
   }
@@ -85,7 +85,7 @@ export class TestFlowService {
     ownerId: string,
     flowId: string,
     testFlowRun: TestFlowRun,
-    nodes: TestFlowNode[]
+    nodes: TestFlowNode[],
   ) {
     const proxyIds = new Set<string>();
     nodes.forEach((node) => {
@@ -111,7 +111,7 @@ export class TestFlowService {
       ownerId,
       flowId,
       testFlowRun.id,
-      nodesWithSubdomains
+      nodesWithSubdomains,
     );
   }
 
@@ -121,7 +121,7 @@ export class TestFlowService {
     flowRunId: string,
     nodeRunId: string,
     nodeRunResult: AssertionResult,
-    nodeRun: Partial<TestFlowNodeRun>
+    nodeRun: Partial<TestFlowNodeRun>,
   ) {
     return this.repository.updateNodeRun(
       ownerId,
@@ -129,14 +129,14 @@ export class TestFlowService {
       flowRunId,
       nodeRunId,
       nodeRunResult,
-      nodeRun
+      nodeRun,
     );
   }
 
   updateFlowRun(
     ownerId: string,
     flowRunId: string,
-    testFlowRun: Partial<TestFlowRun>
+    testFlowRun: Partial<TestFlowRun>,
   ) {
     return this.repository.updateTestFlowRun(ownerId, flowRunId, testFlowRun);
   }
@@ -146,7 +146,7 @@ export class TestFlowService {
     flowId: string,
     flowRunId: string,
     node: TestFlowNode,
-    nodeRunResult: AssertionResult
+    nodeRunResult: AssertionResult,
   ) {
     return this.repository.addNodeRun(ownerId, flowId, flowRunId, node, {
       assertionsResult: nodeRunResult,
@@ -166,7 +166,7 @@ export class TestFlowService {
     ownerId: any,
     flowId: string,
     runId: string,
-    isSorted = false
+    isSorted = false,
   ) {
     const nodes = await this.repository.getFlowRunNodes(ownerId, flowId, runId);
     if (!isSorted) {
@@ -205,7 +205,7 @@ export class TestFlowService {
 
   sortNodesByEdges(
     nodes: TestFlowNodeRun[] | TestFlowNode[],
-    edges: TestFlowEdge[]
+    edges: TestFlowEdge[],
   ): TestFlowNodeRun[] | TestFlowNode[] {
     // Create a map to count incoming edges for each node
     const incomingEdges: Map<string, number> = new Map(
@@ -213,14 +213,14 @@ export class TestFlowService {
         let id = node instanceof TestFlowNode ? node.id : node.nodeId;
 
         return [id, 0];
-      })
+      }),
     );
 
     // Count incoming edges
     edges.forEach((edge) => {
       incomingEdges.set(
         edge.targetId,
-        (incomingEdges.get(edge.targetId) || 0) + 1
+        (incomingEdges.get(edge.targetId) || 0) + 1,
       );
     });
 
@@ -263,7 +263,7 @@ export class TestFlowService {
           node instanceof TestFlowNode ? node.id : node.nodeId;
 
         return calculatedId === id;
-      })
+      }),
     ) as (TestFlowNodeRun | TestFlowNode)[];
 
     // Return nodes in sorted order
