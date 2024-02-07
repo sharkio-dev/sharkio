@@ -24,6 +24,7 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
 import { useEnterKeyPress } from "./useEnterKeyPress";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
+import debounce from "lodash/debounce";
 
 interface EnvStepProps {
   onNextClicked: () => void;
@@ -121,16 +122,21 @@ function SimpleDomainComponent(props: {
   onDomainChange: (domain: string) => void;
 }) {
   const [error, setError] = React.useState<string | null>(null);
+  const DEBOUNCE_TIME = 1000;
 
   const handleDomainChange = (newValue: string) => {
     props.onDomainChange(newValue);
 
     if (!validateHttpUrlFormat(newValue)) {
-      setError("The url is not in the https://example.com format.");
+      setErrorDebounced("The URL is not in the https://example.com format.");
     } else {
-      setError(null);
+      setErrorDebounced(null);
     }
   };
+
+  const setErrorDebounced = debounce((errorMessage: string | null) => {
+    setError(errorMessage);
+  }, DEBOUNCE_TIME);
 
   return (
     <>
