@@ -94,19 +94,19 @@ export class NodeResponseValidator {
   ) {
     const data = get(response, assertion.path);
 
-    const transformedExpectedValue =
+    const transformedExpectedValue = this.transformData(
+      assertion,
       assertion.useTemplateEngine ?? true
         ? this.requestTransformer.transformAssertion(
             assertion.expectedValue,
             context,
           )
-        : assertion.expectedValue;
-
-    const transformedData = this.transformData(assertion, data);
+        : assertion.expectedValue,
+    );
 
     const assertionResult = this.assertionHandlers[assertion.comparator](
       transformedExpectedValue,
-      transformedData,
+      data,
     );
 
     return { success: assertionResult, data };
@@ -181,7 +181,7 @@ export class NodeResponseValidator {
   }
 
   transformData(assertion: TestFlowAssertion, data: any) {
-    switch (assertion.dataType) {
+    switch (assertion.type) {
       case "json":
         return JSON.parse(data);
       case "string":

@@ -181,6 +181,7 @@ export const FlowStepPage = () => {
                   path: "headers.example",
                   comparator: "eq",
                   expectedValue: "",
+                  type: "string",
                 });
               }}
             />
@@ -191,6 +192,7 @@ export const FlowStepPage = () => {
                   path: "body.example",
                   comparator: "eq",
                   expectedValue: "",
+                  type: "string",
                 });
               }}
             />
@@ -201,6 +203,7 @@ export const FlowStepPage = () => {
                   path: "status",
                   comparator: "eq",
                   expectedValue: "",
+                  type: "string",
                 });
               }}
             />
@@ -232,6 +235,7 @@ interface AssertionType {
   path: string;
   comparator: string;
   expectedValue: any;
+  type: string;
 }
 
 interface AssertionProps {
@@ -277,6 +281,22 @@ const Assertion: React.FC<AssertionProps> = ({
             value={assertion.comparator}
             setValue={(value: string) => {
               handleAssertionChange({ ...assertion, comparator: value });
+            }}
+            variant="outlined"
+          />
+        </div>
+        <div className="flex flex-row min-w-28 h-full">
+          <SelectComponent
+            placeholder="type"
+            options={[
+              { label: "string", value: "string" },
+              { label: "boolean", value: "boolean" },
+              { label: "number", value: "number" },
+              { label: "json", value: "json" },
+            ]}
+            value={assertion.type}
+            setValue={(value: string) => {
+              handleAssertionChange({ ...assertion, type: value });
             }}
             variant="outlined"
           />

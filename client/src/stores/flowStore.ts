@@ -11,6 +11,7 @@ interface AssertionType {
   path: string;
   comparator: string;
   expectedValue: string;
+  type: string;
 }
 export interface NodeRunType {
   id: string;

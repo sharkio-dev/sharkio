@@ -4,7 +4,11 @@ import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeR
 import { RequestTransformer } from "../../request-transformer/request-transformer";
 import { RequestService } from "../../request/request.service";
 import { NodeResponseValidator } from "../test-flow-executor/node-response-validator";
-import { ExecutionResult } from "../test-flow-executor/sequence-executor";
+import {
+  ExecutionContext,
+  ExecutionResult,
+  HttpNodeRunResult,
+} from "../test-flow-executor/sequence-executor";
 import { TestFlowReporter } from "../test-flow-reporter.service";
 import { INodeExecutor } from "./executors.types";
 
@@ -24,7 +28,7 @@ export class HttpNodeExecutor implements INodeExecutor {
     nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
     nodeRun: TestFlowNodeRun,
-    result: ExecutionResult,
+    context: ExecutionContext,
   ) {
     const { subdomain } = nodeRun;
 
@@ -37,7 +41,7 @@ export class HttpNodeExecutor implements INodeExecutor {
       url,
       headers: reqHeaders,
       body: reqBody,
-    } = this.requestTransformer.transformRequest(nodeRun, result.context);
+    } = this.requestTransformer.transformRequest(nodeRun, context);
 
     const response = await this.requestService.execute({
       method,
@@ -53,8 +57,18 @@ export class HttpNodeExecutor implements INodeExecutor {
     const assertionResult = await this.nodeResponseValidator.assert(
       nodeRun,
       assertionResponse,
-      result.context,
+      context,
     );
+
+    const result: HttpNodeRunResult = {
+      response: {
+        headers: response?.headers,
+        body: response?.data,
+        status: response?.status,
+      },
+      success: assertionResult.success,
+      node: nodeRun,
+    };
 
     await this.testFlowReporter.reportNodeRun(
       ownerId,
@@ -62,24 +76,9 @@ export class HttpNodeExecutor implements INodeExecutor {
       flowRunId,
       nodeRun,
       assertionResult,
-      {
-        headers: response?.headers,
-        body:
-          typeof response?.data === "string"
-            ? response?.data
-            : JSON.stringify(response?.data ?? "", null, 2),
-        status: response?.status,
-      },
+      result.response,
     );
 
-    const resultItem = {
-      node: nodeRun,
-      response: assertionResponse,
-      assertionResult,
-      success: assertionResult.success,
-    };
-
-    result.context[nodeRun.nodeId] = resultItem;
     return result;
   }
 }

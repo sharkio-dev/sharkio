@@ -298,6 +298,9 @@ export class TestFlowController {
        *                      expectedValue:
        *                        type: string
        *                        example: example
+       *                      type:
+       *                        type: string
+       *                        example: example
        *                request:
        *                  schema:
        *                  type: object

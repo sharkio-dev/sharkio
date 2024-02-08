@@ -71,19 +71,22 @@ export class SequenceExecutor implements ITestFlowExecutor {
           nodeRuns,
           edges,
           nodeRun,
-          result,
+          result.context,
         );
+
+        result.context[nodeRun.nodeId] = res;
 
         if (!res.success) {
           result.success = false;
           break;
         }
       }
-
-      return result;
     } catch (e) {
+      result.success = false;
       logger.error(e);
       throw new Error("Failed to run test flow");
     }
+
+    return result;
   }
 }

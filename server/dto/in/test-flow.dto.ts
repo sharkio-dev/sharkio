@@ -15,7 +15,7 @@ export type TestFlowAssertion = {
   path: string;
   comparator: string;
   expectedValue: any;
-  dataType: AssertionDataType;
+  type: AssertionDataType;
   useTemplateEngine: boolean;
 };
 

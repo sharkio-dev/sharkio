@@ -216,7 +216,15 @@ export const ResponseSection = ({
           Headers
         </ToggleButton>
       </ToggleButtonGroup>
-      {section === "Body" && <BodySection body={response?.body} />}
+      {section === "Body" && (
+        <BodySection
+          body={
+            typeof response?.body === "string"
+              ? response?.body
+              : JSON.stringify(response?.body, null, 2)
+          }
+        />
+      )}
       {section === "Headers" && (
         <HeaderSection headers={response?.headers || {}} />
       )}

@@ -2,7 +2,10 @@ import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
 import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
 import { NodeResponseValidator } from "../test-flow-executor/node-response-validator";
-import { ExecutionResult } from "../test-flow-executor/sequence-executor";
+import {
+  ExecutionContext,
+  ExecutionResult,
+} from "../test-flow-executor/sequence-executor";
 import { TestFlowExecutor } from "../test-flow-executor/test-flow-executor.service";
 import { TestFlowReporter } from "../test-flow-reporter.service";
 import { INodeExecutor } from "./executors.types";
@@ -22,8 +25,13 @@ export class SubflowNodeExecutor implements INodeExecutor {
     nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
     nodeRun: TestFlowNodeRun,
-    result: ExecutionResult,
+    context: ExecutionContext,
   ) {
+    const currentResult: ExecutionResult = {
+      context: {},
+      success: true,
+    };
+
     if (nodeRun.subFlowId == null) {
       throw new Error("subflowId is empty for subflow node");
     }
@@ -38,7 +46,7 @@ export class SubflowNodeExecutor implements INodeExecutor {
     const assertionResult = await this.nodeResponseValidator.assert(
       nodeRun,
       execRes,
-      result.context,
+      context,
     );
 
     await this.testFlowReporter.reportNodeRun(
@@ -53,8 +61,8 @@ export class SubflowNodeExecutor implements INodeExecutor {
       },
     );
 
-    result.context[nodeRun.nodeId] = execRes;
+    execRes.success = assertionResult.success;
 
-    return result;
+    return execRes;
   }
 }
