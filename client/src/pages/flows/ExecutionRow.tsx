@@ -98,12 +98,13 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
                   height: "100%",
                   width: "100%",
                   maxHeight: "450px",
+                  overflow: "auto",
                 }}
               >
-                <div className="flex flex-col bg-primary rounded-lg w-full transition-all duration-500 border-[1px] border-border-color ">
+                <div className="flex flex-col w-full  overflow-y-auto">
                   <BodySection
                     body={JSON.stringify(nodeRun.response, null, 2)}
-                  ></BodySection>
+                  />
                 </div>
               </TabPanel>
             )}
