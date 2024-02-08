@@ -1,8 +1,9 @@
-import React from "react";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TextButton } from "../../components/TextButton";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 type HeaderSectionProps = {
   headers: { [key: string]: any };
@@ -21,6 +22,8 @@ export const HeaderSection = ({
       value: "",
     },
   ]);
+
+  const [bulkEditMode, setBulkEditMode] = useState(false);
 
   useEffect(() => {
     if (!headers) return;
@@ -59,47 +62,97 @@ export const HeaderSection = ({
     onHeadersChange(newh);
   };
 
+  const handleBulkEditInputChange: React.ChangeEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  > = (e) => {
+    setNewHeaders(
+      e.target.value.split("\n").map((line) => {
+        const [name, value] = line.split("=");
+        return { name, value };
+      }),
+    );
+  };
+  const handleBulkModeChange = () => {
+    setBulkEditMode((prev) => !prev);
+  };
   return (
     <div className="flex h-full flex-col items-center space-y-2 w-full overflow-y-auto">
-      {handleHeadersChange && (
-        <TextButton text="Add Header" onClick={addHeader} />
-      )}
-      {newHeaders?.map((header, i) => (
+      <div className="flex justify-between w-full">
+        {handleHeadersChange && (
+          <TextButton text="Add Header" onClick={addHeader} />
+        )}
+        <Button text="Raw" onClick={handleBulkModeChange}>
+          {!bulkEditMode ? (
+            <>
+              <FormatListBulletedIcon className="mr-2" />
+              Bulk edit
+            </>
+          ) : (
+            <>
+              <FormatListBulletedIcon className="mr-2" />
+              Bulk edit
+            </>
+          )}
+        </Button>
+      </div>
+      {bulkEditMode ? (
         <>
-          <div className="flex flex-row items-center space-x-2 w-full">
-            <TextField
-              className="border border-border-color rounded-md px-2 py-1 w-full"
-              placeholder="Name"
-              value={header.name}
-              disabled={!handleHeadersChange}
-              onChange={(event) => {
-                setHeaders(i, header.value, event.target.value);
-              }}
-              size="small"
-            />
-            <div className="flex flex-row">=</div>
-
-            <TextField
-              className="border border-border-color rounded-md px-2 py-1 w-full"
-              placeholder="Value"
-              value={header.value}
-              disabled={!handleHeadersChange}
-              onChange={(event) => {
-                setHeaders(i, event.target.value, header.name);
-              }}
-              size="small"
-            />
-            {handleHeadersChange && (
-              <div className="flex flex-row min-w-[20px] h-full">
-                <AiOutlineDelete
-                  className="flex text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
-                  onClick={() => deleteHeader(i)}
-                />
-              </div>
-            )}
-          </div>
+          <TextField
+            className="w-full min-h-fit"
+            multiline
+            onChange={handleBulkEditInputChange}
+            minRows={17}
+            disabled={!handleHeadersChange}
+            value={newHeaders
+              .map(
+                (h) =>
+                  `${h?.name}${h?.value != null && h?.name != null ? "=" : ""}${
+                    h?.value ?? ""
+                  }`,
+              )
+              .join("\n")}
+          ></TextField>
         </>
-      ))}
+      ) : (
+        <>
+          {newHeaders?.map((header, i) => (
+            <>
+              <div className="flex flex-row items-center space-x-2 w-full">
+                <TextField
+                  className="border border-border-color rounded-md px-2 py-1 w-full"
+                  placeholder="Name"
+                  value={header.name}
+                  disabled={!handleHeadersChange}
+                  onChange={(event) => {
+                    setHeaders(i, header.value, event.target.value);
+                  }}
+                  size="small"
+                />
+                <div className="flex flex-row">=</div>
+
+                <TextField
+                  className="border border-border-color rounded-md px-2 py-1 w-full"
+                  placeholder="Value"
+                  value={header.value}
+                  disabled={!handleHeadersChange}
+                  onChange={(event) => {
+                    setHeaders(i, event.target.value, header.name);
+                  }}
+                  size="small"
+                />
+                {handleHeadersChange && (
+                  <div className="flex flex-row min-w-[20px] h-full">
+                    <AiOutlineDelete
+                      className="flex text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
+                      onClick={() => deleteHeader(i)}
+                    />
+                  </div>
+                )}
+              </div>
+            </>
+          ))}
+        </>
+      )}
     </div>
   );
 };
