@@ -68,6 +68,8 @@ import { TestExecutionService } from "./services/testSuite/testExecution.service
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
+import { HttpNodeExecutor } from "./services/test-flow/flow-node-executors/http-node-executor";
+import { SubflowNodeExecutor } from "./services/test-flow/flow-node-executors/subflow-node-executor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -154,15 +156,22 @@ async function main(isProxy = true, isServer = true) {
 
   const testFlowExecutor = new TestFlowExecutor(testFlowService, {});
 
-  const testFlowExecutionStrategies: Record<string, ITestFlowExecutor> = {
-    sequence: new SequenceExecutor(
+  const nodeExecutionStrategies = {
+    http: new HttpNodeExecutor(
       requestService,
       nodeResponseValidator,
       testFlowReporter,
-      testFlowService,
       requestTransformer,
+    ),
+    subflow: new SubflowNodeExecutor(
+      nodeResponseValidator,
+      testFlowReporter,
       testFlowExecutor,
     ),
+  };
+
+  const testFlowExecutionStrategies: Record<string, ITestFlowExecutor> = {
+    sequence: new SequenceExecutor(testFlowService, nodeExecutionStrategies),
   };
 
   testFlowExecutor.setExecutionStrategies(testFlowExecutionStrategies);
