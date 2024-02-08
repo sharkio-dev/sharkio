@@ -27,8 +27,11 @@ export const authMiddleware = async (
     const { workspaceId } = req.query;
     const access_token = authorization?.split(" ")[1];
 
-    const { data: user, error } =
-      await supabaseClient.auth.getUser(access_token);
+    await supabaseClient.auth.signOut();
+
+    const { data: user, error } = await supabaseClient.auth.getUser(
+      access_token,
+    );
 
     if (error || !user) {
       log.error(error);

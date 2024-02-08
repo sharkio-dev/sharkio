@@ -17,8 +17,8 @@ export class TestFlowNode {
   @Column("uuid", { name: "flow_id" })
   flowId: string;
 
-  @Column("uuid", { name: "proxy_id" })
-  proxyId: string;
+  @Column("uuid", { name: "proxy_id", nullable: true })
+  proxyId: string | null;
 
   @Column("text", { name: "name" })
   name: string;
@@ -29,8 +29,8 @@ export class TestFlowNode {
   @Column("text", { name: "body" })
   body: string;
 
-  @Column("text", { name: "subdomain" })
-  subdomain: string;
+  @Column("text", { name: "subdomain", nullable: true })
+  subdomain: string | null;
 
   @Column("json", { name: "headers" })
   headers: Record<string, string>;
@@ -38,8 +38,14 @@ export class TestFlowNode {
   @Column("json", { name: "assertions" })
   assertions: Array<TestFlowAssertion>;
 
+  @Column("text", { name: "type" })
+  type: string;
+
   @Column("text", { name: "method" })
   method: string;
+
+  @Column("uuid", { name: "subflow_id", nullable: true })
+  subFlowId: string | null;
 
   @Column("timestamp with time zone", {
     name: "created_at",

@@ -19,6 +19,7 @@ export interface NodeRunType {
   createdAt: string;
   updatedAt: string;
   finishedAt: string;
+  type: "http" | "subflow";
   assertionsResult: {
     passed: AssertionResult[];
     failed: AssertionResult[];
@@ -60,6 +61,8 @@ export interface NodeType {
   snifferId: string;
   headers: {};
   assertions: AssertionType[];
+  type: "http" | "subflow";
+  subFlowId: string;
   method: string;
   createdAt: string;
   updatedAt: string;

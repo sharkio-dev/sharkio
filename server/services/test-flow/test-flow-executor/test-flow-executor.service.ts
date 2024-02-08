@@ -1,14 +1,12 @@
+import { useLog } from "../../../lib/log";
 import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
 import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
-import {
-  FlowRunStatus,
-  TestFlowRun,
-} from "../../../model/entities/test-flow/TestFlowRun";
+import { FlowRunStatus } from "../../../model/entities/test-flow/TestFlowRun";
 import { TestFlowService } from "../test-flow.service";
-import { NodeRunResult } from "./sequence-executor";
+import { ExecutionResult } from "./sequence-executor";
 
-export type TestExecutionResult = NodeRunResult[];
+const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export interface ITestFlowExecutor {
   execute(
@@ -18,16 +16,22 @@ export interface ITestFlowExecutor {
     nodes: TestFlowNode[],
     nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
-  ): Promise<TestExecutionResult>;
+  ): Promise<ExecutionResult>;
 }
 
 export class TestFlowExecutor {
   constructor(
     private readonly testFlowService: TestFlowService,
-    private readonly executionStrategies: Record<string, ITestFlowExecutor>,
+    private executionStrategies: Record<string, ITestFlowExecutor>,
   ) {}
 
-  async execute(ownerId: any, flowId: string): Promise<TestFlowRun> {
+  async setExecutionStrategies(
+    executionStrategies: Record<string, ITestFlowExecutor>,
+  ) {
+    this.executionStrategies = executionStrategies;
+  }
+
+  async execute(ownerId: any, flowId: string): Promise<ExecutionResult> {
     const testFlow = await this.testFlowService.getById(ownerId, flowId);
     const nodes = await this.testFlowService.getNodesByFlowId(ownerId, flowId);
     const edges = await this.testFlowService.getEdgesByFlowId(ownerId, flowId);
@@ -48,6 +52,11 @@ export class TestFlowExecutor {
       },
     );
 
+    const result: ExecutionResult = {
+      success: false,
+      context: {},
+    };
+
     try {
       const nodeRuns: TestFlowNodeRun[] =
         await this.testFlowService.createNodeRuns(
@@ -66,22 +75,24 @@ export class TestFlowExecutor {
         edges,
       );
 
-      const isPassed = runResult.every(
-        (result) => result.assertionResult.success,
-      );
+      const isPassed = runResult.success;
 
       await this.testFlowService.updateFlowRun(ownerId, flowRun.id, {
         finishedAt: new Date(),
         status: isPassed ? FlowRunStatus.success : FlowRunStatus.failed,
       });
+
+      result.success = isPassed;
+      result.context = runResult.context;
     } catch (e) {
+      logger.error(e);
       await this.testFlowService.updateFlowRun(ownerId, flowRun.id, {
         finishedAt: new Date(),
         status: FlowRunStatus.error,
       });
     }
 
-    return flowRun;
+    return result;
   }
 
   getFlowRuns(ownerId: any, flowId: string, isSorted: boolean) {

@@ -97,13 +97,9 @@ export class TestFlowService {
     const nodesWithSubdomains = nodes.map((node) => {
       const proxy = proxies.find((proxy) => proxy.id === node.proxyId);
 
-      if (!proxy) {
-        throw new Error("Failed to create node runs. Proxy not found");
-      }
-
       return {
         ...node,
-        subdomain: proxy.subdomain,
+        subdomain: proxy?.subdomain ?? "",
       };
     });
 

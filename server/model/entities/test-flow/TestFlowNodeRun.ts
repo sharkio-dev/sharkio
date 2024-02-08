@@ -44,6 +44,12 @@ export class TestFlowNodeRun {
   @Column("text", { name: "method" })
   method: string;
 
+  @Column("text", { name: "type" })
+  type: string;
+
+  @Column("uuid", { name: "subflow_id" })
+  subFlowId: string;
+
   @Column("json", { name: "assertions" })
   assertions: Array<TestFlowAssertion>;
 

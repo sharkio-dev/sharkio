@@ -11,6 +11,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { Button, TextField } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { FlowSelector } from "./TestsTab";
 
 export const FlowStepPage = () => {
   const { loadNode, putNode } = useFlowStore();
@@ -50,13 +51,10 @@ export const FlowStepPage = () => {
 
   if (!flowStep) return <LoadingIcon />;
 
-  return (
-    <PanelGroup
-      direction={"vertical"}
-      className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh)] overflow-y-auto"
-    >
-      <Panel defaultSize={70} maxSize={80}>
-        <div className="flex flex-col p-4 w-full pb-0 space-y-2">
+  const stepTopPanel = () => {
+    if (flowStep.type === "http") {
+      return (
+        <>
           {snackBar}
           <div className="flex items-center space-x-4 mb-4">
             <GoBackButton className="h-full" onClick={() => navigate(-1)} />
@@ -120,6 +118,52 @@ export const FlowStepPage = () => {
               });
             }}
           />
+        </>
+      );
+    } else if (flowStep.type === "subflow") {
+      return (
+        <div className="flex flex-col p-4 w-full pb-0 space-y-2">
+          <div className="flex items-center space-x-4 mb-4">
+            <GoBackButton className="h-full" onClick={() => navigate(-1)} />
+            <div className="text-xl">{flowStep.name}</div>
+            <Button
+              variant="outlined"
+              color="success"
+              onClick={() => {
+                if (!flowId) return;
+                putNode(flowId, { ...flowStep, snifferId: undefined }).then(
+                  () => {
+                    showSnackbar("Saved", "success");
+                  },
+                );
+              }}
+            >
+              Save
+            </Button>
+          </div>
+          <div>
+            <FlowSelector
+              flowId={flowStep.subFlowId}
+              onFlowSelected={(flowId) => {
+                setFlowStep((prev: any) => {
+                  return { ...prev, subFlowId: flowId };
+                });
+              }}
+            ></FlowSelector>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  return (
+    <PanelGroup
+      direction={"vertical"}
+      className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh)] overflow-y-auto"
+    >
+      <Panel defaultSize={70} maxSize={80}>
+        <div className="flex flex-col p-4 w-full pb-0 space-y-2">
+          {stepTopPanel()}
         </div>
       </Panel>
       <div className="relative h-[1px] w-full my-4 hover:bg-blue-300 bg-border-color">

@@ -9,6 +9,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
+import { BodySection } from "../test-suites/BodySection";
 
 type ExecutionRowProps = {
   nodeRun: NodeRunType;
@@ -63,24 +64,49 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
         {shouldShowData && show && (
           <TabContext value={tab}>
             <TabList
-              onChange={(_, newValue) => setTab(newValue)}
+              onChange={(_, newValue) => {
+                setTab(newValue);
+              }}
               className="border-b-[0.1px] border-border-color w-full"
             >
               <Tab label="Assertions" value="1" />
-              <Tab label="Request" value="2" />
-              <Tab label="Response" value="3" />
+              <Tab
+                label={nodeRun.type === "http" ? "Request" : "Result"}
+                value="2"
+              />
+              {nodeRun.type === "http" && <Tab label={"Response"} value="3" />}
             </TabList>
-            <ResponseTab response={nodeRun.response} />
             <AssertionsTable assertions={assertions} />
-            <RequestTab
-              request={{
-                headers: nodeRun.headers,
-                body: nodeRun.body,
-                method: nodeRun.method,
-                url: nodeRun.url,
-              }}
-              proxyId={nodeRun.proxyId}
-            />
+            {nodeRun.type === "http" ? (
+              <>
+                <ResponseTab response={nodeRun.response} />
+                <RequestTab
+                  request={{
+                    headers: nodeRun.headers,
+                    body: nodeRun.body,
+                    method: nodeRun.method,
+                    url: nodeRun.url,
+                  }}
+                  proxyId={nodeRun.proxyId}
+                />
+              </>
+            ) : (
+              <TabPanel
+                value="2"
+                style={{
+                  padding: 0,
+                  height: "100%",
+                  width: "100%",
+                  maxHeight: "450px",
+                }}
+              >
+                <div className="flex flex-col bg-primary rounded-lg w-full transition-all duration-500 border-[1px] border-border-color ">
+                  <BodySection
+                    body={JSON.stringify(nodeRun.response, null, 2)}
+                  ></BodySection>
+                </div>
+              </TabPanel>
+            )}
           </TabContext>
         )}
       </div>

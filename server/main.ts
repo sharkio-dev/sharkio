@@ -47,25 +47,27 @@ import {
   SequentialResponseSelector,
 } from "./services/mock-response-selector";
 import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
-import { RequestTransformer } from "./services/request-transformer/request-transformer";
 import { MockResponseService } from "./services/mock-response/mock-response.service";
 import { MockService } from "./services/mock/mock.service";
+import { RequestTransformer } from "./services/request-transformer/request-transformer";
 import { RequestService } from "./services/request/request.service";
 import ResponseService from "./services/response/response.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
 import { NodeResponseValidator } from "./services/test-flow/test-flow-executor/node-response-validator";
-import { ParallelExecutor } from "./services/test-flow/test-flow-executor/parallel-executor";
 import { SequenceExecutor } from "./services/test-flow/test-flow-executor/sequence-executor";
-import { TestFlowExecutor } from "./services/test-flow/test-flow-executor/test-flow-executor.service";
+import {
+  ITestFlowExecutor,
+  TestFlowExecutor,
+} from "./services/test-flow/test-flow-executor/test-flow-executor.service";
+import { TestFlowReporter } from "./services/test-flow/test-flow-reporter.service";
 import { TestFlowService } from "./services/test-flow/test-flow.service";
 import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
-import { TestFlowReporter } from "./services/test-flow/test-flow-reporter.service";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -150,25 +152,20 @@ async function main(isProxy = true, isServer = true) {
   const nodeResponseValidator = new NodeResponseValidator(requestTransformer);
   const testFlowReporter = new TestFlowReporter(testFlowService);
 
-  const testFlowExecutionStrategies = {
-    parallel: new ParallelExecutor(
-      requestService,
-      nodeResponseValidator,
-      testFlowReporter,
-    ),
+  const testFlowExecutor = new TestFlowExecutor(testFlowService, {});
+
+  const testFlowExecutionStrategies: Record<string, ITestFlowExecutor> = {
     sequence: new SequenceExecutor(
       requestService,
       nodeResponseValidator,
       testFlowReporter,
       testFlowService,
       requestTransformer,
+      testFlowExecutor,
     ),
   };
 
-  const testFlowExecutor = new TestFlowExecutor(
-    testFlowService,
-    testFlowExecutionStrategies,
-  );
+  testFlowExecutor.setExecutionStrategies(testFlowExecutionStrategies);
 
   /* Controllers */
   const mockResponseController = new MockResponseController(

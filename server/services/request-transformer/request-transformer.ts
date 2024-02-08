@@ -2,11 +2,11 @@ import { faker } from "@faker-js/faker";
 import HandleBars from "handlebars";
 import { parse } from "json5";
 import { MockResponse } from "../../model/entities/MockResponse";
-import {
-  ExecutionResult,
-  NodeRunResult,
-} from "../test-flow/test-flow-executor/sequence-executor";
 import { TestFlowNodeRun } from "../../model/entities/test-flow/TestFlowNodeRun";
+import {
+  ExecutionContext,
+  ExecutionResult,
+} from "../test-flow/test-flow-executor/sequence-executor";
 
 export type MockTransformerContext = {
   body: any;
@@ -19,7 +19,7 @@ export type MockTransformerContext = {
 
 export type TestFlowTransformerContext = Record<
   TestFlowNodeRun["id"],
-  NodeRunResult
+  ExecutionResult
 >;
 
 export type TransformContext =
@@ -80,10 +80,7 @@ export class RequestTransformer {
     }
   }
 
-  transformRequest(
-    request: Partial<InputRequest>,
-    context?: TestFlowTransformerContext,
-  ) {
+  transformRequest(request: Partial<InputRequest>, context?: ExecutionContext) {
     let body, headers, method, url;
     try {
       body = this.handleBars.compile(request.body)(context);
@@ -135,7 +132,7 @@ export class RequestTransformer {
     return { ...response, body, headers, status };
   }
 
-  transformAssertion(expectedValue: any, context: TransformContext) {
+  transformAssertion(expectedValue: any, context: ExecutionContext) {
     try {
       const res = this.handleBars.compile(expectedValue)(context);
       return res;

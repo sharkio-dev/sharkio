@@ -1,19 +1,26 @@
-import { AiOutlineDelete } from "react-icons/ai";
 import TabPanel from "@mui/lab/TabPanel";
-import { TextButton } from "../../components/TextButton";
-import { selectIconByMethod } from "../sniffers/selectIconByMethod";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { AiOutlineDelete } from "react-icons/ai";
+import { GiSharkFin } from "react-icons/gi";
 import { MdChevronRight } from "react-icons/md";
+import { PiGraphLight } from "react-icons/pi";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFlowStore, NodeType } from "../../stores/flowStore";
-import { useEffect, useState } from "react";
-import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { useSniffersStore } from "../../stores/sniffersStores";
+import { TextButton } from "../../components/TextButton";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { NodeType, useFlowStore } from "../../stores/flowStore";
+import { useSniffersStore } from "../../stores/sniffersStores";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { ProxySelector, SideBarItem } from "../sniffers/SniffersSideBar";
+import { selectIconByMethod } from "../sniffers/selectIconByMethod";
 import { EditableNameField } from "./EditableNameProps";
-import { TextField } from "@mui/material";
-import { ProxySelector } from "../sniffers/SniffersSideBar";
-import React from "react";
 
 const Step = ({
   step,
@@ -34,7 +41,7 @@ const Step = ({
   const { flowId } = useParams();
   const [stepName, setStepName] = useState(step.name);
   const { putNode, isNodeLoading } = useFlowStore();
-  const { reorderNodes } = useFlowStore();
+  const { reorderNodes, flows } = useFlowStore();
 
   useEffect(() => {
     setStepName(step.name);
@@ -53,6 +60,8 @@ const Step = ({
     newNodesIds.splice(dragOverResponseRef.current, 0, draggedResponse);
     reorderNodes(flowId, newNodesIds);
   };
+
+  const flowName = flows.find((f) => f.id === step.subFlowId)?.name;
 
   return (
     <div
@@ -76,11 +85,19 @@ const Step = ({
               }}
             />
             <div className="flex flex-row items-center space-x-2">
-              {selectIconByMethod(step.method)}
-              <div className="text-sm text-gray-400">{sniffer?.name}</div>
-              <div className="text-sm text-gray-400 truncate max-w-[75ch]">
-                {step.url}
-              </div>
+              {step.type === "http" ? (
+                <>
+                  {selectIconByMethod(step.method)}
+                  <div className="text-sm text-gray-400">{sniffer?.name}</div>
+                  <div className="text-sm text-gray-400 truncate max-w-[75ch]">
+                    {step.url}
+                  </div>
+                </>
+              ) : (
+                <div className="flex justify-center items-center space-x-2">
+                  <PiGraphLight /> <div>{flowName}</div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -211,7 +228,9 @@ const AddTestButton = () => {
   const { postNode } = useFlowStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stepName, setStepName] = useState("");
-  const [proxyId, setProxyId] = useState("");
+  const [subFlowId, setSubFlowId] = useState<string | undefined>(undefined);
+  const [proxyId, setProxyId] = useState<string | undefined>(undefined);
+  const [type, setType] = useState<"http" | "subflow">("http");
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   const onAddTest = () => {
@@ -220,8 +239,14 @@ const AddTestButton = () => {
       showSnackbar("Please enter step name", "warning");
       return;
     }
-    if (!proxyId) {
+
+    if (type === "http" && !proxyId) {
       showSnackbar("Please select a proxy", "warning");
+      return;
+    }
+
+    if (type === "subflow" && !subFlowId) {
+      showSnackbar("Please select a subflow", "warning");
       return;
     }
 
@@ -233,10 +258,12 @@ const AddTestButton = () => {
       body: "",
       assertions: [],
       proxyId: proxyId,
+      subFlowId,
+      type,
     }).then(() => {
       setIsModalOpen(false);
       setStepName("");
-      setProxyId("");
+      setProxyId(undefined);
       showSnackbar("Step added successfully", "success");
     });
   };
@@ -270,11 +297,79 @@ const AddTestButton = () => {
           value={stepName}
           onChange={(e) => setStepName(e.target.value)}
         />
-        <ProxySelector
-          snifferId={proxyId}
-          onSnifferSelected={(id) => setProxyId(id)}
-        />
+        <FormControl fullWidth size="small" variant="outlined">
+          <InputLabel>Type</InputLabel>
+          <Select value={type} label="Type">
+            <MenuItem
+              key={"http"}
+              onClick={() => {
+                setType("http");
+              }}
+              value={"http"}
+            >
+              Http
+            </MenuItem>
+            <MenuItem
+              key={"subflow"}
+              onClick={() => {
+                setType("subflow");
+              }}
+              value={"subflow"}
+            >
+              Subflow
+            </MenuItem>
+          </Select>
+        </FormControl>
+        {type === "http" && (
+          <ProxySelector
+            snifferId={proxyId}
+            onSnifferSelected={(id) => setProxyId(id)}
+          />
+        )}
+        {type === "subflow" && (
+          <FlowSelector
+            flowId={subFlowId}
+            onFlowSelected={(id) => setSubFlowId(id)}
+          />
+        )}
       </GenericEditingModal>
     </>
+  );
+};
+
+export const FlowSelector = ({
+  onFlowSelected,
+  flowId,
+  isDisabled,
+}: {
+  onFlowSelected?: (flowId: string) => void;
+  flowId?: string;
+  isDisabled?: boolean;
+}) => {
+  const { flows } = useFlowStore();
+
+  return (
+    <FormControl fullWidth size="small" variant="outlined">
+      <InputLabel>Flows</InputLabel>
+      <Select value={flowId || ""} label="Proxies">
+        {flows.map((flow, i) => (
+          <MenuItem
+            key={i}
+            onClick={() => {
+              if (isDisabled) return;
+              onFlowSelected && onFlowSelected(flow.id);
+            }}
+            value={flow.id}
+            disabled={isDisabled}
+          >
+            <SideBarItem
+              LeftIcon={GiSharkFin}
+              isSelected={flowId === flow.id}
+              name={flow.name}
+            />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };

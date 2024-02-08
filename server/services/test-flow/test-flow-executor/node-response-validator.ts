@@ -8,10 +8,17 @@ import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeR
 import { RequestTransformer } from "../../request-transformer/request-transformer";
 import { ExecutionContext } from "./sequence-executor";
 
-export type AssertionResponse = {
+export type AssertionResponse = HttpNodeRunResponse | FlowResponse;
+
+export type HttpNodeRunResponse = {
   body: any;
   headers: Record<string, AxiosHeaderValue | undefined>;
   status: number;
+};
+
+export type FlowResponse = {
+  success: boolean;
+  context: ExecutionContext;
 };
 
 export type AssertionResult = {
@@ -87,12 +94,13 @@ export class NodeResponseValidator {
   ) {
     const data = get(response, assertion.path);
 
-    const transformedExpectedValue = assertion.useTemplateEngine
-      ? this.requestTransformer.transformAssertion(
-          assertion.expectedValue,
-          context,
-        )
-      : assertion.expectedValue;
+    const transformedExpectedValue =
+      assertion.useTemplateEngine ?? true
+        ? this.requestTransformer.transformAssertion(
+            assertion.expectedValue,
+            context,
+          )
+        : assertion.expectedValue;
 
     const transformedData = this.transformData(assertion, data);
 
@@ -183,7 +191,7 @@ export class NodeResponseValidator {
       case "boolean":
         return !!data;
       default:
-        return data;
+        return `${data}`;
     }
   }
 }

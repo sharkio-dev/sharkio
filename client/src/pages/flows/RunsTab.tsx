@@ -31,10 +31,7 @@ export const getRunStatusIcon = (status: string) => {
 
 const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
   const navigate = useNavigate();
-  const { reorderNodes } = useFlowStore();
   const { flowId } = useParams();
-  const dragResponseRef = React.useRef<number>(0);
-  const dragOverResponseRef = React.useRef<number>(0);
 
   return (
     <div className="flex flex-col border border-border-color p-2 px-4 shadow-md hover:border-blue-400 cursor-pointer rounded-md min-h-[48px] justify-center">
