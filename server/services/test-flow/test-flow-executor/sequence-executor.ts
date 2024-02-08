@@ -71,6 +71,10 @@ export class SequenceExecutor implements ITestFlowExecutor {
         const nodeRun = sortedNodes[i];
         const { subdomain } = nodeRun;
 
+        if (subdomain == null) {
+          throw new Error("subdomain is empty for http node");
+        }
+
         if (nodeRun.type === "http") {
           const {
             method,
@@ -87,7 +91,7 @@ export class SequenceExecutor implements ITestFlowExecutor {
             subdomain,
           });
 
-          const { data: body, headers, status, ...rest } = response;
+          const { data: body, headers, status } = response;
           const assertionResponse = { body, headers, status };
 
           const assertionResult = await this.nodeResponseValidator.assert(
@@ -126,6 +130,9 @@ export class SequenceExecutor implements ITestFlowExecutor {
             break;
           }
         } else if (nodeRun.type === "subflow") {
+          if (nodeRun.subFlowId == null) {
+            throw new Error("subflowId is empty for subflow node");
+          }
           if (nodeRun.subFlowId === flowId) {
             throw new Error("Flow cannot be a subflow of itself");
           }

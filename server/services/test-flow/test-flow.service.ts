@@ -89,7 +89,7 @@ export class TestFlowService {
   ) {
     const proxyIds = new Set<string>();
     nodes.forEach((node) => {
-      proxyIds.add(node.proxyId);
+      node.proxyId != null && proxyIds.add(node.proxyId);
     });
 
     const proxies = await this.snifferRepository.getByIds(Array.from(proxyIds));
@@ -99,7 +99,7 @@ export class TestFlowService {
 
       return {
         ...node,
-        subdomain: proxy?.subdomain ?? "",
+        subdomain: proxy?.subdomain ?? null,
       };
     });
 

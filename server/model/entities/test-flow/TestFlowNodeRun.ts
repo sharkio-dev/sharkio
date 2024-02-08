@@ -23,8 +23,8 @@ export class TestFlowNodeRun {
   @Column("uuid", { name: "flow_run_id" })
   flowRunId: string;
 
-  @Column("uuid", { name: "proxy_id" })
-  proxyId: string;
+  @Column("uuid", { name: "proxy_id", nullable: true })
+  proxyId: string | null;
 
   @Column("text", { name: "name" })
   name: string;
@@ -35,8 +35,8 @@ export class TestFlowNodeRun {
   @Column("text", { name: "body" })
   body: string;
 
-  @Column("text", { name: "subdomain" })
-  subdomain: string;
+  @Column("text", { name: "subdomain", nullable: true })
+  subdomain: string | null;
 
   @Column("json", { name: "headers" })
   headers: Record<string, string>;
@@ -47,8 +47,8 @@ export class TestFlowNodeRun {
   @Column("text", { name: "type" })
   type: string;
 
-  @Column("uuid", { name: "subflow_id" })
-  subFlowId: string;
+  @Column("uuid", { name: "subflow_id", nullable: true })
+  subFlowId: string | null;
 
   @Column("json", { name: "assertions" })
   assertions: Array<TestFlowAssertion>;
