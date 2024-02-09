@@ -3,6 +3,7 @@ import { TextField, Tooltip } from "@mui/material";
 import queryString from "query-string";
 import React, { useState } from "react";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+import { PiGraphLight } from "react-icons/pi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BackendAxios } from "../../api/backendAxios";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -11,8 +12,9 @@ import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { SelectMethodDropDown } from "../mocks/SelectMethodDropDown";
 import { InvocationDetails } from "../sniffers/InvocationDetails";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { InvocationType } from "../sniffers/types";
 import { ProxySelector } from "../sniffers/SniffersSideBar";
+import { InvocationType } from "../sniffers/types";
+import { ImportTestStepDialog } from "./ImpotTestStepDialog";
 
 type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
@@ -53,6 +55,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
 }) => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [isImportStepDialogOpen, setIsImportStepDialogOpen] = useState(false);
   const { snifferId } = queryString.parse(location.search);
   const { executeInvocation, loadingExecution } = useSniffersStore();
   const { sniffers } = useSniffersStore();
@@ -147,13 +150,38 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
       <div className="flex flex-row items-center justify-between h-full">
         {showUrlButtons && (
           <>
-            <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+            <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full ml-2">
               <Tooltip title="Mock Request">
                 <div onClick={importMock}>
                   {loading ? (
                     <LoadingIcon />
                   ) : (
                     <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
+                  )}
+                </div>
+              </Tooltip>
+            </div>
+            <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+              <Tooltip title="Import to test flow">
+                <div>
+                  {loading ? (
+                    <LoadingIcon />
+                  ) : (
+                    <>
+                      <PiGraphLight
+                        onClick={() => setIsImportStepDialogOpen(true)}
+                        className="text-blue-400 cursor-pointer"
+                      />
+                      {isImportStepDialogOpen && (
+                        <ImportTestStepDialog
+                          invocation={invocation}
+                          open={isImportStepDialogOpen}
+                          handleClose={() => {
+                            setIsImportStepDialogOpen(false);
+                          }}
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               </Tooltip>

@@ -346,12 +346,16 @@ export const FlowSelector = ({
   flowId?: string;
   isDisabled?: boolean;
 }) => {
-  const { flows } = useFlowStore();
+  const { flows, isFlowsLoading, loadFlows } = useFlowStore();
+
+  useEffect(() => {
+    loadFlows();
+  }, []);
 
   return (
     <FormControl fullWidth size="small" variant="outlined">
       <InputLabel>Flows</InputLabel>
-      <Select value={flowId || ""} label="Proxies">
+      <Select value={flowId || ""} label="Flows">
         {flows.map((flow, i) => (
           <MenuItem
             key={i}

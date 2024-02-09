@@ -80,7 +80,7 @@ interface flowState {
   isNodeLoading: boolean;
   isFlowLoading: boolean;
   isFlowRunning: boolean;
-  loadFlows: (isLoading?: boolean) => void;
+  loadFlows: (isLoading?: boolean) => Promise<void>;
   loadNodes: (flowId: string, isLoading?: boolean) => Promise<NodeType[]>;
   loadFlowRuns: (flowId: string, isLoading?: boolean) => void;
   loadNode: (
@@ -190,6 +190,8 @@ export const useFlowStore = create<flowState>((set, get) => ({
       set({ isFlowsLoading: false });
     });
     set({ flows: data || [] });
+
+    return data;
   },
   loadNodes: async (flowId: string, isLoading = false) => {
     if (isLoading) {
