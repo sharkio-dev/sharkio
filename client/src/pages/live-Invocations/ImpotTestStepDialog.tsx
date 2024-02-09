@@ -30,12 +30,20 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
       headers: invocation.headers,
       url: invocation.url,
       proxyId: invocation.snifferId,
-      name: `IMPORTED-${invocation.method}${invocation.url}`,
-      assertions: [],
+      name: `${invocation.method} ${invocation.url} - imported`,
+      assertions: [
+        {
+          expectedValue: `${invocation.response.status}`,
+          comparator: "eq",
+          path: "status",
+          type: "number",
+        },
+      ],
       type: "http",
     })
       .then(() => {
         show("Request imported successfully", "success");
+        handleClose();
       })
       .catch(() => {
         show("Failed to import request", "error");
