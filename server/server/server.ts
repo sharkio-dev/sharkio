@@ -7,6 +7,7 @@ import { IRouterConfig } from "../controllers/router.interface";
 import { useLog } from "../lib/log";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { logMiddleware } from "./middlewares/log.middleware";
+import { dynamicCorsMiddleware } from "./middlewares/cors.middleware";
 
 const log = useLog({
   dirname: __dirname,
@@ -25,7 +26,7 @@ export class Server {
   constructor(routers: IRouterConfig[], swaggerController: IController) {
     this.app = express();
     this.app.use(logMiddleware);
-    this.app.use(cors({ origin: "*", allowedHeaders: "*", methods: "*" }));
+    this.app.use(dynamicCorsMiddleware);
     this.app.use(express.json());
     this.app.use(express.text());
     this.app.use(express.raw());

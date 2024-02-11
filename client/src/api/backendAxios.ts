@@ -6,6 +6,7 @@ export let BackendAxios = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
   params: {
     workspaceId: new URLSearchParams(window.location.search).get("workspaceId"),
   },
