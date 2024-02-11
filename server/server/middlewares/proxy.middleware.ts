@@ -37,21 +37,34 @@ export class ProxyMiddleware {
             const testExecutionId = req.headers[
               "x-sharkio-test-execution-id"
             ] as string;
-            const body = responseBuffer.toString("utf8");
+            const contentType = res.getHeader("content-type");
 
-            await this.requestInterceptor.interceptResponse(
-              ownerId,
-              snifferId,
-              invocationId as string,
-              {
-                body: body,
-                headers: proxyRes.headers,
-                statusCode: proxyRes.statusCode,
-              },
-              testExecutionId,
-            );
+            if (
+              typeof contentType === "string" &&
+              (contentType.includes("image") ||
+                contentType.includes("audio") ||
+                contentType.includes("video") ||
+                contentType.includes("octet-stream") ||
+                contentType.includes("font"))
+            ) {
+              return responseBuffer;
+            } else {
+              const body: string | Buffer = responseBuffer.toString("utf8");
 
-            return body;
+              await this.requestInterceptor.interceptResponse(
+                ownerId,
+                snifferId,
+                invocationId as string,
+                {
+                  body: body,
+                  headers: proxyRes.headers,
+                  statusCode: proxyRes.statusCode,
+                },
+                testExecutionId,
+              );
+
+              return body;
+            }
           } catch (e: any) {
             logger.error("error has occurred in proxy");
             return "error has occurred" + e.message;
@@ -65,8 +78,9 @@ export class ProxyMiddleware {
     const host = req.hostname;
     const subdomain = host.split(".")[0];
 
-    const selectedSniffer =
-      await this.snifferService.findBySubdomain(subdomain);
+    const selectedSniffer = await this.snifferService.findBySubdomain(
+      subdomain,
+    );
     if (selectedSniffer?.port) {
       req.headers["x-sharkio-port"] = selectedSniffer?.port?.toString();
     }
