@@ -126,17 +126,18 @@ function SimpleDomainComponent(props: {
 
   const handleDomainChange = (newValue: string) => {
     props.onDomainChange(newValue);
-
-    if (!validateHttpUrlFormat(newValue)) {
-      setErrorDebounced("The URL is not in the https://example.com format.");
-    } else {
-      setErrorDebounced(null);
-    }
+    debouncedSearch(newValue);
   };
 
-  const setErrorDebounced = debounce((errorMessage: string | null) => {
-    setError(errorMessage);
-  }, DEBOUNCE_TIME);
+  const debouncedSearch = React.useRef(
+    debounce((newValue: string) => {
+      if (!validateHttpUrlFormat(newValue)) {
+        setError("The URL is not in the https://example.com format.");
+      } else {
+        setError(null);
+      }
+    }, DEBOUNCE_TIME),
+  ).current;
 
   return (
     <>
