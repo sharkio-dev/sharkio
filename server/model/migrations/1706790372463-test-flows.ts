@@ -14,7 +14,7 @@ export class Migrations1706790372463 implements MigrationInterface {
     DROP TABLE if exists public.test_flow_run;
 
     -- DROP TABLE public.test_flow;
-    
+
     CREATE TABLE public.test_flow (
         id uuid NOT NULL DEFAULT gen_random_uuid(),
         created_at timestamptz NULL DEFAULT now(),
@@ -25,14 +25,13 @@ export class Migrations1706790372463 implements MigrationInterface {
         CONSTRAINT "PK_32d624ba5abc4eeb9b94efdf671" PRIMARY KEY (id)
     );
     CREATE UNIQUE INDEX test_flow_pk ON public.test_flow USING btree (id);
-    
-    
+
     -- public.test_flow_edge definition
-    
+
     -- Drop table
-    
+
     -- DROP TABLE public.test_flow_edge;
-    
+
     CREATE TABLE public.test_flow_edge (
         id uuid NOT NULL DEFAULT gen_random_uuid(),
         flow_id uuid NULL,
@@ -44,14 +43,14 @@ export class Migrations1706790372463 implements MigrationInterface {
         CONSTRAINT "PK_1e966278cff39232d77d68f8f9c" PRIMARY KEY (id)
     );
     CREATE UNIQUE INDEX test_flow_edge_pk ON public.test_flow_edge USING btree (id);
-    
-    
+
+
     -- public.test_flow_node definition
-    
+
     -- Drop table
-    
+
     -- DROP TABLE public.test_flow_node;
-    
+
     CREATE TABLE public.test_flow_node (
         id uuid NOT NULL DEFAULT gen_random_uuid(),
         flow_id uuid NULL,
@@ -64,19 +63,21 @@ export class Migrations1706790372463 implements MigrationInterface {
         updated_at timestamptz NOT NULL DEFAULT now(),
         assertions json NOT NULL DEFAULT '[]'::json,
         owner_id uuid NOT NULL,
-        proxy_id uuid NOT NULL,
+        proxy_id uuid NULL,
         subdomain varchar NULL,
+        "type" varchar NOT NULL DEFAULT 'http'::character varying,
+        subflow_id uuid NULL,
         CONSTRAINT "PK_ce978c79bb13430cde734fd8095" PRIMARY KEY (id)
     );
     CREATE UNIQUE INDEX test_flow_node_pk ON public.test_flow_node USING btree (id);
-    
-    
+
+
     -- public.test_flow_node_run definition
-    
+
     -- Drop table
-    
+
     -- DROP TABLE public.test_flow_node_run;
-    
+
     CREATE TABLE public.test_flow_node_run (
         id uuid NOT NULL DEFAULT gen_random_uuid(),
         flow_id uuid NULL,
@@ -97,6 +98,8 @@ export class Migrations1706790372463 implements MigrationInterface {
         node_id uuid NOT NULL,
         finished_at timestamptz NULL,
         response json NULL,
+        "type" text NOT NULL DEFAULT 'http'::text,
+        subflow_id uuid NULL,
         CONSTRAINT "PK_ce978c79bb13430cde734fd8095_1" PRIMARY KEY (id)
     );
     CREATE UNIQUE INDEX test_flow_node_pk_1 ON public.test_flow_node_run USING btree (id);
