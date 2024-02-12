@@ -25,6 +25,7 @@ import { LoadingIcon } from "./LoadingIcon";
 import { useEnterKeyPress } from "./useEnterKeyPress";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
 import debounce from "lodash/debounce";
+import { toLowerCaseNoSpaces } from "../../utils/texts";
 
 interface EnvStepProps {
   onNextClicked: () => void;
@@ -287,7 +288,7 @@ export const AddSnifferPage = () => {
       name,
       downstreamUrl: domain,
       port: 80,
-      subdomain: `${name.toLowerCase().replace(/\s/g, "-")}-${subdomain}`,
+      subdomain: `${toLowerCaseNoSpaces(name)}-${subdomain}`,
     }).then(() => {
       setActiveStep(3);
     });
