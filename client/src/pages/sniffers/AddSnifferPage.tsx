@@ -130,7 +130,7 @@ function SimpleDomainComponent(props: {
     debouncedSearch(newValue);
   };
 
-  const debouncedSearch = React.useRef(
+  const debouncedSearch = React.useCallback(
     debounce((newValue: string) => {
       if (!validateHttpUrlFormat(newValue)) {
         setError("The URL is not in the https://example.com format.");
@@ -138,7 +138,8 @@ function SimpleDomainComponent(props: {
         setError(null);
       }
     }, DEBOUNCE_TIME),
-  ).current;
+    [],
+  );
 
   return (
     <>
