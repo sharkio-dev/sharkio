@@ -48,7 +48,11 @@ const Step = ({
   }, [step.name]);
 
   const onStepClick = () => {
-    navigate("/flows/" + flowId + "/tests/" + step.id);
+    if (step.type === "http") {
+      navigate("/flows/" + step.flowId + "/tests/" + step.id);
+    } else {
+      navigate("/flows/" + step.subFlowId);
+    }
   };
 
   const handleSort = () => {
@@ -74,7 +78,7 @@ const Step = ({
       onDragOver={(e) => e.preventDefault()}
     >
       <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row w-full" onClick={onStepClick}>
+        <div className="flex flex-row w-full" onClick={() => onStepClick()}>
           <div className="flex flex-col" onClick={(e) => e.stopPropagation()}>
             <EditableNameField
               isLoading={isNodeLoading}
@@ -105,7 +109,7 @@ const Step = ({
           <FlowNodeDeleteButton flowId={flowId as string} nodeId={step.id} />
           <MdChevronRight
             className=" active:scale-110 text-xl cursor-pointer hover:bg-border-color rounded-md"
-            onClick={onStepClick}
+            onClick={() => onStepClick()}
           />
         </div>
       </div>
