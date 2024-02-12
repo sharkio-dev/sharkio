@@ -39,6 +39,21 @@ export class TestFlowService {
     flowId: string,
     testFlowNode: Partial<TestFlowNode>,
   ) {
+    if (testFlowNode.type === "subflow") {
+      const successAssertion = testFlowNode.assertions?.find((assertion) => {
+        assertion.path === "success";
+      });
+
+      if (successAssertion == null) {
+        testFlowNode.assertions?.push({
+          comparator: "eq",
+          expectedValue: true,
+          type: "boolean",
+          path: "scucess",
+          useTemplateEngine: false,
+        });
+      }
+    }
     return this.repository.createTestNode(ownerId, flowId, testFlowNode);
   }
 
