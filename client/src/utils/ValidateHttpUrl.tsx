@@ -1,4 +1,6 @@
 export const validateHttpUrlFormat = (string: string) => {
-  const urlPattern = /^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
-  return urlPattern.test(string);
+  const domainPattern = /^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
+  const localhostPattern = /^(http|https):\/\/localhost:\d+$/;
+
+  return domainPattern.test(string) || localhostPattern.test(string);
 };
