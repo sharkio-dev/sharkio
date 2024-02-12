@@ -1,6 +1,6 @@
 import TabPanel from "@mui/lab/TabPanel";
-import { BodySection } from "./BodySection";
-import { HeaderSection } from "./HeaderSection";
+import { BodySection } from "../../components/editors/BodySection";
+import { HeaderSection } from "../../components/HeaderSection";
 import { TextField } from "@mui/material";
 import { TestType, useTestStore } from "../../stores/testStore";
 import { useState } from "react";

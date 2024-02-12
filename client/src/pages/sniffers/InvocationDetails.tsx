@@ -16,8 +16,8 @@ import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import { InvocationType } from "./types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
-import { BodySection } from "../test-suites/BodySection";
-import { HeaderSection } from "../test-suites/HeaderSection";
+import { BodySection } from "../../components/editors/BodySection";
+import { HeaderSection } from "../../components/HeaderSection";
 
 type InvocationDetailsProps = {
   invocation: InvocationType;
@@ -44,6 +44,7 @@ export function InvocationDetails({
               ...newInvocation,
             })
           }
+          showPreviousSteps={false}
         />
       </Panel>
       <div className="relative h-[1px] w-full my-4 hover:bg-blue-300 bg-border-color">
@@ -72,7 +73,19 @@ export const RequestSection: React.FC<{
     method?: string;
   }) => void;
   disabled?: boolean;
-}> = ({ invocation, setInvocation, disabled }) => {
+  showFakeData?: boolean;
+  showTemplates?: boolean;
+  showPreviousSteps?: boolean;
+  showAi?: boolean;
+}> = ({
+  invocation,
+  setInvocation,
+  disabled,
+  showAi = true,
+  showFakeData = true,
+  showPreviousSteps = true,
+  showTemplates = true,
+}) => {
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
   const [codeLanguage, setCodeLanguage] = React.useState(defaultCodeLanguage);
@@ -127,6 +140,10 @@ export const RequestSection: React.FC<{
           body={invocation?.body}
           onBodyChange={handleBodyChange}
           isReadOnly={disabled}
+          showAi={showAi}
+          showFakeData={showFakeData}
+          showPreviousSteps={showPreviousSteps}
+          showTemplates={showTemplates}
         />
       </TabPanel>
       <TabPanel
@@ -223,6 +240,7 @@ export const ResponseSection = ({
               ? response?.body
               : JSON.stringify(response?.body, null, 2)
           }
+          isReadOnly
         />
       )}
       {section === "Headers" && (

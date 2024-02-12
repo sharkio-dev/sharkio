@@ -1,6 +1,6 @@
 import TabPanel from "@mui/lab/TabPanel";
-import { BodySection } from "./BodySection";
-import { HeaderSection } from "./HeaderSection";
+import { BodySection } from "../../components/editors/BodySection";
+import { HeaderSection } from "../../components/HeaderSection";
 import StatusCodeSelector from "./StatusCodeSelector";
 import { Rule, TestType, useTestStore } from "../../stores/testStore";
 import { useState } from "react";
@@ -47,7 +47,7 @@ const AssertionsTab: React.FC<AssertionsTabProps> = ({
               targetPath: name,
               expectedValue: value,
               comparator: "equals",
-            }) as Rule,
+            } as Rule),
         ),
       ],
     });

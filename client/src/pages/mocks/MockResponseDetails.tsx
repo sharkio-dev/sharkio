@@ -1,6 +1,6 @@
 import React from "react";
-import { BodySection } from "../test-suites/BodySection";
-import { HeaderSection } from "../test-suites/HeaderSection";
+import { BodySection } from "../../components/editors/BodySection";
+import { HeaderSection } from "../../components/HeaderSection";
 import { MockResponse } from "../../stores/mockStore";
 import { BodyHeaderToggle } from "./BodyHeaderStatusToggle";
 import StatusCodeSelector from "../test-suites/StatusCodeSelector";

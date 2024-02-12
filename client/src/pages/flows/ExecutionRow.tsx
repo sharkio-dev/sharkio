@@ -9,7 +9,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
-import { BodySection } from "../test-suites/BodySection";
+import { BodySection } from "../../components/editors/BodySection";
 
 type ExecutionRowProps = {
   nodeRun: NodeRunType;
@@ -104,6 +104,7 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
                 <div className="flex flex-col w-full  overflow-y-auto">
                   <BodySection
                     body={JSON.stringify(nodeRun.response, null, 2)}
+                    showButtons={false}
                   />
                 </div>
               </TabPanel>
