@@ -274,8 +274,8 @@ export class TestFlowController {
        *              required:
        *                - name
        *                - proxyId
-       *                - request
        *                - assertions
+       *                - type
        *              properties:
        *                name:
        *                  type: string
@@ -284,6 +284,9 @@ export class TestFlowController {
        *                  type: string
        *                  format: uuid
        *                  description: The proxy ID associated with the test node
+       *                type:
+       *                  type: string
+       *                  example: example
        *                assertions:
        *                  type: array
        *                  items:

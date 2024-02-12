@@ -41,10 +41,10 @@ export const CreateTestNodeValidator = z.object({
   name: z.string(),
   proxyId: z.string().uuid().optional().nullable(),
   subflowId: z.string().uuid().optional().nullable(),
-  method: z.string(),
-  url: z.string(),
-  headers: z.record(z.string()),
-  body: z.string(),
+  method: z.string().optional(),
+  url: z.string().optional(),
+  headers: z.record(z.string()).optional(),
+  body: z.string().optional(),
   requestId: z.string().uuid().optional(),
   assertions: z.array(
     z.object({
