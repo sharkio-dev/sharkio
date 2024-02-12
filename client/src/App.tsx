@@ -18,7 +18,6 @@ import {
 import { useAuthStore } from "./stores/authStore";
 import { useThemeStore } from "./stores/themeStore";
 import { ChatPage } from "./pages/chat/chat";
-import TestSuitePage from "./pages/test-suites/testSuitePage";
 import { MockPage } from "./pages/mocks/MockPage";
 import { InvocationScreen, LivePage } from "./pages/live-Invocations/LivePage";
 import { HomePage } from "./pages/sniffers/HomePage";
@@ -72,9 +71,6 @@ function App(): React.JSX.Element {
       },
       { path: routes.LIVE_INVOCATION, element: <InvocationScreen /> },
       { path: routes.CHAT, element: <ChatPage /> },
-      { path: routes.TEST_SUITES, element: <TestSuitePage /> },
-      { path: routes.TEST_SUITE, element: <TestSuitePage /> },
-      { path: routes.TEST_SUITE_TEST, element: <TestSuitePage /> },
       { path: routes.FLOWS, element: <FlowPage /> },
       { path: routes.FLOW, element: <FlowPage /> },
       { path: routes.FLOW_TEST, element: <FlowStepPage /> },

@@ -69,8 +69,6 @@ export const RunsTab: React.FC = () => {
     loadTestRuns(flowId as string, true);
   }, [flowId, searchParams.get("tab")]);
 
-  const runIds = runs.map((run) => run.id);
-
   return (
     <TabPanel value="2" style={{ padding: 0, height: "100%" }}>
       <div className="flex flex-col space-y-2 pb-2">
@@ -82,8 +80,6 @@ export const RunsTab: React.FC = () => {
               <Run
                 key={runs.length - index}
                 runId={run.id}
-                runIds={runIds}
-                index={index}
                 createdAt={run.createdAt}
                 status={run.status}
                 title={`Run ${runs.length - index}`}

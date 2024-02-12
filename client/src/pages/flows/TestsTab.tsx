@@ -346,7 +346,7 @@ export const FlowSelector = ({
   flowId?: string;
   isDisabled?: boolean;
 }) => {
-  const { flows, isFlowsLoading, loadFlows } = useFlowStore();
+  const { flows, loadFlows } = useFlowStore();
 
   useEffect(() => {
     loadFlows();

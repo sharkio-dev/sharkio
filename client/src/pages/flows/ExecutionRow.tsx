@@ -3,7 +3,7 @@ import * as React from "react";
 import { FiChevronRight } from "react-icons/fi";
 import { getRunStatusIcon } from "./RunsTab";
 import { AssertionResult, NodeRunType } from "../../stores/flowStore";
-import { ExecutionDetails } from "../test-suites/ExecutionDetailsProps";
+import { ExecutionDetails } from "./ExecutionDetailsProps";
 import { RequestSection, ResponseSection } from "../sniffers/InvocationDetails";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -101,7 +101,7 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
                   overflow: "auto",
                 }}
               >
-                <div className="flex flex-col w-full  overflow-y-auto">
+                <div className="flex flex-col w-full overflow-y-auto">
                   <BodySection
                     body={JSON.stringify(nodeRun.response, null, 2)}
                     showButtons={false}
