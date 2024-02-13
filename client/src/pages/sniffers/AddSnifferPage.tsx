@@ -122,7 +122,7 @@ function SimpleDomainComponent(props: {
   onDomainChange: (domain: string) => void;
   onNextClicked: () => void;
 }) {
-  const [error, setError] = React.useState<string | null>(undefined);
+  const [error, setError] = React.useState<string | null>(null);
   const DEBOUNCE_TIME = 1000;
 
   const handleDomainChange = (newValue: string) => {
