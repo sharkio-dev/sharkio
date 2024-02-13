@@ -22,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
-import { useEnterKeyPress } from "./useEnterKeyPress";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
 import debounce from "lodash/debounce";
 import { toLowerCaseNoSpaces } from "../../utils/texts";
@@ -96,6 +95,7 @@ const DomainStep = ({
         <>
           <SimpleDomainComponent
             domain={value}
+            isValid={isValid}
             onDomainChange={onDomainChange}
             onNextClicked={onNextClicked}
           />
@@ -118,10 +118,11 @@ const DomainStep = ({
 };
 function SimpleDomainComponent(props: {
   domain: string;
+  isValid: boolean;
   onDomainChange: (domain: string) => void;
   onNextClicked: () => void;
 }) {
-  const [error, setError] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(undefined);
   const DEBOUNCE_TIME = 1000;
 
   const handleDomainChange = (newValue: string) => {
@@ -140,7 +141,7 @@ function SimpleDomainComponent(props: {
     [],
   );
 
-  const handleKeyDown = useEnterKeyPress(props.onNextClicked, true);
+  const handleKeyDown = handleEnterKeyPress(props.onNextClicked, props.isValid);
 
   return (
     <>
