@@ -11,7 +11,7 @@ export class EndpointService {
   constructor(
     private readonly repository: EndpointRepository,
     private readonly requestRepository: RequestRepository,
-    private readonly responseRepository: ResponseRepository,
+    private readonly responseRepository: ResponseRepository
   ) {}
 
   async getByOwner(ownerId: string, limit: number) {
@@ -49,7 +49,7 @@ export class EndpointService {
   async createFromExpressReq(
     req: ExpressRequest,
     snifferId: string,
-    ownerId: string,
+    ownerId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -68,7 +68,7 @@ export class EndpointService {
     headers: Record<string, any>,
     body: string,
     snifferId: string,
-    ownerId: string,
+    ownerId: string
   ) {
     const newRequest = this.repository.repository.create({
       snifferId,
@@ -152,6 +152,7 @@ export class EndpointService {
     url: string,
     fromDate: Date | undefined,
     toDate: Date | undefined,
+    proxies?: string[]
   ) {
     let createdAt;
 
@@ -172,6 +173,7 @@ export class EndpointService {
         responses: {
           status: statusCodes === undefined ? undefined : In(statusCodes),
         },
+        snifferId: proxies === undefined ? undefined : In(proxies),
       },
       relations: {
         responses: true,

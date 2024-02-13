@@ -44,7 +44,8 @@ const menus: IMenuItem[] = [
   },
 ];
 
-if (import.meta.env.VITE_NODE_ENV !== "production") {
+// @ts-ignore
+if (window._env_.VITE_NODE_ENV !== "production") {
   productionMenu.push(...menus);
 }
 
