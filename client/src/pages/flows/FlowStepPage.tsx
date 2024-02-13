@@ -8,10 +8,12 @@ import { RequestSection } from "../sniffers/InvocationDetails";
 import { NodeType, useFlowStore } from "../../stores/flowStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { Button, TextField } from "@mui/material";
+import { Button, InputAdornment, OutlinedInput, Tooltip } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { FlowSelector } from "./TestsTab";
+import { RxMagicWand } from "react-icons/rx";
+import { Wizard } from "../../components/wizard/Wizard";
+import React from "react";
 
 export const FlowStepPage = () => {
   const { loadNode, putNode } = useFlowStore();
@@ -51,111 +53,6 @@ export const FlowStepPage = () => {
 
   if (!flowStep) return <LoadingIcon />;
 
-  const stepTopPanel = () => {
-    if (flowStep.type === "http") {
-      return (
-        <>
-          {snackBar}
-          <div className="flex items-center space-x-4 mb-4">
-            <GoBackButton className="h-full" onClick={() => navigate(-1)} />
-            <div className="text-xl">{flowStep.name}</div>
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            <URLComponent
-              method={flowStep.method}
-              url={flowStep.url}
-              snifferId={flowStep.proxyId}
-              onMethodChange={(value) => {
-                setFlowStep((prev) => {
-                  if (!prev) return prev;
-                  return { ...prev, method: value };
-                });
-              }}
-              onUrlChange={(value) => {
-                setFlowStep((prev) => {
-                  if (!prev) return prev;
-                  return { ...prev, url: value };
-                });
-              }}
-              onSnifferChange={(value) => {
-                setFlowStep((prev) => {
-                  if (!prev) return prev;
-                  return { ...prev, proxyId: value };
-                });
-              }}
-            />
-            <Button
-              variant="outlined"
-              color="success"
-              onClick={() => {
-                if (!flowId) return;
-                putNode(flowId, { ...flowStep, snifferId: undefined }).then(
-                  () => {
-                    showSnackbar("Saved", "success");
-                  },
-                );
-              }}
-            >
-              Save
-            </Button>
-          </div>
-          <RequestSection
-            invocation={{
-              headers: flowStep.headers,
-              body: flowStep.body,
-              url: flowStep.url,
-              method: flowStep.method,
-            }}
-            setInvocation={(newRequest: {
-              headers?: any;
-              body?: string;
-              url?: string;
-              method?: string;
-            }) => {
-              setFlowStep((prev) => {
-                if (!prev) return prev;
-                return { ...prev, ...newRequest };
-              });
-            }}
-          />
-        </>
-      );
-    } else if (flowStep.type === "subflow") {
-      return (
-        <div className="flex flex-col p-4 w-full pb-0 space-y-2">
-          <div className="flex items-center space-x-4 mb-4">
-            <GoBackButton className="h-full" onClick={() => navigate(-1)} />
-            <div className="text-xl">{flowStep.name}</div>
-            <Button
-              variant="outlined"
-              color="success"
-              onClick={() => {
-                if (!flowId) return;
-                putNode(flowId, { ...flowStep, snifferId: undefined }).then(
-                  () => {
-                    showSnackbar("Saved", "success");
-                  },
-                );
-              }}
-            >
-              Save
-            </Button>
-          </div>
-          <div>
-            <FlowSelector
-              flowId={flowStep.subFlowId}
-              onFlowSelected={(flowId) => {
-                setFlowStep((prev: any) => {
-                  return { ...prev, subFlowId: flowId };
-                });
-              }}
-            ></FlowSelector>
-          </div>
-        </div>
-      );
-    }
-  };
-
   return (
     <PanelGroup
       direction={"vertical"}
@@ -163,7 +60,71 @@ export const FlowStepPage = () => {
     >
       <Panel defaultSize={70} maxSize={80}>
         <div className="flex flex-col p-4 w-full pb-0 space-y-2">
-          {stepTopPanel()}
+          <>
+            {snackBar}
+            <div className="flex items-center space-x-4 mb-4">
+              <GoBackButton className="h-full" onClick={() => navigate(-1)} />
+              <div className="text-xl">{flowStep.name}</div>
+            </div>
+            <div className="flex flex-row items-center space-x-4">
+              <URLComponent
+                method={flowStep.method}
+                url={flowStep.url}
+                snifferId={flowStep.proxyId}
+                onMethodChange={(value) => {
+                  setFlowStep((prev) => {
+                    if (!prev) return prev;
+                    return { ...prev, method: value };
+                  });
+                }}
+                onUrlChange={(value) => {
+                  setFlowStep((prev) => {
+                    if (!prev) return prev;
+                    return { ...prev, url: value };
+                  });
+                }}
+                onSnifferChange={(value) => {
+                  setFlowStep((prev) => {
+                    if (!prev) return prev;
+                    return { ...prev, proxyId: value };
+                  });
+                }}
+              />
+              <Button
+                variant="outlined"
+                color="success"
+                onClick={() => {
+                  if (!flowId) return;
+                  putNode(flowId, { ...flowStep, snifferId: undefined }).then(
+                    () => {
+                      showSnackbar("Saved", "success");
+                    },
+                  );
+                }}
+              >
+                Save
+              </Button>
+            </div>
+            <RequestSection
+              invocation={{
+                headers: flowStep.headers,
+                body: flowStep.body,
+                url: flowStep.url,
+                method: flowStep.method,
+              }}
+              setInvocation={(newRequest: {
+                headers?: any;
+                body?: string;
+                url?: string;
+                method?: string;
+              }) => {
+                setFlowStep((prev) => {
+                  if (!prev) return prev;
+                  return { ...prev, ...newRequest };
+                });
+              }}
+            />
+          </>
         </div>
       </Panel>
       <div className="relative h-[1px] w-full my-4 hover:bg-blue-300 bg-border-color">
@@ -249,11 +210,13 @@ const Assertion: React.FC<AssertionProps> = ({
   handleAssertionChange,
   hadndlDeleteAssertion,
 }) => {
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const pathRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className="flex flex-row items-center space-x-2 w-full">
       <div className="flex flex-row items-center space-x-2 w-full">
-        <TextField
-          className="border border-border-color rounded-md px-2 py-1 w-full"
+        <OutlinedInput
+          className="border border-border-color rounded-md w-full"
           placeholder="Path"
           value={assertion.path}
           onChange={(event) => {
@@ -285,6 +248,51 @@ const Assertion: React.FC<AssertionProps> = ({
             variant="outlined"
           />
         </div>
+        <OutlinedInput
+          className="border border-border-color rounded-md w-full"
+          placeholder="Value"
+          value={assertion.expectedValue}
+          onChange={(event) => {
+            handleAssertionChange({
+              ...assertion,
+              expectedValue: event.target.value,
+            });
+          }}
+          size="small"
+          ref={pathRef}
+          endAdornment={
+            <InputAdornment position="end">
+              <Button
+                variant="text"
+                color="secondary"
+                sx={{ minWidth: 0, borderRadius: "50%" }}
+                onClick={() => setWizardOpen(true)}
+                size="small"
+              >
+                <Tooltip title="Generate Data" placement="top">
+                  <div className="h-4 w-4 items-center justify-center">
+                    <RxMagicWand className="text-lg" />
+                  </div>
+                </Tooltip>
+              </Button>
+              <Wizard
+                handleSelection={(text: string) => {
+                  handleAssertionChange({
+                    ...assertion,
+                    expectedValue: text,
+                  });
+                }}
+                open={wizardOpen}
+                onClose={() => setWizardOpen(false)}
+                showAi={false}
+                showFakeData={true}
+                showPreviousSteps={true}
+                showTemplates={false}
+              />
+            </InputAdornment>
+          }
+        />
+
         <div className="flex flex-row min-w-28 h-full">
           <SelectComponent
             placeholder="type"
@@ -301,19 +309,6 @@ const Assertion: React.FC<AssertionProps> = ({
             variant="outlined"
           />
         </div>
-
-        <TextField
-          className="border border-border-color rounded-md px-2 py-1 w-full"
-          placeholder="Value"
-          value={assertion.expectedValue}
-          onChange={(event) => {
-            handleAssertionChange({
-              ...assertion,
-              expectedValue: event.target.value,
-            });
-          }}
-          size="small"
-        />
         <div className="flex flex-row min-w-[20px] h-full">
           <AiOutlineDelete
             className="flex text-[#fff] text-2xl hover:bg-border-color rounded-md hover:cursor-pointer active:scale-110"
