@@ -84,13 +84,6 @@ export const EditSnifferModal = ({
   }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
 
   const [enterPressed, setEnterPressed] = React.useState(false);
-  // const handleKeyDown = (e) => {
-  //   if (e.key === "Enter") {
-  //     handleEditSniffer();
-  //     setEnterPressed(true);
-  //   }
-  // };
-
   const handleKeyDown = handleEnterKeyPress(() => {
     handleEditSniffer();
     setEnterPressed(true);
