@@ -62,7 +62,7 @@ jobs:
       - name: Set Up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       - name: Build, tag, and push docker image to Amazon ECR
         working-directory: ${{ env.working_dir }}

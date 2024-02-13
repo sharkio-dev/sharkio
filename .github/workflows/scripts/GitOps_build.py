@@ -18,7 +18,6 @@ def build_and_push(repository, dockerfile):
     -t {registry}/{repository}:{environment}-{full_sha} \
     -t {registry}/{repository}:{environment}-{short_sha} \
     --push \
-    --platform linux/amd64,linux/arm64,linux/arm/v7 \
     -f {dockerfile} . '
     subprocess.run(docker_build, shell=True, text=True, check=True)
 
