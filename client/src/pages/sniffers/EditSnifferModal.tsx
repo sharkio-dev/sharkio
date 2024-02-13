@@ -5,7 +5,7 @@ import { CircularProgress } from "@mui/material";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import React from "react";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
-import { useEnterKeyPress } from "./useEnterKeyPress";
+import { handleEnterKeyPress } from "../../utils/handleEnterKeyPress";
 import { toLowerCaseNoSpaces } from "../../utils/texts";
 
 const splitByLast = (str: string, delimiter: string) => {
@@ -83,7 +83,18 @@ export const EditSnifferModal = ({
       });
   }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
 
-  const enterPressed = useEnterKeyPress(handleEditSniffer);
+  const [enterPressed, setEnterPressed] = React.useState(false);
+  // const handleKeyDown = (e) => {
+  //   if (e.key === "Enter") {
+  //     handleEditSniffer();
+  //     setEnterPressed(true);
+  //   }
+  // };
+
+  const handleKeyDown = handleEnterKeyPress(() => {
+    handleEditSniffer();
+    setEnterPressed(true);
+  }, true);
 
   return (
     <>
@@ -110,6 +121,7 @@ export const EditSnifferModal = ({
               onChange={(event) => handleUrlEdit(event.target.value)}
               error={enterPressed && Boolean(error)}
               helperText={enterPressed && error}
+              onKeyDown={handleKeyDown}
             />
             <TextField
               label={"Subdomain"}

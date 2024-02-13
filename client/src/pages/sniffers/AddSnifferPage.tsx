@@ -26,6 +26,7 @@ import { useEnterKeyPress } from "./useEnterKeyPress";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
 import debounce from "lodash/debounce";
 import { toLowerCaseNoSpaces } from "../../utils/texts";
+import { handleEnterKeyPress } from "../../utils/handleEnterKeyPress";
 
 interface EnvStepProps {
   onNextClicked: () => void;
@@ -34,8 +35,6 @@ interface EnvStepProps {
 }
 
 const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
-  useEnterKeyPress(onNextClicked, true);
-
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
@@ -85,7 +84,6 @@ const DomainStep = ({
   handleChange,
 }: DomainStepProps) => {
   const [isValid, setIsValid] = React.useState(false);
-  useEnterKeyPress(onNextClicked, isValid);
 
   const onDomainChange = (newValue: string) => {
     handleChange(newValue);
@@ -99,6 +97,7 @@ const DomainStep = ({
           <SimpleDomainComponent
             domain={value}
             onDomainChange={onDomainChange}
+            onNextClicked={onNextClicked}
           />
         </>
       ) : (
@@ -117,10 +116,10 @@ const DomainStep = ({
     </div>
   );
 };
-
 function SimpleDomainComponent(props: {
   domain: string;
   onDomainChange: (domain: string) => void;
+  onNextClicked: () => void;
 }) {
   const [error, setError] = React.useState<string | null>(null);
   const DEBOUNCE_TIME = 1000;
@@ -141,6 +140,8 @@ function SimpleDomainComponent(props: {
     [],
   );
 
+  const handleKeyDown = useEnterKeyPress(props.onNextClicked, true);
+
   return (
     <>
       <div className="font-sarif self-start text-2xl font-bold">
@@ -154,6 +155,7 @@ function SimpleDomainComponent(props: {
           onChange={(e) => handleDomainChange(e.target.value)}
           error={Boolean(error)}
           helperText={error}
+          onKeyDown={handleKeyDown}
         />
       </div>
     </>
@@ -218,6 +220,7 @@ interface NameStepProps {
   handleChange: (newValue: string) => void;
   isLoading: boolean;
 }
+
 const NameStep = ({
   onBackClicked,
   onNextClicked,
@@ -225,7 +228,7 @@ const NameStep = ({
   handleChange,
   isLoading,
 }: NameStepProps) => {
-  useEnterKeyPress(onNextClicked, value !== "");
+  const handleKeyDown = handleEnterKeyPress(onNextClicked, value !== "");
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -238,6 +241,7 @@ const NameStep = ({
           placeholder="Proxy name"
           value={value}
           onChange={(e) => handleChange(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div className="mt-8 flex w-full flex-row justify-between">
@@ -256,8 +260,8 @@ const NameStep = ({
     </div>
   );
 };
+
 const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
-  useEnterKeyPress(onNextClicked, true);
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
