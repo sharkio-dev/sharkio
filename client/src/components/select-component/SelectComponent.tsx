@@ -12,6 +12,7 @@ type SelectComponentProps = {
   setValue?: (value: string) => void;
   disabled?: boolean;
   variant?: "standard" | "outlined" | "filled";
+  placeholder?: string;
 };
 
 export function SelectComponent({
@@ -22,6 +23,7 @@ export function SelectComponent({
   disabled,
   inputClassName,
   variant = "outlined",
+  placeholder = "",
 }: SelectComponentProps) {
   return (
     <FormControl
@@ -36,6 +38,7 @@ export function SelectComponent({
         label={title}
         className={`w-full ${inputClassName}`}
         onChange={(event) => setValue && setValue(event.target.value)}
+        placeholder={placeholder}
       >
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>

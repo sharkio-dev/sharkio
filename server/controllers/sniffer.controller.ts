@@ -217,7 +217,7 @@ export class SnifferController {
             await this.snifferManager.removeSniffer(ownerId, id);
             res.sendStatus(200);
           } catch (e: any) {
-            log.error("An unexpected error occured", {
+            log.error("An unexpected error occurred", {
               method: "DELETE",
               path: `${this.baseUrl}/:id`,
               error: e,

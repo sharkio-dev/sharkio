@@ -14,15 +14,18 @@ export class RequestInterceptor {
     if (sniffer === null) {
       res.sendStatus(404);
     } else {
-      const interceptedInvocation = await this.interceptRequest(req, sniffer);
+      try {
+        const interceptedInvocation = await this.interceptRequest(req, sniffer);
 
-      if (interceptedInvocation?.id) {
-        req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
-        req.headers["x-sharkio-sniffer-id"] = interceptedInvocation.snifferId;
-        req.headers["x-sharkio-owner-id"] = interceptedInvocation.ownerId;
+        if (interceptedInvocation?.id) {
+          req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
+          req.headers["x-sharkio-sniffer-id"] = interceptedInvocation.snifferId;
+          req.headers["x-sharkio-owner-id"] = interceptedInvocation.ownerId;
+        }
+        next();
+      } catch (e) {
+        res.sendStatus(500);
       }
-
-      next();
     }
   }
 
@@ -33,9 +36,16 @@ export class RequestInterceptor {
     req.headers["ngrok-skip-browser-warning"] = "true";
 
     const endpoint = await this.interceptor.saveEndpoint(req, sniffer);
+    const { sniffer: _, ...rest } = endpoint;
 
     const invocation = await this.interceptor.saveRequest(
-      endpoint,
+      {
+        snifferId: endpoint.snifferId,
+        endpointId: endpoint.id,
+        ownerId: endpoint.ownerId,
+        ...req,
+        headers: req.headers,
+      },
       testExecutionId,
     );
 

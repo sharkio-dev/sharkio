@@ -9,6 +9,7 @@ import { MockResponseController } from "./controllers/mock-response.controller";
 import { MockController } from "./controllers/mock.controller";
 import SettingsController from "./controllers/settings";
 import { SnifferController } from "./controllers/sniffer.controller";
+import { TestFlowController } from "./controllers/test-flow.controller";
 import { TestSuiteController } from "./controllers/test-suite.controller";
 import { WorkspaceController } from "./controllers/workSpace.controller";
 import { ProxyEnvValidator, ServerEnvValidator } from "./env.validator";
@@ -24,6 +25,7 @@ import { MockRepository } from "./model/repositories/mock.repository";
 import { RequestRepository } from "./model/repositories/request.repository";
 import { ResponseRepository } from "./model/repositories/response.repository";
 import { SnifferRepository } from "./model/repositories/sniffers.repository";
+import { TestFlowRepository } from "./model/repositories/test-flow/testFlow.repository";
 import { TestRepository } from "./model/repositories/testSuite/test.repository";
 import { TextExecutionRepository } from "./model/repositories/testSuite/testExecution.repository";
 import { TestSuiteRepository } from "./model/repositories/testSuite/testSuite.repository";
@@ -45,19 +47,29 @@ import {
   SequentialResponseSelector,
 } from "./services/mock-response-selector";
 import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
-import { MockResponseTransformer } from "./services/mock-response-transformer/mock-response-transformer";
 import { MockResponseService } from "./services/mock-response/mock-response.service";
 import { MockService } from "./services/mock/mock.service";
+import { RequestTransformer } from "./services/request-transformer/request-transformer";
 import { RequestService } from "./services/request/request.service";
 import ResponseService from "./services/response/response.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
+import { NodeResponseValidator } from "./services/test-flow/test-flow-executor/node-response-validator";
+import { SequenceExecutor } from "./services/test-flow/test-flow-executor/sequence-executor";
+import {
+  ITestFlowExecutor,
+  TestFlowExecutor,
+} from "./services/test-flow/test-flow-executor/test-flow-executor.service";
+import { TestFlowReporter } from "./services/test-flow/test-flow-reporter.service";
+import { TestFlowService } from "./services/test-flow/test-flow.service";
 import { TestService } from "./services/testSuite/test.service";
 import { TestExecutionService } from "./services/testSuite/testExecution.service";
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
+import { HttpNodeExecutor } from "./services/test-flow/flow-node-executors/http-node-executor";
+import { SubflowNodeExecutor } from "./services/test-flow/flow-node-executors/subflow-node-executor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -102,6 +114,7 @@ async function main(isProxy = true, isServer = true) {
   const testRepository = new TestRepository(appDataSource);
   const testExecutionRepository = new TextExecutionRepository(appDataSource);
   const workspaceRepository = new WorkspaceRepository(appDataSource);
+  const testFlowRepository = new TestFlowRepository(appDataSource);
 
   /* Services */
   const mockService = new MockService(mockRepository, mockResponseRepository);
@@ -133,7 +146,35 @@ async function main(isProxy = true, isServer = true) {
   const mockResponseSelectorService = new MockResponseSelector(
     mockSelectionStrategies,
   );
-  const mockResponseTransformer = new MockResponseTransformer();
+  const requestTransformer = new RequestTransformer();
+  const testFlowService = new TestFlowService(
+    testFlowRepository,
+    snifferRepository,
+  );
+  const nodeResponseValidator = new NodeResponseValidator(requestTransformer);
+  const testFlowReporter = new TestFlowReporter(testFlowService);
+
+  const testFlowExecutor = new TestFlowExecutor(testFlowService, {});
+
+  const nodeExecutionStrategies = {
+    http: new HttpNodeExecutor(
+      requestService,
+      nodeResponseValidator,
+      testFlowReporter,
+      requestTransformer,
+    ),
+    subflow: new SubflowNodeExecutor(
+      nodeResponseValidator,
+      testFlowReporter,
+      testFlowExecutor,
+    ),
+  };
+
+  const testFlowExecutionStrategies: Record<string, ITestFlowExecutor> = {
+    sequence: new SequenceExecutor(testFlowService, nodeExecutionStrategies),
+  };
+
+  testFlowExecutor.setExecutionStrategies(testFlowExecutionStrategies);
 
   /* Controllers */
   const mockResponseController = new MockResponseController(
@@ -175,6 +216,10 @@ async function main(isProxy = true, isServer = true) {
     testExecutionService,
   );
   const workspaceController = new WorkspaceController(workspaceService);
+  const testFlowController = new TestFlowController(
+    testFlowService,
+    testFlowExecutor,
+  );
 
   /* Interceptors */
   const cloudInterceptor = new CloudInterceptor(
@@ -200,7 +245,7 @@ async function main(isProxy = true, isServer = true) {
   const mockMiddleware = new MockMiddleware(
     selectedInterceptor,
     mockResponseSelectorService,
-    mockResponseTransformer,
+    requestTransformer,
   );
 
   /* Servers */
@@ -223,6 +268,7 @@ async function main(isProxy = true, isServer = true) {
       testSuiteController.getRouter(),
       mockController.getRouter(),
       workspaceController.getRouter(),
+      testFlowController.getRouter(),
     ],
     swaggerUi,
   );

@@ -100,7 +100,7 @@ export class EndpointService {
 
   async addInvocation(request: Partial<Omit<Request, "sniffer">>) {
     const theInvocation = this.requestRepository.repository.create({
-      endpointId: request.id,
+      endpointId: request.endpointId,
       snifferId: request.snifferId,
       ownerId: request.ownerId,
       method: request.method,

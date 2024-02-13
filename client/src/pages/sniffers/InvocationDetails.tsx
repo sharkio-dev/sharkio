@@ -13,14 +13,14 @@ import Tab from "@mui/material/Tab";
 import * as React from "react";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { generateApiRequestSnippet } from "../../lib/jsonSchema";
-import { BodySection } from "../test-suites/BodySection";
-import { HeaderSection } from "../test-suites/HeaderSection";
 import { InvocationType } from "./types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
+import { BodySection } from "../../components/editors/BodySection";
+import { HeaderSection } from "../../components/HeaderSection";
 
 type InvocationDetailsProps = {
-  invocation: InvocationType | undefined;
+  invocation: InvocationType;
   setInvocation: (invocation: InvocationType) => void;
 };
 
@@ -36,7 +36,16 @@ export function InvocationDetails({
       className="max-w-[calc(100vw-56px)] min-h-[calc(100vh-184px)] max-h-[calc(100vh-184px)]"
     >
       <Panel defaultSize={50} maxSize={70}>
-        <RequestSection invocation={invocation} setInvocation={setInvocation} />
+        <RequestSection
+          invocation={invocation}
+          setInvocation={(newInvocation) =>
+            setInvocation({
+              ...invocation,
+              ...newInvocation,
+            })
+          }
+          showPreviousSteps={false}
+        />
       </Panel>
       <div className="relative h-[1px] w-full my-4 hover:bg-blue-300 bg-border-color">
         <PanelResizeHandle
@@ -50,9 +59,32 @@ export function InvocationDetails({
   );
 }
 
-const RequestSection: React.FC<InvocationDetailsProps> = ({
+export const RequestSection: React.FC<{
+  invocation: {
+    body: string;
+    headers: { [key: string]: string };
+    url: string;
+    method: string;
+  };
+  setInvocation?: (invocation: {
+    body?: string;
+    headers?: { [key: string]: string };
+    url?: string;
+    method?: string;
+  }) => void;
+  disabled?: boolean;
+  showFakeData?: boolean;
+  showTemplates?: boolean;
+  showPreviousSteps?: boolean;
+  showAi?: boolean;
+}> = ({
   invocation,
   setInvocation,
+  disabled,
+  showAi = true,
+  showFakeData = true,
+  showPreviousSteps = true,
+  showTemplates = true,
 }) => {
   const [value, setValue] = React.useState("1");
   const snackbar = useSnackbar();
@@ -63,7 +95,7 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
   };
 
   const handleBodyChange = (body: string) => {
-    if (invocation) {
+    if (invocation && setInvocation) {
       setInvocation({
         ...invocation,
         body,
@@ -72,7 +104,7 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
   };
 
   const onHeadersChange = (headers: { [key: string]: string }) => {
-    if (invocation) {
+    if (invocation && setInvocation) {
       setInvocation({
         ...invocation,
         headers,
@@ -104,7 +136,15 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
           height: "calc(100% - 48px)",
         }}
       >
-        <BodySection body={invocation?.body} onBodyChange={handleBodyChange} />
+        <BodySection
+          body={invocation?.body}
+          onBodyChange={handleBodyChange}
+          isReadOnly={disabled}
+          showAi={showAi}
+          showFakeData={showFakeData}
+          showPreviousSteps={showPreviousSteps}
+          showTemplates={showTemplates}
+        />
       </TabPanel>
       <TabPanel
         value="2"
@@ -167,7 +207,7 @@ const RequestSection: React.FC<InvocationDetailsProps> = ({
   );
 };
 
-const ResponseSection = ({
+export const ResponseSection = ({
   response,
 }: {
   response?: InvocationType["response"];
@@ -194,7 +234,14 @@ const ResponseSection = ({
         </ToggleButton>
       </ToggleButtonGroup>
       {section === "Body" && (
-        <BodySection body={response?.body} showButtons={false} />
+        <BodySection
+          body={
+            typeof response?.body === "string"
+              ? response?.body
+              : JSON.stringify(response?.body, null, 2)
+          }
+          isReadOnly
+        />
       )}
       {section === "Headers" && (
         <HeaderSection headers={response?.headers || {}} />
