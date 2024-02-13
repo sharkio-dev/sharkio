@@ -1,19 +1,20 @@
 import { Invocation } from "../sniffers/Invocation";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
+import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 
 type InvocationsSearchBarProps = {
-  invocationId?: string;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
 };
 export const InvocationsSearchBar = ({
-  invocationId,
   setActiveInvocation,
   title,
 }: InvocationsSearchBarProps) => {
-  const { invocations, loadingInvocations } = useSniffersStore();
+  const { invocations, loadingInvocations, getSnifferById } =
+    useSniffersStore();
+
   return (
     <>
       <div className="text-xl font-bold font-mono mb-4">{title}</div>
@@ -28,15 +29,18 @@ export const InvocationsSearchBar = ({
           </div>
         ) : (
           invocations.map((invocation, i) => {
+            const sniffer = getSnifferById(invocation.snifferId);
+            const snifferDomain = sniffer
+              ? getSnifferDomain(sniffer.subdomain)
+              : "";
             return (
               <Invocation
                 method={invocation.method}
-                isSelected={invocation.id === invocationId}
                 onClick={() => setActiveInvocation(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}
-                url={invocation.url}
+                url={`${snifferDomain}${invocation.url}`}
               />
             );
           })

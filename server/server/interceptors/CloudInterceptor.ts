@@ -1,5 +1,4 @@
 import { Request } from "express";
-import { Endpoint } from "../../model/entities/Endpoint";
 import { Mock } from "../../model/entities/Mock";
 import { Request as RequestModel } from "../../model/entities/Request";
 import { Sniffer } from "../../model/entities/Sniffer";
@@ -37,10 +36,16 @@ export class CloudInterceptor implements Interceptor {
     return this.endpointService.findOrCreate(req, sniffer.id, sniffer.ownerId);
   }
 
-  async saveRequest(request: Endpoint, testExecutionId?: string) {
+  async saveRequest(request: Partial<RequestModel>, testExecutionId?: string) {
     return await this.endpointService.addInvocation({
-      ...request,
-      testExecutionId,
+      endpointId: request.endpointId,
+      snifferId: request.snifferId,
+      ownerId: request.ownerId,
+      method: request.method,
+      body: request.body,
+      headers: request.headers,
+      url: request.url,
+      testExecutionId: request.testExecutionId,
     });
   }
 

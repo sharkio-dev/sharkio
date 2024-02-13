@@ -21,11 +21,11 @@ export class MockResponse {
   @Column("integer", { name: "status" })
   status: number;
 
-  @Column("character varying", { name: "body", nullable: true })
-  body: string | null;
+  @Column("character varying", { name: "body" })
+  body: string;
 
   @Column("json", { name: "headers", nullable: true })
-  headers: Record<string, string> | null;
+  headers: Record<string, string>;
 
   @Column("character varying", { name: "name", nullable: true })
   name: string | null;

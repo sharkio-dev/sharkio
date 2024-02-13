@@ -2,13 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Mock, MockResponse, useMockStore } from "../../stores/mockStore";
 import { SnifferType } from "../../stores/sniffersStores";
-import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { MockButton } from "./MockButton";
-import { MockUrlInput } from "./MockUrlInput";
 import { v4 as uuidv4 } from "uuid";
 import { MockResponsesSection } from "./MockResponsesSection";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { SelectComponent } from "../../components/select-component/SelectComponent";
+import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
 
 interface CreateMockProps {
   sniffer: SnifferType;
@@ -95,12 +94,17 @@ export const CreateMock: React.FC<CreateMockProps> = ({
     <div className="flex flex-col h-full overflow-y-auto">
       {snackBar}
       <div className="flex flex-row items-center space-x-4 border-b border-border-color pb-4">
-        <MockUrlInput
+        <URLComponent
           method={editedMock.method}
           url={editedMock.url}
-          handleUrlChange={handleUrlChange}
-          handleMethodChange={handleMethodChange}
-          snifferDomain={getSnifferDomain(sniffer?.subdomain || "")}
+          snifferId={editedMock.snifferId}
+          onMethodChange={(value) => {
+            handleMethodChange(value);
+          }}
+          onUrlChange={(value) => {
+            handleUrlChange(value);
+          }}
+          isSnifferDisabled={true}
         />
         <div className="w-40 py-2">
           <SelectComponent
