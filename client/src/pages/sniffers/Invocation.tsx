@@ -73,22 +73,23 @@ export const Invocation = ({
           onClick={onClick}
         >
           <div className="flex flex-row items-center space-x-4">
+            {selectIconByMethod(method)}
+            <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap w-[100ch]">
+              {url}
+            </div>
+          </div>
+
+          <div className="flex flex-row items-center space-x-4">
             <span
               className="text text-xs text-blue-400 font-bold hover:cursor-pointer hover:scale-105 active:scale-100"
               onClick={(e) => {
-                console.log("AAAAAA");
                 e.stopPropagation();
                 handleOpenModal();
               }}
             >
               Preview
             </span>
-            {selectIconByMethod(method)}
-            <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap w-[100ch]">
-              {url}
-            </div>
-          </div>
-          <div className="flex flex-row items-center space-x-4">
+
             {selectIconByStatus(status)}
             <div className="flex text-xs text-gray-500">{date}</div>
           </div>

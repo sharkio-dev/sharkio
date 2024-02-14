@@ -14,10 +14,16 @@ export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
   response,
 }) => {
   return (
-    <Modal className="grid" open={open} onClose={onClose}>
+    <Modal
+      className="flex rounded-md w-4/5 mx-auto justify-center items-center"
+      open={open}
+      onClose={onClose}
+    >
       <Paper>
         <ResponseSection response={response} />
-        <Button onClick={onClose}>Close</Button>
+        <Button className="flex" onClick={onClose}>
+          Close
+        </Button>
       </Paper>
     </Modal>
   );
