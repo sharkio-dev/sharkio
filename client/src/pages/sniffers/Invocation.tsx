@@ -2,6 +2,7 @@ import React from "react";
 import { Tooltip } from "@mui/material";
 import { selectIconByMethod } from "./selectIconByMethod";
 import { InvocationPreview } from "./InvocationPreview";
+import { InvocationType } from "../../pages/sniffers/types";
 
 const dummyResponseData = {
   response: {
@@ -28,6 +29,7 @@ export const selectIconByStatus = (status: number) => {
 };
 
 type InvocationProps = {
+  invocation: InvocationType;
   status: number;
   url: string;
   method: string;
@@ -36,6 +38,7 @@ type InvocationProps = {
   onClick?: () => void;
 };
 export const Invocation = ({
+  invocation,
   status,
   url,
   method,
@@ -52,6 +55,8 @@ export const Invocation = ({
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  console.log(JSON.stringify(invocation));
 
   return (
     <>

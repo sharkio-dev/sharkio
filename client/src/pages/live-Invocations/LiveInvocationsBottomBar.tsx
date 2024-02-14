@@ -35,6 +35,7 @@ export const InvocationsSearchBar = ({
               : "";
             return (
               <Invocation
+                invocation={invocation}
                 method={invocation.method}
                 onClick={() => setActiveInvocation(invocation.id)}
                 key={i}

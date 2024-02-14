@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Paper, Typography, Button } from "@mui/material";
+import { Modal, Paper, Button } from "@mui/material";
 import { ResponseSection } from "../sniffers/InvocationDetails";
 
 type InvocationPreviewProps = {
