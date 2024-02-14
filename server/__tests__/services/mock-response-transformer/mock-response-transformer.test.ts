@@ -182,7 +182,7 @@ describe("RequestTransformer", () => {
     } as unknown as any);
 
     expect(res.body).toEqual(
-      '[{ "hello": "world " },{ "hello": "world " },{ "hello": "world " },{ "hello": "world " }]',
+      '[{ "hello": "world " },{ "hello": "world " },{ "hello": "world " },{ "hello": "world " }]'
     );
   });
 
