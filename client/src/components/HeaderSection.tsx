@@ -60,7 +60,7 @@ export const HeaderSection = ({
   };
 
   return (
-    <div className="flex h-full flex-col items-center space-y-2 w-full overflow-y-auto">
+    <div className="flex h-full flex-col space-y-2 w-full overflow-y-auto">
       {handleHeadersChange && (
         <TextButton text="Add Header" onClick={addHeader} />
       )}
