@@ -8,12 +8,11 @@ import { RequestSection } from "../sniffers/InvocationDetails";
 import { NodeType, useFlowStore } from "../../stores/flowStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
-import { Button, InputAdornment, OutlinedInput, Tooltip } from "@mui/material";
+import { Button, OutlinedInput } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { RxMagicWand } from "react-icons/rx";
-import { Wizard } from "../../components/wizard/Wizard";
 import React from "react";
+import { InputWithWizard } from "./InputWithWizard";
 
 export const FlowStepPage = () => {
   const { loadNode, putNode } = useFlowStore();
@@ -89,6 +88,7 @@ export const FlowStepPage = () => {
                     return { ...prev, proxyId: value };
                   });
                 }}
+                showWizard={true}
               />
               <Button
                 variant="outlined"
@@ -210,7 +210,6 @@ const Assertion: React.FC<AssertionProps> = ({
   handleAssertionChange,
   hadndlDeleteAssertion,
 }) => {
-  const [wizardOpen, setWizardOpen] = useState(false);
   const pathRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className="flex flex-row items-center space-x-2 w-full">
@@ -248,49 +247,25 @@ const Assertion: React.FC<AssertionProps> = ({
             variant="outlined"
           />
         </div>
-        <OutlinedInput
-          className="border border-border-color rounded-md w-full"
-          placeholder="Value"
-          value={assertion.expectedValue}
-          onChange={(event) => {
+        <InputWithWizard
+          inputProps={{
+            placeholder: "Value",
+            value: assertion.expectedValue,
+            onChange: (event) => {
+              handleAssertionChange({
+                ...assertion,
+                expectedValue: event.target.value,
+              });
+            },
+            size: "small",
+            ref: pathRef,
+          }}
+          handleWizardSelection={(text: string) => {
             handleAssertionChange({
               ...assertion,
-              expectedValue: event.target.value,
+              expectedValue: text,
             });
           }}
-          size="small"
-          ref={pathRef}
-          endAdornment={
-            <InputAdornment position="end">
-              <Button
-                variant="text"
-                color="secondary"
-                sx={{ minWidth: 0, borderRadius: "50%" }}
-                onClick={() => setWizardOpen(true)}
-                size="small"
-              >
-                <Tooltip title="Generate Data" placement="top">
-                  <div className="h-4 w-4 items-center justify-center">
-                    <RxMagicWand className="text-lg" />
-                  </div>
-                </Tooltip>
-              </Button>
-              <Wizard
-                handleSelection={(text: string) => {
-                  handleAssertionChange({
-                    ...assertion,
-                    expectedValue: text,
-                  });
-                }}
-                open={wizardOpen}
-                onClose={() => setWizardOpen(false)}
-                showAi={false}
-                showFakeData={true}
-                showPreviousSteps={true}
-                showTemplates={false}
-              />
-            </InputAdornment>
-          }
         />
 
         <div className="flex flex-row min-w-28 h-full">
