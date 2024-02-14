@@ -15,6 +15,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { ProxySelector } from "../sniffers/SniffersSideBar";
 import { InvocationType } from "../sniffers/types";
 import { ImportTestStepDialog } from "./ImpotTestStepDialog";
+import { InputWithWizard } from "../flows/InputWithWizard";
 
 type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
@@ -217,6 +218,7 @@ interface URLComponentProps {
   isSnifferDisabled?: boolean;
   isMethodDisabled?: boolean;
   isUrlDisabled?: boolean;
+  showWizard?: boolean;
 }
 
 export const URLComponent: React.FC<URLComponentProps> = ({
@@ -229,6 +231,7 @@ export const URLComponent: React.FC<URLComponentProps> = ({
   isSnifferDisabled,
   isMethodDisabled,
   isUrlDisabled,
+  showWizard = false,
 }) => {
   const { sniffers } = useSniffersStore();
   const sniffer = sniffers.find((s) => s.id === snifferId);
@@ -257,16 +260,29 @@ export const URLComponent: React.FC<URLComponentProps> = ({
           </div>
         </Tooltip>
       </div>
-      <TextField
-        disabled={isUrlDisabled}
-        value={url}
-        onChange={(e: any) => {
-          onUrlChange && onUrlChange(e.target.value);
-        }}
-        variant="outlined"
-        size="small"
-        style={{ width: "100%" }}
-      />
+      {!showWizard && (
+        <TextField
+          disabled={isUrlDisabled}
+          value={url}
+          onChange={(e: any) => {
+            onUrlChange && onUrlChange(e.target.value);
+          }}
+          variant="outlined"
+          size="small"
+          style={{ width: "100%" }}
+        />
+      )}
+      {showWizard && (
+        <InputWithWizard
+          inputProps={{
+            value: url,
+            onChange: (e: any) => onUrlChange && onUrlChange(e.target.value),
+          }}
+          handleWizardSelection={(value) => {
+            onUrlChange && onUrlChange(url + value);
+          }}
+        />
+      )}
     </div>
   );
 };

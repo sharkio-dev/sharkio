@@ -52,6 +52,7 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
                 onBodyChange={(value: any) => {
                   onResponseChange({ ...editedResponse, body: value });
                 }}
+                showPreviousSteps={false}
               />
             </div>
           )}
