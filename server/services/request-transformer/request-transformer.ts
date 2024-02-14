@@ -190,6 +190,8 @@ export class RequestTransformer {
     let index = start;
     let str = "";
 
+    const { comma, trailing } = options.hash;
+
     do {
       const data = {
         index,
@@ -201,6 +203,15 @@ export class RequestTransformer {
       };
       const blockParams = [index, data];
       str += options.fn(thisArg, { data, blockParams });
+
+      if (
+        comma === true &&
+        (trailing == true ||
+          ((trailing == null || trailing == false) && !data.last))
+      ) {
+        str += ",";
+      }
+
       index += data.step;
     } while (index < max);
 
