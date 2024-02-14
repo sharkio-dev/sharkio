@@ -21,6 +21,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { ProxySelector, SideBarItem } from "../sniffers/SniffersSideBar";
 import { selectIconByMethod } from "../sniffers/selectIconByMethod";
 import { EditableNameField } from "./EditableNameProps";
+import { LuCheck } from "react-icons/lu";
 
 const Step = ({
   step,
@@ -125,70 +126,32 @@ const FlowNodeDeleteButton = ({
   nodeId: string;
 }) => {
   const { deleteNode } = useFlowStore();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [flowName, setFlowName] = useState("");
-  const { nodes } = useFlowStore();
-  const node = nodes.find((node) => node.id === nodeId);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
-
-  const handleFlowNameChange = (event: any) => {
-    setFlowName(event.target.value);
-  };
-
-  const handleDeleteFlow = () => {
-    if (flowName !== node?.name) {
-      showSnackbar(
-        "Flow name does not match. Please enter the flow name to delete.",
-        "error",
-      );
-      return;
-    }
-    deleteNode(flowId, nodeId);
-    setIsModalOpen(false);
-  };
+  const [isDeleteClicked, setIsDeleteClicked] = useState(false);
 
   return (
     <div>
       {snackBar}
-      <GenericEditingModal
-        modalProps={{
-          open: isModalOpen,
-          onClose: () => {
-            setIsModalOpen(false);
-          },
-        }}
-        paperHeadLine="Delete Flow"
-        acceptButtonValue="Delete"
-        acceptButtonProps={{
-          onClick: () => {
-            setIsLoading(true);
-            handleDeleteFlow();
-            setIsLoading(false);
-          },
-          style: { color: "red" },
-        }}
-        cancelButtonProps={{
-          onClick: () => {
-            setIsModalOpen(false);
-          },
-        }}
-        textFieldProps={{
-          label: `Enter "${node?.name}" to delete`,
-          placeholder: `Enter "${node?.name}" to delete`,
-          onChange: (event: any) => {
-            handleFlowNameChange(event);
-          },
-        }}
-        isLoading={isLoading}
-      />
-      <AiOutlineDelete
-        className="text-md cursor-pointer hover:bg-border-color rounded-md"
-        onClick={(e: any) => {
-          e.stopPropagation();
-          setIsModalOpen(true);
-        }}
-      />
+      {!isDeleteClicked && (
+        <AiOutlineDelete
+          className={`text-md cursor-pointer hover:bg-border-color rounded-md`}
+          onClick={(e: any) => {
+            e.stopPropagation();
+            setIsDeleteClicked(true);
+          }}
+        />
+      )}
+      {isDeleteClicked && (
+        <LuCheck
+          className="text-md cursor-pointer hover:bg-border-color rounded-md text-green-500"
+          onClick={(e: any) => {
+            e.stopPropagation();
+            deleteNode(flowId, nodeId).then(() => {
+              showSnackbar("Step deleted successfully", "success");
+            });
+          }}
+        />
+      )}
     </div>
   );
 };
