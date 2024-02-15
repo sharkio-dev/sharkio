@@ -1,9 +1,9 @@
 import React from "react";
-import { BodySection } from "../test-suites/BodySection";
-import { HeaderSection } from "../test-suites/HeaderSection";
+import { BodySection } from "../../components/editors/BodySection";
+import { HeaderSection } from "../../components/HeaderSection";
 import { MockResponse } from "../../stores/mockStore";
 import { BodyHeaderToggle } from "./BodyHeaderStatusToggle";
-import StatusCodeSelector from "../test-suites/StatusCodeSelector";
+import StatusCodeSelector from "../flows/StatusCodeSelector";
 
 interface MockResponseDetailsProps {
   response?: MockResponse;
@@ -42,7 +42,7 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
             <div className="flex flex-col items-center space-y-4">
               <StatusCodeSelector
                 value={editedResponse.status.toString() || ""}
-                setValue={(value) => {
+                setValue={(value: string) => {
                   onResponseChange({ ...editedResponse, status: +value });
                 }}
               />
@@ -52,6 +52,7 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
                 onBodyChange={(value: any) => {
                   onResponseChange({ ...editedResponse, body: value });
                 }}
+                showPreviousSteps={false}
               />
             </div>
           )}

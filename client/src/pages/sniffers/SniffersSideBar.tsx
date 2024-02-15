@@ -3,17 +3,15 @@ import { GiSharkFin } from "react-icons/gi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useSniffersStore } from "../../stores/sniffersStores";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { EndpointSideBar } from "./EndpointSideBar";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { LoadingIcon } from "./LoadingIcon";
 import queryString from "query-string";
-import { routes } from "../../constants/routes";
 
 export const SniffersSideBar: React.FC = () => {
   const { sniffers } = useSniffersStore();
-  const navigator = useNavigate();
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const { loadEndpoints, loadingEndpoints } = useSniffersStore();
   const [_, setSearchParams] = useSearchParams();
@@ -41,26 +39,16 @@ export const SniffersSideBar: React.FC = () => {
     <>
       <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 overflow-y-auto">
         {snackBar}
-        <FormControl fullWidth size="small" variant="outlined">
-          <InputLabel>Sniffers</InputLabel>
-          <Select value={snifferId || ""} label="Proxies">
-            {sniffers.map((sniffer, i) => (
-              <MenuItem
-                key={i}
-                onClick={() => {
-                  navigator(routes.ENDPOINTS + "?snifferId=" + sniffer.id);
-                }}
-                value={sniffer.id}
-              >
-                <SideBarItem
-                  LeftIcon={GiSharkFin}
-                  isSelected={snifferId === sniffer.id}
-                  name={sniffer.name}
-                />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <ProxySelector
+          onSnifferSelected={(snifferId) => {
+            setSearchParams((params) => {
+              const newParams = new URLSearchParams(params);
+              newParams.set("snifferId", snifferId);
+              return newParams;
+            });
+          }}
+          snifferId={(snifferId as string) || ""}
+        />
         {snifferId && (
           <div className="flex flex-col w-full overflow-y-auto">
             {loadingEndpoints ? (
@@ -74,6 +62,43 @@ export const SniffersSideBar: React.FC = () => {
         )}
       </div>
     </>
+  );
+};
+
+export const ProxySelector = ({
+  onSnifferSelected,
+  snifferId,
+  isDisabled,
+}: {
+  onSnifferSelected?: (snifferId: string) => void;
+  snifferId?: string;
+  isDisabled?: boolean;
+}) => {
+  const { sniffers } = useSniffersStore();
+
+  return (
+    <FormControl fullWidth size="small" variant="outlined">
+      <InputLabel>Proxies</InputLabel>
+      <Select value={snifferId || ""} label="Proxies">
+        {sniffers.map((sniffer, i) => (
+          <MenuItem
+            key={i}
+            onClick={() => {
+              if (isDisabled) return;
+              onSnifferSelected && onSnifferSelected(sniffer.id);
+            }}
+            value={sniffer.id}
+            disabled={isDisabled}
+          >
+            <SideBarItem
+              LeftIcon={GiSharkFin}
+              isSelected={snifferId === sniffer.id}
+              name={sniffer.name}
+            />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

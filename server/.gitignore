@@ -20,3 +20,5 @@ certificates
 
 # jest
 coverage
+
+/public/env.js

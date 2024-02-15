@@ -100,7 +100,7 @@ export class EndpointService {
 
   async addInvocation(request: Partial<Omit<Request, "sniffer">>) {
     const theInvocation = this.requestRepository.repository.create({
-      endpointId: request.id,
+      endpointId: request.endpointId,
       snifferId: request.snifferId,
       ownerId: request.ownerId,
       method: request.method,
@@ -152,6 +152,7 @@ export class EndpointService {
     url: string,
     fromDate: Date | undefined,
     toDate: Date | undefined,
+    proxies?: string[],
   ) {
     let createdAt;
 
@@ -172,6 +173,7 @@ export class EndpointService {
         responses: {
           status: statusCodes === undefined ? undefined : In(statusCodes),
         },
+        snifferId: proxies === undefined ? undefined : In(proxies),
       },
       relations: {
         responses: true,

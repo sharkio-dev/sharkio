@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 import { WizardItem } from "./WizardItem";
 import { WizardTemplate } from "./WizardTemplate";
@@ -15,12 +15,15 @@ import {
   CATEGORIES_TEMPLATE,
   PRODUCTS_TEMPLATE,
 } from "./templates";
+import { NodeType, useFlowStore } from "../../stores/flowStore";
+import { useParams } from "react-router-dom";
 
 interface FakeDataWizardProps {
   handleSelection: (text: string) => void;
   onClose: () => void;
   goBack?: () => void;
 }
+
 export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
   handleSelection,
   onClose,
@@ -214,5 +217,85 @@ export const RequestDataWizard: React.FC<FakeDataWizardProps> = ({
         }}
       />
     </WizardTemplate>
+  );
+};
+
+export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
+  handleSelection,
+  onClose,
+  goBack,
+}) => {
+  const { flowId, testId } = useParams();
+  const { nodes, loadNodes } = useFlowStore();
+  const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
+
+  useEffect(() => {
+    if (!flowId) return;
+    loadNodes(flowId);
+  }, []);
+
+  const getPreviousSteps = () => {
+    const previousSteps: NodeType[] = [];
+    for (const node of nodes) {
+      if (node.id === testId) break;
+      previousSteps.push(node);
+    }
+    return previousSteps;
+  };
+
+  return (
+    <>
+      {!selectedNode && (
+        <WizardTemplate
+          onClose={onClose}
+          title="Previos steps responses"
+          goBack={goBack}
+        >
+          {getPreviousSteps().map((node) => {
+            return (
+              <WizardItem
+                title={node.name}
+                onClick={() => {
+                  setSelectedNode(node);
+                }}
+              />
+            );
+          })}
+        </WizardTemplate>
+      )}
+      {selectedNode && (
+        <WizardTemplate
+          onClose={() => {
+            setSelectedNode(null);
+          }}
+          title={selectedNode.name}
+          goBack={() => {
+            setSelectedNode(null);
+          }}
+        >
+          <WizardItem
+            title="Status Code"
+            onClick={() => {
+              handleSelection(`{{${selectedNode.id}.response.status}}`);
+              onClose();
+            }}
+          />
+          <WizardItem
+            title="Response Body"
+            onClick={() => {
+              handleSelection(`{{${selectedNode.id}.response.body}}`);
+              onClose();
+            }}
+          />
+          <WizardItem
+            title="Response Headers"
+            onClick={() => {
+              handleSelection(`{{${selectedNode.id}.response.headers}}`);
+              onClose();
+            }}
+          />
+        </WizardTemplate>
+      )}
+    </>
   );
 };

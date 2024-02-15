@@ -25,7 +25,9 @@ export const PageTemplate: React.FC<
       <div className={styles.navbarContainer}>
         <Navbar />
       </div>
-      <div className={`${styles.contentContainer} bg-tertiary`}>{children}</div>
+      <div className={`${styles.contentContainer} bg-tertiary overflow-y-auto`}>
+        {children}
+      </div>
       {withBottomBar && (
         <div className={styles.bottomBarContainer}>
           <BottomBar />
@@ -41,10 +43,11 @@ const BottomBar: React.FC = () => {
   const onChatClick = () => {
     navigate("/chat");
   };
+
   return (
     <div className="sticky bottom-0 flex-row w-full bg-secondary h-10 border-t border-border-color">
       <div className="flex flex-row w-full h-full items-center justify-between px-4">
-        <div className="text-[#fff]">© 2023 Sharkio</div>
+        <div className="text-[#fff]">© {new Date().getFullYear()} Sharkio</div>
         <div className="flex flex-row items-center">
           {
             // @ts-ignore

@@ -27,17 +27,6 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
   const dragResponseRef = React.useRef<number>(0);
   const dragOverResponseRef = React.useRef<number>(0);
 
-  const handleSort = () => {
-    const newResponses = mock.mockResponses ? [...mock.mockResponses] : [];
-    const draggedResponse = newResponses[dragResponseRef.current];
-    newResponses.splice(dragResponseRef.current, 1);
-    newResponses.splice(dragOverResponseRef.current, 0, draggedResponse);
-    newResponses.forEach((r, i) => {
-      r.sequenceIndex = i;
-    });
-    handleMockResponsesChange(newResponses);
-  };
-
   return (
     <div className="flex-col">
       <div className="flex flex-row items-center justify-between border-b border-border-color">
@@ -67,7 +56,6 @@ export const MockResponsesSection: React.FC<MockResponsesSectionProps> = ({
           onMockChange={handleMockChange}
           index={index}
           openResponseId={openResponseId}
-          onSort={handleSort}
           onDeleteMockResponse={handleDeleteMockResponse}
           onDuplicateMockResponse={handleDuplicateMockResponse}
           onOpenResponse={(responseId: string) => {

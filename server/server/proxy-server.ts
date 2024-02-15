@@ -1,6 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, { Express } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
 import "reflect-metadata";
 import { useLog } from "../lib/log";
@@ -11,6 +11,7 @@ import https from "https";
 import fs from "fs";
 import MockMiddleware from "./middlewares/mock.middleware";
 import path from "path";
+import { dynamicCorsMiddleware } from "./middlewares/cors.middleware";
 
 const log = useLog({
   dirname: __dirname,
@@ -31,13 +32,13 @@ export class ProxyServer {
   ) {
     this.app = express();
     this.app.use(logMiddleware);
+    this.app.use(dynamicCorsMiddleware);
     this.app.use(cors({ origin: "*", allowedHeaders: "*", methods: "*" }));
     this.app.use(express.json());
     this.app.use(express.text());
     this.app.use(express.raw());
     this.app.use(express.urlencoded());
     this.app.use(cookieParser());
-    // **IMPORTANT** request interceptor must be before mock middleware
     this.app.use(
       this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
     );

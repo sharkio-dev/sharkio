@@ -61,7 +61,9 @@ interface SniffersState {
     dateStart?: Date | undefined,
     dateEnd?: Date | undefined,
     url?: string,
+    proxies?: string[],
   ) => Promise<InvocationType[]>;
+  getSnifferById: (snifferId: string) => SnifferType | null;
 }
 
 export const useSniffersStore = create<SniffersState>((set, get) => ({
@@ -75,7 +77,6 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
   loadingSniffers: false,
   loadingEndpoints: false,
   loadingExecution: false,
-
   loadSniffers: (force = false) => {
     if (get().sniffers.length && !force) {
       return Promise.resolve(get().sniffers);
@@ -88,6 +89,10 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
         return res.data;
       })
       .finally(() => set({ loadingSniffers: false }));
+  },
+  getSnifferById: (snifferId: string): SnifferType | null => {
+    const sniffer = get().sniffers.find((s) => s.id === snifferId);
+    return sniffer || null;
   },
   setSelectedSniffer: (sniffer: SnifferType | null) => {
     set({ selectedSniffer: sniffer });
@@ -178,9 +183,17 @@ export const useSniffersStore = create<SniffersState>((set, get) => ({
     fromDate?: Date | undefined,
     toDate?: Date | undefined,
     url?: string,
+    proxies?: string[],
   ) => {
     set({ loadingInvocations: true });
-    return getLiveInvocations(statusCodes, methods, fromDate, toDate, url)
+    return getLiveInvocations(
+      statusCodes,
+      methods,
+      fromDate,
+      toDate,
+      url,
+      proxies,
+    )
       .then((res) => {
         set({ invocations: res });
         return res;

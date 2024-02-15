@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useLog } from "../../lib/log";
 import { RequestRepository } from "../../model/repositories/request.repository";
 import https from "https";
@@ -25,8 +25,9 @@ export class RequestService {
 
   async execute({ method, url, headers, body, subdomain }: ExecutionType) {
     const calculatedUrl =
-      `${process.env.PROXY_SERVER_PROTOCOL}://${subdomain}.${process.env.PROXY_SERVER_DOMAIN}` +
-      url;
+      `${process.env.PROXY_SERVER_PROTOCOL ?? "https"}://${subdomain}.${
+        process.env.PROXY_SERVER_DOMAIN
+      }` + url;
     log.info({
       method,
       url: calculatedUrl,
@@ -44,7 +45,7 @@ export class RequestService {
         {} as Record<string, string>,
       );
 
-    const res = await axios
+    const res: AxiosResponse = await axios
       .request({
         method,
         url: calculatedUrl,

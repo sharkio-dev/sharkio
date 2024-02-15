@@ -21,7 +21,6 @@ interface IMockResponseCard {
   dragOverResponseRef: any;
   onMockChange: any;
   index: number;
-  onSort: any;
   onDeleteMockResponse: (responseId: string) => Promise<void>;
   onDuplicateMockResponse?: (mockToDuplicate: MockResponse) => Promise<void>;
   onOpenResponse: any;
@@ -36,7 +35,6 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   onMockChange,
   index,
   openResponseId,
-  onSort,
   onDeleteMockResponse,
   onOpenResponse,
   onMockResponsesChange,
@@ -48,6 +46,17 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   const [name, setName] = useState<string>(mockResponse.name);
   const { editMockResponse } = useMockResponseStore();
   const isSelected = mockResponse.id === mock.selectedResponseId;
+
+  const handleSort = () => {
+    const newResponses = mock.mockResponses ? [...mock.mockResponses] : [];
+    const draggedResponse = newResponses[dragResponseRef.current];
+    newResponses.splice(dragResponseRef.current, 1);
+    newResponses.splice(dragOverResponseRef.current, 0, draggedResponse);
+    newResponses.forEach((r, i) => {
+      r.sequenceIndex = i;
+    });
+    onMockResponsesChange(newResponses);
+  };
 
   const handleSaveNameClicked = (e: any) => {
     e.stopPropagation();
@@ -78,12 +87,12 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
   return (
     <>
       <div
-        className="flex flex-col border border-border-color p-4 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[64px] active:cursor-grabbing"
+        className="flex flex-col border border-border-color p-2 mt-4 shadow-md hover:border-blue-400 cursor-grab rounded-md min-h-[48px] active:cursor-grabbing"
         key={`${index}-${mockResponse.id}`}
         draggable
         onDragStart={() => (dragResponseRef.current = index)}
         onDragEnter={() => (dragOverResponseRef.current = index)}
-        onDragEnd={onSort}
+        onDragEnd={handleSort}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => {
           if (openResponseId === mockResponse.id) {
