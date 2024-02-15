@@ -29,6 +29,11 @@ let productionMenu: IMenuItem[] = [
     title: "Mocks",
     Icon: HiOutlineClipboardDocumentList,
   },
+  {
+    to: routes.FLOWS,
+    title: "Flows",
+    Icon: PiGraphLight,
+  },
 ];
 
 const menus: IMenuItem[] = [
