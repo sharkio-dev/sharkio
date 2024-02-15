@@ -87,3 +87,4 @@ jobs:
           token: ${{ secrets.DEPLOY_KEY }}
           ref: "main"
           inputs: '{"image": "${{ matrix.name }}", "image_tag": "${{ env.environment }}-${{ needs.build.outputs.short_sha }}" ,"env": "${{ env.environment }}"}'
+
