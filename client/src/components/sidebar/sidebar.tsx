@@ -38,6 +38,11 @@ let productionMenu: IMenuItem[] = [
 
 const menus: IMenuItem[] = [
   {
+    to: routes.FLOWS,
+    title: "Flows",
+    Icon: PiGraphLight,
+  },
+  {
     to: routes.ENDPOINTS,
     title: "endpoints",
     Icon: VscTypeHierarchy,
