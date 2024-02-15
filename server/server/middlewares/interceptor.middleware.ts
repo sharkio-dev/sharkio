@@ -3,6 +3,8 @@ import { Request as RequestModel } from "../../model/entities/Request";
 import { Sniffer } from "../../model/entities/Sniffer";
 import { Users } from "../../model/entities/Users";
 import { Interceptor } from "../interceptors/Interceptor";
+import { useLog } from "../../lib/log";
+const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export class RequestInterceptor {
   constructor(private readonly interceptor: Interceptor) {}
@@ -24,6 +26,7 @@ export class RequestInterceptor {
         }
         next();
       } catch (e) {
+        logger.error("failed to validate request", { e });
         res.sendStatus(500);
       }
     }
