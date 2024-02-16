@@ -3,7 +3,7 @@ services:
   frontend:
     build:
       context: ./client
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile
     environment:
       - VITE_FULLSTORY_ORG_ID=o-1TD77Z-na1
       - VITE_PROXY_DOMAIN=localhost.sharkio.dev:8000
