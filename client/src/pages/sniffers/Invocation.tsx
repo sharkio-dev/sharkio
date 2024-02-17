@@ -45,11 +45,7 @@ export const Invocation = ({
       <InvocationPreview
         open={openModal}
         onClose={handleCloseModal}
-        response={{
-          status: invocation.response.status,
-          body: invocation.body,
-          headers: invocation.headers,
-        }}
+        invocationId={invocation.id}
       />
 
       <Tooltip title={url} placement="top" arrow enterDelay={500}>
