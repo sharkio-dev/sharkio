@@ -1,11 +1,12 @@
 import React from "react";
 import { Modal, Paper, Button } from "@mui/material";
 import { ResponseSection } from "../sniffers/InvocationDetails";
+import { InvocationType } from "../../pages/sniffers/types";
 
 type InvocationPreviewProps = {
   open: boolean;
   onClose: () => void;
-  response: any;
+  response: InvocationType["response"];
 };
 
 export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
@@ -20,7 +21,7 @@ export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
       onClose={onClose}
     >
       <Paper>
-        <ResponseSection response={response} />
+        <ResponseSection response={{ ...response }} />
         <Button className="flex" onClick={onClose}>
           Close
         </Button>
