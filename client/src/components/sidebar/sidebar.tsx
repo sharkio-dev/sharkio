@@ -29,14 +29,14 @@ let productionMenu: IMenuItem[] = [
     title: "Mocks",
     Icon: HiOutlineClipboardDocumentList,
   },
-];
-
-const menus: IMenuItem[] = [
   {
     to: routes.FLOWS,
     title: "Flows",
     Icon: PiGraphLight,
   },
+];
+
+const menus: IMenuItem[] = [
   {
     to: routes.ENDPOINTS,
     title: "endpoints",

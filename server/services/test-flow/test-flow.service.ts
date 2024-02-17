@@ -49,7 +49,7 @@ export class TestFlowService {
           comparator: "eq",
           expectedValue: true,
           type: "boolean",
-          path: "scucess",
+          path: "success",
           useTemplateEngine: false,
         });
       }

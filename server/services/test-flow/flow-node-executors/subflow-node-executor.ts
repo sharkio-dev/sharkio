@@ -27,11 +27,6 @@ export class SubflowNodeExecutor implements INodeExecutor {
     nodeRun: TestFlowNodeRun,
     context: ExecutionContext,
   ) {
-    const currentResult: ExecutionResult = {
-      context: {},
-      success: true,
-    };
-
     if (nodeRun.subFlowId == null) {
       throw new Error("subflowId is empty for subflow node");
     }

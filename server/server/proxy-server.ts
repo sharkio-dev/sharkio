@@ -33,7 +33,6 @@ export class ProxyServer {
     this.app = express();
     this.app.use(logMiddleware);
     this.app.use(dynamicCorsMiddleware);
-    this.app.use(cors({ origin: "*", allowedHeaders: "*", methods: "*" }));
     this.app.use(express.json());
     this.app.use(express.text());
     this.app.use(express.raw());
