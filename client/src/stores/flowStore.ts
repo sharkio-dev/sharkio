@@ -119,7 +119,7 @@ const getFlows = () => {
   return BackendAxios.get("/test-flows");
 };
 
-const getNodes = (flowId: string) => {
+export const getNodes = (flowId: string) => {
   return BackendAxios.get(`/test-flows/${flowId}/nodes?isSorted=true`);
 };
 
