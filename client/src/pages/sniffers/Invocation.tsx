@@ -13,7 +13,7 @@ export const selectIconByStatus = (status: number) => {
 };
 
 type InvocationProps = {
-  invocation: any;
+  invocationId: string;
   status: number;
   url: string;
   method: string;
@@ -22,7 +22,7 @@ type InvocationProps = {
   onClick?: () => void;
 };
 export const Invocation = ({
-  invocation,
+  invocationId,
   status,
   url,
   method,
@@ -45,7 +45,7 @@ export const Invocation = ({
       <InvocationPreview
         open={openModal}
         onClose={handleCloseModal}
-        invocationId={invocation.id}
+        invocationId={invocationId}
       />
 
       <Tooltip title={url} placement="top" arrow enterDelay={500}>

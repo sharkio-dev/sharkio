@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal, Paper, Button } from "@mui/material";
 import { ResponseSection } from "../sniffers/InvocationDetails";
-import { BackendAxios } from "../../api/backendAxios";
 import { getInvocation } from "../../api/api";
 
 type InvocationPreviewProps = {
@@ -20,6 +19,7 @@ export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
     body: "",
     headers: {},
   });
+
   React.useEffect(() => {
     getInvocation(invocationId).then((res) => {
       if (res) {
@@ -28,9 +28,10 @@ export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
       }
     });
   }, []);
+
   return (
     <Modal
-      className="flex rounded-md w-2/3 mx-auto justify-center items-center"
+      className="flex rounded-md w-[70%] mx-auto justify-center items-center"
       open={open}
       onClose={onClose}
     >
