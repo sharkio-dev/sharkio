@@ -226,7 +226,7 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
   onClose,
   goBack,
 }) => {
-  const { flowId, testId } = useParams();
+  const { flowId } = useParams();
   const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -274,7 +274,7 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
   ];
   const subflowItems: wizardNodeItem[] = [
     {
-      title: "context",
+      title: "steps",
       template: `{{${selectedNode?.id}.context}}`,
       onClick: () => {
         setContextSelected(true);
