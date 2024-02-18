@@ -2,7 +2,6 @@ import React from "react";
 import { Modal, Paper, Button } from "@mui/material";
 import { ResponseSection } from "../sniffers/InvocationDetails";
 import { getInvocation } from "../../api/api";
-import TabPanel from "@mui/lab/TabPanel";
 
 type InvocationPreviewProps = {
   open: boolean;
