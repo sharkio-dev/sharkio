@@ -31,11 +31,11 @@ export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
 
   return (
     <Modal
-      className="flex justify-center items-center"
+      className="flex justify-center items-center rounded-full text-gray-300"
       open={open}
       onClose={onClose}
     >
-      <Paper className="flex flex-col p-4 w-6/12 rounded-sm">
+      <Paper className="flex flex-col p-4 w-6/12">
         <ResponseSection response={{ ...previewData }} />
         <Button className="flex" onClick={onClose}>
           Close
