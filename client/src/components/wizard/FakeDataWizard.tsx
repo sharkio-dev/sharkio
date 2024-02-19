@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { LoadingIcon } from "../../pages/sniffers/LoadingIcon";
 import { NodeType, getNodes } from "../../stores/flowStore";
 import { WizardItem } from "./WizardItem";
 import { WizardTemplate } from "./WizardTemplate";
@@ -17,7 +18,6 @@ import {
   TODOS_TEMPLATE,
   USERS_TEMPLATE,
 } from "./templates";
-import { LoadingIcon } from "../../pages/sniffers/LoadingIcon";
 
 interface FakeDataWizardProps {
   handleSelection: (text: string) => void;
@@ -226,7 +226,7 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
   onClose,
   goBack,
 }) => {
-  const { flowId } = useParams();
+  const { flowId, testId } = useParams();
   const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -333,16 +333,18 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
                     />
                   );
                 })
-              : nodes.map((node) => {
-                  return (
-                    <WizardItem
-                      title={node.name}
-                      onClick={() => {
-                        handleItemClicked(node);
-                      }}
-                    ></WizardItem>
-                  );
-                })}
+              : nodes
+                  .filter((node) => node.id !== testId)
+                  .map((node) => {
+                    return (
+                      <WizardItem
+                        title={node.name}
+                        onClick={() => {
+                          handleItemClicked(node);
+                        }}
+                      ></WizardItem>
+                    );
+                  })}
           </>
         )}
       </WizardTemplate>

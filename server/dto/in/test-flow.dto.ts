@@ -3,10 +3,13 @@ import { z } from "zod";
 export type CreateTestFlowDTO = {
   ownerId: string;
   name: string;
+  type: "flow" | "suite";
+  executionType: "sequence" | "parallel";
 };
 
 export const CreateTestFlowValidator = z.object({
   name: z.string(),
+  type: z.literal("flow").or(z.literal("suite")),
 });
 
 type AssertionDataType = "string" | "number" | "boolean" | "json";
