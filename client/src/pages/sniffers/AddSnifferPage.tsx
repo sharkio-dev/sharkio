@@ -183,7 +183,7 @@ export const AddSnifferPage = () => {
       port: 80,
       subdomain: `${toLowerCaseNoSpaces(name)}-${subdomain}`,
     }).then(() => {
-      setActiveStep(3);
+      setActiveStep(2);
     });
   };
 
@@ -207,13 +207,13 @@ export const AddSnifferPage = () => {
           <DomainStep
             value={domain}
             handleChange={setDomain}
-            onNextClicked={() => setActiveStep(2)}
+            onNextClicked={() => setActiveStep(1)}
             onBackClicked={() => setActiveStep(0)}
           />
         )}
         {activeStep === 1 && (
           <NameStep
-            onBackClicked={() => setActiveStep(1)}
+            onBackClicked={() => setActiveStep(0)}
             onNextClicked={handleCreateSniffer}
             value={name}
             handleChange={setName}
