@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
 import { selectIconByMethod } from "./selectIconByMethod";
-import {  useState } from "react";
+import { useState } from "react";
 import { CiLink } from "react-icons/ci";
 export const selectIconByStatus = (status: number) => {
   if (status < 300) {
@@ -12,7 +12,7 @@ export const selectIconByStatus = (status: number) => {
 };
 
 type InvocationProps = {
-  invocationLink?:  string;
+  invocationLink?: string;
   status: number;
   url: string;
   method: string;
@@ -50,7 +50,7 @@ export const Invocation = ({
         <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
           <div className="cursor-pointer flex flex-col items-center space-y-1">
             <Tooltip title={copySuccess ? "Link Copied!" : "Copy Link"} placement="top-end">
-              <div><CiLink onClick={ handleCopyClick} /></div>
+              <div><CiLink onClick={handleCopyClick} /></div>
             </Tooltip>
           </div>
         </div>
