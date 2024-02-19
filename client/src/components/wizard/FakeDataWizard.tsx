@@ -238,7 +238,7 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
       .then((data: any) => {
         setNodes(data.data);
       })
-      .catch((e) => {
+      .catch(() => {
         alert("error");
       })
       .finally(() => {
