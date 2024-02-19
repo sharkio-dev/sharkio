@@ -15,6 +15,9 @@ export class TestFlowService {
   ) {}
 
   createFlow(createFlowDTO: CreateTestFlowDTO) {
+    createFlowDTO.executionType =
+      createFlowDTO.type === "suite" ? "parallel" : "sequence";
+
     return this.repository.create(createFlowDTO);
   }
 

@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import React from "react";
 import { MdChevronRight } from "react-icons/md";
 
@@ -11,7 +12,9 @@ export const WizardItem: React.FC<WizardItemProp> = ({ title, onClick }) => {
       className="flex flex-row w-full items-center justify-between cursor-pointer hover:text-magic shadow-lg rounded-md border-border-color border p-2 active:bg-border-color"
       onClick={onClick}
     >
-      <div className="text-lg ">{title}</div>
+      <Tooltip title={title}>
+        <div className="text-lg truncate">{title}</div>
+      </Tooltip>
       <div className="flex items-center space-x-2">
         <MdChevronRight className="text-xl hover:scale-95 cursor-pointer" />
       </div>

@@ -119,7 +119,7 @@ const getFlows = () => {
   return BackendAxios.get("/test-flows");
 };
 
-const getNodes = (flowId: string) => {
+export const getNodes = (flowId: string) => {
   return BackendAxios.get(`/test-flows/${flowId}/nodes?isSorted=true`);
 };
 
@@ -146,7 +146,10 @@ const runFlow = (flowId: string) => {
 };
 
 const postFlowAPI = (flowName: FlowType["name"]) => {
-  return BackendAxios.post(`/test-flows`, { name: flowName }).then((res) => {
+  return BackendAxios.post(`/test-flows`, {
+    name: flowName,
+    type: "suite",
+  }).then((res) => {
     return res.data;
   });
 };
