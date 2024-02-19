@@ -13,6 +13,7 @@ export const InvocationsSearchBar = ({
   setActiveInvocation,
   title,
 }: InvocationsSearchBarProps) => {
+  const hostname = document.location.origin;
   const { invocations, loadingInvocations } = useSniffersStore();
   return (
     <>
