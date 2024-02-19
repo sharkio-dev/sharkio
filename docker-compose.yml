@@ -1,14 +1,69 @@
 version: "3"
 services:
-  backend:
-    build: ./server
-    ports:
-      - 5012:5012
-      - 443:443
-      - 80:80
-    extra_hosts:
-      - localhost:host-gateway
   frontend:
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      - VITE_FULLSTORY_ORG_ID=o-1TD77Z-na1
+      - VITE_PROXY_DOMAIN=localhost.sharkio.dev:8000
+      - VITE_SUPABASE_PROJECT_URL='https://rlhmecfbrihwgltuacbn.supabase.co'
+      - VITE_SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8'
+      - VITE_SERVER_URL=http://localhost:5012
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 8080:8080
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.backend
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+    ports:
+      - 5012:5012
+      - 8000:8000
+      - 8001:8001
+    environment:
+      - VITE_SUPABASE_PROJECT_URL=https://rlhmecfbrihwgltuacbn.supabase.co
+      - VITE_SUPABASE_ANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - LOG_LEVEL=info
+      - LOG_SQL=true
+      - PROXY_SERVER_DOMAIN=http://localhost.sharkio.dev:8000
+      - PROXY_HTTP_PORT=8000
+      - PROXY_HTTPS_PORT=8001
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  migrations:
+    depends_on:
+      - db
+    build:
+      context: ./server
+      dockerfile: Dockerfile.migrations
+    environment:
+      - VITE_SUPABASE_PROJECT_URL=https://rlhmecfbrihwgltuacbn.supabase.co
+      - VITE_SUPABASE_ANON=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsaG1lY2Zicmlod2dsdHVhY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODkwODc5NDYsImV4cCI6MjAwNDY2Mzk0Nn0.HKx4k173_JShm58AUhBoq2VWt5GGfhbtwhaya5qGos8
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - LOG_LEVEL=info
+      - LOG_SQL=true
+      - PROXY_SERVER_DOMAIN=localhost.sharkio.dev:8000
+      - PROXY_HTTP_PORT=8080
+      - PROXY_HTTPS_PORT=8081
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres

@@ -7,6 +7,7 @@ export class SnifferRepository {
   constructor(private readonly appDataSource: DataSource) {
     this.repository = appDataSource.manager.getRepository(Sniffer);
   }
+
   getById(ownerId: string, id: string) {
     return this.repository.findOne({
       where: {
@@ -15,6 +16,15 @@ export class SnifferRepository {
       },
     });
   }
+
+  getByIds(ids: string[]) {
+    return this.repository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+  }
+
   findByDownstream(url: string) {
     return this.repository.findOne({ where: { downstreamUrl: url } });
   }
@@ -39,5 +49,4 @@ export class SnifferRepository {
   findByPorts(ownerId: string, ports: number[]) {
     return this.repository.find({ where: { ownerId, port: In(ports) } });
   }
-
 }

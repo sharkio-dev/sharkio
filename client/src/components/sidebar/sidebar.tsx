@@ -2,10 +2,10 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { Logo } from "./Logo";
-import { BiTestTube } from "react-icons/bi";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { VscTypeHierarchy } from "react-icons/vsc";
 import { MdOutlineDashboard } from "react-icons/md";
+import { PiGraphLight } from "react-icons/pi";
 
 interface IMenuItem {
   to: string;
@@ -29,6 +29,11 @@ let productionMenu: IMenuItem[] = [
     title: "Mocks",
     Icon: HiOutlineClipboardDocumentList,
   },
+  {
+    to: routes.FLOWS,
+    title: "Flows",
+    Icon: PiGraphLight,
+  },
 ];
 
 const menus: IMenuItem[] = [
@@ -36,11 +41,6 @@ const menus: IMenuItem[] = [
     to: routes.ENDPOINTS,
     title: "endpoints",
     Icon: VscTypeHierarchy,
-  },
-  {
-    to: routes.TEST_SUITES,
-    title: "Test Suites",
-    Icon: BiTestTube,
   },
 ];
 

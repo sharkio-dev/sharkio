@@ -1,9 +1,9 @@
 import { MockResponse } from "../../../model/entities/MockResponse";
-import { MockResponseTransformer } from "../../../services/mock-response-transformer/mock-response-transformer";
+import { RequestTransformer } from "../../../services/request-transformer/request-transformer";
 
-describe("MockResponseTransformer", () => {
+describe("RequestTransformer", () => {
   it("test transform body and headers", () => {
-    const transformer = new MockResponseTransformer();
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
@@ -20,7 +20,7 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, {
+    const res = transformer.transformResponse(mockResponse, {
       body,
       headers: {},
       url: "",
@@ -34,7 +34,7 @@ describe("MockResponseTransformer", () => {
   });
 
   it("test transform body and headers - parameter doesn't exist", () => {
-    const transformer = new MockResponseTransformer();
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
@@ -51,7 +51,7 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, {
+    const res = transformer.transformResponse(mockResponse, {
       body,
       headers: {},
       url: "",
@@ -65,7 +65,7 @@ describe("MockResponseTransformer", () => {
   });
 
   it("test transform body and headers - undefined context", () => {
-    const transformer = new MockResponseTransformer();
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
@@ -82,19 +82,19 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, undefined);
+    const res = transformer.transformResponse(mockResponse, undefined);
 
     expect(res.body).toEqual('{ "hello": "world " }');
     expect(res.headers?.hello).toEqual("");
   });
 
-  it("test transform body and headers - repeat with trailing comma", () => {
-    const transformer = new MockResponseTransformer();
+  it("test transform body and headers - repeat without trailing comma", () => {
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
       headers: {},
-      body: '[{{#repeat 2}}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]',
+      body: '[{{#repeat 2 comma=true}}{ "hello": "world {{body.test}}" }{{/repeat}}]',
       id: "",
       status: 0,
       name: null,
@@ -106,18 +106,18 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, undefined);
+    const res = transformer.transformResponse(mockResponse, undefined);
 
     expect(res.body).toEqual('[{ "hello": "world " },{ "hello": "world " }]');
   });
 
-  it("test transform body and headers - repeat from query param", () => {
-    const transformer = new MockResponseTransformer();
+  it("test transform body and headers - repeat with trailing comma", () => {
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
       headers: {},
-      body: '[{{#repeat query.items}}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]',
+      body: '[{{#repeat 2 comma=true trailing=true}}{ "hello": "world {{body.test}}" }{{/repeat}}]',
       id: "",
       status: 0,
       name: null,
@@ -129,7 +129,30 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, {
+    const res = transformer.transformResponse(mockResponse, undefined);
+
+    expect(res.body).toEqual('[{ "hello": "world " },{ "hello": "world " },]');
+  });
+
+  it("test transform body and headers - repeat from query param", () => {
+    const transformer = new RequestTransformer();
+    const body = { test: "this is a test string" };
+
+    const mockResponse: MockResponse = {
+      headers: {},
+      body: '[{{#repeat query.items comma=true}}{ "hello": "world {{body.test}}" }{{/repeat}}]',
+      id: "",
+      status: 0,
+      name: null,
+      snifferId: "",
+      ownerId: "",
+      mockId: "",
+      sequenceIndex: 0,
+      createdAt: new Date(),
+      updatedAt: null,
+    };
+
+    const res = transformer.transformResponse(mockResponse, {
       query: { items: 2 },
     } as unknown as any);
 
@@ -137,12 +160,12 @@ describe("MockResponseTransformer", () => {
   });
 
   it("test transform body and headers - nested repeat from query param", () => {
-    const transformer = new MockResponseTransformer();
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
       headers: {},
-      body: `[{{#repeat query.items}}{{#repeat ../query.items}}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]`,
+      body: `[{{#repeat query.items comma=true}}{{#repeat ../query.items comma=true}}{ "hello": "world {{body.test}}" }{{/repeat}}{{/repeat}}]`,
       id: "",
       status: 0,
       name: null,
@@ -154,7 +177,7 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, {
+    const res = transformer.transformResponse(mockResponse, {
       query: { items: 2 },
     } as unknown as any);
 
@@ -164,12 +187,12 @@ describe("MockResponseTransformer", () => {
   });
 
   it("test transform - error should return transformation error", () => {
-    const transformer = new MockResponseTransformer();
+    const transformer = new RequestTransformer();
     const body = { test: "this is a test string" };
 
     const mockResponse: MockResponse = {
       headers: {},
-      body: '[{{#repeat query.items}{ "hello": "world {{body.test}}" }{{#compare @index "<" 2}},{{/compare}}{{/repeat}}]',
+      body: '[{{#repeat query.items comma=true}{ "hello": "world {{body.test}}" }{{/repeat}}]',
       id: "",
       status: 0,
       name: null,
@@ -181,7 +204,7 @@ describe("MockResponseTransformer", () => {
       updatedAt: null,
     };
 
-    const res = transformer.transform(mockResponse, {
+    const res = transformer.transformResponse(mockResponse, {
       query: { items: 2 },
     } as unknown as any);
 

@@ -5,12 +5,10 @@ import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 
 type InvocationsSearchBarProps = {
-  invocationId?: string;
   setActiveInvocation: (invocationId: string) => void;
   title: string;
 };
 export const InvocationsSearchBar = ({
-  invocationId,
   setActiveInvocation,
   title,
 }: InvocationsSearchBarProps) => {
@@ -39,7 +37,6 @@ export const InvocationsSearchBar = ({
             return (
               <Invocation
                 method={invocation.method}
-                isSelected={invocation.id === invocationId}
                 onClick={() => setActiveInvocation(invocation.id)}
                 invocationLink={`${hostname}/live-invocations/${invocation.id}`}
                 key={i}

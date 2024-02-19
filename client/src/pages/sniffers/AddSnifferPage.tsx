@@ -13,6 +13,7 @@ import {
   Stepper,
   ToggleButton,
   ToggleButtonGroup,
+  TextField,
 } from "@mui/material";
 import randomString from "random-string";
 import React from "react";
@@ -21,12 +22,17 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "./LoadingIcon";
+import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
+import debounce from "lodash/debounce";
+import { toLowerCaseNoSpaces } from "../../utils/texts";
+import { handleEnterKeyPress } from "../../utils/handleEnterKeyPress";
 
 interface EnvStepProps {
   onNextClicked: () => void;
   value: boolean;
   handleChange: (newValue: boolean) => void;
 }
+
 const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
   return (
     <div className="flex w-full flex-col items-center">
@@ -77,21 +83,10 @@ const DomainStep = ({
   handleChange,
 }: DomainStepProps) => {
   const [isValid, setIsValid] = React.useState(false);
-  const isValidHttpUrl = (string: string) => {
-    let url;
-
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
-  };
 
   const onDomainChange = (newValue: string) => {
     handleChange(newValue);
-    setIsValid(isValidHttpUrl(newValue));
+    setIsValid(validateHttpUrlFormat(newValue));
   };
 
   return (
@@ -100,7 +95,9 @@ const DomainStep = ({
         <>
           <SimpleDomainComponent
             domain={value}
+            isValid={isValid}
             onDomainChange={onDomainChange}
+            onNextClicked={onNextClicked}
           />
         </>
       ) : (
@@ -119,22 +116,47 @@ const DomainStep = ({
     </div>
   );
 };
-
 function SimpleDomainComponent(props: {
   domain: string;
+  isValid: boolean;
   onDomainChange: (domain: string) => void;
+  onNextClicked: () => void;
 }) {
+  const [error, setError] = React.useState<string | null>(null);
+  const DEBOUNCE_TIME = 1000;
+
+  const handleDomainChange = (newValue: string) => {
+    props.onDomainChange(newValue);
+    debouncedSearch(newValue);
+  };
+
+  const debouncedSearch = React.useCallback(
+    debounce((newValue: string) => {
+      if (!validateHttpUrlFormat(newValue)) {
+        setError("The URL is not in the https://example.com format.");
+      } else {
+        setError(null);
+      }
+    }, DEBOUNCE_TIME),
+    [],
+  );
+
+  const handleKeyDown = handleEnterKeyPress(props.onNextClicked, props.isValid);
+
   return (
     <>
       <div className="font-sarif self-start text-2xl font-bold">
         What is your server's domain?
       </div>
       <div className="flex h-[50vh] w-full flex-col items-center justify-center">
-        <OutlinedInput
+        <TextField
           value={props.domain}
           className="w-1/2"
           placeholder="https://example.com"
-          onChange={(e) => props.onDomainChange(e.target.value)}
+          onChange={(e) => handleDomainChange(e.target.value)}
+          error={Boolean(error)}
+          helperText={error}
+          onKeyDown={handleKeyDown}
         />
       </div>
     </>
@@ -199,6 +221,7 @@ interface NameStepProps {
   handleChange: (newValue: string) => void;
   isLoading: boolean;
 }
+
 const NameStep = ({
   onBackClicked,
   onNextClicked,
@@ -206,6 +229,8 @@ const NameStep = ({
   handleChange,
   isLoading,
 }: NameStepProps) => {
+  const handleKeyDown = handleEnterKeyPress(onNextClicked, value !== "");
+
   return (
     <div className="flex w-full flex-col items-center">
       <div className="font-sarif self-start text-2xl font-bold">
@@ -217,6 +242,7 @@ const NameStep = ({
           placeholder="Proxy name"
           value={value}
           onChange={(e) => handleChange(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div className="mt-8 flex w-full flex-row justify-between">
@@ -235,6 +261,7 @@ const NameStep = ({
     </div>
   );
 };
+
 const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
   return (
     <div className="flex w-full flex-col items-center">
@@ -267,7 +294,7 @@ export const AddSnifferPage = () => {
       name,
       downstreamUrl: domain,
       port: 80,
-      subdomain: `${name}-${subdomain}`,
+      subdomain: `${toLowerCaseNoSpaces(name)}-${subdomain}`,
     }).then(() => {
       setActiveStep(3);
     });

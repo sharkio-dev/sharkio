@@ -3,6 +3,10 @@ import { Modal, Paper, TextField, Button } from "@mui/material";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
+import React from "react";
+import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
+import { handleEnterKeyPress } from "../../utils/handleEnterKeyPress";
+import { toLowerCaseNoSpaces } from "../../utils/texts";
 
 const splitByLast = (str: string, delimiter: string) => {
   const lastIndex = str.lastIndexOf(delimiter);
@@ -37,6 +41,17 @@ export const EditSnifferModal = ({
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { editSniffer } = useSniffersStore();
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleUrlEdit = (newValue: string) => {
+    setDownstreamUrl(newValue);
+
+    if (!validateHttpUrlFormat(newValue)) {
+      setError("Please enter a valid URL.");
+    } else {
+      setError(null);
+    }
+  };
 
   const handleEditSniffer = useCallback(() => {
     if (name === "") {
@@ -49,10 +64,10 @@ export const EditSnifferModal = ({
     }
     setIsLoading(true);
     editSniffer({
-      name,
+      name: toLowerCaseNoSpaces(name),
       downstreamUrl,
       id: sniffer.id,
-      subdomain: name + "-" + subdomain,
+      subdomain: sniffer.name + "-" + subdomain,
     })
       .then(() => {
         setName("");
@@ -67,6 +82,12 @@ export const EditSnifferModal = ({
         setIsLoading(false);
       });
   }, [name, downstreamUrl, sniffer, showSnackbar, onClose]);
+
+  const [enterPressed, setEnterPressed] = React.useState(false);
+  const handleKeyDown = handleEnterKeyPress(() => {
+    handleEditSniffer();
+    setEnterPressed(true);
+  }, true);
 
   return (
     <>
@@ -90,12 +111,15 @@ export const EditSnifferModal = ({
               label={"Downstream Url"}
               placeholder="http://example.com"
               value={downstreamUrl}
-              onChange={(event) => setDownstreamUrl(event.target.value)}
+              onChange={(event) => handleUrlEdit(event.target.value)}
+              error={enterPressed && Boolean(error)}
+              helperText={enterPressed && error}
+              onKeyDown={handleKeyDown}
             />
             <TextField
               label={"Subdomain"}
               placeholder="subdomain"
-              value={name + "-" + subdomain}
+              value={sniffer.subdomain}
               onChange={(event) => setSubdomain(event.target.value)}
               disabled={true}
             />

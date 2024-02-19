@@ -1,26 +1,30 @@
-import React, { useState } from "react";
 import { faker } from "@faker-js/faker";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { NodeType, getNodes, useFlowStore } from "../../stores/flowStore";
 import { WizardItem } from "./WizardItem";
 import { WizardTemplate } from "./WizardTemplate";
 import {
-  COMMENTS_TEMPLATE,
-  POSTS_TEMPLATE,
-  USERS_TEMPLATE,
   ADDRESSES_TEMPLATE,
-  LIKES_TEMPLATE,
-  FOLLOWERS_TEMPLATE,
-  TODOS_TEMPLATE,
   ALBUMS_TEMPLATE,
-  PHOTOS_TEMPLATE,
   CATEGORIES_TEMPLATE,
+  COMMENTS_TEMPLATE,
+  FOLLOWERS_TEMPLATE,
+  LIKES_TEMPLATE,
+  PHOTOS_TEMPLATE,
+  POSTS_TEMPLATE,
   PRODUCTS_TEMPLATE,
+  TODOS_TEMPLATE,
+  USERS_TEMPLATE,
 } from "./templates";
+import { LoadingIcon } from "../../pages/sniffers/LoadingIcon";
 
 interface FakeDataWizardProps {
   handleSelection: (text: string) => void;
   onClose: () => void;
   goBack?: () => void;
 }
+
 export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
   handleSelection,
   onClose,
@@ -214,5 +218,134 @@ export const RequestDataWizard: React.FC<FakeDataWizardProps> = ({
         }}
       />
     </WizardTemplate>
+  );
+};
+
+export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
+  handleSelection,
+  onClose,
+  goBack,
+}) => {
+  const { flowId } = useParams();
+  const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
+  const [nodes, setNodes] = useState<NodeType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [contextSelected, setContextSelected] = useState<boolean>(false);
+  const [path, setPath] = useState<string[]>([]);
+
+  const loadNodes = (flowId: string) => {
+    getNodes(flowId)
+      .then((data: any) => {
+        setNodes(data.data);
+      })
+      .catch((e) => {
+        alert("error");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (!flowId) return;
+    setIsLoading(true);
+    loadNodes(flowId);
+  }, []);
+
+  type wizardNodeItem = {
+    title: string;
+    template: string;
+    onClick?: (item: wizardNodeItem) => void;
+  };
+
+  const httpNodeItems: wizardNodeItem[] = [
+    {
+      title: "Status Code",
+      template: `${selectedNode?.id}.response.status`,
+    },
+    {
+      title: "Response Body",
+      template: `${selectedNode?.id}.response.body`,
+    },
+    {
+      title: "Response Headers",
+      template: `${selectedNode?.id}.response.headers`,
+    },
+  ];
+  const subflowItems: wizardNodeItem[] = [
+    {
+      title: "steps",
+      template: `{{${selectedNode?.id}.context}}`,
+      onClick: () => {
+        setContextSelected(true);
+        setPath([...path, `${selectedNode?.id}.context`]);
+        selectedNode?.subFlowId != null && loadNodes(selectedNode?.subFlowId);
+      },
+    },
+    {
+      title: "success",
+      template: `${selectedNode?.id}.success`,
+    },
+  ];
+
+  const handleItemClicked = (node: NodeType) => {
+    if (node.type === "http") {
+      setSelectedNode(node);
+    } else if (node.type === "subflow") {
+      setSelectedNode(node);
+    }
+    setContextSelected(false);
+  };
+
+  const selectedNodeItems =
+    selectedNode?.type === "http" ? httpNodeItems : subflowItems;
+
+  return (
+    <>
+      <WizardTemplate
+        onClose={onClose}
+        title="Previous steps responses"
+        goBack={goBack}
+      >
+        {isLoading ? (
+          <LoadingIcon />
+        ) : (
+          <>
+            {selectedNode != null && !contextSelected
+              ? selectedNodeItems.map((item) => {
+                  return (
+                    <WizardItem
+                      title={item.title}
+                      onClick={() => {
+                        item.onClick != null
+                          ? item.onClick(item)
+                          : (() => {
+                              const template =
+                                "{{" +
+                                path.join(".") +
+                                (path.length > 0 ? "." : "") +
+                                item.template +
+                                "}}";
+                              handleSelection(template);
+                              onClose();
+                            })();
+                      }}
+                    />
+                  );
+                })
+              : nodes.map((node) => {
+                  return (
+                    <WizardItem
+                      title={node.name}
+                      onClick={() => {
+                        handleItemClicked(node);
+                      }}
+                    ></WizardItem>
+                  );
+                })}
+          </>
+        )}
+      </WizardTemplate>
+    </>
   );
 };
