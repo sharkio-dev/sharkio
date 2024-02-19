@@ -99,15 +99,14 @@ export const Invocation = ({
               Preview
             </span>
 
+            <div
+              className={`flex flex-row items-center space-x-1.5 ${
+                isSelected ? "bg-primary" : ""
+              }`}
+            ></div>
             {selectIconByStatus(status)}
             <div className="flex text-xs text-gray-500">{date}</div>
           </div>
-
-          <div
-            className={`flex flex-row items-center space-x-1.5 ${
-              isSelected ? "bg-primary" : ""
-            }`}
-          ></div>
         </div>
       </Tooltip>
     </>
