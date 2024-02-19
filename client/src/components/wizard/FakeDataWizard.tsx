@@ -226,7 +226,7 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
   onClose,
   goBack,
 }) => {
-  const { flowId } = useParams();
+  const { flowId, testId } = useParams();
   const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -333,16 +333,18 @@ export const PreviousStepsWizard: React.FC<FakeDataWizardProps> = ({
                     />
                   );
                 })
-              : nodes.map((node) => {
-                  return (
-                    <WizardItem
-                      title={node.name}
-                      onClick={() => {
-                        handleItemClicked(node);
-                      }}
-                    ></WizardItem>
-                  );
-                })}
+              : nodes
+                  .filter((node) => node.id !== testId)
+                  .map((node) => {
+                    return (
+                      <WizardItem
+                        title={node.name}
+                        onClick={() => {
+                          handleItemClicked(node);
+                        }}
+                      ></WizardItem>
+                    );
+                  })}
           </>
         )}
       </WizardTemplate>
