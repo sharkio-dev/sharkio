@@ -37,7 +37,7 @@ export const InvocationPreview: React.FC<InvocationPreviewProps> = ({
     >
       <Paper
         sx={{ backgroundColor: "#232323" }}
-        className="flex flex-col p-4 w-6/12 bg-gray-800"
+        className="flex flex-col p-4 w-6/12 bg-gray-800 h-2/3"
       >
         <ResponseSection response={{ ...previewData }} />
         <Button className="flex" onClick={onClose}>
