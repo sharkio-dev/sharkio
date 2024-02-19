@@ -70,6 +70,7 @@ import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
 import { HttpNodeExecutor } from "./services/test-flow/flow-node-executors/http-node-executor";
 import { SubflowNodeExecutor } from "./services/test-flow/flow-node-executors/subflow-node-executor";
+import { ParallelExecutor } from "./services/test-flow/test-flow-executor/parallel-executor";
 
 const logger = useLog({ dirname: __dirname, filename: __filename });
 
@@ -172,6 +173,7 @@ async function main(isProxy = true, isServer = true) {
 
   const testFlowExecutionStrategies: Record<string, ITestFlowExecutor> = {
     sequence: new SequenceExecutor(testFlowService, nodeExecutionStrategies),
+    parallel: new ParallelExecutor(testFlowService, nodeExecutionStrategies),
   };
 
   testFlowExecutor.setExecutionStrategies(testFlowExecutionStrategies);
