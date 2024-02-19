@@ -23,6 +23,12 @@ export class TestFlow {
   @Column("uuid", { name: "owner_id", nullable: true })
   ownerId: string | null;
 
+  @Column("text", {
+    name: "type",
+    default: "flow",
+  })
+  type: string;
+
   @Column("timestamp with time zone", {
     name: "created_at",
     nullable: true,
