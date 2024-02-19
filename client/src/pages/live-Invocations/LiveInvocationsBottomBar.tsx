@@ -34,6 +34,7 @@ export const InvocationsSearchBar = ({
                 isSelected={invocation.id === invocationId}
                 onClick={() => setActiveInvocation(invocation.id)}
                 key={i}
+                invocationLink={`${hostname}/live-invocations/${invocation.id}`}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}
                 url={invocation.url}
