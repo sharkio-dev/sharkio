@@ -3,11 +3,13 @@ import { useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TextButton } from "./TextButton";
 import { TextField } from "@mui/material";
+import { WizardButtonProps } from "./editors/BodySection";
+import { InputWithWizard } from "../pages/flows/InputWithWizard";
 
 type HeaderSectionProps = {
   headers: { [key: string]: any };
   handleHeadersChange?: (headers: { [key: string]: any }) => void;
-};
+} & WizardButtonProps;
 
 export const HeaderSection = ({
   headers,
@@ -78,17 +80,23 @@ export const HeaderSection = ({
               size="small"
             />
             <div className="flex flex-row">=</div>
-
-            <TextField
-              className="border border-border-color rounded-md px-2 py-1 w-full"
-              placeholder="Value"
-              value={header.value}
-              disabled={!handleHeadersChange}
-              onChange={(event) => {
-                setHeaders(i, event.target.value, header.name);
+            <InputWithWizard
+              inputProps={{
+                className:
+                  "border border-border-color rounded-md px-2 py-1 w-full",
+                size: "small",
+                value: header.value,
+                placeholder: "Value",
+                onChange: (event) => {
+                  setHeaders(i, event.target.value, header.name);
+                },
+                disabled: !handleHeadersChange,
               }}
-              size="small"
+              handleWizardSelection={function (text: string): void {
+                setHeaders(i, text, header.name);
+              }}
             />
+
             {handleHeadersChange && (
               <div className="flex flex-row min-w-[20px] h-full">
                 <AiOutlineDelete

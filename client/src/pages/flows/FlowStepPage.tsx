@@ -112,6 +112,9 @@ export const FlowStepPage = () => {
                 url: flowStep.url,
                 method: flowStep.method,
               }}
+              showPreviousSteps={true}
+              showFakeData={true}
+              showAi={true}
               setInvocation={(newRequest: {
                 headers?: any;
                 body?: string;

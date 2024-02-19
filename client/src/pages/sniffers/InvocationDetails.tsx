@@ -16,7 +16,10 @@ import { generateApiRequestSnippet } from "../../lib/jsonSchema";
 import { InvocationType } from "./types";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { selectIconByStatus } from "./Invocation";
-import { BodySection } from "../../components/editors/BodySection";
+import {
+  BodySection,
+  WizardButtonProps,
+} from "../../components/editors/BodySection";
 import { HeaderSection } from "../../components/HeaderSection";
 
 type InvocationDetailsProps = {
@@ -65,7 +68,7 @@ export const RequestSection: React.FC<{
     headers: { [key: string]: string };
     url: string;
     method: string;
-  };
+  } & WizardButtonProps;
   setInvocation?: (invocation: {
     body?: string;
     headers?: { [key: string]: string };
@@ -159,6 +162,10 @@ export const RequestSection: React.FC<{
         <HeaderSection
           headers={invocation?.headers || {}}
           handleHeadersChange={onHeadersChange}
+          showPreviousSteps={showPreviousSteps}
+          showAi={showAi}
+          showFakeData={showFakeData}
+          showTemplates={showTemplates}
         />
       </TabPanel>
       <TabPanel

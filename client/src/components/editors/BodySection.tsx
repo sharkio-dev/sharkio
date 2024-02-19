@@ -169,7 +169,7 @@ const BeautifyButton = () => {
   );
 };
 
-interface WizardButtonProps {
+export interface WizardButtonProps {
   showFakeData?: boolean;
   showTemplates?: boolean;
   showPreviousSteps?: boolean;

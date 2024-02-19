@@ -38,14 +38,10 @@ export class RequestInterceptor {
       | undefined;
     req.headers["ngrok-skip-browser-warning"] = "true";
 
-    const endpoint = await this.interceptor.saveEndpoint(req, sniffer);
-    const { sniffer: _, ...rest } = endpoint;
-
     const invocation = await this.interceptor.saveRequest(
       {
-        snifferId: endpoint.snifferId,
-        endpointId: endpoint.id,
-        ownerId: endpoint.ownerId,
+        snifferId: sniffer.id,
+        ownerId: sniffer.ownerId,
         ...req,
         headers: req.headers,
       },
