@@ -26,7 +26,7 @@ export const Wizard: React.FC<WizardProps> = ({
       className="flex justify-center items-center border-0"
       onClose={onClose}
     >
-      <Paper className="flex flex-col w-96 rounded-sm outline-none p-4">
+      <Paper className="flex flex-col xs:bg-red-500 xl:w-[50%] lg:w-[50%] sm:w-[75%] w-[90%] rounded-sm outline-none p-4">
         <WizardMenu
           handleSelection={handleSelection}
           onClose={onClose}
