@@ -294,43 +294,111 @@ export class SnifferController {
         res.json(snifferMocks);
       },
     );
-    router.route("/:id/request").get(
-      /**
-       * @openapi
-       * /sharkio/sniffer/{id}/request:
-       *   get:
-       *     tags:
-       *      - sniffer
-       *     description: Get all sniffers requests
-       *     parameters:
-       *       - name: id
-       *         in: path
-       *         schema:
-       *           type: string
-       *         description: Sniffer id
-       *         required: true
-       *     responses:
-       *       200:
-       *         description: Returns all requests for a sniffer
-       *       500:
-       *         description: Server error
-       */
-      requestValidator({
-        params: z.object({
-          id: z.string().uuid(),
+    router
+      .route("/:id/request")
+      .get(
+        /**
+         * @openapi
+         * /sharkio/sniffer/{id}/request:
+         *   get:
+         *     tags:
+         *      - sniffer
+         *     description: Get all sniffers requests
+         *     parameters:
+         *       - name: id
+         *         in: path
+         *         schema:
+         *           type: string
+         *         description: Sniffer id
+         *         required: true
+         *     responses:
+         *       200:
+         *         description: Returns all requests for a sniffer
+         *       500:
+         *         description: Server error
+         */
+        requestValidator({
+          params: z.object({
+            id: z.string().uuid(),
+          }),
         }),
-      }),
-      async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const ownerId = res.locals.auth.ownerId;
-        const snifferRequests = await this.endpointService.getBySnifferId(
-          ownerId,
-          id,
-        );
+        async (req: Request, res: Response) => {
+          const { id } = req.params;
+          const ownerId = res.locals.auth.ownerId;
+          const snifferRequests = await this.endpointService.getBySnifferId(
+            ownerId,
+            id,
+          );
 
-        res.json(snifferRequests);
-      },
-    );
+          res.json(snifferRequests);
+        },
+      )
+      .post(
+        /**
+         * @openapi
+         * /sharkio/sniffer/{id}/request:
+         *   post:
+         *     tags:
+         *      - endpoint
+         *     description: Create an endpoint for sniffer
+         *     parameters:
+         *       - name: id
+         *         in: path
+         *         schema:
+         *           type: string
+         *         description: Sniffer id
+         *         required: true
+         *     requestBody:
+         *        description: Create an endpoint
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              required:
+         *                - url
+         *                - method
+         *                - headers
+         *                - body
+         *              properties:
+         *                url:
+         *                  type: string
+         *                  description: The url of the request
+         *                  example: My sniffer
+         *                method:
+         *                  type: string
+         *                  description: The method of the request
+         *                  example: GET
+         *                headers:
+         *                  type: string
+         *                  description: The headers of the request
+         *                  example: {}
+         *                body:
+         *                  type: string
+         *                  description: The body of the request
+         *                  example: {}
+         *     responses:
+         *       200:
+         *         description: Returns all requests for a sniffer
+         *       500:
+         *         description: Server error
+         */
+        async (req: Request, res: Response) => {
+          const { url, method, headers, body } = req.body;
+          const ownerId = res.locals.auth.ownerId;
+          const { id: snifferId } = req.params;
+
+          const createdEndpoint = await this.endpointService.create(
+            url,
+            method,
+            headers,
+            body,
+            snifferId,
+            ownerId,
+          );
+
+          res.status(201).json(createdEndpoint);
+        },
+      );
 
     router.route("/:id/invocation").get(
       /**
