@@ -30,7 +30,7 @@ const NewFlowButton = () => {
     <div className="border-b border-border-color pb-2 mb-2">
       {snackBar}
       <div
-        className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md `}
+        className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
         onClick={() => {
           setIsModalOpen(true);
         }}
