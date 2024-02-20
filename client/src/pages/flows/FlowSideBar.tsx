@@ -201,7 +201,7 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
 export const FlowSideBar: React.FC = () => {
   const { flows, loadFlows, isFlowsLoading } = useFlowStore();
   const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -209,7 +209,7 @@ export const FlowSideBar: React.FC = () => {
         await loadFlows(true);
       } catch (error) {
         setIsError(true);
-        setErrorMessage("Could not load flows. Please try again."); // Set your desired error message
+        showSnackbar("Could not load flows.", "error");
       }
     };
 
@@ -224,7 +224,7 @@ export const FlowSideBar: React.FC = () => {
         {isFlowsLoading ? (
           <LoadingIcon />
         ) : isError ? (
-          <p>{errorMessage}</p>
+          <p>{snackBar}</p>
         ) : (
           <FlowsSideBar flows={flows} />
         )}

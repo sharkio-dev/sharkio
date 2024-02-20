@@ -17,7 +17,5 @@ if (window._env_.VITE_FULLSTORY_ORG_ID) {
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <App />,
 );
