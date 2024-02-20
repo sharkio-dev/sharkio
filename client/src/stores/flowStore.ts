@@ -148,7 +148,7 @@ const runFlow = (flowId: string) => {
 const postFlowAPI = (flowName: FlowType["name"]) => {
   return BackendAxios.post(`/test-flows`, {
     name: flowName,
-    type: "suite",
+    type: "flow",
   }).then((res) => {
     return res.data;
   });
