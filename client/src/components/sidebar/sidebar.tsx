@@ -6,6 +6,7 @@ import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { VscTypeHierarchy } from "react-icons/vsc";
 import { MdOutlineDashboard } from "react-icons/md";
 import { PiGraphLight } from "react-icons/pi";
+import { SiReadthedocs } from "react-icons/si";
 
 interface IMenuItem {
   to: string;
@@ -39,8 +40,8 @@ let productionMenu: IMenuItem[] = [
 const menus: IMenuItem[] = [
   {
     to: routes.ENDPOINTS,
-    title: "endpoints",
-    Icon: VscTypeHierarchy,
+    title: "Docs",
+    Icon: SiReadthedocs,
   },
 ];
 
