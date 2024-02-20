@@ -159,13 +159,17 @@ interface FlowSideBarProps {
 const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
   const navigate = useNavigate();
   const { flowId } = useParams();
-  const [filteredFlows, setFilteredFlows] = React.useState(flows);
+  const [filteredFlows, setFilteredFlows] = React.useState<FlowType[]>([]);
+
+  React.useEffect(() => {
+    setFilteredFlows(flows);
+  }, [flows]);
 
   const handleSearch = (searchTerm: string) => {
-    const filteredFlows = flows.filter((flow) =>
+    const newFlows = flows.filter((flow) =>
       flow.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
-    setFilteredFlows(filteredFlows);
+    setFilteredFlows(newFlows);
   };
   return (
     <>
@@ -196,17 +200,34 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
 
 export const FlowSideBar: React.FC = () => {
   const { flows, loadFlows, isFlowsLoading } = useFlowStore();
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    loadFlows(true);
-  }, []);
+    const fetchData = async () => {
+      try {
+        await loadFlows(true);
+      } catch (error) {
+        setIsError(true);
+        setErrorMessage("Could not load flows. Please try again."); // Set your desired error message
+      }
+    };
+
+    fetchData();
+  }, [loadFlows]);
 
   return (
     <div className="flex flex-col space-y-4 px-2">
       <div className="flex flex-col">
         <div className="text-2xl font-bold mb-2">Flows</div>
         <NewFlowButton />
-        {isFlowsLoading ? <LoadingIcon /> : <FlowsSideBar flows={flows} />}
+        {isFlowsLoading ? (
+          <LoadingIcon />
+        ) : isError ? (
+          <p>{errorMessage}</p>
+        ) : (
+          <FlowsSideBar flows={flows} />
+        )}
       </div>
     </div>
   );
