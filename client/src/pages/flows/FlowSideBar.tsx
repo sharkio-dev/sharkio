@@ -224,7 +224,7 @@ export const FlowSideBar: React.FC = () => {
         {isFlowsLoading ? (
           <LoadingIcon />
         ) : isError ? (
-          <p>{snackBar}</p>
+          snackBar
         ) : (
           <FlowsSideBar flows={flows} />
         )}
