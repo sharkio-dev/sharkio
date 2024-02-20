@@ -1,3 +1,4 @@
+import React from "react";
 import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
 import { FlowType, useFlowStore } from "../../stores/flowStore";
 import { useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useNavigate, useParams } from "react-router-dom";
+import { SearchBar } from "../../components/search/SearchBar";
 
 const NewFlowButton = () => {
   const { postFlow } = useFlowStore();
@@ -157,10 +159,19 @@ interface FlowSideBarProps {
 const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
   const navigate = useNavigate();
   const { flowId } = useParams();
+  const [filteredFlows, setFilteredFlows] = React.useState(flows);
+
+  const handleSearch = (searchTerm: string) => {
+    const filteredFlows = flows.filter((flow) =>
+      flow.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredFlows(filteredFlows);
+  };
   return (
     <>
-      <div className="overflow-y-scroll h-2/3">
-        {flows.map((flow) => (
+      <SearchBar handleSearch={handleSearch} />
+      <div className="overflow-y-scroll min-h-96 h-2/3 m-2">
+        {filteredFlows.map((flow) => (
           <div
             className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
           ${flow.id === flowId ? "bg-primary" : ""}`}
