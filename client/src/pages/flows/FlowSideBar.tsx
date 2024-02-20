@@ -28,7 +28,7 @@ const NewFlowButton = () => {
     <div className="border-b border-border-color pb-2 mb-2">
       {snackBar}
       <div
-        className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
+        className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md `}
         onClick={() => {
           setIsModalOpen(true);
         }}
@@ -159,24 +159,26 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
   const { flowId } = useParams();
   return (
     <>
-      {flows.map((flow) => (
-        <div
-          className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
+      <div className="overflow-y-scroll h-2/3">
+        {flows.map((flow) => (
+          <div
+            className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
           ${flow.id === flowId ? "bg-primary" : ""}`}
-          onClick={() => {
-            navigate(`/flows/${flow.id}`);
-          }}
-        >
-          <div className="flex flex-row items-center justify-between w-full">
-            <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {flow.name}
-            </div>
-            <div className="flex flex-row items-center space-x-2">
-              <FlowDeleteButton flowId={flow.id} />
+            onClick={() => {
+              navigate(`/flows/${flow.id}`);
+            }}
+          >
+            <div className="flex flex-row items-center justify-between w-full">
+              <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
+                {flow.name}
+              </div>
+              <div className="flex flex-row items-center space-x-2">
+                <FlowDeleteButton flowId={flow.id} />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </>
   );
 };
