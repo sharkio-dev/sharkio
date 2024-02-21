@@ -3,7 +3,6 @@ import { InvocationSection } from "../../live-Invocations/LiveInvocationUpperBar
 import { InvocationType } from "../types";
 import { useParams } from "react-router-dom";
 import { useSniffersStore } from "../../../stores/sniffersStores";
-import { LoadingIcon } from "../LoadingIcon";
 
 export const SnifferData: React.FC = () => {
   const [editedInvocation, setEditedInvocation] = useState<
@@ -11,18 +10,15 @@ export const SnifferData: React.FC = () => {
   >();
   const { endpointId } = useParams();
   const { endpoints } = useSniffersStore();
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!endpointId) {
       return;
     }
-    setIsLoading(true);
     const endpoint = endpoints.find((e) => e.id === endpointId);
     if (endpoint) {
       setEditedInvocation(endpoint as InvocationType);
     }
-    setIsLoading(false);
   }, [endpointId, endpoints]);
 
   if (!editedInvocation) {
@@ -31,14 +27,11 @@ export const SnifferData: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
-        <LoadingIcon />
-      ) : (
-        <InvocationSection
-          setEditedInvocation={setEditedInvocation}
-          invocation={editedInvocation}
-        />
-      )}
+      <InvocationSection
+        isDisabled={false}
+        setEditedInvocation={setEditedInvocation}
+        invocation={editedInvocation}
+      />
     </>
   );
 };
