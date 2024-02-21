@@ -50,7 +50,7 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
           >
             <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
               <UploadFileIcon className="text-blue-500 text-xl h-[25px] w-[25px]" />
-              Import Request
+              Import
             </div>
           </div>
         </div>

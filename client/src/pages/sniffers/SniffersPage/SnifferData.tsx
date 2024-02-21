@@ -3,36 +3,36 @@ import { InvocationSection } from "../../live-Invocations/LiveInvocationUpperBar
 import { InvocationType } from "../types";
 import { useParams } from "react-router-dom";
 import { useSniffersStore } from "../../../stores/sniffersStores";
-import { BackendAxios } from "../../../api/backendAxios";
 
 export const SnifferData: React.FC = () => {
   const [editedInvocation, setEditedInvocation] = useState<
     InvocationType | undefined
-  >(defaultInvocation);
+  >();
   const { endpointId } = useParams();
-  const { invocations } = useSniffersStore();
+  const { endpoints } = useSniffersStore();
 
   useEffect(() => {
     if (!endpointId) {
       return;
     }
-    if (invocations.length === 0) {
-      setEditedInvocation(defaultInvocation);
-    } else {
-      const lastInvocation = invocations[0];
-      BackendAxios.get(`/invocation/${lastInvocation.id}`).then((res) => {
-        if (res) {
-          setEditedInvocation(res.data);
-        }
-      });
+    const endpoint = endpoints.find((e) => e.id === endpointId);
+    if (endpoint) {
+      setEditedInvocation(endpoint as InvocationType);
     }
-  }, []);
+  }, [endpointId, endpoints]);
+
+  if (!editedInvocation) {
+    return null;
+  }
 
   return (
-    <InvocationSection
-      setEditedInvocation={setEditedInvocation}
-      invocation={editedInvocation}
-    />
+    <>
+      <InvocationSection
+        isDisabled={false}
+        setEditedInvocation={setEditedInvocation}
+        invocation={editedInvocation}
+      />
+    </>
   );
 };
 
@@ -43,7 +43,7 @@ const defaultInvocation: InvocationType = {
   headers: {},
   body: "",
   snifferId: "",
-  url: "",
+  url: "/",
   response: {
     status: 200,
     body: "",

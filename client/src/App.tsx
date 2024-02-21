@@ -8,8 +8,6 @@ import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
 import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
-import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
-import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
 import {
   CreateInvocationPage,
   SnifferEndpointPage,
@@ -115,22 +113,6 @@ function App(): React.JSX.Element {
                     </PageTemplate>
                   )}
                 </>
-              }
-            />
-            <Route
-              path={routes.DOCS_GETTING_STARTED}
-              element={
-                <PageTemplate withSideBar={false}>
-                  <SharkioDocsGettingStartedPage />
-                </PageTemplate>
-              }
-            />
-            <Route
-              path={routes.DOCS_SETUP}
-              element={
-                <PageTemplate withSideBar={false}>
-                  <SharkioDocsSetupPage />
-                </PageTemplate>
               }
             />
             <Route

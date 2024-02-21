@@ -28,10 +28,7 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
   return (
     <div className="h-full">
       {snackBar}
-      <InnerPageTemplate
-        sideBarComponent={SniffersSideBar}
-        contentComponent={() => <>{children}</>}
-      />
+      {children}
     </div>
   );
 };
@@ -39,7 +36,10 @@ const SnifferPageTemplate: React.FC<SnifferPageTemplateProps> = ({
 export const SnifferEndpointPage = () => {
   return (
     <SnifferPageTemplate>
-      <SnifferData />
+      <InnerPageTemplate
+        contentComponent={SnifferData}
+        sideBarComponent={SniffersSideBar}
+      />
     </SnifferPageTemplate>
   );
 };
@@ -47,7 +47,10 @@ export const SnifferEndpointPage = () => {
 export const CreateInvocationPage = () => {
   return (
     <SnifferPageTemplate>
-      <CreateInvocation />
+      <InnerPageTemplate
+        contentComponent={CreateInvocation}
+        sideBarComponent={SniffersSideBar}
+      />
     </SnifferPageTemplate>
   );
 };
@@ -55,7 +58,10 @@ export const CreateInvocationPage = () => {
 export const SnifferPage = () => {
   return (
     <SnifferPageTemplate>
-      <Sniffer />
+      <InnerPageTemplate
+        contentComponent={Sniffer}
+        sideBarComponent={SniffersSideBar}
+      />
     </SnifferPageTemplate>
   );
 };
