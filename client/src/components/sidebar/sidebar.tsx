@@ -34,20 +34,12 @@ let productionMenu: IMenuItem[] = [
     title: "Flows",
     Icon: PiGraphLight,
   },
-];
-
-const menus: IMenuItem[] = [
   {
     to: routes.ENDPOINTS,
     title: "Docs",
     Icon: IoDocumentTextOutline,
   },
 ];
-
-// @ts-ignore
-if (window._env_.VITE_NODE_ENV !== "production") {
-  productionMenu.push(...menus);
-}
 
 export const SideBar: React.FC = () => {
   const navigate = useNavigate();
