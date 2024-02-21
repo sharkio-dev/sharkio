@@ -36,6 +36,7 @@ export const InvocationsSearchBar = ({
               : "";
             return (
               <Invocation
+                invocationId={invocation.id}
                 method={invocation.method}
                 onClick={() => setActiveInvocation(invocation.id)}
                 invocationLink={`${hostname}/live-invocations/${invocation.id}`}
