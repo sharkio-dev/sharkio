@@ -208,8 +208,9 @@ export const FlowSideBar: React.FC = () => {
       try {
         await loadFlows(true);
       } catch (error) {
-        setIsError(true);
+        // setIsError(true);
         showSnackbar("Could not load flows.", "error");
+        return;
       }
     };
 
@@ -217,18 +218,15 @@ export const FlowSideBar: React.FC = () => {
   }, [loadFlows]);
 
   return (
-    <div className="flex flex-col space-y-4 px-2">
-      <div className="flex flex-col">
-        <div className="text-2xl font-bold mb-2">Flows</div>
-        <NewFlowButton />
-        {isFlowsLoading ? (
-          <LoadingIcon />
-        ) : isError ? (
-          snackBar
-        ) : (
-          <FlowsSideBar flows={flows} />
-        )}
+    <>
+      {snackBar}
+      <div className="flex flex-col space-y-4 px-2">
+        <div className="flex flex-col">
+          <div className="text-2xl font-bold mb-2">Flows</div>
+          <NewFlowButton />
+          {isFlowsLoading ? <LoadingIcon /> : <FlowsSideBar flows={flows} />}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
