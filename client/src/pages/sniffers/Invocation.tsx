@@ -24,6 +24,7 @@ type InvocationProps = {
   isSelected?: boolean;
   onClick?: () => void;
 };
+
 export const Invocation = ({
   invocationId,
   status,

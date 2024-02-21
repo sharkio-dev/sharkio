@@ -3,36 +3,43 @@ import { InvocationSection } from "../../live-Invocations/LiveInvocationUpperBar
 import { InvocationType } from "../types";
 import { useParams } from "react-router-dom";
 import { useSniffersStore } from "../../../stores/sniffersStores";
-import { BackendAxios } from "../../../api/backendAxios";
+import { LoadingIcon } from "../LoadingIcon";
 
 export const SnifferData: React.FC = () => {
   const [editedInvocation, setEditedInvocation] = useState<
     InvocationType | undefined
-  >(defaultInvocation);
+  >();
   const { endpointId } = useParams();
-  const { invocations } = useSniffersStore();
+  const { endpoints } = useSniffersStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!endpointId) {
       return;
     }
-    if (invocations.length === 0) {
-      setEditedInvocation(defaultInvocation);
-    } else {
-      const lastInvocation = invocations[0];
-      BackendAxios.get(`/invocation/${lastInvocation.id}`).then((res) => {
-        if (res) {
-          setEditedInvocation(res.data);
-        }
-      });
+    setIsLoading(true);
+    const endpoint = endpoints.find((e) => e.id === endpointId);
+    if (endpoint) {
+      setEditedInvocation(endpoint as InvocationType);
     }
-  }, []);
+    setIsLoading(false);
+  }, [endpointId, endpoints]);
+
+  if (!editedInvocation) {
+    return null;
+  }
 
   return (
-    <InvocationSection
-      setEditedInvocation={setEditedInvocation}
-      invocation={editedInvocation}
-    />
+    <>
+      {isLoading ? (
+        <LoadingIcon />
+      ) : (
+        <InvocationSection
+          setEditedInvocation={setEditedInvocation}
+          invocation={editedInvocation}
+        />
+      )}
+    </>
   );
 };
 
@@ -43,7 +50,7 @@ const defaultInvocation: InvocationType = {
   headers: {},
   body: "",
   snifferId: "",
-  url: "",
+  url: "/",
   response: {
     status: 200,
     body: "",
