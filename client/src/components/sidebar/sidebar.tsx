@@ -1,12 +1,11 @@
 import React from "react";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { MdMultipleStop, MdOutlineNetworkPing } from "react-icons/md";
+import { PiGraphLight } from "react-icons/pi";
+import { VscTypeHierarchy } from "react-icons/vsc";
 import { useLocation, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { Logo } from "./Logo";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { VscTypeHierarchy } from "react-icons/vsc";
-import { MdOutlineDashboard } from "react-icons/md";
-import { PiGraphLight } from "react-icons/pi";
-import { SiReadthedocs } from "react-icons/si";
 
 interface IMenuItem {
   to: string;
@@ -18,17 +17,17 @@ let productionMenu: IMenuItem[] = [
   {
     to: routes.PROXIES,
     title: "Proxies",
-    Icon: MdOutlineDashboard,
+    Icon: VscTypeHierarchy,
   },
   {
     to: routes.LIVE_INVOCATIONS,
     title: "Requests",
-    Icon: VscTypeHierarchy,
+    Icon: MdMultipleStop,
   },
   {
     to: routes.MOCKS,
     title: "Mocks",
-    Icon: HiOutlineClipboardDocumentList,
+    Icon: MdOutlineNetworkPing,
   },
   {
     to: routes.FLOWS,
@@ -41,7 +40,7 @@ const menus: IMenuItem[] = [
   {
     to: routes.ENDPOINTS,
     title: "Docs",
-    Icon: SiReadthedocs,
+    Icon: IoDocumentTextOutline,
   },
 ];
 

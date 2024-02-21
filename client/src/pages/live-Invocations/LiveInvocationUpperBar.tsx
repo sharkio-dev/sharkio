@@ -2,7 +2,6 @@ import { PlayArrow } from "@mui/icons-material";
 import { TextField, Tooltip } from "@mui/material";
 import queryString from "query-string";
 import React, { useState } from "react";
-import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { PiGraphLight } from "react-icons/pi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BackendAxios } from "../../api/backendAxios";
@@ -16,6 +15,7 @@ import { ProxySelector } from "../sniffers/SniffersSideBar";
 import { InvocationType } from "../sniffers/types";
 import { ImportTestStepDialog } from "./ImpotTestStepDialog";
 import { InputWithWizard } from "../flows/InputWithWizard";
+import { MdOutlineNetworkPing } from "react-icons/md";
 
 type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
@@ -157,7 +157,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
                   {loading ? (
                     <LoadingIcon />
                   ) : (
-                    <HiOutlineClipboardDocumentList className="text-yellow-500 cursor-pointer" />
+                    <MdOutlineNetworkPing className="text-yellow-500 cursor-pointer" />
                   )}
                 </div>
               </Tooltip>
