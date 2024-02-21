@@ -200,7 +200,6 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
 
 export const FlowSideBar: React.FC = () => {
   const { flows, loadFlows, isFlowsLoading } = useFlowStore();
-  const [isError, setIsError] = useState(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
@@ -208,7 +207,6 @@ export const FlowSideBar: React.FC = () => {
       try {
         await loadFlows(true);
       } catch (error) {
-        // setIsError(true);
         showSnackbar("Could not load flows.", "error");
         return;
       }
