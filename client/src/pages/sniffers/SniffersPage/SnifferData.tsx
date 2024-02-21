@@ -11,18 +11,15 @@ export const SnifferData: React.FC = () => {
   >();
   const { endpointId } = useParams();
   const { endpoints } = useSniffersStore();
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!endpointId) {
       return;
     }
-    setIsLoading(true);
     const endpoint = endpoints.find((e) => e.id === endpointId);
     if (endpoint) {
       setEditedInvocation(endpoint as InvocationType);
     }
-    setIsLoading(false);
   }, [endpointId, endpoints]);
 
   if (!editedInvocation) {
@@ -31,15 +28,11 @@ export const SnifferData: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
-        <LoadingIcon />
-      ) : (
-        <InvocationSection
-          isDisabled={false}
-          setEditedInvocation={setEditedInvocation}
-          invocation={editedInvocation}
-        />
-      )}
+      <InvocationSection
+        isDisabled={false}
+        setEditedInvocation={setEditedInvocation}
+        invocation={editedInvocation}
+      />
     </>
   );
 };
