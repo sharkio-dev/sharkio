@@ -61,11 +61,11 @@ const LiveInvocations = () => {
 
   return (
     <div className="flex flex-row space-x-4 items-center">
+      <ProxyFilter />
       <UrlFilter />
       <StatusCodeFilter />
       <MethodsFilter />
       <DateFilter />
-      <ProxyFilter />
     </div>
   );
 };

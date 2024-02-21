@@ -12,6 +12,7 @@ export const InvocationsSearchBar = ({
   setActiveInvocation,
   title,
 }: InvocationsSearchBarProps) => {
+  const hostname = document.location.origin;
   const { invocations, loadingInvocations, getSnifferById } =
     useSniffersStore();
 
@@ -35,8 +36,10 @@ export const InvocationsSearchBar = ({
               : "";
             return (
               <Invocation
+                invocationId={invocation.id}
                 method={invocation.method}
                 onClick={() => setActiveInvocation(invocation.id)}
+                invocationLink={`${hostname}/live-invocations/${invocation.id}`}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}
