@@ -35,6 +35,7 @@ export const SnifferData: React.FC = () => {
         <LoadingIcon />
       ) : (
         <InvocationSection
+          isDisabled={false}
           setEditedInvocation={setEditedInvocation}
           invocation={editedInvocation}
         />
