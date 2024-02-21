@@ -47,7 +47,9 @@ export const MockResponseDetails: React.FC<MockResponseDetailsProps> = ({
                 }}
               />
               <BodySection
-                language="handlebars"
+                language={
+                  editedResponse.body.includes("{{") ? "handlebars" : "json"
+                }
                 body={editedResponse.body || ""}
                 onBodyChange={(value: any) => {
                   onResponseChange({ ...editedResponse, body: value });
