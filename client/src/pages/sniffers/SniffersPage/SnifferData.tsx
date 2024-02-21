@@ -3,7 +3,6 @@ import { InvocationSection } from "../../live-Invocations/LiveInvocationUpperBar
 import { InvocationType } from "../types";
 import { useParams } from "react-router-dom";
 import { useSniffersStore } from "../../../stores/sniffersStores";
-import { LoadingIcon } from "../LoadingIcon";
 
 export const SnifferData: React.FC = () => {
   const [editedInvocation, setEditedInvocation] = useState<
