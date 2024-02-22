@@ -14,9 +14,14 @@ class SettingsController {
     const router = express.Router();
 
     router.get("", async (req, res) => {
-      const user = res.locals.auth;
-      const keys = await this.apiKeyService.getAll(user.user.id);
-      return res.status(200).send(keys);
+      try {
+        const ownerId = res.locals.auth.ownerId;
+        const keys = await this.apiKeyService.getAll(ownerId);
+        return res.status(200).send(keys);
+      } catch (e) {
+        log.error(e);
+        return res.status(500).send({ message: "Internal Server Error" });
+      }
     });
 
     router.post(
@@ -58,11 +63,16 @@ class SettingsController {
        *         description: Internal Server Error
        */
       async (req, res) => {
-        const { name } = req.body;
-        const user = res.locals.auth;
-        const key = await this.apiKeyService.add(user.user.id, name);
-        return res.status(200).send(key);
-      },
+        try {
+          const { name } = req.body;
+          const ownerId = res.locals.auth.ownerId;
+          const key = await this.apiKeyService.add(ownerId, name);
+          return res.status(200).send(key);
+        } catch (e) {
+          log.error(e);
+          return res.status(500).send({ message: "Internal Server Error" });
+        }
+      }
     );
 
     router.delete(
@@ -97,12 +107,17 @@ class SettingsController {
        *         description: Internal Server Error
        */
       async (req, res) => {
-        const { id: apiKeyId } = req.params;
-        const user = res.locals.auth;
+        try {
+          const { id: apiKeyId } = req.params;
+          const ownerId = res.locals.auth.ownerId;
 
-        await this.apiKeyService.remove(user.user.id, apiKeyId);
-        return res.sendStatus(200);
-      },
+          await this.apiKeyService.remove(ownerId, apiKeyId);
+          return res.sendStatus(200);
+        } catch (e) {
+          log.error(e);
+          return res.status(500).send({ message: "Internal Server Error" });
+        }
+      }
     );
 
     router.put(
@@ -145,13 +160,18 @@ class SettingsController {
        */
 
       async (req, res) => {
-        const { id: apiKeyId } = req.params;
-        const { name } = req.body;
-        const user = res.locals.auth;
+        try {
+          const { id: apiKeyId } = req.params;
+          const { name } = req.body;
+          const ownerId = res.locals.auth.ownerId;
 
-        await this.apiKeyService.update(user.user.id, apiKeyId, name);
-        return res.sendStatus(200);
-      },
+          await this.apiKeyService.update(ownerId, apiKeyId, name);
+          return res.sendStatus(200);
+        } catch (e) {
+          log.error(e);
+          return res.status(500).send({ message: "Internal Server Error" });
+        }
+      }
     );
     return { router, path: "/sharkio/settings/api-keys" };
   }
