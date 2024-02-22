@@ -185,7 +185,7 @@ export const FlowSideBar: React.FC = () => {
   const { flows, loadFlows, isFlowsLoading } = useFlowStore();
 
   useEffect(() => {
-    loadFlows(true);
+    loadFlows(true, "flow");
   }, []);
 
   return (

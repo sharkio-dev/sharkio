@@ -26,6 +26,7 @@ import { JoinWorkspace } from "./components/project-selection/JoinWorkspace";
 import FlowPage from "./pages/flows/flowPage";
 import { FlowStepPage } from "./pages/flows/FlowStepPage";
 import { FlowRunPage } from "./pages/flows/FlowRunPage";
+import TestPlans from "./pages/test-plans/testPlan";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -77,6 +78,8 @@ function App(): React.JSX.Element {
       { path: routes.MOCKS, element: <MockPage /> },
       { path: routes.MOCK, element: <MockPage /> },
       { path: routes.JOIN_WORKSPACE, element: <JoinWorkspace /> },
+      { path: routes.TEST_PLANS, element: <TestPlans /> },
+      { path: routes.TEST_PLAN, element: <TestPlans /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

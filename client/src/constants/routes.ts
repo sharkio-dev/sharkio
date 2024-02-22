@@ -28,4 +28,7 @@ export const routes = {
   MOCK: "/mocks/:mockId",
 
   JOIN_WORKSPACE: "/join/:workspaceId",
+
+  TEST_PLANS: "/test-plans",
+  TEST_PLAN: "/test-plans/:testPlanId",
 };

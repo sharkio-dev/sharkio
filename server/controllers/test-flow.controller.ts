@@ -19,7 +19,7 @@ export class TestFlowController {
   constructor(
     private readonly testFlowService: TestFlowService,
     private readonly testFlowExecutorService: TestFlowExecutor,
-    private readonly baseUrl: string = "/sharkio/test-flows",
+    private readonly baseUrl: string = "/sharkio/test-flows"
   ) {}
 
   getRouter() {
@@ -66,7 +66,7 @@ export class TestFlowController {
             ...req.body,
           });
           res.send(created).status(201);
-        },
+        }
       )
       .get(
         "/",
@@ -85,9 +85,13 @@ export class TestFlowController {
          */
         async (req: Request, res: Response) => {
           const ownerId = res.locals.auth.ownerId;
-          const testFlows = await this.testFlowService.getByOwnerId(ownerId);
+          const { type } = req.query;
+          const testFlows = await this.testFlowService.getByOwnerId(
+            ownerId,
+            type as string | undefined
+          );
           res.send(testFlows).status(200);
-        },
+        }
       );
 
     router
@@ -118,7 +122,7 @@ export class TestFlowController {
           const { flowId } = req.params;
           const testFlow = await this.testFlowService.getById(ownerId, flowId);
           res.send(testFlow).status(200);
-        },
+        }
       )
       .delete(
         "/:flowId",
@@ -147,10 +151,10 @@ export class TestFlowController {
           const { flowId } = req.params;
           const testFlow = await this.testFlowService.deleteById(
             ownerId,
-            flowId,
+            flowId
           );
           res.send(testFlow).status(200);
-        },
+        }
       )
       .put(
         "/:flowId",
@@ -196,11 +200,11 @@ export class TestFlowController {
           const testFlow = await this.testFlowService.updateById(
             ownerId,
             flowId,
-            { name },
+            { name }
           );
 
           res.send(testFlow).status(200);
-        },
+        }
       );
 
     router
@@ -242,11 +246,11 @@ export class TestFlowController {
           const testNodes = await this.testFlowService.getNodesByFlowId(
             ownerId,
             flowId,
-            isSorted === "true",
+            isSorted === "true"
           );
 
           res.send(testNodes).status(200);
-        },
+        }
       )
       .post(
         "/:flowId/nodes",
@@ -340,11 +344,11 @@ export class TestFlowController {
           const testNode = await this.testFlowService.createNode(
             ownerId,
             flowId,
-            testFlowNode,
+            testFlowNode
           );
 
           res.send(testNode).status(201);
-        },
+        }
       );
 
     router.post(
@@ -392,11 +396,11 @@ export class TestFlowController {
         const testNode = await this.testFlowService.reorderNodes(
           ownerId,
           flowId,
-          req.body,
+          req.body
         );
 
         res.send(testNode).status(201);
-      },
+      }
     );
 
     router
@@ -438,11 +442,11 @@ export class TestFlowController {
           const testNodes = await this.testFlowService.getFlowRunNode(
             ownerId,
             flowId,
-            nodeId,
+            nodeId
           );
 
           res.send(testNodes).status(200);
-        },
+        }
       )
       .put(
         /**
@@ -490,11 +494,11 @@ export class TestFlowController {
             ownerId,
             flowId,
             nodeId,
-            createNode,
+            createNode
           );
 
           res.send(testNodes).status(200);
-        },
+        }
       )
       .delete(
         /**
@@ -533,11 +537,11 @@ export class TestFlowController {
           const testNodes = await this.testFlowService.deleteFlowNode(
             ownerId,
             flowId,
-            nodeId,
+            nodeId
           );
 
           res.send(testNodes).status(200);
-        },
+        }
       );
 
     router.post(
@@ -568,11 +572,11 @@ export class TestFlowController {
 
         const testFlowRun = await this.testFlowExecutorService.execute(
           ownerId,
-          flowId,
+          flowId
         );
 
         res.send(testFlowRun).status(200);
-      },
+      }
     );
 
     router.get(
@@ -611,11 +615,11 @@ export class TestFlowController {
         const testFlowRun = await this.testFlowExecutorService.getFlowRuns(
           ownerId,
           flowId,
-          isSorted === "true" ?? false,
+          isSorted === "true" ?? false
         );
 
         res.send(testFlowRun).status(200);
-      },
+      }
     );
 
     router.get(
@@ -647,11 +651,11 @@ export class TestFlowController {
         const testFlowRun = await this.testFlowExecutorService.getFlowRun(
           ownerId,
           flowId,
-          runId,
+          runId
         );
 
         res.send(testFlowRun).status(200);
-      },
+      }
     );
 
     router.get(
@@ -697,11 +701,11 @@ export class TestFlowController {
           ownerId,
           flowId,
           runId,
-          isSorted === "true",
+          isSorted === "true"
         );
 
         res.send(testFlowRun).status(200);
-      },
+      }
     );
 
     return {

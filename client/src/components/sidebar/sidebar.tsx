@@ -6,6 +6,7 @@ import { VscTypeHierarchy } from "react-icons/vsc";
 import { useLocation, useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { Logo } from "./Logo";
+import { LuClipboardCheck } from "react-icons/lu";
 
 interface IMenuItem {
   to: string;
@@ -38,6 +39,11 @@ let productionMenu: IMenuItem[] = [
     to: routes.ENDPOINTS,
     title: "Docs",
     Icon: IoDocumentTextOutline,
+  },
+  {
+    to: routes.TEST_PLANS,
+    title: "Test Plans",
+    Icon: LuClipboardCheck,
   },
 ];
 
