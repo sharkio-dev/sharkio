@@ -46,6 +46,9 @@ const DateFilter = () => {
             minutes: renderTimeViewClock,
             seconds: renderTimeViewClock,
           }}
+          slotProps={{
+            actionBar: { actions: ["today"] },
+          }}
           value={fromDate}
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleFromDateChange(date)}
@@ -71,6 +74,9 @@ const DateFilter = () => {
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleToDateChange(date)}
           value={toDate}
+          slotProps={{
+            actionBar: { actions: ["today"] },
+          }}
           sx={{
             width: 200,
             input: {
