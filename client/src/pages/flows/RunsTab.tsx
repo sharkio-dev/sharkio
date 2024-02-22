@@ -12,6 +12,7 @@ interface RunProps {
   status: string;
   title: string;
   runId: string;
+  flowId: string;
 }
 
 export const getRunStatusIcon = (status: string) => {
@@ -29,9 +30,14 @@ export const getRunStatusIcon = (status: string) => {
   }
 };
 
-const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
+const Run: React.FC<RunProps> = ({
+  createdAt,
+  status,
+  title,
+  runId,
+  flowId,
+}) => {
   const navigate = useNavigate();
-  const { flowId } = useParams();
 
   return (
     <div className="flex flex-col border border-border-color p-2 px-4 shadow-md hover:border-blue-400 cursor-pointer rounded-md min-h-[48px] justify-center">
@@ -60,9 +66,13 @@ const Run: React.FC<RunProps> = ({ createdAt, status, title, runId }) => {
   );
 };
 
-export const RunsTab: React.FC = () => {
+interface RunsTabProps {
+  flowId: string;
+  tab: string;
+}
+
+export const RunsTab: React.FC<RunsTabProps> = ({ flowId, tab }) => {
   const { runs, loadFlowRuns: loadTestRuns, isRunsLoading } = useFlowStore();
-  const { flowId } = useParams();
   const [searchParams, _] = useSearchParams();
 
   useEffect(() => {
@@ -70,7 +80,7 @@ export const RunsTab: React.FC = () => {
   }, [flowId, searchParams.get("tab")]);
 
   return (
-    <TabPanel value="2" style={{ padding: 0, height: "100%" }}>
+    <TabPanel value={tab} style={{ padding: 0, height: "100%" }}>
       <div className="flex flex-col space-y-2 pb-2">
         {isRunsLoading ? (
           <LoadingIcon />
@@ -83,6 +93,7 @@ export const RunsTab: React.FC = () => {
                 createdAt={run.createdAt}
                 status={run.status}
                 title={`Run ${runs.length - index}`}
+                flowId={flowId}
               />
             );
           })

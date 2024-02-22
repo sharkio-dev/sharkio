@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { EditableNameField } from "./EditableNameProps";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import { useFlowStore } from "../../stores/flowStore";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 interface FlowNameAndSaveProps {
@@ -10,6 +10,8 @@ interface FlowNameAndSaveProps {
   name: string;
   handleSaveClicked: () => void;
   handleNameChange: (namg: string) => void;
+  flowId: string;
+  afterRun?: () => void;
 }
 
 export const FlowNameAndRun: React.FC<FlowNameAndSaveProps> = ({
@@ -17,18 +19,14 @@ export const FlowNameAndRun: React.FC<FlowNameAndSaveProps> = ({
   name,
   handleNameChange,
   handleSaveClicked,
+  flowId,
+  afterRun,
 }) => {
-  const { flowId } = useParams();
   const { runFlow, isFlowRunning } = useFlowStore();
-  const [_, setSearchParams] = useSearchParams();
 
   const onClickRun = () => {
     runFlow(flowId as string, true).then(() => {
-      setSearchParams((prevSearchParams) => {
-        const newSearchParams = new URLSearchParams(prevSearchParams);
-        newSearchParams.set("tab", "2");
-        return newSearchParams;
-      });
+      afterRun && afterRun();
     });
   };
   return (

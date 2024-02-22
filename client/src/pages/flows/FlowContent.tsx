@@ -42,13 +42,23 @@ export const FlowContent: React.FC = () => {
     return null;
   }
 
+  const onRunFlow = () => {
+    setSearchParams((prevSearchParams) => {
+      const newSearchParams = new URLSearchParams(prevSearchParams);
+      newSearchParams.set("tab", "2");
+      return newSearchParams;
+    });
+  };
+
   return (
     <>
       <FlowNameAndRun
+        flowId={flowId as string}
         isLoading={false}
         name={flowName}
         handleNameChange={handleFlowNameChange}
         handleSaveClicked={handleSaveClicked}
+        afterRun={onRunFlow}
       />
       <TabContext value={searchParams.get("tab") || "1"}>
         <TabList
@@ -59,7 +69,7 @@ export const FlowContent: React.FC = () => {
           <Tab label="Runs" value="2" />
         </TabList>
         <TestsTab />
-        <RunsTab />
+        <RunsTab tab="2" flowId={flowId} />
       </TabContext>
     </>
   );
