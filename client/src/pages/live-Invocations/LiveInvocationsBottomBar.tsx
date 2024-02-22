@@ -22,7 +22,7 @@ export const InvocationsSearchBar = ({
     loadLiveInvocations,
   } = useSniffersStore();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_, setSearchParams] = useSearchParams();
 
   const clearFilters = () => {
     loadLiveInvocations([], [], undefined, undefined, undefined, []);
