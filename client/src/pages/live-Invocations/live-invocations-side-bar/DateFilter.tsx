@@ -5,6 +5,7 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import { useSearchParams } from "react-router-dom";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
+
 const DateFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const toDate = searchParams.get("ToDateFilter")
@@ -47,7 +48,7 @@ const DateFilter = () => {
             seconds: renderTimeViewClock,
           }}
           slotProps={{
-            actionBar: { actions: ["cancel", "today"] },
+            actionBar: { actions: ["clear", "today"] },
           }}
           value={fromDate}
           format="DD/MM/YYYY HH:mm a"
@@ -75,7 +76,7 @@ const DateFilter = () => {
           onChange={(date: Date | null) => handleToDateChange(date)}
           value={toDate}
           slotProps={{
-            actionBar: { actions: ["cancel", "today"] },
+            actionBar: { actions: ["clear", "today"] },
           }}
           sx={{
             width: 200,
