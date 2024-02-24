@@ -31,7 +31,7 @@ export const TestPlansSideBar = () => {
   }, [testPlanId]);
 
   return (
-    <div className="flex flex-col space-y-4 px-2 h-full py-2 overflow-y-auto w-full">
+    <div className="flex flex-col space-y-2 px-2 h-full py-2 overflow-y-auto w-full">
       <TestPlanDropDown />
       <div className="border-b border-border-color pb-2 mb-2">
         <ImportTestPlanButton />
