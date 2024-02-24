@@ -3,7 +3,6 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { useSearchParams } from "react-router-dom";
-
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 
 type InvocationsSearchBarProps = {
