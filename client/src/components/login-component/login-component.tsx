@@ -13,12 +13,16 @@ import { useAuthStore } from "../../stores/authStore";
 import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./login-component.module.scss";
 import { routes } from "../../constants/routes";
+import { LoadingIcon } from "../../pages/sniffers/LoadingIcon";
+
+const SETTINGS_OPTIONS = ["Logout", "API keys", "Organizations"];
+const LOGIN_SETTINGS_OPTIONS = ["Login", "Signup"];
 
 const LoginComponent: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = useState(false);
   const { user, signOut } = useAuthStore();
   const [loading, setLoading] = useState(false);
-  const settings = user != null ? ["Logout", "API keys"] : ["Login", "Signup"];
+  const settings = user != null ? SETTINGS_OPTIONS : LOGIN_SETTINGS_OPTIONS;
   const navigate = useNavigate();
 
   const handleOpenUserMenu = () => {
@@ -33,6 +37,11 @@ const LoginComponent: React.FC = () => {
       case "API keys": {
         setLoading(false);
         navigate(routes.API_KEYS);
+        break;
+      }
+      case "Organizations": {
+        setLoading(false);
+        navigate(routes.ORGANIZATIONS);
         break;
       }
       case "Logout": {
@@ -66,7 +75,7 @@ const LoginComponent: React.FC = () => {
         <div onClick={handleOpenUserMenu} className={styles.my_box}>
           <Tooltip title="Open settings">
             {loading ? (
-              <CircularProgress />
+              <LoadingIcon />
             ) : (
               <IconButton sx={{ p: 0 }}>
                 {user ? (
@@ -81,7 +90,7 @@ const LoginComponent: React.FC = () => {
             )}
           </Tooltip>
           <Menu
-            sx={{ mt: "55px" }}
+            sx={{ mt: "40px" }}
             id="menu-appbar"
             anchorOrigin={{
               vertical: "top",

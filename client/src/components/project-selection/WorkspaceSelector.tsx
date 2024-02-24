@@ -66,7 +66,7 @@ const WorkspaceSelector = () => {
                 <WorkspaceItem
                   workspace={{
                     id: user.id,
-                    name: "Personal",
+                    name: "Default",
                     userId: user.id,
                     createdAt: "",
                     updatedAt: "",

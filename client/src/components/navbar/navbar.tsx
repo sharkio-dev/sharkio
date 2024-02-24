@@ -24,9 +24,9 @@ export const Navbar: React.FC = () => {
           </>
         )}
         {!isLoggedOut && (
-          <div className="flex items-center justify-center p-2 rounded-lg hover:bg-secondary space-x-2 cursor-pointer active:bg-tertiary group">
-            <div>Sharkio</div>
-            <FaChevronDown className="text-white opacity-0 group-hover:opacity-100" />
+          <div className="flex items-center p-2 rounded-lg bg-secondary space-x-2 cursor-pointer active:bg-tertiary group min-w-[100px]">
+            <div className="">Personal</div>
+            <FaChevronDown className="hidden group-hover:block text-blue-400" />
           </div>
         )}
       </div>
