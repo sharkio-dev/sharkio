@@ -37,7 +37,7 @@ export const SniffersSideBar: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 overflow-y-auto">
+      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-2 overflow-y-auto">
         {snackBar}
         <ProxySelector
           onSnifferSelected={(snifferId) => {

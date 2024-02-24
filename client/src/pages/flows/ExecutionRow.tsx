@@ -1,4 +1,4 @@
-import { Tab, TableRow } from "@mui/material";
+import { Tab } from "@mui/material";
 import * as React from "react";
 import { FiChevronRight } from "react-icons/fi";
 import { getRunStatusIcon } from "./RunsTab";

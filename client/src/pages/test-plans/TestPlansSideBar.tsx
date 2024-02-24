@@ -31,19 +31,20 @@ export const TestPlansSideBar = () => {
   }, [testPlanId]);
 
   return (
-    <div className="flex flex-col space-y-4 px-2 h-full py-2 overflow-y-auto">
+    <div className="flex flex-col space-y-4 px-2 h-full py-2 overflow-y-auto w-full">
       <TestPlanDropDown />
       <div className="border-b border-border-color pb-2 mb-2">
         <ImportTestPlanButton />
       </div>
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-1 w-full">
         {nodes.map((node) => (
           <div
-            className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary`}
+            key={node.id}
+            className={`flex p-1 w-full flex-row items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary`}
           >
             <div className="flex flex-row items-center justify-between w-full">
               <div className="flex flex-row items-center space-x-2">
-                <PiGraphLight className="text-xl" />
+                <PiGraphLight className="text-2xl" />
                 <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
                   {node.name}
                 </div>

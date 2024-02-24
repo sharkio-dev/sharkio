@@ -1,7 +1,7 @@
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import TabPanel from "@mui/lab/TabPanel";
 import { MdChevronRight } from "react-icons/md";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFlowStore } from "../../stores/flowStore";
 import { useEffect } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";

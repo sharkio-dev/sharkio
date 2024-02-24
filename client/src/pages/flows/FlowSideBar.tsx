@@ -1,5 +1,5 @@
 import React from "react";
-import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
 import { FlowType, useFlowStore } from "../../stores/flowStore";
 import { useEffect, useState } from "react";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
@@ -8,6 +8,8 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { PiGraphLight } from "react-icons/pi";
 import { SearchBar } from "../../components/search/SearchBar";
+import { BsPlus } from "react-icons/bs";
+import { Tooltip } from "@mui/material";
 
 const NewFlowButton = () => {
   const { postFlow } = useFlowStore();
@@ -28,21 +30,18 @@ const NewFlowButton = () => {
     });
   };
   return (
-    <div className="border-b border-border-color pb-2 mb-2">
+    <div>
       {snackBar}
-      <div
-        className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
-        onClick={() => {
-          setIsModalOpen(true);
-        }}
-      >
-        <div
-          className={`flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center`}
-        >
-          <AiOutlinePlus className="text-blue-500 h-8 w-8 p-1" />
-          New Flow
+      <Tooltip title="Create Flow">
+        <div>
+          <BsPlus
+            className="text-2xl cursor-pointer hover:bg-border-color rounded-md active:bg-tertiary"
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          />
         </div>
-      </div>
+      </Tooltip>
       <GenericEditingModal
         modalProps={{
           open: isModalOpen,
@@ -173,12 +172,15 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
     setFilteredFlows(newFlows);
   };
   return (
-    <>
-      <SearchBar handleSearch={handleSearch} />
-      <div className="overflow-y-scroll min-h-96 h-2/3 m-2">
+    <div className="flex flex-col space-y-4">
+      <div className="flex flex-row items-center space-x-2">
+        <SearchBar handleSearch={handleSearch} />
+        <NewFlowButton />
+      </div>
+      <div className="flex flex-col overflow-y-scroll min-h-96 h-2/3 w-full">
         {filteredFlows.map((flow) => (
           <div
-            className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
+            className={`flex p-1 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary
           ${flow.id === flowId ? "bg-primary" : ""}`}
             onClick={() => {
               navigate(`/flows/${flow.id}`);
@@ -186,7 +188,7 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
           >
             <div className="flex flex-row items-center justify-between w-full">
               <div className="flex items-center space-x-2">
-                <PiGraphLight className="text-xl" />
+                <PiGraphLight className="text-2xl" />
                 <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
                   {flow.name}
                 </div>
@@ -198,7 +200,7 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 
@@ -207,7 +209,6 @@ export const FlowSideBar: React.FC = () => {
   const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         await loadFlows(true, "flow");
@@ -225,8 +226,6 @@ export const FlowSideBar: React.FC = () => {
       {snackBar}
       <div className="flex flex-col space-y-4 px-2">
         <div className="flex flex-col">
-          <div className="text-2xl font-bold mb-2">Flows</div>
-          <NewFlowButton />
           {isFlowsLoading ? <LoadingIcon /> : <FlowsSideBar flows={flows} />}
         </div>
       </div>

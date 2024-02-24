@@ -2,7 +2,6 @@ import { Button } from "@mui/material";
 import { EditableNameField } from "./EditableNameProps";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import { useFlowStore } from "../../stores/flowStore";
-import { useSearchParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 interface FlowNameAndSaveProps {
