@@ -14,6 +14,8 @@ import { CiImport } from "react-icons/ci";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { BsPlus } from "react-icons/bs";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { PiGraphLight } from "react-icons/pi";
+import { LuClipboardCheck } from "react-icons/lu";
 
 export const TestPlansSideBar = () => {
   const { loadFlows, loadNodes, nodes, deleteNode } = useFlowStore();
@@ -40,8 +42,11 @@ export const TestPlansSideBar = () => {
             className={`flex p-1 px-2 flex-row w-full items-center rounded-md space-x-4 hover:bg-primary cursor-pointer active:bg-tertiary`}
           >
             <div className="flex flex-row items-center justify-between w-full">
-              <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
-                {node.name}
+              <div className="flex flex-row items-center space-x-2">
+                <PiGraphLight className="text-xl" />
+                <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {node.name}
+                </div>
               </div>
               <div className="flex flex-row items-center space-x-2">
                 <Tooltip title="Remove flow from Test Plan" placement="top">
@@ -173,6 +178,7 @@ const TestPlanDropDown = () => {
                   });
                 }}
                 isSelected={testPlanId === flow.id}
+                LeftIcon={LuClipboardCheck}
               />
             </MenuItem>
           ))}

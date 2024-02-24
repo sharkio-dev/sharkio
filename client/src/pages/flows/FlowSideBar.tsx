@@ -5,6 +5,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useNavigate, useParams } from "react-router-dom";
+import { PiGraphLight } from "react-icons/pi";
 
 const NewFlowButton = () => {
   const { postFlow } = useFlowStore();
@@ -168,8 +169,11 @@ const FlowsSideBar: React.FC<FlowSideBarProps> = ({ flows }) => {
           }}
         >
           <div className="flex flex-row items-center justify-between w-full">
-            <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
-              {flow.name}
+            <div className="flex items-center space-x-2">
+              <PiGraphLight className="text-xl" />
+              <div className="flex w-full text-sm overflow-hidden overflow-ellipsis whitespace-nowrap">
+                {flow.name}
+              </div>
             </div>
             <div className="flex flex-row items-center space-x-2">
               <FlowDeleteButton flowId={flow.id} />
