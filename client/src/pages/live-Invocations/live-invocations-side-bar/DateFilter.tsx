@@ -37,6 +37,11 @@ const DateFilter = () => {
       return newSearchParams;
     });
   };
+
+  const localizedTextsMap = {
+    todayButtonLabel: "Now",
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
@@ -50,6 +55,7 @@ const DateFilter = () => {
           slotProps={{
             actionBar: { actions: ["clear", "today"] },
           }}
+          localeText={localizedTextsMap}
           value={fromDate}
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleFromDateChange(date)}
@@ -78,6 +84,7 @@ const DateFilter = () => {
           slotProps={{
             actionBar: { actions: ["clear", "today"] },
           }}
+          localeText={localizedTextsMap}
           sx={{
             width: 200,
             input: {
