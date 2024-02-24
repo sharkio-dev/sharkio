@@ -72,7 +72,7 @@ class SettingsController {
           log.error(e);
           return res.status(500).send({ message: "Internal Server Error" });
         }
-      }
+      },
     );
 
     router.delete(
@@ -117,7 +117,7 @@ class SettingsController {
           log.error(e);
           return res.status(500).send({ message: "Internal Server Error" });
         }
-      }
+      },
     );
 
     router.put(
@@ -171,7 +171,7 @@ class SettingsController {
           log.error(e);
           return res.status(500).send({ message: "Internal Server Error" });
         }
-      }
+      },
     );
     return { router, path: "/sharkio/settings/api-keys" };
   }

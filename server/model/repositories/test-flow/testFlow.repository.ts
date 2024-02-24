@@ -49,7 +49,7 @@ export class TestFlowRepository {
   createTestNode(
     ownerId: string,
     flowId: string,
-    testNode: Partial<TestFlowNode>
+    testNode: Partial<TestFlowNode>,
   ) {
     const createdNode = this.nodeRepository.create({
       ...testNode,
@@ -64,11 +64,11 @@ export class TestFlowRepository {
     ownerId: any,
     flowId: string,
     nodeId: string,
-    testFlowNode: Partial<TestFlowNode>
+    testFlowNode: Partial<TestFlowNode>,
   ) {
     return this.nodeRepository.update(
       { ownerId, flowId, id: nodeId },
-      testFlowNode
+      testFlowNode,
     );
   }
 
@@ -91,7 +91,7 @@ export class TestFlowRepository {
   createFlowRun(
     ownerId: string,
     flowId: string,
-    flowRun?: Partial<TestFlowRun>
+    flowRun?: Partial<TestFlowRun>,
   ) {
     const newFlowRun = this.flowRunRepository.create({
       ownerId,
@@ -105,11 +105,11 @@ export class TestFlowRepository {
   updateTestFlowRun(
     ownerId: string,
     flowRunId: string,
-    testFlowRun: Partial<TestFlowRun>
+    testFlowRun: Partial<TestFlowRun>,
   ) {
     return this.flowRunRepository.update(
       { id: flowRunId, ownerId: ownerId },
-      testFlowRun
+      testFlowRun,
     );
   }
 
@@ -118,7 +118,7 @@ export class TestFlowRepository {
     flowId: string,
     flowRunId: string,
     node: TestFlowNode,
-    nodeRun: Partial<TestFlowNodeRun>
+    nodeRun: Partial<TestFlowNodeRun>,
   ) {
     const { id, ...rest } = node;
     const createdNodeRun = this.nodeRunRepository.create({
@@ -139,7 +139,7 @@ export class TestFlowRepository {
     flowRunId: string,
     nodeRunId: string,
     nodeRunResult: AssertionResult,
-    nodeRun: Partial<TestFlowNodeRun>
+    nodeRun: Partial<TestFlowNodeRun>,
   ) {
     const updatedNodeRun = await this.nodeRunRepository.update(
       {
@@ -151,7 +151,7 @@ export class TestFlowRepository {
       {
         ...nodeRun,
         assertionsResult: nodeRunResult,
-      }
+      },
     );
 
     return updatedNodeRun;
@@ -161,7 +161,7 @@ export class TestFlowRepository {
     ownerId: string,
     flowId: string,
     flowRunId: string,
-    nodes: TestFlowNode[]
+    nodes: TestFlowNode[],
   ) {
     const createdNodeRuns = nodes.map((node) => {
       const { id, ...rest } = node;

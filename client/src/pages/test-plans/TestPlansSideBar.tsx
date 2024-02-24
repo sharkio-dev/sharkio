@@ -87,7 +87,7 @@ const ImportTestPlanButton = () => {
   return (
     <div>
       <div
-        className={`flex flex-row w-full hover:bg-primary  cursor-pointer active:bg-tertiary items-center rounded-md`}
+        className={`flex flex-row w-full hover:bg-primary p-1 cursor-pointer active:bg-tertiary items-center rounded-md`}
         onClick={() => {
           setIsModalOpen(true);
         }}
