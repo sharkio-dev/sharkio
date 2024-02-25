@@ -15,12 +15,14 @@ import EditWorkspaceModal from "./EditWorkspaceModal";
 import NewWorkspaceItem from "./NewWorkspaceItem";
 import NewWorkspaceModal from "./NewWorkspaceModal";
 import WorkspaceItem from "./WorkspaceItem";
+import { useOrganizationsStore } from "../../stores/organizationsStore";
 
 export const emptyWorkSpace: workSpaceType = {
   id: "",
   name: "",
   userId: "",
 };
+
 const WorkspaceSelector = () => {
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
     useWorkspaceStore();
@@ -49,7 +51,7 @@ const WorkspaceSelector = () => {
           <FormControl fullWidth size="small">
             <InputLabel>workspaces</InputLabel>
             <Select
-              className="w-fit min-w-[200px]"
+              className="w-fit min-w-[150px]"
               value={openWorkspace?.id ?? user.id}
               label="Workspace"
               renderValue={() => openWorkspace?.name || "Default"}
@@ -100,5 +102,4 @@ const WorkspaceSelector = () => {
     </div>
   );
 };
-
 export default WorkspaceSelector;

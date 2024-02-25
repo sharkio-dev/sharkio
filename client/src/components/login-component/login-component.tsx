@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  CircularProgress,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Avatar, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";

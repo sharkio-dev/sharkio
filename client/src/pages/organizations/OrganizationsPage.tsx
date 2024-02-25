@@ -1,12 +1,15 @@
 import { useEffect } from "react";
 import { useOrganizationsStore } from "../../stores/organizationsStore";
-import { Button } from "@mui/material";
+import { Button, Tab } from "@mui/material";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoRemoveCircleOutline } from "react-icons/io5";
 import { IoPersonAddOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { GoBackButton } from "../flows/FlowStepPage";
 import { IoMdAdd } from "react-icons/io";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 
 const OrganzationsPage = () => {
   const { organizations, loadOrganizations } = useOrganizationsStore();
@@ -59,6 +62,15 @@ const OrganzationsPage = () => {
 export const OrganizationPage = () => {
   const { members, loadMembers } = useOrganizationsStore();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleTabChange = (_: any, newValue: string) => {
+    setSearchParams((prevSearchParams) => {
+      const newSearchParams = new URLSearchParams(prevSearchParams);
+      newSearchParams.set("tab", newValue);
+      return newSearchParams;
+    });
+  };
 
   useEffect(() => {
     loadMembers("id");
@@ -70,47 +82,68 @@ export const OrganizationPage = () => {
         <div className="flex flex-row items-center space-x-2">
           <GoBackButton
             onClick={() => {
-              navigate(-1);
+              navigate("/organizations");
             }}
           />
-          <div className="text-2xl font-bold">Members</div>
+          <div className="text-2xl font-bold">Org Name</div>
         </div>
-        <Button
-          variant="outlined"
-          color="success"
-          startIcon={<IoPersonAddOutline />}
-        >
-          Invite
-        </Button>
+        <div className="flex flex-row items-center space-x-4">
+          <Button
+            variant="outlined"
+            color="success"
+            startIcon={<IoPersonAddOutline />}
+          >
+            Invite
+          </Button>
+          <Button variant="outlined" color="error">
+            Leave
+          </Button>
+        </div>
       </div>
-      <div className="w-full border-b-[0.05px] mt-4 mb-8" />
-      {members.length > 0 && (
-        <div className="flex flex-col border-[0.05px] border-border-color rounded-md">
-          {members.map((organization) => (
-            <div
-              key={organization.id}
-              className="flex flex-row justify-between border-b-[0.05px] border-border-color p-4 rounded-md hover:bg-secondary active:bg-secondary "
-            >
-              <div className="flex flex-col">
-                <span className="text-lg font-bold">{organization.name}</span>
-                <span className="text-sm text-gray-400">
-                  {organization.email}
-                </span>
+      <div className="w-full border-b-[0.05px] mt-4 mb-4" />
+      <TabContext value={searchParams.get("tab") || "1"}>
+        <TabList
+          onChange={handleTabChange}
+          className="border-b-[0.1px] border-border-color"
+        >
+          <Tab label="Members" value="1" />
+        </TabList>
+        <TabPanel value="1" style={{ padding: 0, height: "100%" }}>
+          <div className="flex flex-col w-full h-full py-4">
+            {members.length > 0 && (
+              <div className="flex flex-col border-[0.05px] border-border-color rounded-md">
+                {members.map((organization) => (
+                  <div
+                    key={organization.id}
+                    className="flex flex-row justify-between border-b-[0.05px] border-border-color p-2 rounded-md hover:bg-secondary active:bg-secondary "
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-lg font-bold">
+                        {organization.name}
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        {organization.email}
+                      </span>
+                    </div>
+                    <div className="flex flex-row items-center space-x-2">
+                      <span
+                        className={`text-xs ${
+                          organization.isAdmin
+                            ? "text-green-400"
+                            : "text-blue-400"
+                        } border-[0.05px] border-border-color rounded-xl px-2 py-1 cursor-auto`}
+                      >
+                        {organization.isAdmin ? "Admin" : "Member"}
+                      </span>
+                      <IoRemoveCircleOutline className="text-red-500 text-xl hover:cursor-pointer hover:scale-105 active:text-red-400" />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex flex-row items-center space-x-2">
-                <span
-                  className={`text-xs ${
-                    organization.isAdmin ? "text-green-400" : "text-blue-400"
-                  } border-[0.05px] border-border-color rounded-xl px-2 py-1 cursor-auto`}
-                >
-                  {organization.isAdmin ? "Admin" : "Member"}
-                </span>
-                <IoRemoveCircleOutline className="text-red-500 text-xl hover:cursor-pointer hover:scale-105 active:text-red-400" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            )}
+          </div>
+        </TabPanel>
+      </TabContext>
     </div>
   );
 };

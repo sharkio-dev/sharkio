@@ -23,20 +23,15 @@ export const Navbar: React.FC = () => {
             </div>
           </>
         )}
-        {!isLoggedOut && (
-          <div className="flex items-center p-2 rounded-lg bg-secondary space-x-2 cursor-pointer active:bg-tertiary group min-w-[100px]">
-            <div className="">Personal</div>
-            <FaChevronDown className="hidden group-hover:block text-blue-400" />
-          </div>
-        )}
-      </div>
 
-      <div className="items-center flex space-x-4">
         {!isLoggedOut && (
           <div className="flex w-full justify-end">
             <WorkspaceSelector />
           </div>
         )}
+      </div>
+
+      <div className="items-center flex space-x-4">
         {!isLoggedOut && <LoginComponent />}
         {isLoggedOut && <GithubStarButton />}
       </div>
