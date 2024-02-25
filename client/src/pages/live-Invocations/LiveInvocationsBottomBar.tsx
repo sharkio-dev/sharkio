@@ -3,6 +3,7 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
+import { useSearchParams } from "react-router-dom";
 
 type InvocationsSearchBarProps = {
   setActiveInvocation: (invocationId: string) => void;
@@ -15,6 +16,11 @@ export const InvocationsSearchBar = ({
   const hostname = document.location.origin;
   const { invocations, loadingInvocations, getSnifferById } =
     useSniffersStore();
+  const [searchParams, _] = useSearchParams();
+
+  const invocationLink = (invocationId: string) => {
+    return `${hostname}/live-invocations/${invocationId}?${searchParams.toString()}`;
+  };
 
   return (
     <>
@@ -39,7 +45,7 @@ export const InvocationsSearchBar = ({
                 invocationId={invocation.id}
                 method={invocation.method}
                 onClick={() => setActiveInvocation(invocation.id)}
-                invocationLink={`${hostname}/live-invocations/${invocation.id}`}
+                invocationLink={invocationLink(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}

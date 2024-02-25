@@ -4,6 +4,7 @@ import { selectIconByMethod } from "./selectIconByMethod";
 import { useState } from "react";
 import { CiLink } from "react-icons/ci";
 import { InvocationPreview } from "./InvocationPreview";
+import { useSearchParams } from "react-router-dom";
 
 export const selectIconByStatus = (status: number) => {
   if (status < 300) {
