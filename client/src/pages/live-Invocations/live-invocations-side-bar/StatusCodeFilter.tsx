@@ -18,7 +18,10 @@ export const StatusCodeFilter = () => {
 
   useEffect(() => {
     const statusCodes = searchParams.get(searchParamFilters.statusCodes);
-    if (!statusCodes) return;
+    if (!statusCodes) {
+      setSelectedStatusCodes([]);
+      return;
+    }
     const selectedCodes = statusCodes.split(",");
     setSelectedStatusCodes(
       allStatusCodes.filter((code) => selectedCodes.includes(code.value)),

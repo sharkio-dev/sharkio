@@ -5,6 +5,7 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import { useSearchParams } from "react-router-dom";
 import { searchParamFilters } from "./LiveInvocationsSideBar";
+
 const DateFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const toDate = searchParams.get("ToDateFilter")
@@ -36,6 +37,11 @@ const DateFilter = () => {
       return newSearchParams;
     });
   };
+
+  const localizedTextsMap = {
+    todayButtonLabel: "Now",
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
@@ -46,6 +52,10 @@ const DateFilter = () => {
             minutes: renderTimeViewClock,
             seconds: renderTimeViewClock,
           }}
+          slotProps={{
+            actionBar: { actions: ["clear", "today"] },
+          }}
+          localeText={localizedTextsMap}
           value={fromDate}
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleFromDateChange(date)}
@@ -71,6 +81,10 @@ const DateFilter = () => {
           format="DD/MM/YYYY HH:mm a"
           onChange={(date: Date | null) => handleToDateChange(date)}
           value={toDate}
+          slotProps={{
+            actionBar: { actions: ["clear", "today"] },
+          }}
+          localeText={localizedTextsMap}
           sx={{
             width: 200,
             input: {
