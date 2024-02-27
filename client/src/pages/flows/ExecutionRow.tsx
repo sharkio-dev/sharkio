@@ -1,15 +1,20 @@
-import { Tab, TableRow } from "@mui/material";
+import { Tab } from "@mui/material";
 import * as React from "react";
 import { FiChevronRight } from "react-icons/fi";
 import { getRunStatusIcon } from "./RunsTab";
-import { AssertionResult, NodeRunType } from "../../stores/flowStore";
+import {
+  AssertionResult,
+  NodeRunType,
+  useFlowStore,
+} from "../../stores/flowStore";
 import { ExecutionDetails } from "./ExecutionDetailsProps";
 import { RequestSection, ResponseSection } from "../sniffers/InvocationDetails";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
-import { BodySection } from "../../components/editors/BodySection";
+import { PiGraphLight } from "react-icons/pi";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type ExecutionRowProps = {
   nodeRun: NodeRunType;
@@ -17,102 +22,123 @@ type ExecutionRowProps = {
 
 export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
   const [show, setShow] = React.useState<boolean>(false);
-  const [tab, setTab] = React.useState("1");
-
   const shouldShowData =
     nodeRun.status === "success" || nodeRun.status === "failed";
-
-  const passed = nodeRun.assertionsResult.passed ?? [];
-  const failed = nodeRun.assertionsResult.failed ?? [];
-  const assertions = passed.concat(failed);
+  const passed = nodeRun?.assertionsResult?.passed ?? [];
+  const failed = nodeRun?.assertionsResult?.failed ?? [];
 
   return (
-    <TableRow className="border-t-[1px] border-primary h-10 w-full">
-      <div className="flex flex-col items-center w-full p-4 space-y-4">
-        <div
-          className="flex flex-row items-center justify-between hover:cursor-pointer active:bg-secondary transition-all duration-500 w-full"
-          onClick={() => setShow(!show)}
-        >
-          <div className="flex flex-row items-center space-x-4">
-            {getRunStatusIcon(nodeRun.status)}
-            <div className="flex flex-col h-full">
+    <div className="flex flex-col items-center w-full p-4 space-y-4">
+      <div
+        className="flex flex-row items-center justify-between hover:cursor-pointer active:bg-secondary transition-all duration-500 w-full"
+        onClick={() => setShow(!show)}
+      >
+        <div className="flex flex-row items-center space-x-4">
+          {getRunStatusIcon(nodeRun.status)}
+          <div className="flex flex-col h-full">
+            <div className="flex flex-row items-center space-x-2">
+              {nodeRun.type === "subflow" && (
+                <PiGraphLight className="text-2xl" />
+              )}
               <span className="text-lg font-bold hover:cursor-pointer hover:scale-105">
                 {nodeRun.name}
               </span>
-              <span className="text-xs">
-                {new Date(nodeRun.finishedAt).toLocaleString()}
-              </span>
             </div>
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            {shouldShowData && (
-              <>
-                <div className="flex flex-col h-full">
-                  <span className="text-xs">Passed: {passed.length}</span>
-                  <span className="text-xs">Errors: {failed.length}</span>
-                </div>
-                {show ? (
-                  <FiChevronRight className="text-gray-400 text-2xl transform rotate-90" />
-                ) : (
-                  <FiChevronRight className="text-gray-400 text-2xl" />
-                )}
-              </>
-            )}
+            <span className="text-xs">
+              {new Date(nodeRun.finishedAt).toLocaleString()}
+            </span>
           </div>
         </div>
-
-        {shouldShowData && show && (
-          <TabContext value={tab}>
-            <TabList
-              onChange={(_, newValue) => {
-                setTab(newValue);
-              }}
-              className="border-b-[0.1px] border-border-color w-full"
-            >
-              <Tab label="Assertions" value="1" />
-              <Tab
-                label={nodeRun.type === "http" ? "Request" : "Result"}
-                value="2"
-              />
-              {nodeRun.type === "http" && <Tab label={"Response"} value="3" />}
-            </TabList>
-            <AssertionsTable assertions={assertions} />
-            {nodeRun.type === "http" ? (
-              <>
-                <ResponseTab response={nodeRun.response} />
-                <RequestTab
-                  request={{
-                    headers: nodeRun.headers,
-                    body: nodeRun.body,
-                    method: nodeRun.method,
-                    url: nodeRun.url,
-                  }}
-                  proxyId={nodeRun.proxyId}
-                />
-              </>
-            ) : (
-              <TabPanel
-                value="2"
-                style={{
-                  padding: 0,
-                  height: "100%",
-                  width: "100%",
-                  maxHeight: "450px",
-                  overflow: "auto",
-                }}
-              >
-                <div className="flex flex-col w-full overflow-y-auto">
-                  <BodySection
-                    body={JSON.stringify(nodeRun.response, null, 2)}
-                    showButtons={false}
-                  />
-                </div>
-              </TabPanel>
-            )}
-          </TabContext>
-        )}
+        <div className="flex flex-row items-center space-x-4">
+          {shouldShowData && (
+            <>
+              <div className="flex flex-col h-full">
+                <span className="text-xs">Passed: {passed.length}</span>
+                <span className="text-xs">Errors: {failed.length}</span>
+              </div>
+              {show ? (
+                <FiChevronRight className="text-gray-400 text-2xl transform rotate-90" />
+              ) : (
+                <FiChevronRight className="text-gray-400 text-2xl" />
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </TableRow>
+      {shouldShowData && show && nodeRun.type === "http" && (
+        <HttpExtension nodeRun={nodeRun} />
+      )}
+      {shouldShowData && show && nodeRun.type === "subflow" && (
+        <SubFlowExtension nodeRun={nodeRun} />
+      )}
+    </div>
+  );
+};
+
+const SubFlowExtension = ({ nodeRun }: { nodeRun: NodeRunType }) => {
+  const [subFlowNodeRun, setSubFlowNodeRun] = React.useState<NodeRunType[]>([]);
+  const { loadNodeRuns } = useFlowStore();
+  const [isRunLoading, setIsRunLoading] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (!nodeRun.subFlowId || !nodeRun.subFlowRunId) {
+      return;
+    }
+    setIsRunLoading(true);
+    loadNodeRuns(nodeRun.subFlowId, nodeRun.subFlowRunId)
+      .then((runs) => {
+        setSubFlowNodeRun(runs);
+      })
+      .finally(() => {
+        setIsRunLoading(false);
+      });
+  }, [nodeRun]);
+  console.log(isRunLoading);
+
+  return (
+    <div className="flex flex-col w-full border-[1px] border-border-color rounded-lg">
+      {isRunLoading ? (
+        <div className="flex h-full w-full justify-center items-center">
+          <LoadingIcon />
+        </div>
+      ) : (
+        subFlowNodeRun.map((run, i) => <ExecutionRow key={i} nodeRun={run} />)
+      )}
+      <div className="flex w-full bg-border-color h-[1px]" />
+    </div>
+  );
+};
+
+const HttpExtension = ({ nodeRun }: { nodeRun: NodeRunType }) => {
+  const passed = nodeRun.assertionsResult.passed ?? [];
+  const failed = nodeRun.assertionsResult.failed ?? [];
+  const assertions = passed.concat(failed);
+  const [tab, setTab] = React.useState("1");
+
+  return (
+    <TabContext value={tab}>
+      <TabList
+        onChange={(_, newValue) => {
+          setTab(newValue);
+        }}
+        className="border-b-[0.1px] border-border-color w-full"
+      >
+        <Tab label="Assertions" value="1" />
+        <Tab label={nodeRun.type === "http" ? "Request" : "Result"} value="2" />
+        {nodeRun.type === "http" && <Tab label={"Response"} value="3" />}
+      </TabList>
+      <AssertionsTable assertions={assertions} />
+      <ResponseTab response={nodeRun.response} />
+      <RequestTab
+        request={{
+          headers: nodeRun.headers,
+          body: nodeRun.body,
+          method: nodeRun.method,
+          url: nodeRun.url,
+        }}
+        proxyId={nodeRun.proxyId}
+      />
+    </TabContext>
   );
 };
 

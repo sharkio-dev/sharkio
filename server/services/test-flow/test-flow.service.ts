@@ -21,8 +21,8 @@ export class TestFlowService {
     return this.repository.create(createFlowDTO);
   }
 
-  getByOwnerId(ownerId: string) {
-    return this.repository.getByOwnerId(ownerId);
+  getByOwnerId(ownerId: string, type?: string) {
+    return this.repository.getByOwnerId(ownerId, type);
   }
 
   getById(ownerId: any, flowId: string) {

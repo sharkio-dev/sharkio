@@ -1,17 +1,27 @@
-import { useEffect, useState } from "react";
-import { Tab } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
+import InnerPageTemplate from "../../components/inner-page-template/inner-page-template";
+import { FlowNameAndRun } from "../flows/FlowNameAndSaveProps";
+import { TestPlansSideBar } from "./TestPlansSideBar";
 import TabList from "@mui/lab/TabList";
-import { useFlowStore } from "../../stores/flowStore";
-import { FlowNameAndRun } from "./FlowNameAndSaveProps";
-import { RunsTab } from "./RunsTab";
-import { TestsTab } from "./TestsTab";
+import { Tab } from "@mui/material";
+import { RunsTab } from "../flows/RunsTab";
 import { useParams, useSearchParams } from "react-router-dom";
+import { useFlowStore } from "../../stores/flowStore";
+import { useEffect, useState } from "react";
 
-export const FlowContent: React.FC = () => {
-  const { flows, putFlow } = useFlowStore();
-  const { flowId } = useParams();
-  const flow = flows.find((f) => f.id === flowId);
+const TestPlans = () => {
+  return (
+    <InnerPageTemplate
+      sideBarComponent={TestPlansSideBar}
+      contentComponent={TestPlansContent}
+    />
+  );
+};
+
+const TestPlansContent = () => {
+  const { testPlans, putFlow, loadFlowRuns } = useFlowStore();
+  const { testPlanId } = useParams();
+  const flow = testPlans.find((f) => f.id === testPlanId);
   const [flowName, setFlowName] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -36,41 +46,36 @@ export const FlowContent: React.FC = () => {
 
   const handleSaveClicked = () => {
     if (!flow) return;
-    putFlow({ ...flow, name: flowName });
+    putFlow({ ...flow, name: flowName }, false, "suite");
   };
-  if (!flowId) {
+
+  if (!testPlanId) {
     return null;
   }
-
-  const onRunFlow = () => {
-    setSearchParams((prevSearchParams) => {
-      const newSearchParams = new URLSearchParams(prevSearchParams);
-      newSearchParams.set("tab", "2");
-      return newSearchParams;
-    });
-  };
 
   return (
     <>
       <FlowNameAndRun
-        flowId={flowId as string}
+        flowId={testPlanId as string}
         isLoading={false}
         name={flowName}
         handleNameChange={handleFlowNameChange}
         handleSaveClicked={handleSaveClicked}
-        afterRun={onRunFlow}
+        afterRun={() => {
+          loadFlowRuns(testPlanId as string, true);
+        }}
       />
       <TabContext value={searchParams.get("tab") || "1"}>
         <TabList
           onChange={handleTabChange}
           className="border-b-[0.1px] border-border-color"
         >
-          <Tab label="Tests" value="1" />
-          <Tab label="Runs" value="2" />
+          <Tab label="Runs" value="1" />
         </TabList>
-        <TestsTab />
-        <RunsTab tab="2" flowId={flowId} />
+        <RunsTab flowId={testPlanId} tab="1" />
       </TabContext>
     </>
   );
 };
+
+export default TestPlans;
