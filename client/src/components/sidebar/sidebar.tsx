@@ -36,11 +36,6 @@ let productionMenu: IMenuItem[] = [
     Icon: PiGraphLight,
   },
   {
-    to: routes.FLOWS,
-    title: "Flows",
-    Icon: PiGraphLight,
-  },
-  {
     to: routes.ENDPOINTS,
     title: "Docs",
     Icon: IoDocumentTextOutline,
