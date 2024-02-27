@@ -8,7 +8,7 @@ import { InvocationType } from "../sniffers/types";
 interface ImportTestStepDialogProps {
   open: boolean;
   handleClose: () => void;
-  invocation?: InvocationType | InvocationType[]; // Updated type
+  invocation?: InvocationType | InvocationType[];
 }
 
 export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
@@ -51,11 +51,11 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
 
     Promise.all(importPromises)
       .then(() => {
-        show("Requests imported successfully", "success");
+        show("Request imported successfully", "success");
         handleClose();
       })
       .catch(() => {
-        show("Failed to import requests", "error");
+        show("Failed to import request", "error");
       });
   };
 
@@ -71,7 +71,7 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
         }}
         paperHeadLine="Import request to test"
         acceptButtonProps={{ onClick: handleImportInvocation }}
-        acceptButtonValue="Import"
+        acceptButtonValue="import"
         cancelButtonProps={{ onClick: () => handleClose() }}
         cancelButtonValue="Cancel"
         isLoading={false}
