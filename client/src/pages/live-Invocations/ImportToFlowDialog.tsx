@@ -8,12 +8,14 @@ type ImportToFlowDialogProps = {
   setIsImportStepDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isImportStepDialogOpen: boolean;
   invocation: InvocationType | InvocationType[];
+  iconSize: number;
 };
 
 export const ImportToFlowDialog: React.FC<ImportToFlowDialogProps> = ({
   setIsImportStepDialogOpen,
   isImportStepDialogOpen,
   invocation,
+  iconSize,
 }) => {
   return (
     <Tooltip title="Import to test flow">
@@ -22,6 +24,7 @@ export const ImportToFlowDialog: React.FC<ImportToFlowDialogProps> = ({
           <PiGraphLight
             onClick={() => setIsImportStepDialogOpen(true)}
             className="text-blue-400 cursor-pointer"
+            size={iconSize}
           />
           {isImportStepDialogOpen && (
             <ImportTestStepDialog

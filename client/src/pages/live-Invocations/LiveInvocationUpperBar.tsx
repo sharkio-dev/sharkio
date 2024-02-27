@@ -166,6 +166,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
                 setIsImportStepDialogOpen={setIsImportStepDialogOpen}
                 isImportStepDialogOpen={isImportStepDialogOpen}
                 invocation={invocation || []}
+                iconSize={15}
               />
             </div>
             <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">

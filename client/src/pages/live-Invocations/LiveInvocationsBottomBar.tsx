@@ -49,7 +49,7 @@ export const InvocationsSearchBar = ({
         <LiveInvocations />
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex h-4 items-center gap-3">
         <span
           className="text text-xs text-blue-400 font-bold hover:cursor-pointer"
           onClick={clearFilters}
@@ -64,6 +64,7 @@ export const InvocationsSearchBar = ({
               invocation={invocations.filter((invocation) =>
                 selectedInvocations.includes(invocation.id),
               )}
+              iconSize={18}
             />
             <span
               onClick={() => setIsImportStepDialogOpen(true)}
