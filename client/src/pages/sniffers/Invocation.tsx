@@ -24,7 +24,7 @@ type InvocationProps = {
   date?: string;
   isSelected?: boolean;
   onClick?: () => void;
-  setSelectedInvocations?: any;
+  setSelectedInvocations: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export const Invocation = ({
@@ -59,7 +59,6 @@ export const Invocation = ({
   };
 
   const handleCheckboxChange = (isChecked: boolean, invocationId: string) => {
-    console.log("This is me", isChecked);
     setSelectedInvocations((prevSelectedInvocations: string[]) =>
       isChecked
         ? [...prevSelectedInvocations, invocationId]
@@ -86,7 +85,10 @@ export const Invocation = ({
             <Checkbox
               onClick={(e) => {
                 e.stopPropagation();
-                handleCheckboxChange(e.target.checked, invocationId);
+                handleCheckboxChange(
+                  (e.target as HTMLInputElement).checked,
+                  invocationId,
+                );
               }}
             />
 

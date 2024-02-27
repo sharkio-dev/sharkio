@@ -7,7 +7,6 @@ import { useSearchParams } from "react-router-dom";
 import { ImportTestStepDialog } from "./ImpotTestStepDialog";
 import { PiGraphLight } from "react-icons/pi";
 import { Tooltip } from "@mui/material";
-import { InvocationType } from "../sniffers/types";
 
 import React from "react";
 
