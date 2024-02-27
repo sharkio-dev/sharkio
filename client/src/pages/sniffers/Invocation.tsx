@@ -1,5 +1,5 @@
 import React from "react";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Checkbox } from "@mui/material";
 import { selectIconByMethod } from "./selectIconByMethod";
 import { useState } from "react";
 import { CiLink } from "react-icons/ci";
@@ -23,6 +23,7 @@ type InvocationProps = {
   date?: string;
   isSelected?: boolean;
   onClick?: () => void;
+  setIsAnyCheckboxChecked?: any;
 };
 
 export const Invocation = ({
@@ -34,6 +35,7 @@ export const Invocation = ({
   onClick,
   date,
   invocationLink,
+  setIsAnyCheckboxChecked,
 }: InvocationProps) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -55,6 +57,13 @@ export const Invocation = ({
     setOpenModal(false);
   };
 
+  const handleCheckboxChange = (isChecked: boolean) => {
+    console.log("This is me", isChecked);
+    setIsAnyCheckboxChecked((prevState: number) =>
+      isChecked ? prevState + 1 : prevState - 1,
+    );
+  };
+
   return (
     <>
       <InvocationPreview
@@ -71,6 +80,13 @@ export const Invocation = ({
           onClick={onClick}
         >
           <div className="flex flex-row items-center space-x-4">
+            <Checkbox
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCheckboxChange(e.target.checked);
+              }}
+            />
+
             {selectIconByMethod(method)}
             <div className="flex text-sm max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
               <div className="cursor-pointer flex flex-col items-center space-y-1">

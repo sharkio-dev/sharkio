@@ -4,6 +4,9 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 import { useSearchParams } from "react-router-dom";
+import { ImportTestStepDialog } from "./ImpotTestStepDialog";
+
+import React from "react";
 
 type InvocationsSearchBarProps = {
   setActiveInvocation: (invocationId: string) => void;
@@ -27,6 +30,9 @@ export const InvocationsSearchBar = ({
   };
 
   const [_, setSearchParams] = useSearchParams();
+  const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = React.useState(0);
+  const [isImportStepDialogOpen, setIsImportStepDialogOpen] =
+    React.useState(false);
 
   const clearFilters = () => {
     loadLiveInvocations([], [], undefined, undefined, undefined, []);
@@ -35,16 +41,37 @@ export const InvocationsSearchBar = ({
 
   return (
     <>
+      {isImportStepDialogOpen && (
+        <ImportTestStepDialog
+          invocation={invocations[0]}
+          open={isImportStepDialogOpen}
+          handleClose={() => {
+            setIsImportStepDialogOpen(false);
+          }}
+        />
+      )}
+
       <div className="text-xl font-bold font-mono mb-4">{title}</div>
       <div className="flex flex-row justify-between items-center text-center mb-4">
         <LiveInvocations />
       </div>
-      <span
-        className="text text-xs text-blue-400 font-bold hover:cursor-pointer"
-        onClick={clearFilters}
-      >
-        {"Clear Filters"}
-      </span>
+
+      <div>
+        <span
+          className="text text-xs text-blue-400 font-bold hover:cursor-pointer"
+          onClick={clearFilters}
+        >
+          {"Clear Filters"}
+        </span>
+        {isAnyCheckboxChecked > 0 && (
+          <span
+            onClick={() => setIsImportStepDialogOpen(true)}
+            className="text text-xs ml-3 text-blue-400 font-bold hover:cursor-pointer"
+          >
+            {isAnyCheckboxChecked}
+          </span>
+        )}
+      </div>
 
       <div className="flex flex-col w-full overflow-y-auto">
         {loadingInvocations ? (
@@ -67,6 +94,7 @@ export const InvocationsSearchBar = ({
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}
                 url={`${snifferDomain}${invocation.url}`}
+                setIsAnyCheckboxChecked={setIsAnyCheckboxChecked}
               />
             );
           })
