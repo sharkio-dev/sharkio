@@ -18,6 +18,7 @@ import {
   TODOS_TEMPLATE,
   USERS_TEMPLATE,
 } from "./templates";
+import { SearchBar } from "../../components/search/SearchBar";
 
 interface FakeDataWizardProps {
   handleSelection: (text: string) => void;
@@ -59,20 +60,31 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
     reset();
   };
 
+  const handleSearch = (searchTerm: string) => {
+    const newWizardItems = initEntries().filter(([key]) =>
+      key.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
+    setEntries(searchTerm ? newWizardItems : initEntries());
+  };
+
   return (
     <>
       {subEntries.length === 0 && (
-        <WizardTemplate onClose={onClose} title="Fake Data" goBack={goBack}>
-          {entries.map(([key, value]) => (
-            <WizardItem
-              key={key}
-              title={key}
-              onClick={() => {
-                onEntryClick(key, value);
-              }}
-            />
-          ))}
-        </WizardTemplate>
+        <>
+          <SearchBar handleSearch={handleSearch} />
+          <WizardTemplate onClose={onClose} title="Fake Data" goBack={goBack}>
+            {entries.map(([key, value]) => (
+              <WizardItem
+                key={key}
+                title={key}
+                onClick={() => {
+                  onEntryClick(key, value);
+                }}
+              />
+            ))}
+          </WizardTemplate>
+        </>
       )}
       {subEntries.length > 0 && (
         <WizardTemplate
