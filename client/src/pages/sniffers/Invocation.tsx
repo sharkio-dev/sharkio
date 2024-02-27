@@ -4,6 +4,7 @@ import { selectIconByMethod } from "./selectIconByMethod";
 import { useState } from "react";
 import { CiLink } from "react-icons/ci";
 import { InvocationPreview } from "./InvocationPreview";
+import { InvocationType } from "../sniffers/types";
 
 export const selectIconByStatus = (status: number) => {
   if (status < 300) {
@@ -23,7 +24,7 @@ type InvocationProps = {
   date?: string;
   isSelected?: boolean;
   onClick?: () => void;
-  setNumberOfCheckedCheckboxes?: any;
+  setSelectedInvocations?: any;
 };
 
 export const Invocation = ({
@@ -35,7 +36,7 @@ export const Invocation = ({
   onClick,
   date,
   invocationLink,
-  setNumberOfCheckedCheckboxes,
+  setSelectedInvocations,
 }: InvocationProps) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -57,10 +58,12 @@ export const Invocation = ({
     setOpenModal(false);
   };
 
-  const handleCheckboxChange = (isChecked: boolean) => {
+  const handleCheckboxChange = (isChecked: boolean, invocationId: string) => {
     console.log("This is me", isChecked);
-    setNumberOfCheckedCheckboxes((prevState: number) =>
-      isChecked ? prevState + 1 : prevState - 1,
+    setSelectedInvocations((prevSelectedInvocations: string[]) =>
+      isChecked
+        ? [...prevSelectedInvocations, invocationId]
+        : prevSelectedInvocations.filter((item) => item !== invocationId),
     );
   };
 
@@ -83,7 +86,7 @@ export const Invocation = ({
             <Checkbox
               onClick={(e) => {
                 e.stopPropagation();
-                handleCheckboxChange(e.target.checked);
+                handleCheckboxChange(e.target.checked, invocationId);
               }}
             />
 

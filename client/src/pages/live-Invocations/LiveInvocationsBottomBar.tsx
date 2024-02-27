@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { ImportTestStepDialog } from "./ImpotTestStepDialog";
 import { PiGraphLight } from "react-icons/pi";
 import { Tooltip } from "@mui/material";
+import { InvocationType } from "../sniffers/types";
 
 import React from "react";
 
@@ -32,8 +33,9 @@ export const InvocationsSearchBar = ({
   };
 
   const [_, setSearchParams] = useSearchParams();
-  const [numberOfCheckedCheckboxes, setNumberOfCheckedCheckboxes] =
-    React.useState(0);
+  const [selectedInvocations, setSelectedInvocations] = React.useState<
+    string[]
+  >([]);
 
   const [isImportStepDialogOpen, setIsImportStepDialogOpen] =
     React.useState(false);
@@ -45,16 +47,6 @@ export const InvocationsSearchBar = ({
 
   return (
     <>
-      {isImportStepDialogOpen && (
-        <ImportTestStepDialog
-          invocation={invocations[0]}
-          open={isImportStepDialogOpen}
-          handleClose={() => {
-            setIsImportStepDialogOpen(false);
-          }}
-        />
-      )}
-
       <div className="text-xl font-bold font-mono mb-4">{title}</div>
       <div className="flex flex-row justify-between items-center text-center mb-4">
         <LiveInvocations />
@@ -67,7 +59,7 @@ export const InvocationsSearchBar = ({
         >
           {"Clear Filters"}
         </span>
-        {numberOfCheckedCheckboxes > 0 && (
+        {selectedInvocations.length > 0 && (
           <>
             <Tooltip title="Import all selected to test flow">
               <div>
@@ -78,7 +70,9 @@ export const InvocationsSearchBar = ({
                   />
                   {isImportStepDialogOpen && (
                     <ImportTestStepDialog
-                      invocation={[invocations[0], invocations[1]]}
+                      invocation={invocations.filter((invocation) => {
+                        return selectedInvocations.includes(invocation.id);
+                      })}
                       open={isImportStepDialogOpen}
                       handleClose={() => {
                         setIsImportStepDialogOpen(false);
@@ -117,7 +111,7 @@ export const InvocationsSearchBar = ({
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}
                 url={`${snifferDomain}${invocation.url}`}
-                setNumberOfCheckedCheckboxes={setNumberOfCheckedCheckboxes}
+                setSelectedInvocations={setSelectedInvocations}
               />
             );
           })
