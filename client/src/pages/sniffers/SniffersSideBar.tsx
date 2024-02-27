@@ -37,7 +37,7 @@ export const SniffersSideBar: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-4 overflow-y-auto">
+      <div className="flex flex-col justify-between items-center px-2 pt-4 space-y-2 overflow-y-auto">
         {snackBar}
         <ProxySelector
           onSnifferSelected={(snifferId) => {
@@ -105,8 +105,8 @@ export const ProxySelector = ({
 type SnifferProps = {
   isSelected?: boolean;
   onClick?: () => void;
-  onEditSniffer?: () => void;
-  onDeleteSniffer?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   name: string;
   LeftIcon?: any;
 };
@@ -114,18 +114,18 @@ type SnifferProps = {
 export const SideBarItem = ({
   isSelected = false,
   onClick,
-  onEditSniffer,
-  onDeleteSniffer,
+  onEdit,
+  onDelete,
   name,
   LeftIcon,
 }: SnifferProps) => {
   const editSniffer = (event: any) => {
-    onEditSniffer && onEditSniffer();
+    onEdit && onEdit();
     event.stopPropagation();
   };
 
   const deleteSniffer = (event: any) => {
-    onDeleteSniffer && onDeleteSniffer();
+    onDelete && onDelete();
     event.stopPropagation();
   };
 
@@ -141,13 +141,13 @@ export const SideBarItem = ({
         <div className="text-sm">{name}</div>
       </div>
       <div className="flex space-x-2 opacity-0 group-hover:opacity-100">
-        {onEditSniffer && (
+        {onEdit && (
           <AiOutlineEdit
             className="opacity-0 group-hover:opacity-100 text-amber-400 active:scale-110 text-lg"
             onClick={editSniffer}
           />
         )}
-        {onDeleteSniffer && (
+        {onDelete && (
           <AiOutlineDelete
             className="opacity-0 group-hover:opacity-100 text-red-400 active:scale-110 text-lg"
             onClick={deleteSniffer}

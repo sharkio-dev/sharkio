@@ -31,7 +31,10 @@ export class TestFlowExecutor {
     this.executionStrategies = executionStrategies;
   }
 
-  async execute(ownerId: any, flowId: string): Promise<ExecutionResult> {
+  async execute(
+    ownerId: any,
+    flowId: string,
+  ): Promise<ExecutionResult & { flowRunId: string }> {
     const testFlow = await this.testFlowService.getById(ownerId, flowId);
     const nodes = await this.testFlowService.getNodesByFlowId(ownerId, flowId);
     const edges = await this.testFlowService.getEdgesByFlowId(ownerId, flowId);
@@ -52,9 +55,10 @@ export class TestFlowExecutor {
       },
     );
 
-    const result: ExecutionResult = {
+    const result: ExecutionResult & { flowRunId: string } = {
       success: false,
       context: {},
+      flowRunId: flowRun.id,
     };
 
     try {

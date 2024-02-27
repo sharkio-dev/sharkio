@@ -1,16 +1,18 @@
+import { useLog } from "../../../lib/log";
 import { TestFlowEdge } from "../../../model/entities/test-flow/TestFlowEdge";
 import { TestFlowNode } from "../../../model/entities/test-flow/TestFlowNode";
 import { TestFlowNodeRun } from "../../../model/entities/test-flow/TestFlowNodeRun";
-import { RequestService } from "../../request/request.service";
-import { TestFlowReporter } from "../test-flow-reporter.service";
-import { NodeResponseValidator } from "./node-response-validator";
+import { INodeExecutor } from "../flow-node-executors/executors.types";
+import { TestFlowService } from "../test-flow.service";
+import { ExecutionResult } from "./sequence-executor";
 import { ITestFlowExecutor } from "./test-flow-executor.service";
+
+const logger = useLog({ dirname: __dirname, filename: __filename });
 
 export class ParallelExecutor implements ITestFlowExecutor {
   constructor(
-    private readonly requestService: RequestService,
-    private readonly nodeResponseValidator: NodeResponseValidator,
-    private readonly testFlowReporter: TestFlowReporter,
+    private readonly testFlowService: TestFlowService,
+    private readonly nodeExecutionStrategies: Record<string, INodeExecutor>,
   ) {}
 
   async execute(
@@ -21,55 +23,36 @@ export class ParallelExecutor implements ITestFlowExecutor {
     nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
   ) {
+    const result: ExecutionResult = {
+      context: {},
+      success: true,
+    };
+
     const res = await Promise.all(
       nodeRuns.map(async (nodeRun) => {
         try {
-          const {
-            method,
-            url,
-            headers: reqHeaders,
-            body: reqBody,
-            subdomain,
-          } = nodeRun;
-
-          const response = await this.requestService.execute({
-            method,
-            url: url ?? "/",
-            headers: reqHeaders || {},
-            body: reqBody,
-            subdomain,
-          });
-
-          const { data: body, headers, status, ...rest } = response;
-          const assertionResponse = { body, headers, status };
-
-          const assertionResult = await this.nodeResponseValidator.assert(
-            nodeRun,
-            assertionResponse,
-            {},
-          );
-
-          await this.testFlowReporter.reportNodeRun(
+          const res = await this.nodeExecutionStrategies[nodeRun.type].execute(
             ownerId,
             flowId,
             flowRunId,
+            nodes,
+            nodeRuns,
+            edges,
             nodeRun,
-            assertionResult,
-            assertionResponse,
+            result.context,
           );
 
-          const resultItem = {
-            node: nodeRun,
-            response: assertionResponse,
-            assertionResult,
-          };
+          result.context[nodeRun.nodeId] = res;
 
-          return resultItem;
+          if (!res.success) {
+            result.success = false;
+          }
         } catch (e) {
-          throw new Error("Failed to execute test flow node");
+          result.success = false;
         }
       }),
     );
-    return res;
+
+    return result;
   }
 }

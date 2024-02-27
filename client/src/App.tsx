@@ -8,8 +8,6 @@ import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
 import APIKeys from "./pages/api-keys/api-keys";
 import AuthUI from "./pages/auth/Auth";
-import { SharkioDocsGettingStartedPage } from "./pages/docs/SharkioDocsGettingStartedPage";
-import { SharkioDocsSetupPage } from "./pages/docs/SharkioDocsSetupPage";
 import {
   CreateInvocationPage,
   SnifferEndpointPage,
@@ -28,6 +26,7 @@ import { JoinWorkspace } from "./components/project-selection/JoinWorkspace";
 import FlowPage from "./pages/flows/flowPage";
 import { FlowStepPage } from "./pages/flows/FlowStepPage";
 import { FlowRunPage } from "./pages/flows/FlowRunPage";
+import TestPlans from "./pages/test-plans/testPlan";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -79,6 +78,8 @@ function App(): React.JSX.Element {
       { path: routes.MOCKS, element: <MockPage /> },
       { path: routes.MOCK, element: <MockPage /> },
       { path: routes.JOIN_WORKSPACE, element: <JoinWorkspace /> },
+      { path: routes.TEST_PLANS, element: <TestPlans /> },
+      { path: routes.TEST_PLAN, element: <TestPlans /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (
@@ -115,22 +116,6 @@ function App(): React.JSX.Element {
                     </PageTemplate>
                   )}
                 </>
-              }
-            />
-            <Route
-              path={routes.DOCS_GETTING_STARTED}
-              element={
-                <PageTemplate withSideBar={false}>
-                  <SharkioDocsGettingStartedPage />
-                </PageTemplate>
-              }
-            />
-            <Route
-              path={routes.DOCS_SETUP}
-              element={
-                <PageTemplate withSideBar={false}>
-                  <SharkioDocsSetupPage />
-                </PageTemplate>
               }
             />
             <Route
