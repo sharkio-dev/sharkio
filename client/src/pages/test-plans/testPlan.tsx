@@ -71,7 +71,6 @@ const TestPlansContent = () => {
           className="border-b-[0.1px] border-border-color"
         >
           <Tab label="Runs" value="1" />
-          <Tab label="Schedule" value="2" />
         </TabList>
         <RunsTab flowId={testPlanId} tab="1" />
       </TabContext>

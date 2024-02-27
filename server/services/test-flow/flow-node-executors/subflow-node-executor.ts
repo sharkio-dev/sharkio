@@ -14,7 +14,7 @@ export class SubflowNodeExecutor implements INodeExecutor {
   constructor(
     private readonly nodeResponseValidator: NodeResponseValidator,
     private readonly testFlowReporter: TestFlowReporter,
-    private readonly testFlowExecutorService: TestFlowExecutor
+    private readonly testFlowExecutorService: TestFlowExecutor,
   ) {}
 
   async execute(
@@ -25,7 +25,7 @@ export class SubflowNodeExecutor implements INodeExecutor {
     nodeRuns: TestFlowNodeRun[],
     edges: TestFlowEdge[],
     nodeRun: TestFlowNodeRun,
-    context: ExecutionContext
+    context: ExecutionContext,
   ) {
     if (nodeRun.subFlowId == null) {
       throw new Error("subflowId is empty for subflow node");
@@ -35,13 +35,13 @@ export class SubflowNodeExecutor implements INodeExecutor {
     }
     const execRes = await this.testFlowExecutorService.execute(
       ownerId,
-      nodeRun.subFlowId
+      nodeRun.subFlowId,
     );
 
     const assertionResult = await this.nodeResponseValidator.assert(
       nodeRun,
       execRes,
-      context
+      context,
     );
 
     await this.testFlowReporter.reportNodeRun(
@@ -54,7 +54,7 @@ export class SubflowNodeExecutor implements INodeExecutor {
         context: execRes.context,
         success: assertionResult.success,
       },
-      execRes.flowRunId
+      execRes.flowRunId,
     );
 
     execRes.success = assertionResult.success;

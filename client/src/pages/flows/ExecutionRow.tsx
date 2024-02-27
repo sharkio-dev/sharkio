@@ -15,6 +15,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
 import { PiGraphLight } from "react-icons/pi";
 import { useParams } from "react-router-dom";
+import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type ExecutionRowProps = {
   nodeRun: NodeRunType;
@@ -78,21 +79,32 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
 const SubFlowExtension = ({ nodeRun }: { nodeRun: NodeRunType }) => {
   const [subFlowNodeRun, setSubFlowNodeRun] = React.useState<NodeRunType[]>([]);
   const { loadNodeRuns } = useFlowStore();
+  const [isRunLoading, setIsRunLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (!nodeRun.subFlowId || !nodeRun.subFlowRunId) {
       return;
     }
-    loadNodeRuns(nodeRun.subFlowId, nodeRun.subFlowRunId).then((runs) => {
-      setSubFlowNodeRun(runs);
-    });
+    setIsRunLoading(true);
+    loadNodeRuns(nodeRun.subFlowId, nodeRun.subFlowRunId)
+      .then((runs) => {
+        setSubFlowNodeRun(runs);
+      })
+      .finally(() => {
+        setIsRunLoading(false);
+      });
   }, [nodeRun]);
+  console.log(isRunLoading);
 
   return (
     <div className="flex flex-col w-full border-[1px] border-border-color rounded-lg">
-      {subFlowNodeRun.map((run, i) => (
-        <ExecutionRow key={i} nodeRun={run} />
-      ))}
+      {isRunLoading ? (
+        <div className="flex h-full w-full justify-center items-center">
+          <LoadingIcon />
+        </div>
+      ) : (
+        subFlowNodeRun.map((run, i) => <ExecutionRow key={i} nodeRun={run} />)
+      )}
       <div className="flex w-full bg-border-color h-[1px]" />
     </div>
   );
