@@ -4,7 +4,6 @@ import { selectIconByMethod } from "./selectIconByMethod";
 import { useState } from "react";
 import { CiLink } from "react-icons/ci";
 import { InvocationPreview } from "./InvocationPreview";
-import { InvocationType } from "../sniffers/types";
 
 export const selectIconByStatus = (status: number) => {
   if (status < 300) {
