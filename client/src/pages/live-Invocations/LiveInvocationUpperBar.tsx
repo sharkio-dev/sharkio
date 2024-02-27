@@ -16,6 +16,7 @@ import { InvocationType } from "../sniffers/types";
 import { ImportTestStepDialog } from "./ImpotTestStepDialog";
 import { InputWithWizard } from "../flows/InputWithWizard";
 import { MdOutlineNetworkPing } from "react-icons/md";
+import { ImportToFlowDialog } from "./ImportToFlowDialog";
 
 type InvocationSectionProps = {
   setEditedInvocation: React.Dispatch<
@@ -163,29 +164,11 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
               </Tooltip>
             </div>
             <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
-              <Tooltip title="Import to test flow">
-                <div>
-                  {loading ? (
-                    <LoadingIcon />
-                  ) : (
-                    <>
-                      <PiGraphLight
-                        onClick={() => setIsImportStepDialogOpen(true)}
-                        className="text-blue-400 cursor-pointer"
-                      />
-                      {isImportStepDialogOpen && (
-                        <ImportTestStepDialog
-                          invocation={invocation}
-                          open={isImportStepDialogOpen}
-                          handleClose={() => {
-                            setIsImportStepDialogOpen(false);
-                          }}
-                        />
-                      )}
-                    </>
-                  )}
-                </div>
-              </Tooltip>
+              <ImportToFlowDialog
+                setIsImportStepDialogOpen={setIsImportStepDialogOpen}
+                isImportStepDialogOpen={isImportStepDialogOpen}
+                invocation={invocation || []}
+              />
             </div>
             <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
               <Tooltip title="Execute Request">

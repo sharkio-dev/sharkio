@@ -4,9 +4,7 @@ import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 import { useSearchParams } from "react-router-dom";
-import { ImportTestStepDialog } from "./ImpotTestStepDialog";
-import { PiGraphLight } from "react-icons/pi";
-import { Tooltip } from "@mui/material";
+import { ImportToFlowDialog } from "./ImportToFlowDialog";
 
 import React from "react";
 
@@ -60,27 +58,13 @@ export const InvocationsSearchBar = ({
         </span>
         {selectedInvocations.length > 0 && (
           <>
-            <Tooltip title="Import to test flow">
-              <div>
-                <>
-                  <PiGraphLight
-                    onClick={() => setIsImportStepDialogOpen(true)}
-                    className="text-blue-400 cursor-pointer"
-                  />
-                  {isImportStepDialogOpen && (
-                    <ImportTestStepDialog
-                      invocation={invocations.filter((invocation) => {
-                        return selectedInvocations.includes(invocation.id);
-                      })}
-                      open={isImportStepDialogOpen}
-                      handleClose={() => {
-                        setIsImportStepDialogOpen(false);
-                      }}
-                    />
-                  )}
-                </>
-              </div>
-            </Tooltip>
+            <ImportToFlowDialog
+              setIsImportStepDialogOpen={setIsImportStepDialogOpen}
+              isImportStepDialogOpen={isImportStepDialogOpen}
+              invocation={invocations.filter((invocation) =>
+                selectedInvocations.includes(invocation.id),
+              )}
+            />
             <span
               onClick={() => setIsImportStepDialogOpen(true)}
               className="text text-xs ml-3 text-blue-400 font-bold hover:cursor-pointer"
