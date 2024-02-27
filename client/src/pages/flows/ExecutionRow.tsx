@@ -2,7 +2,11 @@ import { Tab } from "@mui/material";
 import * as React from "react";
 import { FiChevronRight } from "react-icons/fi";
 import { getRunStatusIcon } from "./RunsTab";
-import { AssertionResult, NodeRunType } from "../../stores/flowStore";
+import {
+  AssertionResult,
+  NodeRunType,
+  useFlowStore,
+} from "../../stores/flowStore";
 import { ExecutionDetails } from "./ExecutionDetailsProps";
 import { RequestSection, ResponseSection } from "../sniffers/InvocationDetails";
 import TabContext from "@mui/lab/TabContext";
@@ -10,6 +14,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
 import { PiGraphLight } from "react-icons/pi";
+import { useParams } from "react-router-dom";
 
 type ExecutionRowProps = {
   nodeRun: NodeRunType;
@@ -71,9 +76,23 @@ export const ExecutionRow = ({ nodeRun }: ExecutionRowProps) => {
 };
 
 const SubFlowExtension = ({ nodeRun }: { nodeRun: NodeRunType }) => {
+  const [subFlowNodeRun, setSubFlowNodeRun] = React.useState<NodeRunType[]>([]);
+  const { loadNodeRuns } = useFlowStore();
+
+  React.useEffect(() => {
+    if (!nodeRun.subFlowId || !nodeRun.subFlowRunId) {
+      return;
+    }
+    loadNodeRuns(nodeRun.subFlowId, nodeRun.subFlowRunId).then((runs) => {
+      setSubFlowNodeRun(runs);
+    });
+  }, [nodeRun]);
+
   return (
     <div className="flex flex-col w-full border-[1px] border-border-color rounded-lg">
-      <ExecutionRow nodeRun={nodeRun} />
+      {subFlowNodeRun.map((run, i) => (
+        <ExecutionRow key={i} nodeRun={run} />
+      ))}
       <div className="flex w-full bg-border-color h-[1px]" />
     </div>
   );
@@ -84,6 +103,7 @@ const HttpExtension = ({ nodeRun }: { nodeRun: NodeRunType }) => {
   const failed = nodeRun.assertionsResult.failed ?? [];
   const assertions = passed.concat(failed);
   const [tab, setTab] = React.useState("1");
+
   return (
     <TabContext value={tab}>
       <TabList
@@ -97,20 +117,16 @@ const HttpExtension = ({ nodeRun }: { nodeRun: NodeRunType }) => {
         {nodeRun.type === "http" && <Tab label={"Response"} value="3" />}
       </TabList>
       <AssertionsTable assertions={assertions} />
-      {nodeRun.type === "http" && (
-        <>
-          <ResponseTab response={nodeRun.response} />
-          <RequestTab
-            request={{
-              headers: nodeRun.headers,
-              body: nodeRun.body,
-              method: nodeRun.method,
-              url: nodeRun.url,
-            }}
-            proxyId={nodeRun.proxyId}
-          />
-        </>
-      )}
+      <ResponseTab response={nodeRun.response} />
+      <RequestTab
+        request={{
+          headers: nodeRun.headers,
+          body: nodeRun.body,
+          method: nodeRun.method,
+          url: nodeRun.url,
+        }}
+        proxyId={nodeRun.proxyId}
+      />
     </TabContext>
   );
 };

@@ -35,6 +35,8 @@ export interface NodeRunType {
   nodeId: string;
   ownerId: string;
   flowId: string;
+  subFlowId?: string;
+  subFlowRunId?: string;
   flowRunId: string;
   proxyId: string;
   url: string;
@@ -91,7 +93,7 @@ interface flowState {
   ) => Promise<NodeType>;
   loadNodeRuns: (
     flowId: string,
-    id: string,
+    runId: string,
     isLoading?: boolean,
   ) => Promise<NodeRunType[]>;
   deleteFlow: (
