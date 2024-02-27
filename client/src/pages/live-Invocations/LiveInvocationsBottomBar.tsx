@@ -60,7 +60,7 @@ export const InvocationsSearchBar = ({
         </span>
         {selectedInvocations.length > 0 && (
           <>
-            <Tooltip title="Import all selected to test flow">
+            <Tooltip title="Import request to test - Single">
               <div>
                 <>
                   <PiGraphLight

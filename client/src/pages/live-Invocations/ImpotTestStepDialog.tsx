@@ -69,9 +69,7 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
             handleClose();
           },
         }}
-        paperHeadLine={`Import request to test - ${
-          Array.isArray(invocation) ? "Multiple" : "Single"
-        }`}
+        paperHeadLine="Import request to test"
         acceptButtonProps={{ onClick: handleImportInvocation }}
         acceptButtonValue="Import"
         cancelButtonProps={{ onClick: () => handleClose() }}
