@@ -54,6 +54,7 @@ export class SubflowNodeExecutor implements INodeExecutor {
         context: execRes.context,
         success: assertionResult.success,
       },
+      execRes.flowRunId,
     );
 
     execRes.success = assertionResult.success;

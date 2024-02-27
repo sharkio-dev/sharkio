@@ -34,8 +34,8 @@ export class TestFlowRepository {
     return this.repository.delete({ ownerId, id: flowId });
   }
 
-  getByOwnerId(ownerId: string) {
-    return this.repository.find({ where: { ownerId } });
+  getByOwnerId(ownerId: string, type?: string) {
+    return this.repository.find({ where: { ownerId, type } });
   }
 
   getById(ownerId: any, flowId: string) {

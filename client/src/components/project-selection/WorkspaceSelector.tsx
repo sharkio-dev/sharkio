@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import queryString from "query-string";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import { useWorkspaceStore, workSpaceType } from "../../stores/workspaceStore";
 import { DeleteWorkspaceModal } from "./DeleteWorkspaceModal";
@@ -27,8 +27,10 @@ const WorkspaceSelector = () => {
   const { workspaces, openWorkspace, changeBetweenWorkSpaces, getWorkspaces } =
     useWorkspaceStore();
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const { workspaceId } = queryString.parse(location.search);
+  const [searchParams] = useSearchParams();
 
   const handleChangeWorkspace = async (workspaceId: string) => {
     window.location.href = `${window.location.origin}/proxies?workspaceId=${workspaceId}`;
@@ -43,6 +45,14 @@ const WorkspaceSelector = () => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (!workspaceId) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("workspaceId", user?.id || "");
+      navigate({ search: newSearchParams.toString() }, { replace: true });
+    }
+  }, [workspaceId]);
 
   return (
     <div>

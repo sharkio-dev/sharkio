@@ -3,6 +3,7 @@ import { useSniffersStore } from "../../stores/sniffersStores";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
+import { useSearchParams } from "react-router-dom";
 
 type InvocationsSearchBarProps = {
   setActiveInvocation: (invocationId: string) => void;
@@ -13,8 +14,24 @@ export const InvocationsSearchBar = ({
   title,
 }: InvocationsSearchBarProps) => {
   const hostname = document.location.origin;
-  const { invocations, loadingInvocations, getSnifferById } =
-    useSniffersStore();
+  const [searchParams] = useSearchParams();
+  const {
+    invocations,
+    loadingInvocations,
+    getSnifferById,
+    loadLiveInvocations,
+  } = useSniffersStore();
+
+  const invocationLink = (invocationId: string) => {
+    return `${hostname}/live-invocations/${invocationId}?${searchParams.toString()}`;
+  };
+
+  const [_, setSearchParams] = useSearchParams();
+
+  const clearFilters = () => {
+    loadLiveInvocations([], [], undefined, undefined, undefined, []);
+    setSearchParams({});
+  };
 
   return (
     <>
@@ -22,6 +39,12 @@ export const InvocationsSearchBar = ({
       <div className="flex flex-row justify-between items-center text-center mb-4">
         <LiveInvocations />
       </div>
+      <span
+        className="text text-xs text-blue-400 font-bold hover:cursor-pointer"
+        onClick={clearFilters}
+      >
+        {"Clear Filters"}
+      </span>
 
       <div className="flex flex-col w-full overflow-y-auto">
         {loadingInvocations ? (
@@ -39,7 +62,7 @@ export const InvocationsSearchBar = ({
                 invocationId={invocation.id}
                 method={invocation.method}
                 onClick={() => setActiveInvocation(invocation.id)}
-                invocationLink={`${hostname}/live-invocations/${invocation.id}`}
+                invocationLink={invocationLink(invocation.id)}
                 key={i}
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}

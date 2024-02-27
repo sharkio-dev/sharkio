@@ -85,7 +85,11 @@ export class TestFlowController {
          */
         async (req: Request, res: Response) => {
           const ownerId = res.locals.auth.ownerId;
-          const testFlows = await this.testFlowService.getByOwnerId(ownerId);
+          const { type } = req.query;
+          const testFlows = await this.testFlowService.getByOwnerId(
+            ownerId,
+            type as string | undefined,
+          );
           res.send(testFlows).status(200);
         },
       );

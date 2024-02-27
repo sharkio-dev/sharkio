@@ -59,14 +59,15 @@ export const ImportRequestModal = ({
     >
       <Paper className="h-fit w-1/2 p-5">
         {snackBar}
-        <div className="mb-4 flex gap-10 items-center">
+        <div className="mb-4 flex items-center justify-between">
           <Typography variant="h6">Import requests from</Typography>
           <div>
             <Select
               defaultValue="swagger"
+              size="small"
               onChange={(e: SelectChangeEvent) => setType(e.target.value)}
             >
-              <MenuItem value={"swagger"}>Swagger</MenuItem>
+              <MenuItem value={"swagger"}>OpenAPI</MenuItem>
               <MenuItem value={"curl"}>Curl</MenuItem>
             </Select>
           </div>

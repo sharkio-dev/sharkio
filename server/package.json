@@ -19,7 +19,8 @@
     "test:watchAll": "jest --watchAll",
     "test:coverage": "jest --coverage",
     "format": "prettier --write \"{,!(node_modules)/**/}*.ts\"",
-    "migration:up": "cd ./model && typeorm-ts-node-commonjs migration:run -d ./ormconfig-migrations.ts"
+    "migration:up": "cd ./model && typeorm-ts-node-commonjs migration:run -d ./ormconfig-migrations.ts",
+    "migration:revert": "cd ./model && typeorm-ts-node-commonjs migration:revert -d ./ormconfig-migrations.ts"
   },
   "nodemonConfig": {
     "ignore": [

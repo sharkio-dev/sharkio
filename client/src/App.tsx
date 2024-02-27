@@ -29,6 +29,7 @@ import { FlowRunPage } from "./pages/flows/FlowRunPage";
 import OrganzationsPage, {
   OrganizationPage,
 } from "./pages/organizations/OrganizationsPage";
+import TestPlans from "./pages/test-plans/testPlan";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -82,6 +83,8 @@ function App(): React.JSX.Element {
       { path: routes.JOIN_WORKSPACE, element: <JoinWorkspace /> },
       { path: routes.ORGANIZATIONS, element: <OrganzationsPage /> },
       { path: routes.ORGANIZATION, element: <OrganizationPage /> },
+      { path: routes.TEST_PLANS, element: <TestPlans /> },
+      { path: routes.TEST_PLAN, element: <TestPlans /> },
     ];
 
     return routesWithAuth.map(({ path, element }) => (

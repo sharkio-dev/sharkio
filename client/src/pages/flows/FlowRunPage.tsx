@@ -15,8 +15,9 @@ import { GoBackButton } from "./FlowStepPage";
 import { NodeRunType } from "../../stores/flowStore";
 
 export const FlowRunPage = () => {
-  const { loadNodeRuns, isRunLoading } = useFlowStore();
+  const { loadNodeRuns, isRunLoading, flows } = useFlowStore();
   const { runId, flowId } = useParams();
+  const flow = flows.find((f) => f.id === flowId);
   const [nodeRuns, setNodeRuns] = useState<NodeRunType[]>();
   const navigate = useNavigate();
 
@@ -31,7 +32,10 @@ export const FlowRunPage = () => {
 
   return (
     <div className="flex flex-col p-4 space-y-2">
-      <GoBackButton onClick={() => navigate(-1)} />
+      <div className="flex flex-row items-center space-x-2">
+        <GoBackButton onClick={() => navigate(-1)} />
+        <span className="text-2xl font-bold">{flow?.name}</span>
+      </div>
       <TableContainer className="border-[1px] border-primary rounded-lg">
         <Table>
           <TableHead>
@@ -52,7 +56,11 @@ export const FlowRunPage = () => {
               </TableRow>
             )}
             {nodeRuns.map((run) => {
-              return <ExecutionRow key={run.id} nodeRun={run} />;
+              return (
+                <TableRow className="border-t-[1px] border-primary h-10 w-full">
+                  <ExecutionRow key={run.id} nodeRun={run} />
+                </TableRow>
+              );
             })}
           </TableBody>
         </Table>

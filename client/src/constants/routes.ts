@@ -31,4 +31,6 @@ export const routes = {
 
   ORGANIZATIONS: "/organizations",
   ORGANIZATION: "/organizations/:organizationId",
+  TEST_PLANS: "/test-plans",
+  TEST_PLAN: "/test-plans/:testPlanId",
 };

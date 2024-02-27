@@ -12,7 +12,7 @@ export const InnerPageTemplate: React.FC<innerPageTemplateProps> = ({
       direction={"horizontal"}
       className="max-w-[calc(100vw-56px)] h-full"
     >
-      <Panel defaultSize={20} maxSize={90}>
+      <Panel defaultSize={20} maxSize={80} minSize={20}>
         <div className="flex flex-col h-full border-r border-border-color bg-secondary py-4">
           <SideBarComponent />
         </div>
@@ -22,7 +22,7 @@ export const InnerPageTemplate: React.FC<innerPageTemplateProps> = ({
           className={`absolute w-[30px] h-full left-[-15px] top-0 `}
         />
       </div>
-      <Panel maxSize={90}>
+      <Panel maxSize={90} minSize={20}>
         <div className="flex flex-col p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-96px)] h-full">
           <ContentComponent />
         </div>
