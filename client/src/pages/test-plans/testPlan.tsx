@@ -19,9 +19,9 @@ const TestPlans = () => {
 };
 
 const TestPlansContent = () => {
-  const { flows, putFlow, loadFlowRuns } = useFlowStore();
+  const { testPlans, putFlow, loadFlowRuns } = useFlowStore();
   const { testPlanId } = useParams();
-  const flow = flows.find((f) => f.id === testPlanId);
+  const flow = testPlans.find((f) => f.id === testPlanId);
   const [flowName, setFlowName] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 

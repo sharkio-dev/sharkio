@@ -73,6 +73,7 @@ export interface NodeType {
 }
 
 interface flowState {
+  testPlans: FlowType[];
   flows: FlowType[];
   nodes: NodeType[];
   runs: NodeRunType[];
@@ -194,6 +195,7 @@ const reorderNodes = (flowId: string, nodes: NodeType["id"][]) => {
 };
 
 export const useFlowStore = create<flowState>((set, get) => ({
+  testPlans: [],
   flows: [],
   nodes: [],
   runs: [],
@@ -211,7 +213,11 @@ export const useFlowStore = create<flowState>((set, get) => ({
     const { data } = await getFlows(type).finally(() => {
       set({ isFlowsLoading: false });
     });
-    set({ flows: data || [] });
+    if (type === "suite") {
+      set({ testPlans: data || [] });
+    } else {
+      set({ flows: data || [] });
+    }
 
     return data;
   },
@@ -263,7 +269,13 @@ export const useFlowStore = create<flowState>((set, get) => ({
     return await deleteFlow(flowId)
       .then(() => {
         get().loadFlows(isLoading, type);
-        set({ nodes: [] });
+        if (type === "suite") {
+          set({
+            testPlans: get().testPlans.filter((flow) => flow.id !== flowId),
+          });
+        } else {
+          set({ flows: get().flows.filter((flow) => flow.id !== flowId) });
+        }
       })
       .finally(() => {
         set({ isFlowLoading: false });

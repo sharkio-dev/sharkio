@@ -154,7 +154,7 @@ const ImportTestPlanButton = () => {
   );
 };
 const TestPlanDropDown = () => {
-  const { flows, deleteFlow } = useFlowStore();
+  const { testPlans, deleteFlow } = useFlowStore();
   const navigator = useNavigate();
   const { testPlanId } = useParams();
 
@@ -163,22 +163,22 @@ const TestPlanDropDown = () => {
       <FormControl fullWidth size="small" variant="outlined">
         <InputLabel>Test Plans</InputLabel>
         <Select value={testPlanId || ""} label="Test Plans">
-          {flows.map((flow, i) => (
+          {testPlans.map((testPlan, i) => (
             <MenuItem
               key={i}
-              value={flow.id}
+              value={testPlan.id}
               onClick={() => {
-                navigator(`/test-plans/${flow.id}`);
+                navigator(`/test-plans/${testPlan.id}`);
               }}
             >
               <SideBarItem
-                name={flow.name}
+                name={testPlan.name}
                 onDelete={() => {
-                  deleteFlow(flow.id, false, "suite").then(() => {
+                  deleteFlow(testPlan.id, false, "suite").then(() => {
                     navigator(`/test-plans`);
                   });
                 }}
-                isSelected={testPlanId === flow.id}
+                isSelected={testPlanId === testPlan.id}
                 LeftIcon={LuClipboardCheck}
               />
             </MenuItem>
