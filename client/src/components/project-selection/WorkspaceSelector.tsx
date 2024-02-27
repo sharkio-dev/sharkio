@@ -28,7 +28,7 @@ const WorkspaceSelector = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { workspaceId } = queryString.parse(location.search);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const handleChangeWorkspace = async (workspaceId: string) => {
     window.location.href = `${window.location.origin}/proxies?workspaceId=${workspaceId}`;

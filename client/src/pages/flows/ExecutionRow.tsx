@@ -14,7 +14,6 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { URLComponent } from "../live-Invocations/LiveInvocationUpperBar";
 import { PiGraphLight } from "react-icons/pi";
-import { useParams } from "react-router-dom";
 import { LoadingIcon } from "../sniffers/LoadingIcon";
 
 type ExecutionRowProps = {
