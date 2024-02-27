@@ -78,7 +78,7 @@ export const InvocationsSearchBar = ({
                   />
                   {isImportStepDialogOpen && (
                     <ImportTestStepDialog
-                      invocation={invocations[0]}
+                      invocation={[invocations[0], invocations[1]]}
                       open={isImportStepDialogOpen}
                       handleClose={() => {
                         setIsImportStepDialogOpen(false);

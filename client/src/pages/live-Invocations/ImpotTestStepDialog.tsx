@@ -1,13 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useFlowStore } from "../../stores/flowStore";
 import { FlowSelector } from "../flows/TestsTab";
 import { InvocationType } from "../sniffers/types";
+
 interface ImportTestStepDialogProps {
   open: boolean;
   handleClose: () => void;
-  invocation?: InvocationType;
+  invocation?: InvocationType | InvocationType[]; // Updated type
 }
 
 export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
@@ -22,31 +23,39 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
   );
 
   const handleImportInvocation = () => {
-    if (!selectedFlowId || invocation == null) return;
+    if (!selectedFlowId || !invocation) return;
 
-    postNode(selectedFlowId, {
-      body: invocation.body,
-      method: invocation.method,
-      headers: invocation.headers,
-      url: invocation.url,
-      proxyId: invocation.snifferId,
-      name: `${invocation.method} ${invocation.url} - imported`,
-      assertions: [
-        {
-          expectedValue: `${invocation.response.status}`,
-          comparator: "eq",
-          path: "status",
-          type: "number",
-        },
-      ],
-      type: "http",
-    })
+    const invocationsArray = Array.isArray(invocation)
+      ? invocation
+      : [invocation];
+
+    const importPromises = invocationsArray.map((singleInvocation) =>
+      postNode(selectedFlowId, {
+        body: singleInvocation.body,
+        method: singleInvocation.method,
+        headers: singleInvocation.headers,
+        url: singleInvocation.url,
+        proxyId: singleInvocation.snifferId,
+        name: `${singleInvocation.method} ${singleInvocation.url} - imported`,
+        assertions: [
+          {
+            expectedValue: `${singleInvocation.response.status}`,
+            comparator: "eq",
+            path: "status",
+            type: "number",
+          },
+        ],
+        type: "http",
+      }),
+    );
+
+    Promise.all(importPromises)
       .then(() => {
-        show("Request imported successfully", "success");
+        show("Requests imported successfully", "success");
         handleClose();
       })
       .catch(() => {
-        show("Failed to import request", "error");
+        show("Failed to import requests", "error");
       });
   };
 
@@ -60,9 +69,11 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
             handleClose();
           },
         }}
-        paperHeadLine="Import request to test"
+        paperHeadLine={`Import request to test - ${
+          Array.isArray(invocation) ? "Multiple" : "Single"
+        }`}
         acceptButtonProps={{ onClick: handleImportInvocation }}
-        acceptButtonValue="import"
+        acceptButtonValue="Import"
         cancelButtonProps={{ onClick: () => handleClose() }}
         cancelButtonValue="Cancel"
         isLoading={false}
