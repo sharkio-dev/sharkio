@@ -5,6 +5,8 @@ import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import LiveInvocations from "./live-invocations-side-bar/LiveInvocationsSideBar";
 import { useSearchParams } from "react-router-dom";
 import { ImportTestStepDialog } from "./ImpotTestStepDialog";
+import { PiGraphLight } from "react-icons/pi";
+import { Tooltip } from "@mui/material";
 
 import React from "react";
 
@@ -30,7 +32,9 @@ export const InvocationsSearchBar = ({
   };
 
   const [_, setSearchParams] = useSearchParams();
-  const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = React.useState(0);
+  const [numberOfCheckedCheckboxes, setNumberOfCheckedCheckboxes] =
+    React.useState(0);
+
   const [isImportStepDialogOpen, setIsImportStepDialogOpen] =
     React.useState(false);
 
@@ -56,20 +60,39 @@ export const InvocationsSearchBar = ({
         <LiveInvocations />
       </div>
 
-      <div>
+      <div className="flex gap-4">
         <span
           className="text text-xs text-blue-400 font-bold hover:cursor-pointer"
           onClick={clearFilters}
         >
           {"Clear Filters"}
         </span>
-        {isAnyCheckboxChecked > 0 && (
-          <span
-            onClick={() => setIsImportStepDialogOpen(true)}
-            className="text text-xs ml-3 text-blue-400 font-bold hover:cursor-pointer"
-          >
-            {isAnyCheckboxChecked}
-          </span>
+        {numberOfCheckedCheckboxes > 0 && (
+          <>
+            <Tooltip title="Import all selected to test flow">
+              <div>
+                <>
+                  <PiGraphLight
+                    onClick={() => setIsImportStepDialogOpen(true)}
+                    className="text-blue-400 cursor-pointer"
+                  />
+                  {isImportStepDialogOpen && (
+                    <ImportTestStepDialog
+                      invocation={invocations[0]}
+                      open={isImportStepDialogOpen}
+                      handleClose={() => {
+                        setIsImportStepDialogOpen(false);
+                      }}
+                    />
+                  )}
+                </>
+              </div>
+            </Tooltip>
+            <span
+              onClick={() => setIsImportStepDialogOpen(true)}
+              className="text text-xs ml-3 text-blue-400 font-bold hover:cursor-pointer"
+            ></span>
+          </>
         )}
       </div>
 
@@ -94,7 +117,7 @@ export const InvocationsSearchBar = ({
                 date={new Date(invocation.createdAt).toLocaleString()}
                 status={invocation?.response?.status}
                 url={`${snifferDomain}${invocation.url}`}
-                setIsAnyCheckboxChecked={setIsAnyCheckboxChecked}
+                setNumberOfCheckedCheckboxes={setNumberOfCheckedCheckboxes}
               />
             );
           })

@@ -23,7 +23,7 @@ type InvocationProps = {
   date?: string;
   isSelected?: boolean;
   onClick?: () => void;
-  setIsAnyCheckboxChecked?: any;
+  setNumberOfCheckedCheckboxes?: any;
 };
 
 export const Invocation = ({
@@ -35,7 +35,7 @@ export const Invocation = ({
   onClick,
   date,
   invocationLink,
-  setIsAnyCheckboxChecked,
+  setNumberOfCheckedCheckboxes,
 }: InvocationProps) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -59,7 +59,7 @@ export const Invocation = ({
 
   const handleCheckboxChange = (isChecked: boolean) => {
     console.log("This is me", isChecked);
-    setIsAnyCheckboxChecked((prevState: number) =>
+    setNumberOfCheckedCheckboxes((prevState: number) =>
       isChecked ? prevState + 1 : prevState - 1,
     );
   };
