@@ -16,7 +16,11 @@ type Member = {
 interface OrganizationsState {
   organizations: Organization[];
   members: Member[];
+  isPostOrganizationLoading: boolean;
+  isDeleteOrganizationLoading: boolean;
   loadOrganizations: () => Promise<void>;
+  postOrganization: (name: string) => Promise<void>;
+  deleteOrganization: (organizationId: string) => Promise<void>;
   loadMembers: (organizationId: string) => Promise<void>;
 }
 
@@ -24,8 +28,8 @@ const getOrganizations = () => {
   return BackendAxios.get("/organizations");
 };
 
-const postOrganization = (name: string, userId: string) => {
-  return BackendAxios.post("/organizations", { name, userId });
+const postOrganization = (name: string) => {
+  return BackendAxios.post("/organizations", { name });
 };
 
 const putOrganization = (organizationId: string, name: string) => {
@@ -33,7 +37,7 @@ const putOrganization = (organizationId: string, name: string) => {
 };
 
 const deleteOrganization = (organizationId: string) => {
-  return BackendAxios.delete(`/organizations/${organizationId}`);
+  return BackendAxios.delete(`/organizations/id`);
 };
 
 const getMembers = (organizationId: string) => {
@@ -69,13 +73,29 @@ const leaveOrganization = (organizationId: string) => {
   return BackendAxios.delete(`/organizations/${organizationId}/leave`);
 };
 
-export const useOrganizationsStore = create<OrganizationsState>((set) => ({
+export const useOrganizationsStore = create<OrganizationsState>((set, get) => ({
   organizations: [],
   members: [],
+  isPostOrganizationLoading: false,
+  isDeleteOrganizationLoading: false,
   loadOrganizations: () => {
     return getOrganizations().then((res) => set({ organizations: res.data }));
   },
   loadMembers: (organizationId: string) => {
     return getMembers(organizationId).then((res) => set({ members: res.data }));
+  },
+  postOrganization: (name: string) => {
+    set({ isPostOrganizationLoading: true });
+    return postOrganization(name).then(() => {
+      set({ isPostOrganizationLoading: false });
+      get().loadOrganizations();
+    });
+  },
+  deleteOrganization: (organizationId: string) => {
+    set({ isDeleteOrganizationLoading: true });
+    return deleteOrganization(organizationId).then(() => {
+      set({ isDeleteOrganizationLoading: false });
+      get().loadOrganizations();
+    });
   },
 }));

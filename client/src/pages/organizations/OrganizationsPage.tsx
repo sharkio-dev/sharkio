@@ -10,9 +10,83 @@ import { IoMdAdd } from "react-icons/io";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
+import React from "react";
+import { GenericDeleteButton } from "../flows/TestsTab";
+import { EditableNameField } from "../flows/EditableNameProps";
+
+const AddOrgranizationButton = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [organizationName, setOrganizationName] = React.useState("");
+  const { postOrganization, isPostOrganizationLoading } =
+    useOrganizationsStore();
+
+  const handleOrganizationNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setOrganizationName(e.target.value);
+  };
+  return (
+    <>
+      <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<IoMdAdd />}
+        onClick={() => setIsModalOpen(true)}
+      >
+        Add
+      </Button>
+      <GenericEditingModal
+        modalProps={{
+          open: isModalOpen,
+          onClose: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        paperHeadLine="New Organization"
+        acceptButtonValue="Create"
+        acceptButtonProps={{
+          onClick: () => {
+            postOrganization(organizationName).then(() => {
+              setOrganizationName("");
+              setIsModalOpen(false);
+            });
+          },
+        }}
+        cancelButtonProps={{
+          onClick: () => {
+            setIsModalOpen(false);
+          },
+        }}
+        textFieldProps={{
+          label: "Organization Name",
+          placeholder: "Enter organization name",
+          onChange: handleOrganizationNameChange,
+        }}
+        isLoading={isPostOrganizationLoading}
+      />
+    </>
+  );
+};
+
+const DeleteOrganizationButton = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { deleteOrganization } = useOrganizationsStore();
+
+  return (
+    <>
+      <AiOutlineDelete className="text-red-500 text-xl hover:cursor-pointer hover:scale-105 active:text-red-400" />
+    </>
+  );
+};
 
 const OrganzationsPage = () => {
-  const { organizations, loadOrganizations } = useOrganizationsStore();
+  const {
+    organizations,
+    loadOrganizations,
+    deleteOrganization,
+    isDeleteOrganizationLoading,
+  } = useOrganizationsStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,9 +97,7 @@ const OrganzationsPage = () => {
     <div className="flex flex-col w-full h-full p-4">
       <div className="flex flex-row justify-between items-center">
         <div className="text-2xl font-bold">Organizations</div>
-        <Button variant="outlined" color="primary" startIcon={<IoMdAdd />}>
-          Add
-        </Button>
+        <AddOrgranizationButton />
       </div>
       <div className="w-full border-b-[0.05px] mt-4 mb-8" />
       <div className="flex flex-col border-[0.05px] border-border-color rounded-md">
@@ -50,7 +122,9 @@ const OrganzationsPage = () => {
               </span>
             </div>
             <div className="flex flex-row items-center space-x-4">
-              <AiOutlineDelete className="text-red-500 text-xl hover:cursor-pointer hover:scale-105 active:text-red-400" />
+              <GenericDeleteButton
+                onClick={() => deleteOrganization(organization.id)}
+              />
             </div>
           </div>
         ))}

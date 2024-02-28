@@ -42,7 +42,8 @@ const Step = ({
   const { flowId } = useParams();
   const [stepName, setStepName] = useState(step.name);
   const { putNode, isNodeLoading } = useFlowStore();
-  const { reorderNodes, flows } = useFlowStore();
+  const { reorderNodes, flows, deleteNode } = useFlowStore();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
 
   useEffect(() => {
     setStepName(step.name);
@@ -78,6 +79,7 @@ const Step = ({
       onDragEnd={handleSort}
       onDragOver={(e) => e.preventDefault()}
     >
+      {snackBar}
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row w-full" onClick={() => onStepClick()}>
           <div className="flex flex-col" onClick={(e) => e.stopPropagation()}>
@@ -107,7 +109,14 @@ const Step = ({
           </div>
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <FlowNodeDeleteButton flowId={flowId as string} nodeId={step.id} />
+          <GenericDeleteButton
+            onClick={() => {
+              if (!flowId) return;
+              deleteNode(flowId as string, step.id).then(() => {
+                showSnackbar("Step deleted successfully", "success");
+              });
+            }}
+          />
           <MdChevronRight
             className=" active:scale-110 text-xl cursor-pointer hover:bg-border-color rounded-md"
             onClick={() => onStepClick()}
@@ -118,20 +127,11 @@ const Step = ({
   );
 };
 
-const FlowNodeDeleteButton = ({
-  flowId,
-  nodeId,
-}: {
-  flowId: string;
-  nodeId: string;
-}) => {
-  const { deleteNode } = useFlowStore();
-  const { show: showSnackbar, component: snackBar } = useSnackbar();
+export const GenericDeleteButton = ({ onClick }: { onClick: () => void }) => {
   const [isDeleteClicked, setIsDeleteClicked] = useState(false);
 
   return (
     <div>
-      {snackBar}
       {!isDeleteClicked && (
         <AiOutlineDelete
           className={`text-md cursor-pointer hover:bg-border-color rounded-md`}
@@ -146,9 +146,7 @@ const FlowNodeDeleteButton = ({
           className="text-md cursor-pointer hover:bg-border-color rounded-md text-green-500"
           onClick={(e: any) => {
             e.stopPropagation();
-            deleteNode(flowId, nodeId).then(() => {
-              showSnackbar("Step deleted successfully", "success");
-            });
+            onClick && onClick();
           }}
         />
       )}

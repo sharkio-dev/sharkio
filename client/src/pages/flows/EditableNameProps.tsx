@@ -12,7 +12,7 @@ interface EditableNameProps {
 }
 
 export const EditableNameField: React.FC<EditableNameProps> = ({
-  isLoading = true,
+  isLoading = false,
   name,
   handleNameChange,
   handleSaveClicked,
@@ -40,7 +40,10 @@ export const EditableNameField: React.FC<EditableNameProps> = ({
           <Input
             className="w-[30ch] border-none focus:ring-0"
             defaultValue={name}
-            onChange={(e: any) => handleNameChange(e.target.value)}
+            onChange={(e: any) => {
+              e.stopPropagation();
+              handleNameChange(e.target.value);
+            }}
           />
         </>
       ) : (
