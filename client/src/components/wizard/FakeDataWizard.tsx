@@ -61,11 +61,13 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
   };
 
   const handleSearch = (searchTerm: string) => {
-    const newWizardItems = initEntries().filter(([key]) =>
+    const allEntries = initEntries();
+
+    const newWizardItems = allEntries.filter(([key]) =>
       key.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
-    setEntries(searchTerm ? newWizardItems : initEntries());
+    setEntries(searchTerm ? newWizardItems : allEntries);
   };
 
   return (
