@@ -69,14 +69,18 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
   const filterEntries = (data: [string, Object][], searchTerm: string) => {
     let filteredEntries = [];
 
+    const doesSubEntryMatch = (subEntries: [string, any][]) => {
+      return subEntries.some(([subKey]) =>
+        subKey.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    };
+
     for (const [key, value] of data) {
       const keyMatches = key.toLowerCase().includes(searchTerm.toLowerCase());
       const subEntriesMatches =
         value &&
         typeof value === "object" &&
-        Object.entries(value).some(([subKey]) =>
-          subKey.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
+        doesSubEntryMatch(Object.entries(value));
 
       if (keyMatches || subEntriesMatches) {
         filteredEntries.push([key, value]);
