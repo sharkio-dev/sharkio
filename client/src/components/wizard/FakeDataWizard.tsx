@@ -62,12 +62,28 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
 
   const handleSearch = (searchTerm: string) => {
     const allEntries = initEntries();
+    const filteredEntries = filterEntries(allEntries, searchTerm);
+    setEntries(filteredEntries);
+  };
 
-    const newWizardItems = allEntries.filter(([key]) =>
-      key.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+  const filterEntries = (data: [string, Object][], searchTerm: string) => {
+    let filteredEntries = [];
 
-    setEntries(searchTerm ? newWizardItems : allEntries);
+    for (const [key, value] of data) {
+      const keyMatches = key.toLowerCase().includes(searchTerm.toLowerCase());
+      const subEntriesMatches =
+        value &&
+        typeof value === "object" &&
+        Object.entries(value).some(([subKey]) =>
+          subKey.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+
+      if (keyMatches || subEntriesMatches) {
+        filteredEntries.push([key, value]);
+      }
+    }
+
+    return filteredEntries;
   };
 
   return (
@@ -75,7 +91,6 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
       {subEntries.length === 0 && (
         <>
           <SearchBar handleSearch={handleSearch} />
-
           <div className="mt-2">
             <WizardTemplate onClose={onClose} title="Fake Data" goBack={goBack}>
               <div className="h-[300px]">
