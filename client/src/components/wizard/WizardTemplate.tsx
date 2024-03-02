@@ -8,12 +8,14 @@ interface WizardTemplateProps {
   title: string;
   goBack?: () => void;
   children: React.ReactNode;
+  searchComponent?: React.ReactNode;
 }
 export const WizardTemplate: React.FC<WizardTemplateProps> = ({
   onClose,
   title,
   goBack,
   children,
+  searchComponent,
 }) => {
   return (
     <>
@@ -28,6 +30,7 @@ export const WizardTemplate: React.FC<WizardTemplateProps> = ({
           onClick={onClose}
         />
       </div>
+      {searchComponent && <div className="mt-4">{searchComponent}</div>}
       <div className="w-full border-b-[0.05px] my-4" />
       <div className="flex flex-col space-y-2 max-h-[300px] overflow-y-auto">
         {children}

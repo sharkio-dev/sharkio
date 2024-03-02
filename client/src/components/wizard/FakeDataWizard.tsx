@@ -94,9 +94,13 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
     <>
       {subEntries.length === 0 && (
         <>
-          <SearchBar handleSearch={handleSearch} />
           <div className="mt-2">
-            <WizardTemplate onClose={onClose} title="Fake Data" goBack={goBack}>
+            <WizardTemplate
+              onClose={onClose}
+              title="Fake Data"
+              goBack={goBack}
+              searchComponent={<SearchBar handleSearch={handleSearch} />}
+            >
               <div className="h-[300px]">
                 {entries.map(([key, value]) => (
                   <WizardItem
