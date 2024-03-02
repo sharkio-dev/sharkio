@@ -7,14 +7,14 @@ import { InvocationType } from "../sniffers/types";
 type ImportToFlowDialogProps = {
   setIsImportStepDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isImportStepDialogOpen: boolean;
-  invocation: InvocationType | InvocationType[];
+  invocations: (InvocationType | undefined)[];
   iconSize: number;
 };
 
 export const ImportToFlowDialog: React.FC<ImportToFlowDialogProps> = ({
   setIsImportStepDialogOpen,
   isImportStepDialogOpen,
-  invocation,
+  invocations,
   iconSize,
 }) => {
   return (
@@ -28,7 +28,7 @@ export const ImportToFlowDialog: React.FC<ImportToFlowDialogProps> = ({
           />
           {isImportStepDialogOpen && (
             <ImportTestStepDialog
-              invocation={invocation}
+              invocations={invocations}
               open={isImportStepDialogOpen}
               handleClose={() => {
                 setIsImportStepDialogOpen(false);

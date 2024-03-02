@@ -165,7 +165,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
               <ImportToFlowDialog
                 setIsImportStepDialogOpen={setIsImportStepDialogOpen}
                 isImportStepDialogOpen={isImportStepDialogOpen}
-                invocation={invocation || []}
+                invocations={[invocation] || []}
                 iconSize={15}
               />
             </div>

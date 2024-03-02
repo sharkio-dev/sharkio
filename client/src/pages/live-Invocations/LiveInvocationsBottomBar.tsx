@@ -61,7 +61,7 @@ export const InvocationsSearchBar = ({
             <ImportToFlowDialog
               setIsImportStepDialogOpen={setIsImportStepDialogOpen}
               isImportStepDialogOpen={isImportStepDialogOpen}
-              invocation={invocations.filter((invocation) =>
+              invocations={invocations.filter((invocation) =>
                 selectedInvocations.includes(invocation.id),
               )}
               iconSize={18}

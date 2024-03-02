@@ -8,13 +8,13 @@ import { InvocationType } from "../sniffers/types";
 interface ImportTestStepDialogProps {
   open: boolean;
   handleClose: () => void;
-  invocation?: InvocationType | InvocationType[];
+  invocations?: (InvocationType | undefined)[];
 }
 
 export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
   open,
   handleClose,
-  invocation,
+  invocations,
 }) => {
   const { component: snackBar, show } = useSnackbar();
   const { postNode } = useFlowStore();
@@ -23,31 +23,29 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
   );
 
   const handleImportInvocation = () => {
-    if (!selectedFlowId || !invocation) return;
+    if (!selectedFlowId || !invocations) return;
 
-    const invocationsArray = Array.isArray(invocation)
-      ? invocation
-      : [invocation];
-
-    const importPromises = invocationsArray.map((singleInvocation) =>
-      postNode(selectedFlowId, {
-        body: singleInvocation.body,
-        method: singleInvocation.method,
-        headers: singleInvocation.headers,
-        url: singleInvocation.url,
-        proxyId: singleInvocation.snifferId,
-        name: `${singleInvocation.method} ${singleInvocation.url} - imported`,
-        assertions: [
-          {
-            expectedValue: `${singleInvocation.response.status}`,
-            comparator: "eq",
-            path: "status",
-            type: "number",
-          },
-        ],
-        type: "http",
-      }),
-    );
+    const importPromises = invocations?.map((singleInvocation) => {
+      if (singleInvocation) {
+        return postNode(selectedFlowId, {
+          body: singleInvocation.body,
+          method: singleInvocation.method,
+          headers: singleInvocation.headers,
+          url: singleInvocation.url,
+          proxyId: singleInvocation.snifferId,
+          name: `${singleInvocation.method} ${singleInvocation.url} - imported`,
+          assertions: [
+            {
+              expectedValue: `${singleInvocation.response?.status}`,
+              comparator: "eq",
+              path: "status",
+              type: "number",
+            },
+          ],
+          type: "http",
+        });
+      }
+    });
 
     Promise.all(importPromises)
       .then(() => {
