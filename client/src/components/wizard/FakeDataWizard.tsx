@@ -81,10 +81,10 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
         typeof value === "object" &&
         doesSubEntryMatch(Object.entries(value));
 
-      if (keyMatches || subEntriesMatches) {
-        if (subEntriesMatches) {
-          return [doesSubEntryMatch(Object.entries(value))];
-        }
+      if (subEntriesMatches) {
+        return [doesSubEntryMatch(Object.entries(value))];
+      }
+      if (keyMatches) {
         filteredEntries.push([key, value]);
       }
     }
