@@ -67,11 +67,13 @@ export const Invocation = ({
 
   return (
     <>
-      <InvocationPreview
-        open={openModal}
-        onClose={handleCloseModal}
-        invocationId={invocationId}
-      />
+      {openModal && (
+        <InvocationPreview
+          open={openModal}
+          onClose={handleCloseModal}
+          invocationId={invocationId}
+        />
+      )}
 
       <Tooltip title={url} placement="top" arrow enterDelay={500}>
         <div
