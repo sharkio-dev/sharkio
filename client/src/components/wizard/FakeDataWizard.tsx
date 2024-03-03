@@ -70,12 +70,11 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
     let filteredEntries = [];
 
     const doesSubEntryMatch = (subEntries: [string, any][]) => {
-      return subEntries.some(([subKey]) =>
-        subKey.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
+      return subEntries.find((item) => item[0] == searchTerm.toLowerCase());
     };
 
-    for (const [key, value] of data) {
+    for (let i = 0; i < data.length; i++) {
+      const [key, value] = data[i];
       const keyMatches = key.toLowerCase().includes(searchTerm.toLowerCase());
       const subEntriesMatches =
         value &&
@@ -83,6 +82,9 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
         doesSubEntryMatch(Object.entries(value));
 
       if (keyMatches || subEntriesMatches) {
+        if (subEntriesMatches) {
+          return [doesSubEntryMatch(Object.entries(value))];
+        }
         filteredEntries.push([key, value]);
       }
     }
