@@ -47,8 +47,12 @@ export class TestFlowController {
          *             properties:
          *               name:
          *                 type: string
-         *                 description: The name of the sniffer
-         *                 example: My sniffer
+         *                 description: The name of the flow
+         *                 example: My flow
+         *               type:
+         *                 type: string
+         *                 description: The type of the flow
+         *                 example: My flow
          *     responses:
          *       201:
          *         description: Test flow created
@@ -81,7 +85,11 @@ export class TestFlowController {
          */
         async (req: Request, res: Response) => {
           const ownerId = res.locals.auth.ownerId;
-          const testFlows = await this.testFlowService.getByOwnerId(ownerId);
+          const { type } = req.query;
+          const testFlows = await this.testFlowService.getByOwnerId(
+            ownerId,
+            type as string | undefined,
+          );
           res.send(testFlows).status(200);
         },
       );

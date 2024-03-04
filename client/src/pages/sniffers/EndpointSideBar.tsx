@@ -1,4 +1,3 @@
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import queryString from "query-string";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -7,6 +6,7 @@ import { routes } from "../../constants/routes";
 import { useSniffersStore } from "../../stores/sniffersStores";
 import { Endpoint } from "./Endpoint";
 import { ImportRequestModal } from "./import-reques-modal/import-request-modal";
+import { CiImport } from "react-icons/ci";
 
 type EndpointSideBarProps = {
   showAdd?: boolean;
@@ -49,8 +49,8 @@ export const EndpointSideBar = ({ showAdd = true }: EndpointSideBarProps) => {
             onClick={handleImportClicked}
           >
             <div className="flex text-sm max-w-full overflow-ellipsis whitespace-nowrap items-center p-2 gap-2">
-              <UploadFileIcon className="text-blue-500 text-xl h-[25px] w-[25px]" />
-              Import Request
+              <CiImport className="text-blue-500 text-xl h-[25px] w-[25px]" />
+              Import
             </div>
           </div>
         </div>

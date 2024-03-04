@@ -1,85 +1,35 @@
+import { ArrowDownward } from "@mui/icons-material";
 import {
-  Avatar,
-  Box,
   Button,
-  Link,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   OutlinedInput,
   Step,
   StepLabel,
   Stepper,
-  ToggleButton,
-  ToggleButtonGroup,
   TextField,
 } from "@mui/material";
+import debounce from "lodash/debounce";
 import randomString from "random-string";
-import React from "react";
-import { GiCancel, GiConfirmed } from "react-icons/gi";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../constants/routes";
-import { useSniffersStore } from "../../stores/sniffersStores";
-import { LoadingIcon } from "./LoadingIcon";
+import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
-import debounce from "lodash/debounce";
-import { toLowerCaseNoSpaces } from "../../utils/texts";
+import { getSnifferDomain } from "../../utils/getSnifferUrl";
 import { handleEnterKeyPress } from "../../utils/handleEnterKeyPress";
+import { toLowerCaseNoSpaces } from "../../utils/texts";
+import { LoadingIcon } from "./LoadingIcon";
+import Confetti from "react-confetti";
 
-interface EnvStepProps {
-  onNextClicked: () => void;
-  value: boolean;
-  handleChange: (newValue: boolean) => void;
-}
-
-const EnvStep = ({ onNextClicked, value, handleChange }: EnvStepProps) => {
-  return (
-    <div className="flex w-full flex-col items-center">
-      <div className="font-sarif self-start text-2xl font-bold">
-        Is your server local?
-      </div>
-      <div className="flex h-[50vh] w-full flex-col items-center justify-center">
-        <ToggleButtonGroup
-          color="primary"
-          value={value}
-          size="large"
-          exclusive
-          onChange={(_, newValue) => {
-            if (typeof newValue === "boolean") handleChange(newValue);
-          }}
-        >
-          <ToggleButton value={true} className="w-32">
-            <GiConfirmed className="mr-2 text-2xl text-green-400" />
-            <div className="text-lg">Yes</div>
-          </ToggleButton>
-          <ToggleButton value={false} className="w-32">
-            <GiCancel className="mr-2 text-2xl text-red-400" />
-            <div className="text-lg">No</div>
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </div>
-      <div className="mt-8 flex w-full flex-row justify-between">
-        <Button color="warning" disabled>
-          Back
-        </Button>
-        <Button onClick={onNextClicked}>Next</Button>
-      </div>
-    </div>
-  );
-};
 interface DomainStepProps {
   onNextClicked: () => void;
   onBackClicked: () => void;
   value: string;
-  isLocal: boolean;
   handleChange: (newValue: string) => void;
 }
 const DomainStep = ({
   onNextClicked,
   onBackClicked,
   value,
-  isLocal,
   handleChange,
 }: DomainStepProps) => {
   const [isValid, setIsValid] = React.useState(false);
@@ -91,20 +41,12 @@ const DomainStep = ({
 
   return (
     <div className="flex w-full flex-col items-center">
-      {!isLocal ? (
-        <>
-          <SimpleDomainComponent
-            domain={value}
-            isValid={isValid}
-            onDomainChange={onDomainChange}
-            onNextClicked={onNextClicked}
-          />
-        </>
-      ) : (
-        <>
-          <NgrokComponent domain={value} onDomainChange={onDomainChange} />
-        </>
-      )}
+      <SimpleDomainComponent
+        domain={value}
+        isValid={isValid}
+        onDomainChange={onDomainChange}
+        onNextClicked={onNextClicked}
+      />
       <div className="mt-8 flex w-full flex-row justify-between">
         <Button color="warning" onClick={onBackClicked}>
           Back
@@ -145,7 +87,7 @@ function SimpleDomainComponent(props: {
 
   return (
     <>
-      <div className="font-sarif self-start text-2xl font-bold">
+      <div className="font-sarif text-2xl font-bold">
         What is your server's domain?
       </div>
       <div className="flex h-[50vh] w-full flex-col items-center justify-center">
@@ -158,57 +100,6 @@ function SimpleDomainComponent(props: {
           helperText={error}
           onKeyDown={handleKeyDown}
         />
-      </div>
-    </>
-  );
-}
-
-function NgrokComponent(props: {
-  domain: string;
-  onDomainChange: (domain: string) => void;
-}) {
-  return (
-    <>
-      <div className="font-sarif self-start text-2xl font-bold">
-        Setup your ngrok server!
-      </div>
-      <div className="flex h-[50vh] w-full flex-col items-center justify-center">
-        <List className="">
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>1</Avatar>
-            </ListItemAvatar>
-            <Link href="https://ngrok.com/docs/getting-started/">
-              <ListItemText primary="Install ngrok" />
-            </Link>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>2</Avatar>
-            </ListItemAvatar>
-            <div className="block w-full">
-              <ListItemText primary="Run ngrok" />
-              <Box
-                component="div"
-                className="w-full bg-black py-3 pl-2 font-[monospace] text-white"
-              >
-                ngrok http http://localhost:PORT
-              </Box>
-            </div>
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>3</Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Paste the link" />
-            <OutlinedInput
-              value={props.domain}
-              className="w-1/2"
-              placeholder="https://example.com"
-              onChange={(e) => props.onDomainChange(e.target.value)}
-            />
-          </ListItem>
-        </List>
       </div>
     </>
   );
@@ -233,7 +124,7 @@ const NameStep = ({
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="font-sarif self-start text-2xl font-bold">
+      <div className="font-sarif text-2xl font-bold">
         Give your proxy a name
       </div>
       <div className="flex h-[50vh] w-full flex-col items-center justify-center">
@@ -262,14 +153,53 @@ const NameStep = ({
   );
 };
 
-const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
+const DoneStep = ({
+  onNextClicked,
+  createdProxy,
+}: {
+  onNextClicked: () => void;
+  createdProxy?: SnifferType;
+}) => {
+  const [showConfetti, setShowConfetti] = React.useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowConfetti(false);
+    }, 5000);
+  }, []);
   return (
-    <div className="flex w-full flex-col items-center">
-      <div className="font-sarif self-start text-2xl font-bold">
+    <div className="flex w-full flex-col">
+      {showConfetti && <Confetti />}
+      <div className="font-sarif self-start text-2xl font-bold mb-20 text-center w-full">
         You have successfully created a proxy!
       </div>
-      <div className="flex h-[50vh] w-full flex-col items-center justify-center"></div>
-      <div className="mt-8 flex w-full flex-row-reverse justify-between">
+      <div className="font-sarif self-start w-full h-[40vh]">
+        <span className="block mb-4 w-full text-center">Requests from</span>
+        <TextField
+          disabled
+          className="w-full"
+          size="small"
+          value={getSnifferDomain(createdProxy?.subdomain ?? "")}
+        />
+        {/* <div className="flex w-full justify-center mt-4 mb-4"> */}
+        <div className="w-full mt-4 mb-4">
+          <div className="w-full flex justify-center mb-2">
+            <span className="block w-full text-center">Are forwarded to</span>
+          </div>
+          <div className="flex justify-center">
+            <ArrowDownward></ArrowDownward>
+          </div>
+        </div>
+        {/* </div> */}
+
+        <TextField
+          disabled
+          className="w-full"
+          size="small"
+          value={createdProxy?.downstreamUrl}
+        />
+      </div>
+      <div className="mt-8 flex w-full flex-row-reverse justify-center">
         <Button color="success" onClick={onNextClicked}>
           Done
         </Button>
@@ -280,7 +210,6 @@ const DoneStep = ({ onNextClicked }: { onNextClicked: () => void }) => {
 
 export const AddSnifferPage = () => {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [isLocal, setIsLocal] = React.useState(false);
   const [domain, setDomain] = React.useState("https://");
   const [name, setName] = React.useState("");
   const { createSniffer, loadingSniffers } = useSniffersStore();
@@ -288,6 +217,9 @@ export const AddSnifferPage = () => {
     randomString({ length: 5 }).toLowerCase(),
   );
   const navigator = useNavigate();
+  const [createdProxy, setCreatedProxy] = React.useState<
+    SnifferType | undefined
+  >(undefined);
 
   const handleCreateSniffer = () => {
     createSniffer({
@@ -295,20 +227,18 @@ export const AddSnifferPage = () => {
       downstreamUrl: domain,
       port: 80,
       subdomain: `${toLowerCaseNoSpaces(name)}-${subdomain}`,
-    }).then(() => {
-      setActiveStep(3);
+    }).then((data) => {
+      setCreatedProxy(data);
+      setActiveStep(2);
     });
   };
 
   return (
     <div
-      className={`flex flex-col bg-tertiary h-[calc(vh-96px)] max-h-[calc(100vh-96px)] w-[calc(100vw-56px)] p-4`}
+      className={`flex flex-col bg-tertiary h-full w-[calc(100vw-56px)] p-4`}
     >
-      <div className="flex w-3/4 flex-col self-center">
+      <div className="flex h-full w-3/4 flex-col self-center">
         <Stepper activeStep={activeStep} className="mb-8 w-full self-center">
-          <Step key={"Environment"}>
-            <StepLabel>{"Environment"}</StepLabel>
-          </Step>
           <Step key={"Domain"}>
             <StepLabel>{"Domain"}</StepLabel>
           </Step>
@@ -320,32 +250,25 @@ export const AddSnifferPage = () => {
           </Step>
         </Stepper>
         {activeStep === 0 && (
-          <EnvStep
-            onNextClicked={() => setActiveStep(1)}
-            value={isLocal}
-            handleChange={setIsLocal}
-          />
-        )}
-        {activeStep === 1 && (
           <DomainStep
             value={domain}
             handleChange={setDomain}
-            isLocal={isLocal}
-            onNextClicked={() => setActiveStep(2)}
+            onNextClicked={() => setActiveStep(1)}
             onBackClicked={() => setActiveStep(0)}
           />
         )}
-        {activeStep === 2 && (
+        {activeStep === 1 && (
           <NameStep
-            onBackClicked={() => setActiveStep(1)}
+            onBackClicked={() => setActiveStep(0)}
             onNextClicked={handleCreateSniffer}
             value={name}
             handleChange={setName}
             isLoading={loadingSniffers}
           />
         )}
-        {activeStep === 3 && (
+        {activeStep === 2 && (
           <DoneStep
+            createdProxy={createdProxy}
             onNextClicked={() => {
               navigator(routes.ROOT);
             }}

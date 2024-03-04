@@ -23,6 +23,9 @@ export class TestFlowNodeRun {
   @Column("uuid", { name: "flow_run_id" })
   flowRunId: string;
 
+  @Column("uuid", { name: "sub_flow_run_id" })
+  subFlowRunId: string | null;
+
   @Column("uuid", { name: "proxy_id", nullable: true })
   proxyId: string | null;
 
