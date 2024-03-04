@@ -48,7 +48,7 @@ export const MockSideBar: React.FC = () => {
       {snackBar}
       <FormControl fullWidth size="small" variant="outlined">
         <InputLabel>Proxies</InputLabel>
-        <Select value={snifferId || ""} label="Proxies">
+        <Select value={(snifferId as string) || ""} label="Proxies">
           {sniffers.map((sniffer, i) => (
             <MenuItem
               key={i}
