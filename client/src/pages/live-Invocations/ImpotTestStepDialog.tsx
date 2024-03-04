@@ -1,19 +1,20 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import GenericEditingModal from "../../components/project-selection/GenericEditingModal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useFlowStore } from "../../stores/flowStore";
 import { FlowSelector } from "../flows/TestsTab";
 import { InvocationType } from "../sniffers/types";
+
 interface ImportTestStepDialogProps {
   open: boolean;
   handleClose: () => void;
-  invocation?: InvocationType;
+  invocations?: (InvocationType | undefined)[];
 }
 
 export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
   open,
   handleClose,
-  invocation,
+  invocations,
 }) => {
   const { component: snackBar, show } = useSnackbar();
   const { postNode } = useFlowStore();
@@ -22,25 +23,31 @@ export const ImportTestStepDialog: React.FC<ImportTestStepDialogProps> = ({
   );
 
   const handleImportInvocation = () => {
-    if (!selectedFlowId || invocation == null) return;
+    if (!selectedFlowId || !invocations) return;
 
-    postNode(selectedFlowId, {
-      body: invocation.body,
-      method: invocation.method,
-      headers: invocation.headers,
-      url: invocation.url,
-      proxyId: invocation.snifferId,
-      name: `${invocation.method} ${invocation.url} - imported`,
-      assertions: [
-        {
-          expectedValue: `${invocation.response.status}`,
-          comparator: "eq",
-          path: "status",
-          type: "number",
-        },
-      ],
-      type: "http",
-    })
+    const importPromises = invocations?.map((singleInvocation) => {
+      if (singleInvocation) {
+        return postNode(selectedFlowId, {
+          body: singleInvocation.body,
+          method: singleInvocation.method,
+          headers: singleInvocation.headers,
+          url: singleInvocation.url,
+          proxyId: singleInvocation.snifferId,
+          name: `${singleInvocation.method} ${singleInvocation.url} - imported`,
+          assertions: [
+            {
+              expectedValue: `${singleInvocation.response?.status}`,
+              comparator: "eq",
+              path: "status",
+              type: "number",
+            },
+          ],
+          type: "http",
+        });
+      }
+    });
+
+    Promise.all(importPromises)
       .then(() => {
         show("Request imported successfully", "success");
         handleClose();
