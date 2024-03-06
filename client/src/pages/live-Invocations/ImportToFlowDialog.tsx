@@ -23,8 +23,7 @@ export const ImportToFlowDialog: React.FC<ImportToFlowDialogProps> = ({
         <>
           <PiGraphLight
             onClick={() => setIsImportStepDialogOpen(true)}
-            className="text-blue-400 cursor-pointer"
-            size={iconSize}
+            className="text-blue-400 cursor-pointer text-2xl"
           />
           {isImportStepDialogOpen && (
             <ImportTestStepDialog

@@ -23,6 +23,7 @@ type InvocationSectionProps = {
   invocation?: InvocationType | undefined;
   isDisabled?: boolean;
   showUrlButtons?: boolean;
+  showMockButton?: boolean;
 };
 
 export const InvocationSection = ({
@@ -30,6 +31,7 @@ export const InvocationSection = ({
   setEditedInvocation,
   isDisabled = true,
   showUrlButtons = true,
+  showMockButton = true,
 }: InvocationSectionProps) => {
   return (
     <div>
@@ -38,6 +40,7 @@ export const InvocationSection = ({
         invocation={invocation}
         setEditedInvocation={setEditedInvocation}
         isDisabled={isDisabled}
+        showMockButton={showMockButton}
       />
       <InvocationDetails
         invocation={invocation as InvocationType}
@@ -52,6 +55,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
   setEditedInvocation,
   isDisabled,
   showUrlButtons = true,
+  showMockButton = true,
 }) => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -112,7 +116,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center space-x-[2px]">
+    <div className="flex flex-row items-center space-x-[4px]">
       {component}
       <URLComponent
         onMethodChange={(value) => {
@@ -147,20 +151,22 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
         isUrlDisabled={isDisabled}
       />
 
-      <div className="flex flex-row items-center justify-between h-full">
+      <div className="flex flex-row items-center justify-between h-full min-w-[100px]">
         {showUrlButtons && (
           <>
-            <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full ml-2">
-              <Tooltip title="Mock Request">
-                <div onClick={importMock}>
-                  {loading ? (
-                    <LoadingIcon />
-                  ) : (
-                    <MdOutlineNetworkPing className="text-yellow-500 cursor-pointer" />
-                  )}
-                </div>
-              </Tooltip>
-            </div>
+            {showMockButton && (
+              <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
+                <Tooltip title="Mock Request">
+                  <div onClick={importMock}>
+                    {loading ? (
+                      <LoadingIcon />
+                    ) : (
+                      <MdOutlineNetworkPing className="text-yellow-500 cursor-pointer text-2xl" />
+                    )}
+                  </div>
+                </Tooltip>
+              </div>
+            )}
             <div className="flex flex-row items-center min-w-[24px] w-[24px] h-full">
               <ImportToFlowDialog
                 setIsImportStepDialogOpen={setIsImportStepDialogOpen}
@@ -176,7 +182,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
                     <LoadingIcon />
                   ) : (
                     <PlayArrow
-                      className="text-green-500 cursor-pointer"
+                      className="text-green-500 cursor-pointer text-2xl"
                       onClick={executeRequest}
                     />
                   )}

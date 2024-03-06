@@ -29,6 +29,7 @@ export const SnifferData: React.FC = () => {
     <>
       <InvocationSection
         isDisabled={false}
+        showMockButton={false}
         setEditedInvocation={setEditedInvocation}
         invocation={editedInvocation}
       />
