@@ -151,7 +151,7 @@ export const InvocationURL: React.FC<InvocationSectionProps> = ({
         isUrlDisabled={isDisabled}
       />
 
-      <div className="flex flex-row items-center justify-between h-full min-w-[100px]">
+      <div className="flex flex-row items-center justify-between h-full space-x-2">
         {showUrlButtons && (
           <>
             {showMockButton && (
