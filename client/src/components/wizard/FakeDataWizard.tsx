@@ -18,6 +18,7 @@ import {
   TODOS_TEMPLATE,
   USERS_TEMPLATE,
 } from "./templates";
+import { SearchBar } from "../../components/search/SearchBar";
 
 interface FakeDataWizardProps {
   handleSelection: (text: string) => void;
@@ -59,20 +60,63 @@ export const FakeDataWizard: React.FC<FakeDataWizardProps> = ({
     reset();
   };
 
+  const handleSearch = (searchTerm: string) => {
+    const allEntries = initEntries();
+    const filteredEntries = filterEntries(allEntries, searchTerm);
+    setEntries(filteredEntries);
+  };
+
+  const filterEntries = (data: [string, Object][], searchTerm: string) => {
+    let filteredEntries = [];
+
+    const doesSubEntryMatch = (subEntries: [string, any][]) => {
+      return subEntries.find((item) => item[0] == searchTerm.toLowerCase());
+    };
+
+    for (let i = 0; i < data.length; i++) {
+      const [key, value] = data[i];
+      const keyMatches = key.toLowerCase().includes(searchTerm.toLowerCase());
+      const subEntriesMatches =
+        value &&
+        typeof value === "object" &&
+        doesSubEntryMatch(Object.entries(value));
+
+      if (subEntriesMatches) {
+        return [doesSubEntryMatch(Object.entries(value))];
+      }
+      if (keyMatches) {
+        filteredEntries.push([key, value]);
+      }
+    }
+
+    return filteredEntries;
+  };
+
   return (
     <>
       {subEntries.length === 0 && (
-        <WizardTemplate onClose={onClose} title="Fake Data" goBack={goBack}>
-          {entries.map(([key, value]) => (
-            <WizardItem
-              key={key}
-              title={key}
-              onClick={() => {
-                onEntryClick(key, value);
-              }}
-            />
-          ))}
-        </WizardTemplate>
+        <>
+          <div className="mt-2">
+            <WizardTemplate
+              onClose={onClose}
+              title="Fake Data"
+              goBack={goBack}
+              searchComponent={<SearchBar handleSearch={handleSearch} />}
+            >
+              <div className="h-[300px]">
+                {entries.map(([key, value]) => (
+                  <WizardItem
+                    key={key}
+                    title={key}
+                    onClick={() => {
+                      onEntryClick(key, value);
+                    }}
+                  />
+                ))}
+              </div>
+            </WizardTemplate>
+          </div>
+        </>
       )}
       {subEntries.length > 0 && (
         <WizardTemplate
