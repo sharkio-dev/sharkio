@@ -30,7 +30,7 @@ export const authMiddleware = async (
     await supabaseClient.auth.signOut();
 
     const { data: user, error } =
-      await supabaseClient.auth.getUser(access_token);
+    await supabaseClient.auth.getUser(access_token);
 
     if (error || !user) {
       log.error(error);

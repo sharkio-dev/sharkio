@@ -2,7 +2,7 @@ import axios from "axios";
 
 export let BackendAxios = axios.create({
   // @ts-ignore
-  baseURL: `${window._env_.VITE_SERVER_URL ?? ""}/sharkio`,
+  baseURL: `${window._env_.VITE_SERVER_URL ?? "http://localhost:5012"}/sharkio`,
   headers: {
     "Content-Type": "application/json",
   },

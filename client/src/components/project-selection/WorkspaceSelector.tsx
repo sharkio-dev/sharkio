@@ -31,25 +31,25 @@ const WorkspaceSelector = () => {
   const [searchParams] = useSearchParams();
 
   const handleChangeWorkspace = async (workspaceId: string) => {
-    window.location.href = `${window.location.origin}/proxies?workspaceId=${workspaceId}`;
+    // window.location.href = `${window.location.origin}/proxies?workspaceId=${workspaceId}`;
   };
 
   useEffect(() => {
-    getWorkspaces().then(() => {
-      if (workspaceId) {
-        changeBetweenWorkSpaces(workspaceId as string);
-      } else if (user) {
-        changeBetweenWorkSpaces(user.id);
-      }
-    });
+    // getWorkspaces().then(() => {
+    //   if (workspaceId) {
+    //     changeBetweenWorkSpaces(workspaceId as string);
+    //   } else if (user) {
+    //     changeBetweenWorkSpaces(user.id);
+    //   }
+    // });
   }, []);
 
   useEffect(() => {
-    if (!workspaceId) {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("workspaceId", user?.id || "");
-      navigate({ search: newSearchParams.toString() }, { replace: true });
-    }
+    // if (!workspaceId) {
+    //   const newSearchParams = new URLSearchParams(searchParams);
+    //   newSearchParams.set("workspaceId", user?.id || "");
+    //   navigate({ search: newSearchParams.toString() }, { replace: true });
+    // }
   }, [workspaceId]);
 
   return (

@@ -272,7 +272,8 @@ async function main(isProxy = true, isServer = true) {
       workspaceController.getRouter(),
       testFlowController.getRouter(),
     ],
-    swaggerUi
+    swaggerUi,
+    authController
   );
 
   // /* Start Servers. */

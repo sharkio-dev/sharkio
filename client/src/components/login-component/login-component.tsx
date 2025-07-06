@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
-import { supabaseClient } from "../../utils/supabase-auth";
+// import { supabaseClient } from "../../utils/supabase-auth";
 import styles from "./login-component.module.scss";
 import { routes } from "../../constants/routes";
 
@@ -36,11 +36,8 @@ const LoginComponent: React.FC = () => {
         break;
       }
       case "Logout": {
-        supabaseClient.auth.signOut().then(() => {
-          setLoading(false);
-          signOut();
-          navigate("/");
-        });
+        signOut();
+        navigate("/");
         break;
       }
       case "Login": {

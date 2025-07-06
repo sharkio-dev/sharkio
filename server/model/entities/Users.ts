@@ -34,6 +34,9 @@ export class Users {
   @Column("text", { name: "profileImg", nullable: true })
   profileImg: string | null;
 
+  @Column("text", { name: "password", nullable: true })
+  password: string | null;
+
   @OneToMany(() => ApiKey, (apiKey) => apiKey.user)
   apiKeys: ApiKey[];
 
@@ -53,5 +56,5 @@ export class Users {
   workspaces: Workspace[];
 
   @OneToMany(() => WorkspacesUsers, (workspace) => workspace.user)
-  workspacesUsers: Relation<WorkspacesUsers>;
+  workspacesUsers: Relation<WorkspacesUsers> | null;
 }

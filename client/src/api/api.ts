@@ -275,3 +275,16 @@ export const editMockResponseAPI = (
     return res.data;
   });
 };
+
+
+export const loginAPI = (
+  email: string,
+  password: string,
+) => {
+  return BackendAxios.post(`/api/login/email`, {
+    email,
+    password,
+  }).then((res) => {
+    return res.data;
+  });
+};

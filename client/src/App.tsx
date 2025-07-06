@@ -2,7 +2,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthWrapper } from "./AuthWrapper";
+// import { AuthWrapper } from "./AuthWrapper";
 import { LandingPage } from "./LandingPage";
 import { PageTemplate } from "./components/page-template/page-template";
 import { routes } from "./constants/routes";
@@ -27,6 +27,7 @@ import FlowPage from "./pages/flows/flowPage";
 import { FlowStepPage } from "./pages/flows/FlowStepPage";
 import { FlowRunPage } from "./pages/flows/FlowRunPage";
 import TestPlans from "./pages/test-plans/testPlan";
+import { AuthWrapper } from "./AuthWrapper";
 
 function App(): React.JSX.Element {
   const { mode } = useThemeStore();
@@ -129,7 +130,7 @@ function App(): React.JSX.Element {
           </Routes>
         </AuthWrapper>
       </BrowserRouter>
-    </ThemeProvider>
+    </ThemeProvider >
   );
 }
 

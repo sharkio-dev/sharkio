@@ -1,13 +1,13 @@
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
 import "reflect-metadata";
 import { IRouterConfig } from "../controllers/router.interface";
 import { useLog } from "../lib/log";
 import { authMiddleware } from "./middlewares/auth.middleware";
-import { logMiddleware } from "./middlewares/log.middleware";
 import { dynamicCorsMiddleware } from "./middlewares/cors.middleware";
+import { logMiddleware } from "./middlewares/log.middleware";
+import { AuthController } from "../controllers/auth.controller";
 
 const log = useLog({
   dirname: __dirname,
@@ -23,7 +23,7 @@ export class Server {
   private app: Express;
   private server?: http.Server;
 
-  constructor(routers: IRouterConfig[], swaggerController: IController) {
+  constructor(routers: IRouterConfig[], swaggerController: IController, authController: AuthController) {
     this.app = express();
     this.app.use(logMiddleware);
     this.app.use(dynamicCorsMiddleware);
@@ -33,7 +33,7 @@ export class Server {
     this.app.use(express.urlencoded({ extended: true, limit: "50mb" }));
     this.app.use(cookieParser());
     swaggerController.setup(this.app);
-    this.app.use(authMiddleware);
+    this.app.use(authController.middleware.bind(authController));
     routers.forEach((router) => {
       this.app.use(router.path, router.router);
     });
