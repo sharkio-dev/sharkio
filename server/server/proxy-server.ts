@@ -33,10 +33,10 @@ export class ProxyServer {
     this.app = express();
     this.app.use(logMiddleware);
     this.app.use(dynamicCorsMiddleware);
-    this.app.use(express.json());
-    this.app.use(express.text());
-    this.app.use(express.raw());
-    this.app.use(express.urlencoded());
+    this.app.use(express.json({ limit: "50mb" }));
+    this.app.use(express.text({ limit: "50mb" }));
+    this.app.use(express.raw({ limit: "50mb" }));
+    this.app.use(express.urlencoded({ extended: true, limit: "50mb" }));
     this.app.use(cookieParser());
     this.app.use(
       this.requestInterceptor.validateBeforeProxy.bind(this.requestInterceptor),
