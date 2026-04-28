@@ -206,6 +206,7 @@ export const MockResponseCard: React.FC<IMockResponseCard> = ({
         </div>
         {openResponseId === mockResponse.id && (
           <MockResponseDetails
+            mock={mock}
             response={mockResponse}
             handleResponseChange={(value: MockResponse) => {
               onMockResponsesChange(
