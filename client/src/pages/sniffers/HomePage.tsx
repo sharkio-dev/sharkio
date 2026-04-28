@@ -1,9 +1,10 @@
-import { Button } from "@mui/material";
+import { Button, FormControlLabel, Switch } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../constants/routes";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { useSnackbar } from "../../hooks/useSnackbar";
 import { EditSnifferModal } from "./EditSnifferModal";
 import { DeleteSnifferModal } from "./DeleteSnifferModal";
 
@@ -13,7 +14,28 @@ type SnifferBoxProps = {
 const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [disableRecording, setDisableRecording] = useState<boolean>(
+    sniffer.disableRecording ?? false,
+  );
+  const [isTogglingRecording, setIsTogglingRecording] =
+    useState<boolean>(false);
+  const { editSniffer } = useSniffersStore();
+  const { show: showSnackbar, component: snackBar } = useSnackbar();
   const navigate = useNavigate();
+
+  const handleToggleRecording = (next: boolean) => {
+    const previous = disableRecording;
+    setDisableRecording(next);
+    setIsTogglingRecording(true);
+    editSniffer({ id: sniffer.id, disableRecording: next })
+      .catch(() => {
+        setDisableRecording(previous);
+        showSnackbar("Failed to update recording setting", "error");
+      })
+      .finally(() => {
+        setIsTogglingRecording(false);
+      });
+  };
 
   return (
     <div className="flex flex-col bg-secondary p-4 rounded-xl w-full h-[200px] shadow-lg">
@@ -54,6 +76,22 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
         <div className="text-sm text-gray-400">Target URL</div>
         <div className="text-sm text-gray-400">{sniffer.downstreamUrl}</div>
       </div>
+      <div className="flex flex-row justify-between items-center mt-auto">
+        <div className="text-sm text-gray-400">Disable recording</div>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={disableRecording}
+              disabled={isTogglingRecording}
+              onChange={(event) => handleToggleRecording(event.target.checked)}
+            />
+          }
+          label=""
+          className="m-0"
+        />
+      </div>
+      {snackBar}
       <EditSnifferModal
         sniffer={sniffer}
         isOpen={isEditModalOpen}

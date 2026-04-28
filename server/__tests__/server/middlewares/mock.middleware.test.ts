@@ -16,6 +16,7 @@ const defaultSelectedSniffer: Sniffer = {
   downstreamUrl: "",
   subdomain: "",
   port: 0,
+  disableRecording: false,
   endpoints: [],
   mocks: [],
   requests: [],

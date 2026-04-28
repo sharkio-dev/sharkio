@@ -51,17 +51,19 @@ export class ProxyMiddleware {
             } else {
               const body: string | Buffer = responseBuffer.toString("utf8");
 
-              await this.requestInterceptor.interceptResponse(
-                ownerId,
-                snifferId,
-                invocationId as string,
-                {
-                  body: body,
-                  headers: proxyRes.headers,
-                  statusCode: proxyRes.statusCode,
-                },
-                testExecutionId,
-              );
+              if (typeof invocationId === "string") {
+                await this.requestInterceptor.interceptResponse(
+                  ownerId,
+                  snifferId,
+                  invocationId,
+                  {
+                    body: body,
+                    headers: proxyRes.headers,
+                    statusCode: proxyRes.statusCode,
+                  },
+                  testExecutionId,
+                );
+              }
 
               return body;
             }

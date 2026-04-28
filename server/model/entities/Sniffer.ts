@@ -58,6 +58,13 @@ export class Sniffer {
   @Column("uuid", { name: "owner_id", nullable: true })
   ownerId: string;
 
+  @Column("boolean", {
+    name: "disable_recording",
+    nullable: true,
+    default: () => "false",
+  })
+  disableRecording: boolean;
+
   @OneToMany(() => Endpoint, (endpoint) => endpoint.id)
   endpoints: Endpoint[];
 

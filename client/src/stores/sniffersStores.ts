@@ -17,6 +17,7 @@ export type SnifferType = {
   downstreamUrl: string;
   port: number;
   subdomain: string;
+  disableRecording?: boolean;
 };
 
 interface SniffersState {

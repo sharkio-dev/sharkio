@@ -17,12 +17,18 @@ export class RequestInterceptor {
       res.sendStatus(404);
     } else {
       try {
-        const interceptedInvocation = await this.interceptRequest(req, sniffer);
+        if (sniffer.disableRecording !== true) {
+          const interceptedInvocation = await this.interceptRequest(
+            req,
+            sniffer,
+          );
 
-        if (interceptedInvocation?.id) {
-          req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
-          req.headers["x-sharkio-sniffer-id"] = interceptedInvocation.snifferId;
-          req.headers["x-sharkio-owner-id"] = interceptedInvocation.ownerId;
+          if (interceptedInvocation?.id) {
+            req.headers["x-sharkio-invocation-id"] = interceptedInvocation.id;
+            req.headers["x-sharkio-sniffer-id"] =
+              interceptedInvocation.snifferId;
+            req.headers["x-sharkio-owner-id"] = interceptedInvocation.ownerId;
+          }
         }
         next();
       } catch (e) {
