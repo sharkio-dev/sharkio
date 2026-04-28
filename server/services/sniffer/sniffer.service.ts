@@ -3,8 +3,15 @@ import { EditSnifferDTO } from "../../dto/in";
 import randomString from "random-string";
 import { SnifferRepository } from "../../model/repositories/sniffers.repository";
 import { Sniffer } from "../../model/entities/Sniffer";
+import { TtlCache } from "../../lib/ttl-cache/ttl-cache";
+
+const SUBDOMAIN_CACHE_TTL_MS = 30_000;
 
 export class SnifferService {
+  private readonly subdomainCache = new TtlCache<Sniffer | null>(
+    SUBDOMAIN_CACHE_TTL_MS,
+  );
+
   constructor(private readonly snifferRepository: SnifferRepository) {}
 
   async getSniffer(ownerId: string, id: string) {
@@ -40,6 +47,7 @@ export class SnifferService {
 
     const newSniffer =
       await this.snifferRepository.repository.save(snifferEntity);
+    this.subdomainCache.delete(newSniffer.subdomain);
     return newSniffer;
   }
 
@@ -56,20 +64,27 @@ export class SnifferService {
       })
       .returning("*")
       .execute();
+    this.subdomainCache.clear();
     return res.raw[0];
   }
 
   async removeSniffer(ownerId: string, id: string) {
-    return this.snifferRepository.repository
+    const result = await this.snifferRepository.repository
       .createQueryBuilder()
       .delete()
       .from(Sniffer)
       .where("id = :id AND ownerId = :ownerId", { id, ownerId })
       .execute();
+    this.subdomainCache.clear();
+    return result;
   }
 
   async findBySubdomain(subdomain: string) {
-    return this.snifferRepository.findBySubdomain(subdomain);
+    const cached = this.subdomainCache.get(subdomain);
+    if (cached !== undefined) return cached;
+    const sniffer = await this.snifferRepository.findBySubdomain(subdomain);
+    this.subdomainCache.set(subdomain, sniffer);
+    return sniffer;
   }
 
   async findByDownstream(url: string) {

@@ -1,19 +1,20 @@
+import { randomUUID } from "crypto";
 import { Request } from "express";
 import { Mock } from "../../model/entities/Mock";
 import { Request as RequestModel } from "../../model/entities/Request";
 import { Sniffer } from "../../model/entities/Sniffer";
 import EndpointService from "../../services/endpoint/endpoint.service";
 import { MockService } from "../../services/mock/mock.service";
-import ResponseService from "../../services/response/response.service";
 import { SnifferService } from "../../services/sniffer/sniffer.service";
+import { WriteBuffer } from "../../services/write-buffer/write-buffer";
 import { Interceptor } from "./Interceptor";
 
 export class CloudInterceptor implements Interceptor {
   constructor(
     private readonly snifferService: SnifferService,
     private readonly endpointService: EndpointService,
-    private readonly responseService: ResponseService,
     private readonly mockService: MockService,
+    private readonly writeBuffer: WriteBuffer,
   ) {}
 
   async findSnifferBySubdomain(subdomain: string): Promise<Sniffer | null> {
@@ -37,7 +38,10 @@ export class CloudInterceptor implements Interceptor {
   }
 
   async saveRequest(request: Partial<RequestModel>, testExecutionId?: string) {
-    return await this.endpointService.addInvocation({
+    const id = randomUUID();
+    const now = new Date();
+    const row = {
+      id,
       endpointId: request.endpointId,
       snifferId: request.snifferId,
       ownerId: request.ownerId,
@@ -45,8 +49,12 @@ export class CloudInterceptor implements Interceptor {
       body: request.body,
       headers: request.headers,
       url: request.url,
-      testExecutionId: request.testExecutionId,
-    });
+      testExecutionId: request.testExecutionId ?? testExecutionId ?? null,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.writeBuffer.enqueueRequest(row);
+    return row as RequestModel;
   }
 
   async saveResponse(
@@ -56,14 +64,18 @@ export class CloudInterceptor implements Interceptor {
     invocationId: RequestModel["id"],
     testExecutionId?: string,
   ) {
-    await this.responseService.addResponse({
+    const now = new Date();
+    this.writeBuffer.enqueueResponse({
+      id: randomUUID(),
       ownerId,
       snifferId,
       requestId: invocationId,
       headers: res.headers,
       body: res.body,
       status: res.statusCode,
-      testExecutionId,
+      testExecutionId: testExecutionId ?? null,
+      createdAt: now,
+      updatedAt: now,
     });
   }
 

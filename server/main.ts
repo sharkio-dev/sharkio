@@ -51,7 +51,6 @@ import { MockResponseService } from "./services/mock-response/mock-response.serv
 import { MockService } from "./services/mock/mock.service";
 import { RequestTransformer } from "./services/request-transformer/request-transformer";
 import { RequestService } from "./services/request/request.service";
-import ResponseService from "./services/response/response.service";
 import APIKeysService from "./services/settings/apiKeys";
 import { SnifferDocGenerator } from "./services/sniffer-doc-generator/sniffer-doc-generator.service";
 import { SnifferService } from "./services/sniffer/sniffer.service";
@@ -68,6 +67,7 @@ import { TestExecutionService } from "./services/testSuite/testExecution.service
 import { TestSuiteService } from "./services/testSuite/testSuite.service";
 import UserService from "./services/user/user";
 import { WorkspaceService } from "./services/workspace/workspace.service";
+import { WriteBuffer } from "./services/write-buffer/write-buffer";
 import { HttpNodeExecutor } from "./services/test-flow/flow-node-executors/http-node-executor";
 import { SubflowNodeExecutor } from "./services/test-flow/flow-node-executors/subflow-node-executor";
 import { ParallelExecutor } from "./services/test-flow/test-flow-executor/parallel-executor";
@@ -120,7 +120,6 @@ async function main(isProxy = true, isServer = true) {
   /* Services */
   const mockService = new MockService(mockRepository, mockResponseRepository);
   const snifferService = new SnifferService(snifferRepository);
-  const responseService = new ResponseService(responseRepository);
   const endpointService = new EndpointService(
     endpointRepository,
     invocationRepository,
@@ -223,12 +222,15 @@ async function main(isProxy = true, isServer = true) {
     testFlowExecutor
   );
 
+  /* Async write buffer for request/response inserts */
+  const writeBuffer = new WriteBuffer(invocationRepository, responseRepository);
+
   /* Interceptors */
   const cloudInterceptor = new CloudInterceptor(
     snifferService,
     endpointService,
-    responseService,
-    mockService
+    mockService,
+    writeBuffer
   );
   const interceptors: Record<string, Interceptor> = {
     cloud: cloudInterceptor,
