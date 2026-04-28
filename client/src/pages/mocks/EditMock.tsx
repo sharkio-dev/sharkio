@@ -106,6 +106,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
       status: 200,
       headers: {},
       sequenceIndex: index,
+      delay: 0,
     }).then((res: MockResponse) => {
       setMock((prev) => {
         if (!prev) return prev;
@@ -127,6 +128,7 @@ export const EditMock: React.FC<EditMockProps> = ({ mock, setMock }) => {
       status: mockToDuplicate.status,
       headers: mockToDuplicate.headers,
       sequenceIndex: index,
+      delay: mockToDuplicate.delay ?? 0,
     }).then((res: MockResponse) => {
       setMock((prev) => {
         if (!prev) return prev;

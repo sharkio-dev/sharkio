@@ -41,6 +41,13 @@ export class MockResponse {
   @Column({ name: "sequence_index", type: "int4" })
   sequenceIndex: number;
 
+  @Column("integer", {
+    name: "delay",
+    nullable: false,
+    default: () => "0",
+  })
+  delay: number;
+
   @Column("timestamp with time zone", {
     name: "created_at",
     default: () => "now()",

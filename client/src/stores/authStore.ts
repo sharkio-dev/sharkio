@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { BackendAxios } from "../api/backendAxios";
+import { AUTH_TOKEN_STORAGE_KEY, BackendAxios } from "../api/backendAxios";
 
 export interface User {
   id: string;
@@ -27,7 +27,11 @@ export const useAuthStore = create<AuthState>()(
         postSignIn(userData);
         set({ user: userData });
       },
-      signOut: () => set({ user: null }),
+      signOut: () => {
+        localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+        delete BackendAxios.defaults.headers.common["Authorization"];
+        set({ user: null });
+      },
     }),
     {
       name: "auth-storage", // key in localStorage

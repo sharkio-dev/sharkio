@@ -239,6 +239,7 @@ export const postMockResponseAPI = async (data: {
   headers: object;
   status: number;
   name: string;
+  delay?: number;
 }): Promise<MockResponse> => {
   return BackendAxios.post(`/mock-responses`, data).then((res) => {
     return res.data;

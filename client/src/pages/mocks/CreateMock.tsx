@@ -79,6 +79,7 @@ export const CreateMock: React.FC<CreateMockProps> = ({
       status: 200,
       headers: {},
       sequenceIndex: index,
+      delay: 0,
     };
     setEditedMock((prev) => ({
       ...prev,

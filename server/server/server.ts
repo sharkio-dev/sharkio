@@ -2,12 +2,11 @@ import cookieParser from "cookie-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from "http";
 import "reflect-metadata";
+import { AuthController } from "../controllers/auth.controller";
 import { IRouterConfig } from "../controllers/router.interface";
 import { useLog } from "../lib/log";
-import { authMiddleware } from "./middlewares/auth.middleware";
 import { dynamicCorsMiddleware } from "./middlewares/cors.middleware";
 import { logMiddleware } from "./middlewares/log.middleware";
-import { AuthController } from "../controllers/auth.controller";
 
 const log = useLog({
   dirname: __dirname,

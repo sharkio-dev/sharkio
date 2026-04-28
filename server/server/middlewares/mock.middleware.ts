@@ -60,6 +60,11 @@ export default class MockMiddleware {
         },
       );
 
+      const delay = selectedResponse.delay;
+      if (delay && delay > 0) {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+
       res.status(transformedResponse.status).send(transformedResponse.body);
 
       try {

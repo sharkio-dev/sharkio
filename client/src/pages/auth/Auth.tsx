@@ -2,7 +2,7 @@ import { Button, Input } from "@mui/material";
 import React, { PropsWithChildren } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginAPI } from "../../api/api";
-import { BackendAxios } from "../../api/backendAxios";
+import { AUTH_TOKEN_STORAGE_KEY, BackendAxios } from "../../api/backendAxios";
 import { routes } from "../../constants/routes";
 import { useAuthStore } from "../../stores/authStore";
 
@@ -42,6 +42,7 @@ export const AuthUI: React.FC<PropsWithChildren> = ({ children }) => {
             className="mb-4"
             onClick={() => {
               loginAPI(email, password).then((res) => {
+                localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, res);
                 BackendAxios.defaults.headers.common["Authorization"] =
                   res;
                 signIn({ "id": "", "email": email, "fullName": "Test User", "profileImg": "" });

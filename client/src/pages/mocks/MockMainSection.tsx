@@ -28,6 +28,7 @@ export const getMockDefaultState = (snifferId: string): Mock => {
         status: 200,
         headers: {},
         sequenceIndex: 0,
+        delay: 0,
       },
     ],
   };

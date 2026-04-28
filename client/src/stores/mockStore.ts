@@ -20,6 +20,7 @@ export interface MockResponse {
   headers: object;
   status: number;
   sequenceIndex: number;
+  delay: number;
 }
 
 export interface Mock {

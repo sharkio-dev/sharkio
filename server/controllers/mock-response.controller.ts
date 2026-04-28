@@ -96,7 +96,8 @@ export class MockResponseController {
          */
         async (req: Request, res: Response, next: NextFunction) => {
           const ownerId = res.locals.auth.ownerId;
-          const { mockId, body, headers, status, name, snifferId } = req.body;
+          const { mockId, body, headers, status, name, snifferId, delay } =
+            req.body;
           const createdResponse = await this.mockResponseService.createResponse(
             ownerId,
             mockId,
@@ -107,6 +108,7 @@ export class MockResponseController {
               headers,
               status,
               name,
+              delay: delay ?? 0,
             },
           );
           res.json(createdResponse).status(201);
@@ -228,7 +230,8 @@ export class MockResponseController {
         async (req: Request, res: Response, next: NextFunction) => {
           const ownerId = res.locals.auth.ownerId;
           const { mockResponseId } = req.params;
-          const { body, headers, status, name, sequenceIndex } = req.body;
+          const { body, headers, status, name, sequenceIndex, delay } =
+            req.body;
 
           const updatedMock = await this.mockResponseService.editResponse(
             ownerId,
@@ -239,6 +242,7 @@ export class MockResponseController {
               status,
               name,
               sequenceIndex,
+              delay,
             },
           );
 
