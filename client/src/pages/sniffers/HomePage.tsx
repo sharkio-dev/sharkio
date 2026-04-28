@@ -43,7 +43,7 @@ const SnifferBox = ({ sniffer }: SnifferBoxProps) => {
       <div className="flex flex-row justify-between items-center mt-2">
         <div className="text-sm text-gray-400">Domain</div>
         <div className="text-sm text-gray-400">
-          https://{sniffer.subdomain}.
+          http://{sniffer.subdomain}.
           {
             // @ts-ignore
             window._env_.VITE_PROXY_DOMAIN
