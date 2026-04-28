@@ -22,14 +22,40 @@ export default class MockMiddleware {
     const subdomain = hostname.split(".")[0];
     const sniffer = await this.interceptor.findSnifferBySubdomain(subdomain);
 
+    logger.verbose("findMock: incoming", {
+      hostname,
+      subdomain,
+      url,
+      method,
+      snifferFound: sniffer != null,
+      snifferId: sniffer?.id,
+      ownerId: sniffer?.ownerId,
+    });
+
     if (sniffer != null && sniffer.ownerId != null) {
       const urlNoParams = url.split("?")[0];
+
+      logger.verbose("findMock: looking up mock", {
+        urlNoParams,
+        method,
+        snifferId: sniffer.id,
+      });
 
       const mock: Mock | null = await this.interceptor.findMockByUrl(
         urlNoParams,
         method,
         sniffer,
       );
+
+      logger.verbose("findMock: lookup result", {
+        urlNoParams,
+        method,
+        matched: mock != null,
+        mockId: mock?.id,
+        mockUrl: mock?.url,
+        mockMethod: mock?.method,
+        mockIsActive: mock?.isActive,
+      });
 
       if (mock != null && mock.isActive === true) {
         return mock;
