@@ -182,7 +182,7 @@ export class MockService {
       .execute();
 
     const resolvedSnifferId =
-      snifferId ?? result.raw?.[0]?.snifferId;
+      snifferId ?? result.raw?.[0]?.sniffer_id;
     if (resolvedSnifferId) {
       await this.configWriter?.writeForSniffer(ownerId, resolvedSnifferId);
     }
@@ -210,7 +210,7 @@ export class MockService {
       .returning("*")
       .execute();
 
-    const snifferId = result.raw?.[0]?.snifferId;
+    const snifferId = result.raw?.[0]?.sniffer_id;
     if (snifferId) {
       await this.configWriter?.writeForSniffer(ownerId, snifferId);
     }
@@ -230,7 +230,7 @@ export class MockService {
       .returning("*")
       .execute();
 
-    const snifferId = result.raw?.[0]?.snifferId;
+    const snifferId = result.raw?.[0]?.sniffer_id;
     if (snifferId) {
       await this.configWriter?.writeForSniffer(ownerId, snifferId);
     }
