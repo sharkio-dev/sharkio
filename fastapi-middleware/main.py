@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("sharkio")
 
-MOCK_CONFIG_PATH = "/Users/ido/Desktop/c40101e1-0d4b-46d0-a7fc-3de73e82a97a.json"
+MOCK_CONFIG_PATH = "./sharkio_middleware_config.json"
 
 app = FastAPI()
 

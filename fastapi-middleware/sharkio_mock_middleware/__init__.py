@@ -123,14 +123,14 @@ class SharkioMockMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app,
-        config_path: Optional[str] = None,
+        config_path: str = "./sharkio_middleware_config.json",
         config: Optional[Dict[str, Any]] = None,
         passthrough_on_miss: bool = True,
         auto_reload: bool = True,
         reload_interval: float = 1.0,
     ) -> None:
         super().__init__(app)
-        self._config_path = Path(config_path) if config_path else None
+        self._config_path = Path(config_path)
         self._mocks: List[Dict[str, Any]] = []
         self._passthrough_on_miss = passthrough_on_miss
         self._lock = threading.Lock()
@@ -138,10 +138,10 @@ class SharkioMockMiddleware(BaseHTTPMiddleware):
 
         if config is not None:
             self._load_from_dict(config)
-        elif self._config_path is not None:
+        elif self._config_path.exists():
             self.reload()
 
-        if auto_reload and self._config_path is not None:
+        if auto_reload:
             self._start_watcher(reload_interval)
 
     # ------------------------------------------------------------------

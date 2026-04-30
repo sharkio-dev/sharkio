@@ -58,7 +58,7 @@ export class FileConfigWriterService {
       })),
     };
 
-    const filePath = path.join(outputDir, `${snifferId}.json`);
+    const filePath = path.join(outputDir, "sharkio_middleware_config.json");
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(filePath, JSON.stringify(config, null, 2), "utf-8");
     log.info(`Mock config written to ${filePath}`);
