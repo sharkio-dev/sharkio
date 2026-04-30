@@ -1,18 +1,22 @@
 """
 Sharkio Mock Middleware for FastAPI
 
-Usage:
+Explicit usage:
     from sharkio_mock_middleware import SharkioMockMiddleware
 
     app = FastAPI()
     app.add_middleware(SharkioMockMiddleware, config_path="sharkio_mocks.json")
 
+Implicit usage (middleware is added to every FastAPI app automatically):
+    from sharkio_mock_middleware import auto_inject
+
+    auto_inject(config_path="sharkio_mocks.json")  # call before FastAPI()
+
+    app = FastAPI()  # SharkioMockMiddleware is already wired in
+
 Set MOCK_CONFIG_OUTPUT_DIR on the Sharkio server to auto-write the config file
 whenever mocks change in the UI. The middleware will pick up changes within
 `reload_interval` seconds (default: 1).
-
-You can also reload the config manually:
-    middleware_instance.reload()
 """
 
 import asyncio
@@ -126,36 +130,27 @@ class SharkioMockMiddleware(BaseHTTPMiddleware):
         config_path: str = "./sharkio_middleware_config.json",
         config: Optional[Dict[str, Any]] = None,
         passthrough_on_miss: bool = True,
-        auto_reload: bool = True,
-        reload_interval: float = 1.0,
     ) -> None:
         super().__init__(app)
         self._config_path = Path(config_path)
         self._mocks: List[Dict[str, Any]] = []
         self._passthrough_on_miss = passthrough_on_miss
         self._lock = threading.Lock()
-        self._last_mtime: Optional[float] = None
 
         if config is not None:
             self._load_from_dict(config)
         elif self._config_path.exists():
             self.reload()
 
-        if auto_reload:
-            self._start_watcher(reload_interval)
-
     # ------------------------------------------------------------------
     # Public helpers
     # ------------------------------------------------------------------
 
     def reload(self) -> None:
-        """Re-read the config file from disk. Thread-safe."""
-        if self._config_path is None:
-            raise ValueError("No config_path set — pass a config dict instead.")
+        """Re-read the config file from disk."""
         with open(self._config_path, "r", encoding="utf-8") as fh:
             data = json.load(fh)
         self._load_from_dict(data)
-        self._last_mtime = self._config_path.stat().st_mtime
 
     def load_config(self, config: Dict[str, Any]) -> None:
         """Replace the running config with a new in-memory dict."""
@@ -168,20 +163,6 @@ class SharkioMockMiddleware(BaseHTTPMiddleware):
     def _load_from_dict(self, data: Dict[str, Any]) -> None:
         with self._lock:
             self._mocks = data.get("mocks", [])
-
-    def _start_watcher(self, interval: float) -> None:
-        def _watch() -> None:
-            while True:
-                threading.Event().wait(interval)
-                try:
-                    mtime = self._config_path.stat().st_mtime  # type: ignore[union-attr]
-                    if mtime != self._last_mtime:
-                        self.reload()
-                except Exception:
-                    pass
-
-        t = threading.Thread(target=_watch, daemon=True)
-        t.start()
 
     # ------------------------------------------------------------------
     # Middleware entry point
@@ -230,3 +211,66 @@ class SharkioMockMiddleware(BaseHTTPMiddleware):
             headers=headers,
             media_type=media_type,
         )
+
+
+def auto_inject(**middleware_kwargs) -> None:
+    """
+    Monkey-patch FastAPI so every app created after this call automatically
+    gets SharkioMockMiddleware — no explicit add_middleware() needed.
+
+    Call once at module level, before any FastAPI() instantiation:
+
+        from sharkio_mock_middleware import auto_inject
+        auto_inject(config_path="./sharkio_mocks.json")
+
+        app = FastAPI()   # middleware is already wired in
+    """
+    try:
+        from fastapi import FastAPI as _FastAPI
+    except ImportError:
+        raise ImportError("fastapi must be installed to use auto_inject()")
+
+    _original_init = _FastAPI.__init__
+
+    def _patched_init(self, *args, **kwargs):
+        _original_init(self, *args, **kwargs)
+        self.add_middleware(SharkioMockMiddleware, **middleware_kwargs)
+
+    _FastAPI.__init__ = _patched_init
+    _patch_uvicorn(middleware_kwargs.get("config_path", "./sharkio_middleware_config.json"))
+
+
+def _patch_uvicorn(config_path: str) -> None:
+    try:
+        import uvicorn as _uvicorn
+    except ImportError:
+        return
+
+    _original_run = _uvicorn.run
+
+    config_file = Path(config_path).name
+
+    def _patched_run(*args, **kwargs):
+        reload_dirs = kwargs.get("reload_dirs")
+        if reload_dirs is not None:
+            dirs = [reload_dirs] if isinstance(reload_dirs, str) else list(reload_dirs)
+            if config_path not in dirs:
+                kwargs["reload_dirs"] = dirs + [config_path]
+
+        includes = kwargs.get("reload_includes") or []
+        if isinstance(includes, str):
+            includes = [includes]
+        if config_file not in includes:
+            kwargs["reload_includes"] = list(includes) + [config_file]
+
+        return _original_run(*args, **kwargs)
+
+    _uvicorn.run = _patched_run
+
+
+import os as _os
+_env = _os.environ.get("ENVIRONMENT", "")
+_enabled = _env == "local" or _os.environ.get("SHARKIO_MOCK_ENABLE") == "1"
+_disabled = _os.environ.get("SHARKIO_MOCK_DISABLE") == "1"
+if _enabled and not _disabled:
+    auto_inject()
