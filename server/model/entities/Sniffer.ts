@@ -65,6 +65,12 @@ export class Sniffer {
   })
   disableRecording: boolean;
 
+  @Column("character varying", {
+    name: "file_config_output_dir",
+    nullable: true,
+  })
+  fileConfigOutputDir: string | null;
+
   @OneToMany(() => Endpoint, (endpoint) => endpoint.id)
   endpoints: Endpoint[];
 

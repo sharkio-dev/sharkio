@@ -47,6 +47,7 @@ import {
   SequentialResponseSelector,
 } from "./services/mock-response-selector";
 import { MockResponseSelector } from "./services/mock-response-selector/mock-response-selector";
+import { FileConfigWriterService } from "./services/file-config-writer/file-config-writer.service";
 import { MockResponseService } from "./services/mock-response/mock-response.service";
 import { MockService } from "./services/mock/mock.service";
 import { RequestTransformer } from "./services/request-transformer/request-transformer";
@@ -118,14 +119,15 @@ async function main(isProxy = true, isServer = true) {
   const testFlowRepository = new TestFlowRepository(appDataSource);
 
   /* Services */
-  const mockService = new MockService(mockRepository, mockResponseRepository);
+  const fileConfigWriter = new FileConfigWriterService(mockRepository, snifferRepository);
+  const mockService = new MockService(mockRepository, mockResponseRepository, fileConfigWriter);
   const snifferService = new SnifferService(snifferRepository);
   const endpointService = new EndpointService(
     endpointRepository,
     invocationRepository,
     responseRepository
   );
-  const mockResponseService = new MockResponseService(mockResponseRepository);
+  const mockResponseService = new MockResponseService(mockResponseRepository, fileConfigWriter);
   const userService = new UserService(userRepository);
   const apiKeyService = new APIKeysService(apiKeyRepository, userRepository);
   const docGenerator = new SnifferDocGenerator(snifferService, endpointService);

@@ -38,6 +38,13 @@ export const editSniffer = async (
   return BackendAxios.put(`/sniffer/${newConfig.id}`, newConfig);
 };
 
+export const browseFilesystem = (dirPath?: string) => {
+  return BackendAxios.get<{ path: string; entries: string[] }>(
+    "/sniffer/filesystem/browse",
+    { params: dirPath ? { path: dirPath } : {} },
+  ).then((res) => res.data);
+};
+
 export const getRequests = () => {
   return BackendAxios.get("/request");
 };

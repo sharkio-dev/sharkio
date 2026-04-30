@@ -1,3 +1,6 @@
+import fs from "fs";
+import os from "os";
+import path from "path";
 import { Request, Response } from "express";
 import PromiseRouter from "express-promise-router";
 import swaggerUi from "swagger-ui-express";
@@ -487,6 +490,87 @@ export class SnifferController {
 
         const html = swaggerUi.generateHTML(generatedDoc);
         res.send(html).status(200);
+      },
+    );
+
+    router.route("/filesystem/browse").get(
+      requestValidator({
+        query: z.object({ path: z.string().optional() }),
+      }),
+      async (req: Request, res: Response) => {
+        const dirPath = (req.query.path as string | undefined) || os.homedir();
+        const resolved = path.resolve(dirPath);
+        try {
+          const entries = fs.readdirSync(resolved, { withFileTypes: true });
+          const dirs = entries
+            .filter((e) => e.isDirectory() && !e.name.startsWith("."))
+            .map((e) => e.name)
+            .sort();
+          res.json({ path: resolved, entries: dirs });
+        } catch {
+          res.status(400).json({ error: "Cannot read directory" });
+        }
+      },
+    );
+
+    router.route("/:snifferId/export").get(
+      /**
+       * @openapi
+       * /sharkio/sniffer/{snifferId}/export:
+       *   get:
+       *     tags:
+       *      - sniffer
+       *     description: Export mock config for use with the FastAPI mock middleware
+       *     parameters:
+       *       - name: snifferId
+       *         in: path
+       *         schema:
+       *           type: string
+       *         description: Sniffer id
+       *         required: true
+       *     responses:
+       *       200:
+       *         description: Mock config JSON for the FastAPI middleware
+       *       500:
+       *         description: Server error
+       */
+      requestValidator({
+        params: z.object({
+          snifferId: z.string().uuid(),
+        }),
+      }),
+      async (req: Request, res: Response) => {
+        const { snifferId } = req.params;
+        const ownerId = res.locals.auth.ownerId;
+        const mocks = await this.mockService.getBySnifferId(ownerId, snifferId);
+
+        const config = {
+          version: "1.0",
+          exportedAt: new Date().toISOString(),
+          snifferId,
+          mocks: mocks.map((mock) => ({
+            id: mock.id,
+            name: mock.name,
+            method: mock.method,
+            url: mock.url,
+            isActive: mock.isActive,
+            responseSelectionMethod: mock.responseSelectionMethod ?? "default",
+            selectedResponseId: mock.selectedResponseId,
+            responses: (mock.mockResponses ?? [])
+              .sort((a, b) => (a.sequenceIndex ?? 0) - (b.sequenceIndex ?? 0))
+              .map((r) => ({
+                id: r.id,
+                name: r.name,
+                status: r.status,
+                body: r.body,
+                headers: r.headers ?? {},
+                delay: r.delay ?? 0,
+                sequenceIndex: r.sequenceIndex ?? 0,
+              })),
+          })),
+        };
+
+        res.json(config);
       },
     );
 

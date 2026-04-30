@@ -4,6 +4,7 @@ import { MockResponse } from "../../model/entities/MockResponse";
 import { MockResponseRepository } from "../../model/repositories/mock-response.repository";
 import { MockRepository } from "../../model/repositories/mock.repository";
 import { RequestRepository } from "../../model/repositories/request.repository";
+import { FileConfigWriterService } from "../file-config-writer/file-config-writer.service";
 
 const log = useLog({
   dirname: __dirname,
@@ -13,6 +14,7 @@ export class MockService {
   constructor(
     private readonly mockRepository: MockRepository,
     private readonly mockResponseRepository: MockResponseRepository,
+    private readonly configWriter?: FileConfigWriterService,
   ) {}
 
   async import(
@@ -56,6 +58,7 @@ export class MockService {
         },
       );
       await this.setSelectedResponse(ownerId, newMock.id, mockResponse.id);
+      await this.configWriter?.writeForSniffer(ownerId, snifferId);
       return newMock;
     } else {
       await this.mockResponseRepository.create(ownerId, mock.id, {
@@ -66,6 +69,7 @@ export class MockService {
         snifferId,
         ownerId,
       });
+      await this.configWriter?.writeForSniffer(ownerId, snifferId);
       return mock;
     }
   }
@@ -142,6 +146,7 @@ export class MockService {
     if (selectedResponseId != null && mock != null) {
       await this.setSelectedResponse(ownerId, mock.id, selectedResponseId);
     }
+    await this.configWriter?.writeForSniffer(ownerId, snifferId);
     return mock as Mock;
   }
 
@@ -157,7 +162,7 @@ export class MockService {
     snifferId?: string,
     responseSelectionMethod?: string,
   ) {
-    return this.mockRepository.repository
+    const result = await this.mockRepository.repository
       .createQueryBuilder()
       .update()
       .where("id = :mockId AND ownerId = :ownerId", { mockId, ownerId })
@@ -175,22 +180,41 @@ export class MockService {
       })
       .returning("*")
       .execute();
+
+    const resolvedSnifferId =
+      snifferId ?? result.raw?.[0]?.snifferId;
+    if (resolvedSnifferId) {
+      await this.configWriter?.writeForSniffer(ownerId, resolvedSnifferId);
+    }
+    return result;
   }
 
-  delete(ownerId: string, mockId: string) {
-    return this.mockRepository.deleteById(ownerId, mockId);
+  async delete(ownerId: string, mockId: string) {
+    const mock = await this.mockRepository.repository.findOne({
+      where: { ownerId, id: mockId },
+      select: ["snifferId"],
+    });
+    const result = await this.mockRepository.deleteById(ownerId, mockId);
+    if (mock?.snifferId) {
+      await this.configWriter?.writeForSniffer(ownerId, mock.snifferId);
+    }
+    return result;
   }
 
   async setIsActive(ownerId: string, mockId: string, isActive: boolean) {
-    return this.mockRepository.repository
+    const result = await this.mockRepository.repository
       .createQueryBuilder()
       .update()
       .where("id = :mockId AND ownerId = :ownerId", { mockId, ownerId })
-      .set({
-        isActive,
-      })
+      .set({ isActive })
       .returning("*")
       .execute();
+
+    const snifferId = result.raw?.[0]?.snifferId;
+    if (snifferId) {
+      await this.configWriter?.writeForSniffer(ownerId, snifferId);
+    }
+    return result;
   }
 
   async setSelectedResponse(
@@ -198,16 +222,18 @@ export class MockService {
     mockId: string,
     responseId: string,
   ) {
-    return this.mockRepository.repository
+    const result = await this.mockRepository.repository
       .createQueryBuilder()
       .update()
       .where("id = :mockId AND ownerId = :ownerId", { mockId, ownerId })
-      .set({
-        id: mockId,
-        ownerId,
-        selectedResponseId: responseId,
-      })
+      .set({ id: mockId, ownerId, selectedResponseId: responseId })
       .returning("*")
       .execute();
+
+    const snifferId = result.raw?.[0]?.snifferId;
+    if (snifferId) {
+      await this.configWriter?.writeForSniffer(ownerId, snifferId);
+    }
+    return result;
   }
 }

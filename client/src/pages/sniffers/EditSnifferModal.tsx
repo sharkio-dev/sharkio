@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
-import { Modal, Paper, TextField, Button } from "@mui/material";
+import { Modal, Paper, TextField, Button, Typography, IconButton, Tooltip } from "@mui/material";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import ClearIcon from "@mui/icons-material/Clear";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { CircularProgress } from "@mui/material";
 import { SnifferType, useSniffersStore } from "../../stores/sniffersStores";
@@ -7,6 +9,7 @@ import React from "react";
 import { validateHttpUrlFormat } from "../../utils/ValidateHttpUrl";
 import { handleEnterKeyPress } from "../../utils/handleEnterKeyPress";
 import { toLowerCaseNoSpaces } from "../../utils/texts";
+import { FolderPickerDialog } from "../../components/FolderPickerDialog";
 
 const splitByLast = (str: string, delimiter: string) => {
   const lastIndex = str.lastIndexOf(delimiter);
@@ -38,6 +41,10 @@ export const EditSnifferModal = ({
   const [subdomain, setSubdomain] = useState<string>(
     splitByLast(sniffer.subdomain, "-")[1],
   );
+  const [fileConfigOutputDir, setFileConfigOutputDir] = useState<string>(
+    sniffer.fileConfigOutputDir ?? "",
+  );
+  const [folderPickerOpen, setFolderPickerOpen] = useState(false);
   const { show: showSnackbar, component: snackBar } = useSnackbar();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { editSniffer } = useSniffersStore();
@@ -68,6 +75,7 @@ export const EditSnifferModal = ({
       downstreamUrl,
       id: sniffer.id,
       subdomain: sniffer.name + "-" + subdomain,
+      fileConfigOutputDir: fileConfigOutputDir || null,
     })
       .then(() => {
         setName("");
@@ -122,6 +130,51 @@ export const EditSnifferModal = ({
               value={sniffer.subdomain}
               onChange={(event) => setSubdomain(event.target.value)}
               disabled={true}
+            />
+            <div className="flex flex-col space-y-1">
+              <Typography variant="caption" color="text.secondary">
+                File Config Output Dir
+              </Typography>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outlined"
+                  startIcon={<FolderOpenIcon />}
+                  onClick={() => setFolderPickerOpen(true)}
+                  size="small"
+                  className="shrink-0"
+                >
+                  Browse
+                </Button>
+                {fileConfigOutputDir ? (
+                  <>
+                    <Typography
+                      variant="body2"
+                      className="truncate flex-1"
+                      title={fileConfigOutputDir}
+                    >
+                      {fileConfigOutputDir}
+                    </Typography>
+                    <Tooltip title="Clear">
+                      <IconButton
+                        size="small"
+                        onClick={() => setFileConfigOutputDir("")}
+                      >
+                        <ClearIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No folder selected
+                  </Typography>
+                )}
+              </div>
+            </div>
+            <FolderPickerDialog
+              open={folderPickerOpen}
+              initialPath={fileConfigOutputDir || undefined}
+              onSelect={setFileConfigOutputDir}
+              onClose={() => setFolderPickerOpen(false)}
             />
           </div>
 

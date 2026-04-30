@@ -7,6 +7,7 @@ export type EditSnifferDTO = {
   subdomain?: string;
   downstreamUrl?: string;
   disableRecording?: boolean;
+  fileConfigOutputDir?: string | null;
 };
 
 export const EditSnifferValidator = z.object({
@@ -14,4 +15,5 @@ export const EditSnifferValidator = z.object({
   subdomain: z.string().optional(),
   downstreamUrl: z.string().url().optional(),
   disableRecording: z.boolean().optional(),
+  fileConfigOutputDir: z.string().nullable().optional(),
 });

@@ -18,6 +18,7 @@ export type SnifferType = {
   port: number;
   subdomain: string;
   disableRecording?: boolean;
+  fileConfigOutputDir?: string | null;
 };
 
 interface SniffersState {
