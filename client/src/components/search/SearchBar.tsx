@@ -14,7 +14,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ handleSearch }) => {
   return (
     <TextField
       className="h-10"
-      label="Search Flows"
+      label="Search..."
       variant="outlined"
       size="small"
       fullWidth
